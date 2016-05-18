@@ -1,0 +1,44 @@
+{% if debug == true %}{% set ext = 'dev.twig.html' %}{% else %}{% set ext = 'prod.twig.html' %}{% endif %}{% extends ext %}{% block html_content %}{{ vendor([
+    'bootstrap/dist/css/bootstrap.min.css',
+    'jquery/jquery.min.js',
+    'jquery-ui/jquery-ui.min.js',
+    'jquery-ui/themes/smoothness/jquery-ui.min.css',
+    'bootstrap/dist/js/bootstrap.min.js'
+]) }}<!doctype html>
+<html lang="{{ lang.active.url }}" xmlns:og="http://ogp.me/ns#">
+    <head>
+        <title>{% block title %}{{ meta.title }}{% endblock %}</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% for name,content in meta if name != 'title' and content != '' %}
+{% if name != 'robots_value' %}        <meta name="{{ name }}" content="{{ content }}" />
+{% endif %}
+{% endfor %}
+{% for name,content in og if content != '' %}
+        <meta property="og:{{ name }}" content="{{ content }}" />
+{% endfor %}
+    {{ block('meta') }}{{
+       block('stylesheets') }}{{
+       css() }}{{
+       block('javascript_head') }}{{
+       webmaster_tools.google }}{{
+       webmaster_tools.bing }}{{
+       tracking.header }}
+        <link rel="canonical" href="{{ siteUrl( site.url ) }}" />
+        {% if lang.count > 1 %}
+            {% for l in lang.all %}
+               <link rel="alternate" href="{{ siteUrl( '/' ~ l.url ) }}" hreflang="{{  l.url }}" />
+            {% endfor %}
+        {% endif %}
+    </head>
+    <body{{ block('classbody') }}>
+        {{ block('content') }}
+        {{
+            javascript() }}{{
+            block('javascripts') }}{{
+            tracking.footer
+        }}{{
+        analytics.google  }}
+    </body>
+</html>{% endblock html_content %}

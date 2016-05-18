@@ -1,0 +1,36 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Index' %}
+
+{% block module %}
+<input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
+<div class="row">
+	<div class="col-md-12">
+		<section class="panel">
+			<header class="panel-heading">
+				{% if right.add == true %}
+				<div class="panel-actions">
+					<a href="{{ siteUrl('/module/' ~ mod.name ~ '/add') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
+				</div>
+				{% endif %}
+				<h2 class="panel-title">Tableau de gestion</h2>
+			</header>
+			<div class="panel-body">
+				<div class="table-responsive" id="table-content">
+					{{ table }}
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
+<link rel="stylesheet" href="{{ vendor('pnotify/src/pnotify.core.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
+	<script src="{{ vendor('pnotify/src/pnotify.core.min.js') }}"></script>
+{% endblock %}

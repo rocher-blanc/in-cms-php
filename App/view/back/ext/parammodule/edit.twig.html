@@ -1,0 +1,130 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Pages spéciales{% endblock %}
+
+{% if id != -1 %}
+	{% set this_page = 'Modification' %}
+	{% set title_block_page = 'Modification d\'une page' %}
+{% else %}
+	{% set this_page = 'Ajout' %}
+	{% set title_block_page = 'Ajout d\'une nouvelle page' %}
+{% endif %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('ext/parammodule/edit/' ~ id ) }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+	<div class="row">
+		<div class="col-md-12">
+			<header class="panel-heading">
+				<h2 class="panel-title">{{ title_block_page }}</h2>
+			</header>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body">
+					<div class="form-group">
+						<label class="col-md-3 control-label">Nom</label>
+						<div class="col-md-6">
+							<input type="text" id="module_name" name="module_name" class="form-control" value="{{ post.module_name }}" readonly />
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">URL</label>
+                        <div class="col-md-6">
+                            {% for l in lang %}
+                                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                                    <span class="input-group-addon">
+                                        <span class="icon">
+                                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                                        </span>
+                                    </span>
+                                    <input type="text" id="module_lang_url_{{ l.url }}" name="module_lang_url_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_url'] }}" />
+                                 </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Meta title</label>
+                        <div class="col-md-6">
+                            {% for l in lang %}
+                                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                                    <span class="input-group-addon">
+                                        <span class="icon">
+                                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                                        </span>
+                                    </span>
+                                    <input type="text" data-plugin-counter="55" id="module_lang_title_{{ l.url }}" name="module_lang_title_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_title'] }}" />
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Méta description</label>
+                        <div class="col-md-6">
+                            {% for l in lang %}
+                                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                                    <span class="input-group-addon">
+                                        <span class="icon">
+                                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                                        </span>
+                                    </span>
+                                    <input type="text" data-plugin-counter="115" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Méta keyword</label>
+                        <div class="col-md-6">
+                            {% for l in lang %}
+                            <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                                    <span class="input-group-addon">
+                                        <span class="icon">
+                                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                                        </span>
+                                    </span>
+                                <input type="text" id="module_lang_keyword_{{ l.url }}" name="module_lang_keyword_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_keyword'] }}" />
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Sitemap - Priority</label>
+                        <div class="col-md-6">
+                            <input type="text" id="module_priority" name="module_priority" class="form-control" value="{{ priority }}" />
+                        </div>
+                    </div>
+				</div> 
+			</div>
+			
+			<div class="tab-content">
+				<div class="tab-pane active panel-body panel-body-border">
+					<div class="row">
+						<div class="col-md-2">
+							<a id="btn_back" href="{{ siteUrl('ext/parammodule') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+						</div>
+						<div class="col-md-5 col-md-offset-5 text-right">
+							<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
+							<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+	var errorForm = {{ error }};
+	var tabError = '{{ tabError }}';
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('select2/dist/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ vendor('pnotify/src/pnotify.core.min.css') }}" />
+<link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ vendor('select2/dist/js/select2.min.js') }}"></script>
+<script src="{{ vendor('pnotify/src/pnotify.core.min.js') }}"></script>
+<script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
+{% endblock %}

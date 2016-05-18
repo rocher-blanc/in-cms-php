@@ -1,0 +1,144 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Metadonnées{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/ext/metadata') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+	<div class="row">
+		<div class="col-md-12">
+			<header class="panel-heading">
+				<h2 class="panel-title">Générale</h2>
+			</header>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Activer l'indexation</label>
+                        <div class="col-md-6">
+                            <input value="1" type="checkbox"{{ post.seo_robots == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="seo_robots" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Forcer HTTPS</label>
+                        <div class="col-md-6">
+                            <input value="1" type="checkbox"{{ post.seo_ssl == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="seo_ssl" />
+                        </div>
+                    </div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Author</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_author" class="form-control" value="{{ post.seo_author }}" />
+						</div>
+					</div>
+				</div> 
+			</div>
+			
+			<header class="panel-heading">
+				<h2 class="panel-title">Géo</h2>
+			</header>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body">
+					<div class="form-group">
+						<label class="col-md-3 control-label">Region</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_geo_region" class="form-control" value="{{ post.seo_geo_region }}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Placename</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_geo_placename" class="form-control" value="{{ post.seo_geo_placename }}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Position</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_geo_position" class="form-control" value="{{ post.seo_geo_position }}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">ICBM</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_geo_icbm" class="form-control" value="{{ post.seo_geo_icbm }}" />
+						</div>
+					</div>
+				</div> 
+			</div>
+			
+			<header class="panel-heading">
+				<h2 class="panel-title">Webmaster tools & statstiques</h2>
+			</header>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body">
+					<div class="form-group">
+						<label class="col-md-3 control-label">Google webmaster tools</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_google_webmaster_tools" class="form-control" value="{{ post.seo_google_webmaster_tools }}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Bing webmaster tools</label>
+						<div class="col-md-6">
+							<input type="text" name="seo_bing_webmaster_tools" class="form-control" value="{{ post.seo_bing_webmaster_tools }}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Google Analytics</label>
+						<div class="col-md-6">
+							<textarea name="seo_google_analytics" class="form-control">{{ post.seo_google_analytics }}</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			
+			<header class="panel-heading">
+				<h2 class="panel-title">Divers</h2>
+			</header>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body">
+					<div class="form-group">
+						<label class="col-md-3 control-label">Header</label>
+						<div class="col-md-6">
+							<textarea name="seo_divers_header" class="form-control">{{ post.seo_divers_header }}</textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Footer</label>
+						<div class="col-md-6">
+							<textarea name="seo_divers_footer" class="form-control">{{ post.seo_divers_footer }}</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-content">
+				<div class="tab-pane active panel-body panel-body-border">
+					<div class="row">
+						<div class="col-md-2">
+							<a id="btn_back" href="{{ siteUrl('admin/groupmodule') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+						</div>
+
+						<div class="col-md-5 col-md-offset-5 text-right">
+							<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
+							<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>
+	</div>
+</form>	
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('pnotify/src/pnotify.core.min.css') }}" />
+<link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ vendor('pnotify/src/pnotify.core.min.js') }}"></script>
+<script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
+{% endblock %}

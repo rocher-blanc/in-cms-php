@@ -1,0 +1,139 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Menu d'administration{% endblock %}
+{% set this_page = 'Gestion' %}
+
+{% block module %}
+<div class="row">
+    <div class="col-md-12" id="listIndex">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="{{ siteUrl('admin/groupmodule/edit') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
+                </div>
+                <h2 class="panel-title">Menu d'administration</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    {% if contentRows|length > 0 %}
+                    <table class="table table-striped table-hover mb-none">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th><strong>Nom</strong></th>
+                            <th><strong>Modules</strong></th>
+                            <th><strong>Statut</strong></th>
+                            <th class="text-right" style="width: 140px"><strong>Actions</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="tr1">
+                            <td><i class="fa fa-home" style="font-size: 20px;"></i></td>
+                            <td>Accueil</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="tr1">
+                            <td><i class="fa fa-link" style="font-size: 20px;"></i></td>
+                            <td>Menu</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for row in contentRows %}
+                        <tr class="tr1">
+                            <td>
+                                <i class="fa fa-{{ row.module_group_icon }}" style="font-size: 20px;"></i>
+                            </td>
+                            <td>
+                                <a href="{{ siteUrl('admin/groupmodule/edit/' ~  row.module_group_id) }}">{{ row.module_group_name }}</a>
+                            </td>
+                            <td>
+                                <a href="javascript:;" class="openmodule">
+                                    <a class="btn btn-xs btn-info openmodule" href="javascript:;" data-group="{{ row.module_group_id }}" data-title="{{ row.module_group_name }}"><i class="fa fa-cubes"></i> Voir les modules</a>
+                                </a>
+                            </td>
+                            <td>
+                                {% if row.module_group_active == 0 %}
+                                <a class="btn btn-xs btn-warning" href="{{ siteUrl('admin/groupmodule/active/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
+                                {% else %}
+                                <a class="btn btn-xs btn-success" href="{{ siteUrl('admin/groupmodule/disactive/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                {% if loop.index != 1 %}<a href="{{ siteUrl('admin/groupmodule/order/up/' ~  row.module_group_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-up"></i></a>{% endif %}
+                                {% if loop.index != contentRows|length %}<a href="{{ siteUrl('admin/groupmodule/order/down/' ~  row.module_group_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-down"></i></a>{% endif %}
+
+                                <a class="btn btn-xs btn-info" href="{{ siteUrl('admin/groupmodule/edit/' ~ row.module_group_id) }}"><i class="fa fa-pencil"></i></a>
+                                <a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_group_id }}" data-link="{{ siteUrl('admin/groupmodule/delete/' ~ row.module_group_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe de modules '{{ row.module_group_name }}' ?"><i class="fa fa-times"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="tr1">
+                            <td><i class="fa fa-cogs" style="font-size: 20px;"></i></td>
+                            <td>Paramètres</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="tr1">
+                            <td><i class="fa fa-line-chart" style="font-size: 20px;"></i></td>
+                            <td>SEO</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="tr1">
+                            <td><i class="fa fa-code" style="font-size: 20px;"></i></td>
+                            <td>Développeur</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <span>Aucun groupe de modules n'est enregistré.</span>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="orderModule" style="display: none;">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title" id="titleGroupe">Modules du groupe</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <ul class="Selecter" id="SelecterHasGroup"></ul>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="noGroupModule" style="display: none;">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Module(s) disponible(s)</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <ul class="Selecter" id="SelecterNoGroup"></ul>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
+<link rel="stylesheet" href="{{ vendor('pnotify/src/pnotify.core.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ vendor('pnotify/src/pnotify.core.min.js') }}"></script>
+{% endblock %}

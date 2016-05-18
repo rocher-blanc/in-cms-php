@@ -1,0 +1,114 @@
+<?php
+
+$app->group('/secured', function () use ($app) {
+	// CONNEXION
+	$app->group('/login', function () use ($app) 
+	{
+		$app->map('(/:param)', function ($param = -1) use ($app) 
+		{
+			$app->render('secured/login.twig.html') ;
+		})->via('GET', 'POST')->name('secured_login');
+	});
+	
+	// PROFILE
+	$app->get('/profile', function () use ($app) {
+		$error    = false ;
+		$tabError = array() ;
+		$id 	  = $_SESSION[ $app->config('session') ]['id'] ;
+		
+		$user = \DB::for_table('user')
+					->where_equal('user_id' , $id)
+					->find_one();
+
+		if ( !$user ) {
+			$app->redirect( $app->config('admin.url') . '/');
+		}
+		
+		if ( $app->request->isPost() ) {
+			if ( $app->request->post('user_name') == "" ) {
+				$error = true ;
+				$tabError['user_name'] = "Veuillez remplir ce champ" ;
+			}
+			else {
+				$exist = \DB::for_table('user')
+							->where_equal('user_name' , $app->request->post('user_name'))
+							->where_not_equal('user_id' , $id)
+							->count();
+			}
+			
+			if ( $app->request->post('user_name') != "" && $exist > 0 ) {
+				$error = true ;
+				$tabError['user_name'] = "Ce login est deja utilisé" ;
+			}
+			
+			if ( $app->request->post('user_fname') == "" ) {
+				$error = true ;
+				$tabError['user_fname'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('user_lname') == "" ) {
+				$error = true ;
+				$tabError['user_lname'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('last_password') != "" && password_verify( $app->request->post('last_password'), $user->user_password) === false ) {
+				$error = true ;
+				$tabError['last_password'] = "Votre ancien mot de passe est incorrect" ;
+			}
+			
+			if ( $app->request->post('last_password') == "" && $app->request->post('password') != "" && $app->request->post('confirm_password') != '' ) {
+				$error = true ;
+				$tabError['last_password'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('last_password') != "" && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
+				$error = true ;
+				$tabError['password'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') == '' ) {
+				$error = true ;
+				$tabError['password'] = "Veuillez remplir ce champ" ;
+				$tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
+				$error = true ;
+				$tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('last_password') != "" && $app->request->post('password') != $app->request->post('confirm_password') ) {
+				$error = true ;
+				$tabError['confirm_password'] = "Les 2 mots de passe sont différents" ;
+			}
+			
+			if ( $error == false ) {
+				if ( $app->request->post('password') != "" ) {
+					$user->user_password = password_hash( $app->request->post('password') ,PASSWORD_BCRYPT,['cost' => 9]) ;
+				}
+				
+				$user->user_name = $app->request->post('user_name');
+				$user->user_fname = $app->request->post('user_fname');
+				$user->user_lname = $app->request->post('user_lname');
+				$user->save();
+				
+				$tabError['__result']['txt']    = "Votre profil est modifié" ;
+				$tabError['__result']['result'] = true;
+			}
+		}
+
+        $app->render('secured/profile.twig.html', array(
+												"error"		 => ( $error === false ? "0" : "1" ),
+												"tabError"	 => json_encode( $tabError ))) ;
+	})->via('GET', 'POST')->name('secured_profile');
+	
+	// DECONNEXION
+	$app->get('/logout', function () use ($app) {
+       
+	})->name('secured_logout');
+	
+	// ACCES INTERDIT
+	$app->get('/forbidden', function () use ($app) {
+        $app->render('errors/401.twig.html');
+	})->name('secured_forbidden');
+});

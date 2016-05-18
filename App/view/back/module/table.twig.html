@@ -1,0 +1,32 @@
+{% if td|length > 0 %}
+	<table class="table table-striped mb-none table-hover table-gestion">
+		<thead>
+			<tr>
+				{% for title in th %}
+					<th><strong>{{ title }}</strong></th>
+				{% endfor %}
+				<th class="text-center" style="width: 200px;"><strong>Actions</strong></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for content in td %}
+			<tr class="tr1" data-parent-id="none">
+				{% for index,row in content.td %}
+					<td>{{ row }}</td>
+				{% endfor %}
+				<td class="text-right">
+					{% if hasOrder and right.edit == true %}
+                        {% if loop.index != 1 %}<a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/up/' ~  content.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn" data-id="{{ content.id }}" data-token="{{csrf_token}}" data-action="up"><i class="fa fa-arrow-up"></i></a>{% endif %}
+						{% if content.order != max %}<a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/down/' ~  content.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn" data-id="{{ content.id }}" data-token="{{csrf_token}}" data-action="down"><i class="fa fa-arrow-down"></i></a>{% endif %}
+					{% endif %}
+					{% if hasValidation and right.validation == true %}<a id="moduleValidation{{ content.id }}" class="btn btn-xs btn-{{ content.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ content.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ content.validation }}"><i class="fa fa-thumbs-{{ content.validation == 1 ? 'up' : 'down' }}"></i></a>{% endif %}
+					{% if right.edit == true %}<a class="btn btn-xs btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  content.id ) }}"><i class="fa fa-pencil"></i></a>{% endif %}
+					{% if right.delete == true %}<a class="btn btn-xs btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i></a>{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<span>Pas de contenu enregistré.</span>
+{% endif %}

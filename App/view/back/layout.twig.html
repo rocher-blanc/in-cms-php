@@ -1,0 +1,43 @@
+<!doctype html>
+<html class="fixed" lang="fr">
+    <head>
+        <!-- Load DNS for optimize -->
+        <link rel="dns-prefetch" href="//ajax.googleapis.com">
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+
+        <title>{% block title %}Administration{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {{ block('meta') }}
+        {{ debugbar.head }}
+        <link rel="stylesheet" href="{{ siteUrl('assets/vendor/fontawesome/css/font-awesome.min.css',false) }}" />
+        <link rel="stylesheet" href="{{ vendor('bootstrap/dist/css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ vendor('bootstrap/dist/css/bootstrap-theme.min.css') }}" />
+        <link rel="stylesheet" href="{{ vendor('normalize.css/normalize.css') }}" />
+        <link rel="stylesheet" href="{{ vendor('jquery-ui/themes/smoothness/jquery-ui.min.css') }}">
+        <link rel="stylesheet" href="{{ vendor('flag-icon-css/css/flag-icon.min.css') }}">
+        {{ block('stylesheets') }}
+        <link rel="stylesheet" href="{{ asset('css/std.css') }}" />
+        <script src="{{ asset('js/init.js') }}"></script>
+        {{ block('javascript_head') }}
+    </head>
+    <body>
+        {{ block('contenu') }}
+        <script src="{{ vendor('jquery/jquery.min.js') }}"></script>
+        <script src="{{ vendor('jquery-ui/jquery-ui.min.js') }}"></script>
+        <script src="{{ vendor('bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        {{ block('javascripts') }}
+        {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
+        <script>
+            var errorForm = 0;
+            var tabError = '{"__result":{"txt":{{flash.__msg}},"result":{{flash.__result == true ? 'true' : 'false' }}}}';
+        </script>
+        {% endif %}
+        <script>
+            var siteurl = site + '/{{ adminFolder }}/' ;
+        </script>
+        {{ debugbar.body }}
+        <script src="{{ asset('js/script.js') }}"></script>
+    </body>
+</html>

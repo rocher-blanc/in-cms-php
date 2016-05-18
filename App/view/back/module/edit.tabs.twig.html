@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="edit">
+			<div class="tabs">
+				<ul class="nav nav-tabs nav-justified text-right tabs-primary tab-module">
+					<li>
+						<a href="{{ siteUrl('/module/' ~ mod.name ) }}">Liste</a>
+					</li>
+					<li{% if action == 'edit' %} class="active"{% endif %}>
+						<a href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~ id) }}">Général</a>
+					</li>
+					{% if seo == true %}
+					<li{% if action == 'seo' %} class="active"{% endif %}>
+						<a href="{{ siteUrl('/module/' ~ mod.name ~ '/seo/' ~ id) }}">Référencement</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="tab-d">
+			<div class="tab-pane active panel-body">
+				{% include 'module/edit.form.twig.html' with field %}
+			</div>
+		</div>
+	</div>
+</div>

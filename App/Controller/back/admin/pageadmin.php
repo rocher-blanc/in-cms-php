@@ -1,0 +1,159 @@
+<?php
+
+$app->group('/pageadmin', function () use ($app)
+{
+	$app->get('/', function () use ($app)
+	{
+		$contentRows = \DB::for_table('page')
+								->order_by_asc('page_name')
+								->find_many();
+		
+		$app->render('admin/pageadmin/index.twig.html', array( "contentRows" => $contentRows ));
+
+	})->name('page_index');
+	
+	$app->map('/edit(/:id)', function ($id = -1) use ($app)
+	{
+		$tabFolders = unserialize( CONTROLLER_FOLDERS_PATH ) ;
+		$arrayController = [];
+
+		foreach( $tabFolders as $folder )
+		{
+			$scan = glob( $folder . '/*.php' ) ;
+			if ( ! empty( $scan ) )
+			{
+				foreach( $scan as $row )
+				{
+					$controller = str_replace( $folder . '/' , '' , $row ) ;
+					$arrayController[ $controller ] = $controller ;
+				}
+			}
+		}
+
+        if ( empty( $arrayController ) )
+		{
+			$Factory = \App\Kernel\Factory::getInstance() ;
+			$Factory->Response()->flashAndRedirect("Il n'y a actuellement aucun controller de présent dans le projet", false , 'ext/page' ) ;
+		}
+		else
+		{
+			$controllerRow = \DB::for_table('page')
+				->select('page_id')
+				->select('page_controller')
+				->find_many();
+			
+			if ( $controllerRow )
+			{
+				foreach( $controllerRow as $row )
+				{
+					if ( $row->page_id != $id ) unset( $arrayController[ $row->page_controller ] ) ;
+				}
+			}
+			
+			if ( count( $arrayController ) == 0 )
+			{
+                $Factory = \App\Kernel\Factory::getInstance() ;
+				$Factory->Response()->flashAndRedirect( "Il n'y a plus de controller libre dans le projet" , false , 'admin/pageadmin' ) ;
+			}
+		}
+		
+		$lang 	  = \App\Kernel\Lang::getInstance()->getAll() ;
+		$error 	  = false ;
+		$tabError = array() ;
+		
+		$contentRow = \DB::for_table('page')
+			->where_equal('page_id' , $id)
+			->find_one();
+		
+		if ( $id != -1 && !$contentRow )
+		{
+			$app->redirect( $app->config('admin.url') . '/pageadmin/page');
+		}
+		
+		if ( $app->request->isPost() )
+		{
+			$post = array(
+				"page_name" => $app->request->post('page_name'),
+				"page_controller" => $app->request->post('page_controller'),
+				"page_active" => $app->request->post('page_active')
+			) ;
+			
+			if ( !$contentRow )
+			{
+				$contentRow = \DB::for_table('page')->create();
+				$add = true ;
+				
+				$ct = \DB::for_table('page')->count();
+				
+				if ( $ct == 0 )
+				{
+					$contentRow->page_default = 1;
+					$forceActive = true ;
+				}
+			}
+			
+			if ( $app->request->post('page_name') == "" )
+			{
+					$error = true ;
+					$tabError['page_name'] = "Veuillez remplir ce champ" ;
+			}
+			
+			if ( $app->request->post('page_controller') == "" )
+			{
+					$error = true ;
+					$tabError['page_controller'] = "Veuillez sélectionner un élement" ;
+			}
+			
+			if ( $error == false )
+			{
+				$contentRow->page_name 			= $app->request->post('page_name') ;
+				$contentRow->page_controller 	= $app->request->post('page_controller') ;
+				$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
+				
+				if ( $forceActive == true ) $contentRow->page_active = 1;
+				
+				$contentRow->save() ;
+				
+				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 33 : 29 ) , $contentRow->page_name ) ;
+				
+				$id = $contentRow->page_id;
+				
+				if ( $app->request->post('submit') == "stay" ) 	$url = '/admin/pageadmin/edit/' . $id ;
+				else 											$url = '/admin/pageadmin' ;
+
+                $Factory = \App\Kernel\Factory::getInstance() ;
+				$Factory->Response()->flashAndRedirect("La page spéciale a bien été " . ( $add == true ? "ajoutée" : "modifiée" ) , true , $url ) ;
+			}
+		}
+		else
+		{
+			$post = $contentRow ;
+		}
+		
+		$postLang = \DB::for_table('page_lang')
+			->where(['page_lang_page_id' => $id])
+			->find_many();
+		
+		$contentLang = [] ;
+		if ( $postLang )
+		{
+			foreach( $postLang as $row )
+			{
+				$contentLang[ $row->page_lang_lang_id ]['page_lang_url'] 		 = $row->page_lang_url ;
+				$contentLang[ $row->page_lang_lang_id ]['page_lang_title'] 		 = $row->page_lang_title ;
+				$contentLang[ $row->page_lang_lang_id ]['page_lang_description'] = $row->page_lang_description ;
+				$contentLang[ $row->page_lang_lang_id ]['page_lang_keyword'] 	 = $row->page_lang_keyword ;
+			}
+		}
+		
+		$app->render('admin/pageadmin/edit.twig.html', array(
+			"post" => $post,
+			"id" => $id,
+			"arrayController" => $arrayController,
+			"lang" => $lang,
+			"contentLang" => $contentLang,
+			"error"		 => ( $error === false ? "0" : "1" ),
+			"tabError"	 => json_encode( $tabError )
+		));
+	})->name('page_edit')->via('GET', 'POST');
+});

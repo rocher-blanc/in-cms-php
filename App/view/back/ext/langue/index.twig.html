@@ -1,0 +1,95 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Langues{% endblock %}
+{% set this_page = 'Gestion' %}
+
+{% block module %}
+<div class="row">
+	<div class="col-md-12">
+		<section class="panel">
+			<header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="{{ siteUrl('/ext/langue/export') }}" target="_blank" class="btn btn-success"><i class="fa fa-upload"></i> Exporter les traductions</a>
+                    <span class="btn btn-danger fileinput-button" id="btn-upload">
+                        <i class="fa fa-download"></i> Importer les traductions
+                        <input type="file" name="files" data-plugin-upload data-url="{{ siteUrl('/ext/langue/import') }}">
+                    </span>
+                </div>
+                <h2 class="panel-title">Liste des langues</h2>
+			</header>
+			<div class="panel-body">
+				<div class="table-responsive">
+				{% if contentRows|length > 0 %}
+					<table class="table table-striped table-hover mb-none">
+						<thead>
+							<tr>
+								<th><strong>Nom</strong></th>
+								<th><strong>Nom public</strong></th>
+								<th><strong>Locale</strong></th>
+                                <th><strong>Statut</strong></th>
+                                <th><strong>Visible sur le site</strong></th>
+								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for row in contentRows %}
+                            <tr class="tr1">
+                                <td>
+                                    <a href="{{ siteUrl('ext/langue/edit/' ~  row.lang_id) }}">{{ row.lang_name }}</a>
+                                </td>
+                                <td>
+                                    <a href="{{ siteUrl('ext/langue/edit/' ~  row.lang_id) }}">{{ row.lang_display }}</a>
+                                </td>
+								<td>
+									<a href="{{ siteUrl('ext/langue/edit/' ~  row.lang_id) }}">{{ row.lang_locale }}</a>
+								</td>
+                                <td>
+                                    {% if row.lang_status == 0 %}
+                                        <a class="btn btn-xs btn-warning" href="{{ siteUrl('ext/langue/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
+                                    {% else %}
+                                        <a class="btn btn-xs btn-success" href="{{ siteUrl('ext/langue/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
+                                    {% endif %}
+                                    {% if loop.index == 1 %}<a class="btn btn-xs btn-default" href="javascript:;"><i class="fa fa-info-circle"></i> Par défaut</a>{% endif %}
+                                </td>
+                                <td>
+                                    {% if row.lang_status != 0 %}
+                                        {% if row.lang_front == 0 %}
+                                            <a class="btn btn-xs btn-warning" href="{{ siteUrl('ext/langue/front/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
+                                        {% else %}
+                                            <a class="btn btn-xs btn-success" href="{% if loop.index == 1 %}javascript:;{% else %}{{ siteUrl('ext/langue/front/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}{% endif %}"><i class="fa fa-check-circle-o"></i> Oui</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+								<td class="text-right">
+									{% if row.lang_status != 0 %}
+										{% if loop.index != 1 %}<a href="{{ siteUrl('ext/langue/order/up/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-up"></i></a>{% endif %}
+										{% if row.lang_status != 1 %}<a href="{{ siteUrl('ext/langue/order/down/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-down"></i></a>{% endif %}
+									{% endif %}
+									
+									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/langue/edit/' ~ row.lang_id) }}"><i class="fa fa-pencil"></i></a>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<span>Aucune langue n'est enregistrée.</span>
+				{% endif %}
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('pnotify/src/pnotify.core.min.css') }}" />
+<link rel="stylesheet" href="{{ vendor('jquery-file-upload/css/jquery.fileupload.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ vendor('pnotify/src/pnotify.core.min.js') }}"></script>
+    <script src="{{ vendor('jquery-file-upload/js/vendor/jquery.ui.widget.js') }}"></script>
+    <script src="{{ vendor('jquery-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ vendor('jquery-file-upload/js/jquery.fileupload.js') }}"></script>
+{% endblock %}

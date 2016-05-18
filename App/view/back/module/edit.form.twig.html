@@ -1,0 +1,10 @@
+{% block edit %}
+	{% for c in field %}
+	<div class="form-group{% if c.error != '' %} has-error{% endif %}">
+		<label class="col-md-3 control-label">{{ c.title }}</label>
+		<div class="col-md-{{ c.type == 'image' ? '9' : '6' }}">
+			{{ c.Form_HTML }}
+		</div>
+	</div>
+	{% endfor %}
+{% endblock %}

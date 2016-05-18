@@ -1,0 +1,147 @@
+<?php
+
+namespace App\Kernel\Entity;
+
+class Model
+{
+	/*
+     * @int
+     * Variable contenant l'ID
+     */
+    public $_id = NULL ;
+	
+	protected $_action = "" ;
+	
+	protected $_setting = [] ;
+	
+	/* ************************************************** */
+	/* ******************   SETTER   ******************** */
+	/* ************************************************** */
+    
+    protected function setId( $id )
+	{
+        $this->_id = $id ;
+    }
+	
+	/* ************************************************** */
+	/* ******************   GETTER   ******************** */
+	/* ************************************************** */
+    
+	/*
+	 * @return $app de Slim
+	 */
+    public function getApp()
+	{
+        return \Slim\Slim::getInstance() ;
+    }
+	
+	protected function Factory()
+	{
+		return \App\Kernel\Factory::getInstance() ;
+	}
+	
+	protected function getId()
+	{
+        return $this->_id ;
+    }
+	
+	protected function getAction()
+	{
+        return $this->_action ;
+    }
+	
+	public function getPathImage( $absolute = true )
+	{
+		$path = IMAGE_PATH . '/' . $this->getFolder() ;
+		
+		if ( $absolute ) return $path ;
+		else			 return str_replace( WEB_PATH , '' , $path ) ;
+    }
+    
+    protected function getClassName( $lower = true )
+	{
+        $exp = explode( "\\" , get_class( $this ) ) ;
+		$content = $exp[ count( $exp ) - 1 ] ;
+		
+		if ( $lower )	return strtolower( $content ) ;
+		else			return $content ;
+    }
+	
+	/* ************************************************** */
+	/* ******************  SETTINGS  ******************** */
+	/* ************************************************** */
+	
+	protected function setDefaultSetting()
+	{
+		$this->_setting = array(
+			"action" => array(
+				'index',
+				'table',
+				'add',
+				'edit',
+				'delete'
+			)
+		);
+	}
+	
+	/* ************************************************** */
+	/* ******************   CHECK   ********************* */
+	/* ************************************************** */
+	
+	protected function check()
+	{
+		if ( $this->getUrlName() != '' )
+        {
+            $this->setLast( $this->getUrlName() ) ;
+            if ( $this->hasMultilang() == true && $this->field()->hasLang() == false )
+            {
+                throw new \App\Kernel\Exception("Field \"" . $this->getUrlName() . "\" is not multilang. Please, update this field") ;
+            }
+        }
+
+		if ( $this->hasImage() == true )
+		{
+			if ( !is_dir( $this->getPathImage() ) )
+			{
+				mkdir( $this->getPathImage() , 0755 );
+				mkdir( $this->getPathImage() . '/c' , 0755 ); // Crope
+				mkdir( $this->getPathImage() . '/t', 0755 ); // Thumb
+			}
+		}
+		/*
+		if ( $this->hasDoc() == true )
+		{
+			if ( !is_dir( $this->getPathDoc() ) )
+			{
+				mkdir( $this->getPathDoc() , 0755 );
+			}
+		}*/
+	}
+	
+	/* ************************************************** */
+	/* ******************   ACTION   ******************** */
+	/* ************************************************** */
+
+    public function addAction( $action )
+	{
+		if ( ! in_array( $action , $this->_setting["action"] ) ) $this->_setting["action"][ $action ] = $action ;
+	}
+
+    public function removeAction( $action )
+	{
+		if ( !empty( $this->_setting["action"] ) )
+		{
+			$array = [];
+			foreach( $this->_setting["action"] as $row )
+			{
+				if ( $row != $action ) $array[ $row ] = $row ;
+			}
+		}
+		$this->_setting["action"] = $array ;
+	}
+	
+	public function hasAction( $action )
+	{
+		return in_array( $action , $this->_setting["action"] ) ;
+	}
+}

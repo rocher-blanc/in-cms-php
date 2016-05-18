@@ -1,0 +1,144 @@
+<?php
+
+$app->get('/sitemap.xml', function () use ( $app )
+{
+    $app->contentType('text/xml');
+
+    $langArray = [] ;
+    $langObj = \App\Kernel\Lang::getInstance() ;
+
+    foreach( $langObj->getAll() as $lang )
+    {
+        $langArray[ $lang->id ] = $lang->url ;
+    }
+
+    $content = \DB::for_table('module')
+        ->select('module.module_class_name')
+        ->select('module.module_default')
+        ->select('module.module_priority')
+        ->select('module_lang.module_lang_url')
+        ->select('module_lang.module_lang_lang_id')
+        ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
+        ->where_equal('module.module_active',1)
+		->where_in('module_lang.module_lang_lang_id', $langObj->getTabLang() )
+        ->find_many();
+
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n\t" . 'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"> ' . "\n";
+
+    if ( $content )
+    {
+        foreach( $content as $module )
+        {
+            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
+            else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;
+
+            $Controller = new $ControllerClass;
+            $Controller->setEntityName( $module->module_class_name );
+            $Controller->loadEntity();
+            $Controller->init() ;
+
+            $result = $Controller->getSiteMap() ;
+
+            $url = $app->request()->getUrl() ;
+
+            if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
+
+            if ( $module->module_default == 0 )
+            {
+                $url.= '/' . $module->module_lang_url . '/' ;
+                echo "\t" . '<url>' . "\n" ;
+                    echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
+                    echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+                echo "\t" . '</url>' . "\n" ;
+            }
+            else
+            {
+                $url.= '/' ;
+            }
+
+            if ( $result )
+            {
+                foreach( $result['content'] as $row )
+                {
+                    if ( $module->module_lang_lang_id == $row->seo_lang_id )
+                    {
+                        $date_updated = new \DateTime( $row->date_updated ) ;
+                        $date_last_updated = new \DateTime( $row->date_last_updated ) ;
+                        $interval = $date_last_updated->diff($date_updated);
+                        $delta = intval( $interval->format('%a') );
+
+                        if ( $delta <= 1 )          $fred = 'daily' ;
+                        else if ( $delta <= 7 )     $fred = 'weekly' ;
+                        else if ( $delta <= 30 )    $fred = 'monthly' ;
+                        else                        $fred = 'yearly' ;
+
+                        echo "\t" . '<url>' . "\n" ;
+                            echo "\t\t" . '<loc>' . $url . $row->seo_url . '</loc>' . "\n";
+                            echo "\t\t" . '<lastmod>' . $date_updated->format('Y-m-d') . '</lastmod>' . "\n";
+                            echo "\t\t" . '<changefreq>' . $fred . '</changefreq>' . "\n";
+                            echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+
+                        if ( !empty( $result['fieldImage'] ) )
+                        {
+                            foreach( $result['fieldImage'] as $field )
+                            {
+                                $image = $row->get( $field ) ;
+
+                                if ( !empty( $image ) )
+                                {
+                                    $media = new \App\Kernel\Front\Media;
+                                    $media->setImageId( $image );
+                                    $media->getNameById();
+
+                                    $urlImage = \App\Kernel\Http::getInstance()->getCdn() . $result['pathImage'] . '/' . $media->getImageName();
+                                    echo "\t\t" . '<image:image>' . "\n";
+                                    echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
+                                    echo "\t\t" . '</image:image>' . "\n";
+                                }
+                            }
+                        }
+                        echo "\t" . '</url>' . "\n" ;
+                    }
+                }
+            }
+        }
+    }
+
+    $pages = \DB::for_table('page')
+        ->select('page.page_id')
+        ->select('page.page_default')
+        ->select('page.page_priority')
+        ->select('page_lang.page_lang_url')
+        ->select('page_lang.page_lang_lang_id')
+        ->left_outer_join('page_lang', [ 'page_lang.page_lang_page_id', '=', 'page.page_id' ])
+        ->where_equal('page.page_active',1)
+		->where_in('page_lang.page_lang_lang_id', $langObj->getTabLang() )
+        ->find_many();
+	
+    if ( $pages )
+    {
+        foreach( $pages as $page )
+        {
+            $url = $app->request()->getUrl() ;
+
+            if ( $page->page_default == 0 )
+            {
+                if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $page->page_lang_lang_id ] ;
+                $url.= '/' . $page->page_lang_url ;
+            }
+            else
+            {
+                if ( $page->page_lang_lang_id == $langObj->getDefault()->id )   $url.= '/';
+                else                                                            $url.= '/' . $langArray[ $page->page_lang_lang_id ] ;
+            }
+
+            echo "\t" . '<url>' . "\n" ;
+            echo "\t\t" . '<loc>' . $url . '</loc>' . "\n";
+            echo "\t\t" . '<priority>' . $page->page_priority . '</priority>' . "\n";
+            echo "\t" . '</url>' . "\n" ;
+        }
+    }
+
+    echo '</urlset>' . "\n" ;
+})->name('robots_txt');

@@ -1,0 +1,345 @@
+<?php
+
+namespace App\Kernel\Back;
+
+class Media
+{
+	/* ************************************************** */
+	/* ****************   VARIABLES   ******************* */
+	/* ************************************************** */
+	
+	
+
+	/* ************************************************** */
+	/* ****************   CONSTRUCT   ******************* */
+	/* ************************************************** */
+
+	public function __construct() {}
+
+	/* ************************************************** */
+	/* ******************   SETTER   ******************** */
+	/* ************************************************** */
+
+	public function setImageId( $var )
+	{
+		$this->image_id = $var ;
+	}
+
+	public function setModuleId( $var )
+	{
+		$this->module_id = $var ;
+	}
+
+	public function setImageName( $var )
+	{
+		$this->image_name = $var ;
+	}
+
+	public function setFolder( $var )
+	{
+		$this->folder_name = $var ;
+	}
+
+	/* ************************************************** */
+	/* ******************   GETTER   ******************** */
+	/* ************************************************** */
+	
+	public function getModuleId()
+	{
+		return $this->module_id ;
+	}
+	
+	public function getImageId()
+	{
+		return $this->image_id ;
+	}
+	
+	public function getImageName()
+	{
+		return $this->image_name ;
+	}
+	
+	public function getFolder()
+	{
+		return $this->folder_name ;
+	}
+	
+	protected function Factory()
+	{
+		return \App\Kernel\Factory::getInstance() ;
+	}
+	
+	protected function getApp()
+	{
+		return \Slim\Slim::getInstance() ;
+	}
+	
+	/* ************************************************** */
+	/* *****************   FUNCTION   ******************* */
+	/* ************************************************** */
+	
+	public function getAll()
+	{
+		$rst = \DB::for_table('media')
+			->where_equal( 'media_module_id' , $this->getModuleId() )
+			->find_many();
+
+		$arrayMedia = [] ;
+		if ( $rst )
+		{
+			foreach( $rst as $row )
+			{
+				$std = new \stdClass;
+				$std->media_delete 		= true;
+				$std->media_name 		= $row->media_name;
+				$std->media_id 	 		= $row->media_id;
+				$std->media_mini_name   = $this->getMiniName( $row->media_name ) ;
+				
+				$arrayMedia[ $std->media_id ] = $std ;
+			}
+		}
+
+		return $arrayMedia ;
+	}
+
+    public function getNameById()
+    {
+        $rst = \DB::for_table('media')
+            ->select('media_name')
+            ->where_equal( 'media_id' , $this->getImageId() )
+            ->find_one();
+
+        if ( $rst ) $this->setImageName( $rst->media_name ) ;
+
+        if ( $rst )	return true ;
+        else		return false ;
+    }
+	
+	public function getIdByName()
+	{
+		$rst = \DB::for_table('media')
+			->select('media_id')
+			->where_equal( 'media_name' , $this->getImageName() )
+			->find_one();
+		
+		if ( $rst ) $this->setImageId( $rst->media_id ) ;
+		
+		if ( $rst )	return true ;
+		else		return false ;
+	}
+	
+	public function exist()
+	{
+		$ct = \DB::for_table('media')
+			->where_equal( 'media_id' , $this->getImageId() )
+			->count();
+		
+		if ( $ct != 0 )	return true ;
+		else			return false ;
+	}
+	
+	
+	
+	public function upload( $path )
+	{
+		$upload_dir 	= $path . '/' ;
+		$upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
+		$upload_handler = new \App\Kernel\Back\Image([
+			'module_id' => $this->getModuleId(),
+            'upload_dir' => $upload_dir,
+            'upload_url' => $this->Factory()->Url()->get( $upload_url , true ),
+            'param_name' => 'files',
+            'min_width' => $this->getApp()->request->post('min_width'),
+            'min_height' => $this->getApp()->request->post('min_height')
+		]);
+	}
+	
+	public function delete()
+	{
+		$this->getNameById() ;
+		
+		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+		$img  = $path . '/' . $this->getImageName() ;
+		
+		if ( file_exists( $img ) )
+		{
+			unlink( $img ) ;
+			
+			$ext = $this->getExtension( $this->getImageName() ) ;
+			$name = substr( $this->getImageName() , 0 , ( strlen( $ext ) * -1 ) ) ;
+			
+			$typeArray = ["c","t"];
+			foreach( $typeArray as $type )
+			{
+				$tab = glob( $path . $type . '/' . $name . '-*' . $ext ) ;
+				if ( $tab )
+				{
+					foreach( $tab as $img )
+					{
+						if ( file_exists( $img ) ) unlink( $img ) ;
+					}
+				}
+			}
+			
+			$media = \DB::for_table('media')
+				->where_id_is( $this->getImageId() )
+				->find_one();
+			
+			$media->delete();
+			
+			return true ;
+		}
+		
+		return false ;
+	}
+	
+	public function rename()
+	{
+		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+		$img  = UPLOAD_PATH . '/' . $this->getImageName() ;
+		
+		if ( file_exists( $img ) )
+		{
+			$name = $this->updateName( $this->getImageName() ) ;
+			
+			if ( file_exists( $path . $name ) ) $exist = true ;
+			else							    $exist = false ;
+			
+			if ( $exist == true )
+			{
+				$i = 1;
+				if ( strpos( "-" , $name ) !== false )
+				{
+					$exp 	= explode( "-" , $name ) ;
+					$ct  	= count( $exp ) ;
+					$ext 	= $exp[ $ct - 1 ] ;
+					$extlen = ( strlen( $ext ) + 1 ) * -1 ;
+					
+					$exp = str_replace( $this->getExtension( $name ) , "" , $name ) ;
+					
+					if ( is_numeric( $ext ) )
+					{
+						$name = substr( $name , 0 , $extlen ) . $this->getExtension( $name ) ;
+						$i    = intval( $ext + 1 ) ;
+					}
+					else
+					{
+						$name = $this->updateName( $this->getImageName() ) ;
+					}
+				}
+				
+				while( $exist == true )
+				{
+					$newname = $this->updateName( $name , $i ) ;
+					if ( ! file_exists( $path . $newname ) )
+					{
+						$exist = false ;
+						$name  = $newname ;
+					}
+					$i++;
+				}
+			}
+			
+			if ( $path . $name != $img )
+			{
+				rename( $img , $path . $name ) ;
+				
+				$media = \DB::for_table('media')
+					->where_id_is( $this->getImageId() )
+					->find_one();
+				
+				$media->media_name = $name;
+				$media->save() ;
+				
+				$this->setImageName( $name ) ;
+			}
+			
+			return $this->genThumb( 100 , 100 ) ;
+		}
+	}
+	
+	private function getMiniName( $name )
+	{
+		return $this->getMini( $name , 't' , 100 , 100 ) ;
+	}
+	
+	public function getMini( $name , $type , $width , $height )
+	{
+		$exp 	= explode( "." , $name ) ;
+		$ct  	= count( $exp ) ;
+		$ext 	= $exp[ $ct - 1 ] ;
+		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
+		$name   = substr( $name , 0 , $extlen ) ;
+		
+		if ( empty( $name ) ) return false ;
+
+        return $type  . '/' . $name . "-".$width."x".$height."." . $ext ;
+	}
+	
+	private function getExtension( $name )
+	{
+		$exp = explode( "." , $name ) ;
+		return '.' . end( $exp ) ;
+	}
+	
+	private function updateName( $name , $addStr = "" )
+	{
+		$exp 	= explode( "." , $name ) ;
+		$ext 	= end( $exp ) ;
+		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
+		if ( $addStr != "" ) $addStr = "-" . $addStr ;
+		
+		$name = substr( $name , 0 , $extlen ) ;
+		$name = $this->Factory()->Url()->encode( $name . $addStr ) . "." . $ext ;
+		
+		return $name ;
+	}
+	
+	public function genThumb( $width , $height , $crop = false )
+	{
+		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+		$img  = $path . $this->getImageName() ;
+		
+		if ( $crop == true ) 	$subfolder = 'c' ;
+		else					$subfolder = 't' ;
+		
+		try {
+			$miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
+			$file = $path . $subfolder . "/" . $miniName ;
+			
+			if ( ! file_exists( $file ) )
+			{
+				$tmpImg = new \abeautifulsite\SimpleImage( $img );
+                $tmpImg->best_fit( $width , $height );
+
+                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
+                $destImg->overlay($tmpImg)->save($file);
+			}
+			
+			return $miniName ;
+		} catch(Exception $e) {
+			echo 'Error: ' . $e->getMessage();
+		}
+	}
+	
+	public function genCropDefaut( $width , $height )
+	{
+		return $this->genThumb( $width , $height , true ) ;
+	}
+	
+	public function crop()
+	{
+		$x  = $this->getApp()->request->post('crop_x') ;
+		$y  = $this->getApp()->request->post('crop_y') ;
+		$x2 = $this->getApp()->request->post('crop_x2') ;
+		$y2 = $this->getApp()->request->post('crop_y2') ;
+		
+		$imageName  = $this->getApp()->request->post('imageName') ;
+		$image  	= $this->getApp()->request->post('image') ;
+		$width  	= $this->getApp()->request->post('crop_width') ;
+		$height  	= $this->getApp()->request->post('crop_height') ;
+		
+		$img = new \abeautifulsite\SimpleImage( $this->getFolder() . '/' . $imageName );
+		$img->crop($x, $y, $x2, $y2)->resize( $width , $height )->save( $this->getFolder() . '/c/' . $this->updateName( $imageName , $width . "x" . $height ) );
+	}
+}

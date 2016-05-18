@@ -1,0 +1,22 @@
+{% extends 'errors/layout.twig.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h2>Problème de CHMOD</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <table>
+                    {% for folder,result in folderTab %}
+                        <tr>
+                            <td class="first"><i class="fa fa-{{ result == true ? 'check' : 'times' }}"></i></td>
+                            <td>{{ folder }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

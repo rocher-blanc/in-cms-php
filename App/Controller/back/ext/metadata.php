@@ -1,0 +1,63 @@
+<?php
+
+$app->group('/metadata', function () use ($app)
+{
+	$app->get('/', function () use ($app)
+	{
+		if ( $app->request->isPost() ) {
+			$result = $app->request->post() ;
+			
+			if ( $result )
+			{
+				if ( ! array_key_exists( "seo_robots" , $result ) ) $result["seo_robots"] = 0;
+				
+				foreach( $result as $key => $value )
+				{
+					if ( substr( $key , 0 , 4 ) == "seo_" )
+					{
+						$val = $value ;
+						$data = \DB::for_table('param')
+							->where_equal('param_key', $key)
+							->find_one();
+						
+						if ( ! $data )
+						{
+							$data = \DB::for_table('param')->create();
+							$data->param_key = $key ;
+						}
+						
+						if ( $val === "" ) $val = NULL ;
+						$data->param_value = $val ;
+						$data->save() ;
+					}
+				}
+			}
+			
+			$Factory = \App\Kernel\Factory::getInstance() ;
+			$Message = \App\Kernel\Message::getInstance() ;
+
+            \App\Kernel\Back\Log::getInstance()->warning( 41 ) ;
+			$Factory->Response()->flashAndRedirect( $Message->get('metadata_success') , true , 'ext/metadata' ) ;
+		}
+		
+		$data = DB::for_table('param')
+			->select('param_key')
+			->select('param_value')
+			->where_like('param_key', 'seo_%')
+			->find_many();
+		
+		$tab = array();
+		if ( $data )
+		{
+			foreach( $data as $row )
+			{
+				$tab[ $row->param_key ] = $row->param_value ;
+			}
+		}
+		
+		$app->render('ext/metadata/edit.twig.html' , array(
+														"post" => $tab,
+		));
+
+	})->name('metadata_edit')->via('GET', 'POST');
+});
