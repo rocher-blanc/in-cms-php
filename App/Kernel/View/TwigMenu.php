@@ -32,13 +32,14 @@ class TwigMenu extends \Twig_Extension
     {
         $menu   = new \App\Kernel\Front\Menu;
         $result = $menu->load( $id ) ;
+
         if ( $type == 'object' )
         {
             return $result ;
         }
         else
         {
-            return $this->CMS()->fetch( 'helper/menu/view.twig.html' , [ 'menu' => $result ] ) ;
+            return $this->CMS()->fetch( 'helper/menu/view.twig.html' , [ 'menu' => $result , 'responsive' => ( $type == "responsive" ? true : false ) ] ) ;
         }
     }
 }

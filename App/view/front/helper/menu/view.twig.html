@@ -2,8 +2,8 @@
     {% if contentArray|length > 0 %}
         <ul>
             {% for row in contentArray %}
-                <li class="{% if row.active == true %}current_page{% endif %}{% if row.subpages|length > 0 %} sub{% endif %}">
-                    <a href="{{ siteUrl( row.url ) }}" title="{{ row.label }}"{{ row.blank == 1 ? ' target="_blank"' : '' }}>{{ row.label }}</a>
+                <li class="menu_li_{{ row.id }}{% if row.active == true %} current_page{% endif %}{% if row.subpages|length > 0 %} sub{% endif %}">
+                    <a class="menu_a_{{ row.id }}" href="{{ siteUrl( row.url ) }}" title="{{ row.label }}"{{ row.blank == 1 ? ' target="_blank"' : '' }}>{{ row.label }}</a>
                     {% if row.subpages|length > 0 %}
                         {{ _self.display_tree( row.subpages ) }}
                     {% endif %}
@@ -15,9 +15,11 @@
 <nav role="navigation" id="menunav" itemscope itemtype="http://schema.org/SiteNavigationElement">
     {{ _self.display_tree( menu ) }}
 </nav>
+{% if responsive == true %}
 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menunav" aria-expanded="false" aria-controls="navbar">
     <span class="sr-only">Navigation</span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
 </button>
+{% endif %}
