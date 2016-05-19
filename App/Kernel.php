@@ -54,7 +54,7 @@ class Kernel
     {
         $this->config( $config ) ;
 
-        defined('APPLICATION_PATH') || define('APPLICATION_PATH', VENODR_PATH . '/jweb/cms/App');
+        defined('APPLICATION_PATH') || define('APPLICATION_PATH', VENDOR_PATH . '/jweb/cms/App');
 
         require APPLICATION_PATH . '/config/config.php';
         require APPLICATION_PATH . '/config/config.' . $this->config('config') . '.php';
@@ -67,7 +67,15 @@ class Kernel
         }
         else
         {
+            $doctrine = new \App\Kernel\Doctrine;
+            if ( ! $doctrine->isConnect() )
+            {
+                $this->viewTemplateError('database') ;
+            }
+            else
+            {
 
+            }
         }
     }
 
@@ -281,7 +289,8 @@ class Kernel
 
                 if ( $result === false )
                 {
-                    $pass = false ;
+                    if ( chmod( _PATH_ . "/" . $folder , 0777 ) === true ) $folders[ $folder ] = true ;
+                    else                                                   $pass = false ;
                 }
                 else
                 {

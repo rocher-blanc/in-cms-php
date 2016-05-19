@@ -24,13 +24,13 @@ class Install
 
         define('_PATH_', $path );
         define('PROJECT_PATH', _PATH_ . '/Project');
-        define("VENODR_PATH", _PATH_ . "/vendor");
+        define("VENDOR_PATH", _PATH_ . "/vendor");
 
         define('WEB_PATH', _PATH_ . '/web');
         define('ASSET_PATH', WEB_PATH . '/assets');
         define('BOWER_PATH', ASSET_PATH . '/vendor');
 
-        require VENODR_PATH . '/autoload.php';
+        require VENDOR_PATH . '/autoload.php';
 
         self::postInstall() ;
     }
@@ -119,8 +119,8 @@ class Install
             $php = '' ;
             $php.= "<"."?"."php\n" ;
             $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../")) ));' . "\n" ;
-            $php.= 'define("VENODR_PATH", _PATH_ . "/vendor");' . "\n" ;
-            $php.= "require VENODR_PATH . '/autoload.php';" . "\n" ;
+            $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
+            $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Back\Loader;' . "\n" ;
             $php.= '$loader->index();' ;
 
@@ -134,8 +134,8 @@ class Install
             $php = '' ;
             $php.= "<"."?"."php\n" ;
             $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../")) ));' . "\n" ;
-            $php.= 'define("VENODR_PATH", _PATH_ . "/vendor");' . "\n" ;
-            $php.= "require VENODR_PATH . '/autoload.php';" . "\n" ;
+            $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
+            $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Front\Loader;' . "\n" ;
             $php.= '$loader->index();' ;
 

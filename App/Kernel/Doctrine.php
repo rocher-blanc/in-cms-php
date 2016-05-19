@@ -13,6 +13,7 @@ class Doctrine
 
     private static $instance = NULL ;
     private $_em = NULL ;
+    private $isConnect = false ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -42,6 +43,21 @@ class Doctrine
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
 
+    public function isConnect()
+    {
+        return $this->isConnect ;
+    }
+
+    private function connect()
+    {
+        try {
+            $this->getEntityManager()->getConnection()->connect();
+            $this->isConnect = true ;
+        } catch (\Exception $e) {
+            $this->isConnect = false ;
+        }
+    }
+
     private function load()
     {
         $config = new \Doctrine\ORM\Configuration();
@@ -65,5 +81,6 @@ class Doctrine
         );
 
         $this->_em = EntityManager::create($connectionOptions, $config);
+        $this->connect() ;
     }
 }
