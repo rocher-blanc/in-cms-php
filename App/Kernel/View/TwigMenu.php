@@ -39,7 +39,10 @@ class TwigMenu extends \Twig_Extension
         }
         else
         {
-            return $this->CMS()->fetch( 'helper/menu/view.twig.html' , [ 'menu' => $result , 'responsive' => ( $type == "responsive" ? true : false ) ] ) ;
+            return $this->CMS()->fetch( 'helper/menu/view.twig.html' , [
+                'menu' => $result ,
+                'responsive' => ( $type == "responsive" ? true : false )
+            ]) ;
         }
     }
 }

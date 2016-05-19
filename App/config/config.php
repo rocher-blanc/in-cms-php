@@ -1,6 +1,8 @@
 <?php
 
 defined('APP_NAME') || define('APP_NAME', 'App');
+defined('ENTITIES_PATH') || define('ENTITIES_PATH', APPLICATION_PATH . '/Entities');
+defined('PROXIES_PATH') || define('PROXIES_PATH', APPLICATION_PATH . '/Proxies');
 defined('KERNEL_PATH') || define('KERNEL_PATH', APPLICATION_PATH . '/Kernel');
 defined('CONFIG_PATH') || define('CONFIG_PATH', APPLICATION_PATH . '/config');
 defined('FACTORY_PATH') || define('FACTORY_PATH', KERNEL_PATH . '/Factory');

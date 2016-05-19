@@ -65,6 +65,10 @@ class Kernel
         {
             $this->configFileNotFound() ;
         }
+        else
+        {
+
+        }
     }
 
     /* ************************************************** */
