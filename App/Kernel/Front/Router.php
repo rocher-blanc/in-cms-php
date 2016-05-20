@@ -266,12 +266,13 @@ class Router
     /* *****************    MODULE    ******************* */
     /* ************************************************** */
 
-    protected function loadController( $class , $element = false )
+    protected function loadController( $class , $element = false , $mp = false )
     {
+        $urlTab = $this->getUrl() ;
         $replaceString = '' ;
-		$fullUrl = $this->Factory()->Url()->getFullUrl() ;
+        $fullUrl = $this->Factory()->Url()->getFullUrl() ;
         if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
-        $replaceString.= $this->getUrl( ( $this->Lang()->count() > 1 ? 1 : 0 ) ) ;
+        if ( ! $mp ) $replaceString.= $this->getUrl( ( $this->Lang()->count() > 1 ? 1 : 0 ) ) ;
         $url = ltrim( str_replace( $replaceString , '' , $fullUrl ) , '/') ;
 
         if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $class ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $class );
@@ -310,7 +311,7 @@ class Router
                 ->find_one();
         }
 
-        $this->loadController( $result->module_class_name , true ) ;
+        $this->loadController( $result->module_class_name , true , $mp ) ;
     }
 
     protected function displayModule()

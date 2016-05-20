@@ -203,7 +203,33 @@ class Menu
                     }
                     else
                     {
+                        $obj->url = '' ;
+                        $Seo = new \App\Kernel\Front\Seo;
+                        $Seo->setElementId( $row->menu_element_value_id ) ;
+                        $Seo->setModuleId( $row->menu_element_module_id ) ;
 
+                        if ( \App\Kernel\Lang::getInstance()->count() > 1 )
+                        {
+                            $obj->url.= \App\Kernel\Lang::getInstance()->getActive()->url . "/" ;
+                        }
+
+                        $resultModule = \DB::for_table('module')
+                            ->select('module_default')
+                            ->where(array('module_id' => $row->menu_element_module_id , 'module_active' => 1))
+                            ->find_one();
+
+                        if ( $resultModule->module_default == 0 )
+                        {
+                            $moduleUrl = \DB::for_table('module_lang')
+                                ->select('module_lang_url')
+                                ->where(['module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang_module_id' => $row->menu_element_module_id])
+                                ->find_one();
+
+                            $obj->url.= $moduleUrl->module_lang_url . "/" ;
+                        }
+
+
+                        $obj->url.= $Seo->getUrl() ;
                     }
                     break;
                 case "link" :

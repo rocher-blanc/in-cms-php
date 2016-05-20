@@ -98,11 +98,13 @@
     <label class="col-md-3 control-label">Element</label>
     <div class="col-md-6">
         {% for m in module %}
-        <select name="module_{{ m.module_id }}" id="module_{{ m.module_id }}" data-plugin-selectTwo class="form-control selectmodule module_{{ m.module_id }}">
-            {% for e in m.content %}
-            <option value="{{ e.id }}">{{ e.url }}</option>
-            {% endfor %}
-        </select>
+            <div class="div_module_{{ m.module_id }} div_module" style="display:{% if e.menu_element_module_id == m.module_id %}block{% else %}none{% endif %};">
+                <select name="module_{{ m.module_id }}" id="module_{{ m.module_id }}" data-plugin-selectTwo class="form-control selectmodule module_{{ m.module_id }}">
+                    {% for e in m.content %}
+                        <option value="{{ e.id }}">{{ e.url }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         {% endfor %}
     </div>
 </div>

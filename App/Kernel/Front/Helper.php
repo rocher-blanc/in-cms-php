@@ -94,8 +94,6 @@ class Helper
                 $Controller = new $ControllerClass;
                 $Controller->setEntityName( $this->getEntity() );
 
-                // \App\Kernel\Debug::dump( $Controller );
-
                 if ( is_object( $Controller ) )
                 {
                     $Controller->loadEntity();

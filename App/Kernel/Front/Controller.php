@@ -194,7 +194,7 @@ class Controller
             }
             else
             {
-
+                $this->setActionName('getall');
             }
 
             if ( $this->getEntity()->hasAction( $this->getActionName() ) )
