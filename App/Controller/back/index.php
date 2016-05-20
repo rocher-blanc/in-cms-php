@@ -121,6 +121,6 @@ $app->get('/', function () use ( $app ) {
             "elt_module" => $module
         ],
         "cdn" => $cdn,
-        "date_update" => filemtime( VENODR_PATH . '/autoload.php' ),
+        "date_update" => filemtime( VENDOR_PATH . '/autoload.php' ),
     ]) ;
 })->name('index');

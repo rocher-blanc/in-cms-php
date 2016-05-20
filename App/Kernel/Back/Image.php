@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Back;
 
-require VENODR_PATH . '/blueimp/jquery-file-upload/server/php/UploadHandler.php';
+require VENDOR_PATH . '/blueimp/jquery-file-upload/server/php/UploadHandler.php';
 
 class Image extends \UploadHandler
 {
