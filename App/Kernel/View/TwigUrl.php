@@ -35,7 +35,6 @@ class TwigUrl extends \Twig_Extension
 		else			return "#" ;
     }
 
-
     public function urlmodule( $id )
     {
         $cLang = \DB::for_table('module_lang')

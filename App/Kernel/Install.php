@@ -193,6 +193,7 @@ class Install
             "Project/Module/Controller/Back",
             "Project/Module/Controller/Front",
             "Project/Module/Entity",
+            "Project/Module/Entity/Class",
             "Project/Middleware",
             "Project/Middleware/Back",
             "Project/Middleware/Front",

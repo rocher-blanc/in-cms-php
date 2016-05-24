@@ -273,6 +273,7 @@ class Kernel
         $folders = [
             "Project/Lang" => false ,
             "Project/view/front" => false ,
+            "Project/Module/Entity/Class" => false ,
             "cache/back" => false ,
             "cache/front" => false ,
             "web/uploads" => false ,

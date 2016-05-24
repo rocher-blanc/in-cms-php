@@ -12,6 +12,7 @@ class Controller
     protected $_url_module = "" ;
     protected $_elm = false ;
     protected $_id = NULL ;
+    protected $_entity = NULL ;
     protected $_entity_id = NULL ;
     protected $_entity_name = '' ;
     protected $_action_name = '' ;
@@ -23,11 +24,19 @@ class Controller
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
-    public function __construct() {}
+    public function __construct()
+    {
+
+    }
 
     /* ************************************************** */
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
 
     protected function Factory()
     {
@@ -237,6 +246,11 @@ class Controller
 
     public function loadEntity()
     {
+        if ( !is_null( $this->getEntity() ) && is_object( $this->getEntity() ) )
+        {
+            return true ;
+        }
+
         $result = \DB::for_table('module')
             ->select('module_id')
             ->select('module_default')

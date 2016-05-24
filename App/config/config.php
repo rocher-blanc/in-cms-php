@@ -13,6 +13,7 @@ defined('CONTROLLER_FOLDERS_PATH') || define('CONTROLLER_FOLDERS_PATH', serializ
 defined('CONFIG_PROJECT_PATH') || define('CONFIG_PROJECT_PATH', PROJECT_PATH . '/config');
 defined('MODULE_PATH') || define('MODULE_PATH', PROJECT_PATH . '/Module');
 defined('ENTITY_PATH') || define('ENTITY_PATH', MODULE_PATH . '/Entity');
+defined('ENTITIES_PROJECT_PATH') || define('ENTITIES_PROJECT_PATH', ENTITY_PATH . '/Class');
 
 defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
 defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
