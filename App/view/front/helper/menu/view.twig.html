@@ -12,11 +12,11 @@
         </ul>
     {% endif %}
 {% endmacro %}
-<nav role="navigation" id="menunav" itemscope itemtype="http://schema.org/SiteNavigationElement">
+<nav role="navigation" id="menunav{{ id }}" itemscope itemtype="http://schema.org/SiteNavigationElement">
     {{ _self.display_tree( menu ) }}
 </nav>
 {% if responsive == true %}
-<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menunav" aria-expanded="false" aria-controls="navbar">
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menunav{{ id }}" aria-expanded="false" aria-controls="navbar">
     <span class="sr-only">Navigation</span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>

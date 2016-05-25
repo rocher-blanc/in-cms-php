@@ -40,6 +40,7 @@ class TwigMenu extends \Twig_Extension
         else
         {
             return $this->CMS()->fetch( 'helper/menu/view.twig.html' , [
+                'id' => $id ,
                 'menu' => $result ,
                 'responsive' => ( $type == "responsive" ? true : false )
             ]) ;

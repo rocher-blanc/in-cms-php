@@ -9,6 +9,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="01ae30ed-05af-44df-9362-4d83160ed9fc" name="VPS1 - Doctrine" url="http://vps1.jweb-creation.Fr">
+        <fileTransfer host="vps1.jweb-creation.Fr" port="21" rootFolder="/www" password="dfdedfc5dfdedfc5" username="doctrine">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

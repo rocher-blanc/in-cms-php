@@ -290,8 +290,8 @@ class Kernel
 
                 if ( $result === false )
                 {
-                    if ( chmod( _PATH_ . "/" . $folder , 0777 ) === true ) $folders[ $folder ] = true ;
-                    else                                                   $pass = false ;
+                    if ( @chmod( _PATH_ . "/" . $folder , 0777 ) === true ) $folders[ $folder ] = true ;
+                    else                                                    $pass = false ;
                 }
                 else
                 {
