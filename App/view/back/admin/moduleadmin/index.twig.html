@@ -81,10 +81,10 @@
 						<tbody>
 						{% for row in contentRows %}
 							<tr>
-								<td>
-									<i class="fa fa-{{ row.module_icon }}" style="font-size: 20px;"></i>
+								<td class="ico">
+									<i class="fa fa-{{ row.module_icon }}"></i>
 								</td>
-								<td>
+								<td class="name">
 									<a href="{{ siteUrl('admin/moduleadmin/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
 								</td>
 								<td>

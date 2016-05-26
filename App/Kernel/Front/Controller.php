@@ -58,6 +58,11 @@ class Controller
         return \Slim\Slim::getInstance() ;
     }
 
+    private function CMS()
+    {
+        return \App\Kernel\CMS::getInstance() ;
+    }
+
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */

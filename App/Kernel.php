@@ -274,6 +274,7 @@ class Kernel
             "Project/Lang" => false ,
             "Project/view/front" => false ,
             "Project/Module/Entity/Class" => false ,
+            "Project/view/front/module" => false ,
             "cache/back" => false ,
             "cache/front" => false ,
             "web/uploads" => false ,

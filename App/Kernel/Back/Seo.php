@@ -154,7 +154,6 @@ class Seo
 		$row->set( 'seo_description' , $this->getDescription() ) ;
 		$row->set( 'seo_keyword' , $this->getKeyword() ) ;
 		$row->save();
-
 	}
 
     private function exist()

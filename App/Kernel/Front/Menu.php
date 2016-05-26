@@ -47,9 +47,6 @@ class Menu
         $this->loadDefaultIdPage();
         $tree = $this->getTreeMenu( $contentRows ) ;
 
-
-        // dump($tree);
-
         return $tree['array'] ;
     }
 
