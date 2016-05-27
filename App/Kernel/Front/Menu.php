@@ -113,7 +113,8 @@ class Menu
                     $obj = new \stdClass();
                     $obj->id 		= -1;
                     $obj->label 	= $row->url;
-                    $obj->url    	= \App\Kernel\Http::getInstance()->getUrl() . '/' . ( $this->Lang()->count() > 1 ? $this->Lang()->getActive()->url . '/' : '' ) . ( $mod->module_default == 0 ? $module->module_lang_url . '/' : '' ) . $row->seo_url;
+                    // $obj->url    	= \App\Kernel\Http::getInstance()->getUrl() . '/' . ( $this->Lang()->count() > 1 ? $this->Lang()->getActive()->url . '/' : '' ) . ( $mod->module_default == 0 ? $module->module_lang_url . '/' : '' ) . $row->seo_url;
+                    $obj->url    	= ( $this->Lang()->count() > 1 ? $this->Lang()->getActive()->url . '/' : '' ) . ( $mod->module_default == 0 ? $module->module_lang_url . '/' : '' ) . $row->seo_url;
                     $obj->type 		= 'link';
                     $obj->submenu 	= false;
                     $obj->subpages 	= [] ;
