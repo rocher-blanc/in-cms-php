@@ -93,8 +93,11 @@ class Container
         {
             if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ))  $ControllerClass = "\Project\Module\Controller\Front\\" . $this->getName() ;
             else																			$ControllerClass = '\App\Kernel\Front\Controller' ;
+            $Controller = new $ControllerClass;
+            $Controller->setEntityName( $this->getName() );
+            $result = $Controller->loadEntity();
 
-            $this->setController( new $ControllerClass );
+            if ( $result ) $this->setController( $Controller );
         }
 
         return $this->controller ;
