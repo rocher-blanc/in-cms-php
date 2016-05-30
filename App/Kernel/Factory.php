@@ -14,7 +14,7 @@ class Factory
 
 	public static function getInstance()
 	{
-		if ( self::$instance === NULL ) self::$instance = new Factory;
+
 		return self::$instance ;
 	}
 	

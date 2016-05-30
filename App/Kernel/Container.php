@@ -28,23 +28,41 @@ class Container
 
     public function set( $key , $value )
     {
-        $this->_var[ $key ] = $value;
+        $this->_var[ $key ] = $value ;
     }
 
     /* ************************************************** */
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
 
-    public function get( $key )
-    {
-        if ( array_key_exists( $key , $this->_var ) )   return $this->_var[ $key ] ;
-        else                                            return NULL ;
-    }
-
     public static function getInstance()
     {
-        if ( self::$instance === NULL ) self::$instance = new Container;
+        if ( self::$instance === NULL ) self::$instance = new CMS;
         return self::$instance ;
+    }
+
+    public function module( $name )
+    {
+        if ( array_key_exists( $name , $this->entity ) )
+        {
+            return $this->entity[ $name ] ;
+        }
+        else
+        {
+            return $this->entity[ $name ] = new \App\Kernel\Entity\Container( $name );
+        }
+    }
+
+    public function get( $key )
+    {
+        if ( array_key_exists( $name , $this->_var ) )
+        {
+            return $this->_var[ $name ] ;
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     /* ***************************************************** */
@@ -79,66 +97,6 @@ class Container
             ];
 
             $this->set('em', EntityManager::create( $connectionOptions, $config ) );
-        }
-    }
-
-    /* *************************************************** */
-    /* ****************     FACTORY    ******************* */
-    /* *************************************************** */
-
-    public function factory()
-    {
-        if ( $this->factory === NULL ) $this->factory = new Factory;
-        return $this->factory ;
-    }
-
-    /* *************************************************** */
-    /* ****************     ENTITY     ******************* */
-    /* *************************************************** */
-
-    public function getEntity( $name )
-    {
-        if ( array_key_exists( $name , $this->entity ) )
-        {
-            return $this->entity[ $name ]['entity'] ;
-        }
-        else
-        {
-            return $this->setEntity( $name ) ;
-        }
-    }
-
-    public function getRepository( $name )
-    {
-        if ( array_key_exists( $name , $this->entity ) )
-        {
-            return $this->entity[ $name ]['repository'] ;
-        }
-        else
-        {
-            $this->setEntity( $name ) ;
-            return $this->entity[ $name ]['repository'] ;
-        }
-    }
-
-    private function setEntity( $name )
-    {
-        if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $name ) . '.php' ))  $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $name );
-        else																		    $ControllerClass = '\App\Kernel\Front\Controller' ;
-
-        $Controller = new $ControllerClass;
-        $Controller->setEntityName( $name );
-        $result = $Controller->loadEntity();
-
-        if ( $result )
-        {
-            $this->entity[ $name ]['entity'] = $Controller ;
-            $this->entity[ $name ]['repository'] = $this->get('em')->getRepository("\Project\Module\Entity\Class\\" . ucfirst( $name ) );
-            return $this->entity[ $name ]['entity'] ;
-        }
-        else
-        {
-            return $this->entity[ $name ]['entity'] = NULL ;
         }
     }
 }
