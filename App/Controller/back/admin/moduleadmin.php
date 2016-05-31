@@ -5,37 +5,128 @@ $app->group('/moduleadmin', function () use ($app)
 	$app->get('/', function () use ($app)
 	{
 
-		$contentRows = \DB::for_table('module')
+        $contentRows = \DB::for_table('module')
 								->order_by_asc('module_active')
 								->order_by_asc('module_name')
 								->find_many();
-		
-		$app->render('admin/moduleadmin/index.twig.html', array( "contentRows" => $contentRows ));
+
+        $tab = [];
+
+        if ( $contentRows )
+        {
+            foreach( $contentRows as $row )
+            {
+                $tab[ $row->module_class_name ] = $row->module_class_name;
+            }
+        }
+
+        $files = glob( ENTITY_PATH . "/*.php");
+        $list = [];
+
+        if ( $files )
+        {
+            foreach( $files as $file )
+            {
+                $name = str_replace( ENTITY_PATH . "/" , '' , $file );
+                $name = str_replace( ".php" , '' , $name );
+
+                if ( ! array_key_exists( $name , $tab ) ) $list[] = $name ;
+            }
+        }
+
+        $app->render('admin/moduleadmin/index.twig.html', [
+            "contentRows" => $contentRows ,
+            "noInstall" => $list
+        ]);
 
 	})->name('moduleadmin_index');
 
-	$app->delete('/delete/:id', function ($id) use ($app)
-	{
-		$ret = false ;
-		$contentRow = \DB::for_table('module')
-			->where_equal('module_id' , $id)
-			->find_one();
-		
-		if ( $contentRow )
-		{
-			\App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
-			
-			$msg = "Le module a bien été supprimé" ;
-			$ret = true ;
-			$contentRow->delete();
-		}
-		else
-		{
-			$msg = "Une erreur est survenue lors de la suppression" ;
-		}
-		
-		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
-	})->name('moduleadmin_delete');
+    $app->get('/install/:name', function ( $name ) use ($app)
+    {
+        $contentRow = \DB::for_table('module')
+            ->where_equal('module_class_name',$name)
+            ->find_one();
+
+        if ( ! $contentRow )
+        {
+            $contentRow = DB::for_table('module')->create();
+            $contentRow->module_name 		= $name ;
+            $contentRow->module_class_name 	= $name ;
+            $contentRow->module_icon 		= "cloud" ;
+            $contentRow->module_active 		= 1 ;
+            $contentRow->save() ;
+
+            $tab = ["Back","Front"];
+
+            // On génére le repository
+            foreach( $tab as $row )
+            {
+                $php = '' ;
+                $php.= "<"."?"."php\n\n" ;
+                $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
+                $php.= "class " . $name . "Repository extends \App\Kernel\\" . $row . "\Repository\n" ;
+                $php.= "{\n" ;
+                $php.= "\t\n" ;
+                $php.= "}" ;
+                \App\Kernel\Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
+            }
+
+            // On génére le controller
+            foreach( $tab as $row )
+            {
+                $php = '' ;
+                $php.= "<"."?"."php\n\n" ;
+                $php.= "namespace Project\Module\Controller\Front;\n\n" ;
+                $php.= "class " . $name . " extends \App\Kernel\Front\Controller\n" ;
+                $php.= "{\n" ;
+                $php.= "\t\n" ;
+                $php.= "}" ;
+
+                $php = '' ;
+                $php.= "<"."?"."php\n\n" ;
+                $php.= "namespace Project\Module\Controller\\" . $row . ";\n\n" ;
+                $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
+                $php.= "{\n" ;
+                $php.= "\t\n" ;
+                $php.= "}" ;
+                \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
+            }
+
+            // On génére la class entity
+
+            $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
+            $app->flash('__result',true);
+            $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+        }
+        else
+        {
+            $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+        }
+
+    })->name('moduleadmin_install');
+
+    $app->delete('/delete/:id', function ($id) use ($app)
+    {
+        $ret = false ;
+        $contentRow = \DB::for_table('module')
+            ->where_equal('module_id' , $id)
+            ->find_one();
+
+        if ( $contentRow )
+        {
+            \App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
+
+            $msg = "Le module a bien été supprimé" ;
+            $ret = true ;
+            $contentRow->delete();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la suppression" ;
+        }
+
+        echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+    })->name('moduleadmin_delete');
 
     $app->get('/truncate/:id/:token', function ($id,$token) use ($app)
     {

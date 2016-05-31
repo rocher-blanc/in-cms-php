@@ -73,43 +73,69 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-12">
-			<section class="panel">
-				<div class="panel-body mod">
-					<table class="table mb-none list-module">
-						<tbody>
-						{% for row in contentRows %}
-							<tr>
-								<td class="ico">
-									<i class="fa fa-{{ row.module_icon }}"></i>
-								</td>
-								<td class="name">
-									<a href="{{ siteUrl('admin/moduleadmin/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
-								</td>
-								<td class="text-right">
-									{% if row.module_active == 0 %}
-										<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
-									{% else %}
-										<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
-									{% endif %}
-									{% if row.module_default == 0 %}
-										<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
-									{% else %}
-										<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
-									{% endif %}
+	{% for row in contentRows %}
+		<div class="row">
+			<div class="col-md-12">
+				<section class="panel">
+					<div class="panel-body mod">
+						<table class="table mb-none list-module">
+							<tbody>
+								<tr>
+									<td class="ico">
+										<i class="fa fa-{{ row.module_icon }}"></i>
+									</td>
+									<td class="name">
+										<a href="{{ siteUrl('admin/moduleadmin/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
+									</td>
+									<td class="text-right">
+										{% if row.module_active == 0 %}
+											<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
+										{% else %}
+											<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
+										{% endif %}
+										{% if row.module_default == 0 %}
+											<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
+										{% else %}
+											<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
+										{% endif %}
 
-									<a class="btn btn-md btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-									<a class="btn btn-md btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-times"></i> Désinstaller</a>
-								</td>
-							</tr>
-						{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</section>
+										<a class="btn btn-md btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+										<a class="btn btn-md btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-times"></i> Désinstaller</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
 		</div>
-	</div>
+	{% endfor %}
+
+	{% for rep in noInstall %}
+		<div class="row">
+			<div class="col-md-12">
+				<section class="panel">
+					<div class="panel-body mod">
+						<table class="table mb-none list-module">
+							<tbody>
+								<tr>
+									<td class="ico">
+										<i class="fa fa-cloud"></i>
+									</td>
+									<td class="name">
+										{{ rep }}
+									</td>
+									<td class="text-right">
+										<a class="btn btn-md btn-success" href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}"><i class="fa fa-plus"></i> Installer</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+		</div>
+	{% endfor %}
 {% endblock %}
 
 {% block stylesheets %}

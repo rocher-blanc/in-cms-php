@@ -1,4 +1,5 @@
 <?php
+defined('REPOSITORY_PATH') || define('REPOSITORY_PATH', REPOSITORY_PROJECT_PATH . '/Front');
 defined('CONTROLLERS_PATH') || define('CONTROLLERS_PATH', APPLICATION_PATH . '/Controller/front');
 defined('PROJECT_CONTROLLER_PATH') || define('PROJECT_CONTROLLER_PATH', MODULE_PATH . '/Controller/Front');
 defined('CACHE_PATH') || define('CACHE_PATH', _PATH_ . '/cache/front');
