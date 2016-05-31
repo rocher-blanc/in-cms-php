@@ -76,7 +76,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<section class="panel">
-				<div class="panel-body">
+				<div class="panel-body mod">
 					<table class="table mb-none list-module">
 						<tbody>
 						{% for row in contentRows %}
@@ -87,30 +87,20 @@
 								<td class="name">
 									<a href="{{ siteUrl('admin/moduleadmin/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
 								</td>
-								<td>
-									{% if row.module_active == 0 %}
-										<a class="btn btn-xs btn-warning" href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivé</a>
-									{% else %}
-										<a class="btn btn-xs btn-success" href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activé</a>
-									{% endif %}
-								</td>
-								<td>
-									{% if row.module_default == 0 %}
-										<a class="btn btn-xs btn-warning" href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
-									{% else %}
-										<a class="btn btn-xs btn-success" href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Oui</a>
-									{% endif %}
-								</td>
 								<td class="text-right">
-									<div class="btn-group">
-										<button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-database"></i> Base de données <span class="caret"></span></button>
-										<ul class="dropdown-menu" role="menu">
-											<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}">Vider les tables</a></li>
-											<li><a href="{{ siteUrl('admin/moduleadmin/patch/' ~  row.module_id ~ '/' ~ csrf_token) }}">Patcher les tables</a></li>
-										</ul>
-									</div>
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i></a>
-									<a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le module '{{ row.module_name }}' ?"><i class="fa fa-times"></i></a>
+									{% if row.module_active == 0 %}
+										<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
+									{% else %}
+										<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
+									{% endif %}
+									{% if row.module_default == 0 %}
+										<a class="btn btn-md btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
+									{% else %}
+										<a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
+									{% endif %}
+
+									<a class="btn btn-md btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+									<a class="btn btn-md btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-times"></i> Désinstaller</a>
 								</td>
 							</tr>
 						{% endfor %}
