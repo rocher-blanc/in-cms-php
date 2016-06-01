@@ -93,6 +93,16 @@ $app->group('/moduleadmin', function () use ($app)
             }
 
             // On génére la class entity
+            $php = '' ;
+            $php.= "<"."?"."php\n\n" ;
+            $php.= "namespace Project\Module\Entity\Class\\" . $row . ";\n\n" ;
+
+            $php.= "/** @Entity @Table(name=\"addresses\") */\n" ;
+            $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
+            $php.= "{\n" ;
+            $php.= "\t\n" ;
+            $php.= "}" ;
+            \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
 
             $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
             $app->flash('__result',true);
