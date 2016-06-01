@@ -18,8 +18,8 @@ class TwigLang extends \Twig_Extension
         );
     }
 
-    public function trad( $key )
+    public function trad( $key , $var = [] )
     {
-        return \App\Kernel\Front\Translate::getInstance()->getText( $key ) ;
+        return \App\Kernel\Front\Translate::getInstance()->getText( $key , $var ) ;
     }
 }

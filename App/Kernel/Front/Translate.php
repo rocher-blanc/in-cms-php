@@ -47,9 +47,19 @@ class Translate
         return \App\Kernel\Lang::getInstance() ;
     }
 
-    public function getText( $key )
+    public function getText( $key , $var )
     {
-        return ( $this->language !== NULL ? nl2br( $this->language->get( $key ) ) : '' ) ;
+        $str = ( $this->language !== NULL ? nl2br( $this->language->get( $key ) ) : '' ) ;
+
+        if ( !empty( $var ) )
+        {
+            foreach( $var as $key => $value )
+            {
+                $str = str_replace( '{' . $key . '}' , $value , $str );
+            }
+        }
+
+        return $str ;
     }
 
 	/* ************************************************** */
