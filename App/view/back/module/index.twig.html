@@ -4,7 +4,7 @@
 
 {% block module %}
 <input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
-<div class="row">
+<div class="row" data-order="{{ hasOrder }}">
 	<div class="col-md-12">
 		<section class="panel">
 			<header class="panel-heading">
@@ -33,4 +33,5 @@
 {% block javascripts %}
 	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
 	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+	{% if hasOrder and right.edit == true %}<script src="{{ vendor('TableDnD/dist/jquery.tablednd.min.js') }}"></script>{% endif %}
 {% endblock %}
