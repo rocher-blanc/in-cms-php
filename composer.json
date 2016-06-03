@@ -47,6 +47,7 @@
     "bower-asset/switchery": "dev-master",
     "bower-asset/fontawesome": "dev-master",
     "bower-asset/TableDnD": "dev-master",
+    "bower-asset/slick-carousel": "1.6.*",
     "bower-asset/cmsmedias": "dev-master"
   },
   "authors": [
