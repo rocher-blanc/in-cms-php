@@ -414,8 +414,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "order" , true ) ;
 
-        $this->addAction("up") ;
-        $this->addAction("down") ;
+        $this->addAction("order") ;
 
         $this->setOrder() ;
         $this->setOrderName( $this->field()->getName() ) ;

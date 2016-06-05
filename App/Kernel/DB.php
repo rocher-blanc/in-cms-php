@@ -273,6 +273,11 @@ class DB extends ORM
         return self::for_table( self::getTableName( $module ) );
     }
 
+    public static function find( $module , $id )
+    {
+        return self::for_module( $module )->where_id_is( $id )->find_one();
+    }
+
     public static function for_module_assoc( $module , $field )
     {
         return self::for_table( self::getTableNameAssoc( $module , $field ) ) ;

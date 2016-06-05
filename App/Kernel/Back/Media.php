@@ -8,7 +8,10 @@ class Media
 	/* ****************   VARIABLES   ******************* */
 	/* ************************************************** */
 	
-	
+	private $image_id = NULL ;
+	private $module_id = NULL ;
+	private $image_name = NULL ;
+	private $folder_name = NULL ;
 
 	/* ************************************************** */
 	/* ****************   CONSTRUCT   ******************* */
@@ -137,9 +140,7 @@ class Media
 		if ( $ct != 0 )	return true ;
 		else			return false ;
 	}
-	
-	
-	
+
 	public function upload( $path )
 	{
 		$upload_dir 	= $path . '/' ;

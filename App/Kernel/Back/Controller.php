@@ -968,7 +968,7 @@ class Controller
                                 else                            $order = $order->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parentValue ) ;
                             }
 
-                            $order = $order->count() + 1;
+                            $order = $order->max( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) + 1;
 
                             $content->set( $row->getColumn() , $order ) ;
                         }
@@ -1118,79 +1118,25 @@ class Controller
     /* ******************  UP / DOWN  ******************* */
     /* ************************************************** */
 
-    protected function up()
+    protected function order()
     {
         if ( $this->getEntity()->hasOrder() )
         {
-            $content = $this->findOne();
-            if ( $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) != 1 ) {
-                $sup = $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) - 1;
-                $contentSup = \DB::for_module( $this->getEntityName() );
-
-                if ( $this->getEntity()->hasParent() )
+            $table = $this->getApp()->request()->get('table-' . $this->getEntityName() );
+            if ( $table )
+            {
+                $position = 1;
+                foreach( $table as $row )
                 {
-                    $parent = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-
-                    if ( is_null( $parent ) )   $contentSup = $contentSup->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                    else                        $contentSup = $contentSup->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent ) ;
+                    $elmt = \DB::find( $this->getEntityName() , $row );
+                    $elmt->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $position );
+                    $elmt->save();
+                    $position++;
                 }
 
-                $contentSup = $contentSup->where_equal( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $sup)->find_one();
-                $contentSup->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) );
-                $contentSup->save();
-
-                $date = new \DateTime();
-                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-                $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
-                $content->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $sup );
-                $content->save();
-
-                return true ;
             }
-            else {
-                return false ;
-            }
-        }
-        else
-        {
-            return false ;
-        }
-    }
 
-    protected function down()
-    {
-        if ( $this->getEntity()->hasOrder() )
-        {
-            $max = \DB::for_module( $this->getEntityName() )->max( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
-            $content = $this->findOne();
-
-            if ( $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) < $max ) {
-                $sup = $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) + 1;
-                $contentSup = \DB::for_module( $this->getEntityName() );
-
-                if ( $this->getEntity()->hasParent() )
-                {
-                    $parent = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-
-                    if ( is_null( $parent ) )   $contentSup = $contentSup->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                    else                        $contentSup = $contentSup->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent ) ;
-                }
-
-                $contentSup = $contentSup->where_equal( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $sup)->find_one();
-                $contentSup->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) );
-                $contentSup->save();
-
-                $date = new \DateTime();
-                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-                $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
-                $content->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $sup );
-                $content->save();
-
-                return true ;
-            }
-            else {
-                return false ;
-            }
+            return true;
         }
         else
         {
@@ -1319,19 +1265,11 @@ class Controller
         $this->Factory()->Response()->printJSON( $array ) ;
     }
 
-    protected function upAction()
+    protected function orderAction()
     {
         $this->checkToken() ;
 
-        if ( $this->up() )	$this->Factory()->Response()->returnJSON( $this->m("order_success") , true ) ;
-        else				$this->Factory()->Response()->returnJSON( $this->m("order_failed") ) ;
-    }
-
-    protected function downAction()
-    {
-        $this->checkToken() ;
-
-        if ( $this->down() )	$this->Factory()->Response()->returnJSON( $this->m("order_success") , true ) ;
+        if ( $this->order() )	$this->Factory()->Response()->returnJSON( $this->m("order_success") , true ) ;
         else					$this->Factory()->Response()->returnJSON( $this->m("order_failed") ) ;
     }
 
