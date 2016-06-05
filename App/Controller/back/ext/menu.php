@@ -568,6 +568,13 @@ $app->group('/menu', function () use ($app)
                 foreach( $lang as $l )
                 {
                     $elmLang = \DB::for_table('menu_element_lang')->where(['menu_element_lang_menu_element_id' => $app->request->post('id'), 'menu_element_lang_lang_id' => $l->id])->find_one();
+                    if ( ! $elmLang )
+                    {
+                        $elmLang = \DB::for_table('menu_element_lang')->create();
+                        $elmLang->menu_element_lang_menu_element_id = $app->request->post('id');
+                        $elmLang->menu_element_lang_lang_id = $l->id;
+                    }
+
                     $elmLang->menu_element_lang_label = $app->request->post( 'label_' . $l->url ) ;
                     $elmLang->save();
                 }

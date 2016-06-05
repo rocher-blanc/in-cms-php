@@ -1,15 +1,18 @@
 {% macro display_tree(contentArray, level, hierarchy, id, parent, csrf_token) %}
     {% set colors = ['info', 'warning', 'success', 'danger'] %}
     {% for index,contentRow in contentArray %}
-        <tr>
+        <tr id="{{ contentRow.id }}" data-level="{{ level+1 }}" data-parent="{{ parent }}">
             {% if level > 0 %}
                 {% for i in 0..(level - 1) %}
                     <td style="width:30px;border-right-style:none;"></td>
                 {% endfor %}
             {% endif %}
-            <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 35 * level }}px;"{% endif %}>
+            <td colspan="{{ 12 - level }}">
+                <a href="javascript:;" class="btn btn-xs btn-default orderTable{{ contentArray|length == 1 ? " disabled" : "" }}" data-tr="{{ contentRow.id }}" data-level="{{ level+1 }}" data-parent="{{ parent }}"><i class="fa fa-arrows"></i></a>
+                {#
                 <a href="javascript:;" data-title="Position" data-menuid="{{ contentRow.menuid }}" data-link="{{ siteUrl('ext/menu/element/order/up/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default ajaxMenu{% if loop.index == 1 %} disabled{% endif %}"><i class="fa fa-arrow-up"></i></a>
                 <a href="javascript:;" data-title="Position" data-menuid="{{ contentRow.menuid }}" data-link="{{ siteUrl('ext/menu/element/order/down/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default ajaxMenu{% if loop.index == contentArray|length %} disabled{% endif %}"><i class="fa fa-arrow-down"></i></a>
+                #}
                 <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ index+1 }}.</span>&nbsp;
 
                 {% if contentRow.type == 'page' %}
@@ -64,7 +67,7 @@
     <td style="width:30px;border-right-style:none;"></td>
     {% endfor %}
     {% endif %}
-    <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 35 * (level+1) }}px;"{% endif %}>
+    <td colspan="{{ 12 - level }}" style="padding-left: 40px;">
         <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}.</span>&nbsp;
         <a href="{{ siteUrl('/ext/menu/addelement/' ~ parent ~ '/' ~ id ) }}" class="popupMenu">Ajouter un nouvel élément</a>
     </td>
@@ -102,8 +105,9 @@
     </div>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover mb-none">
+
+<div class="table-responsive" id="table-full-menu" data-idmenu="{{ id }}">
+    <table class="table table-striped table-hover mb-none table-menu">
         <thead>
         <tr>
             <th colspan="12"><strong>Nom de la page</strong></th>
