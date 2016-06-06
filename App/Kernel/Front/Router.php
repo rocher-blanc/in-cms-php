@@ -273,7 +273,7 @@ class Router
         $fullUrl = $this->Factory()->Url()->getFullUrl() ;
         if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
         if ( ! $mp ) $replaceString.= $this->getUrl( ( $this->Lang()->count() > 1 ? 1 : 0 ) ) ;
-        $url = ltrim( str_replace( $replaceString , '' , $fullUrl ) , '/') ;
+        $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
 
         if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $class ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $class );
         else																			$ControllerClass = '\App\Kernel\Front\Controller' ;
@@ -326,7 +326,16 @@ class Router
         $urlTab = $this->getUrl() ;
         $ct     = count( $urlTab ) ;
 
-        $this->loadController( $result->module_class_name , ( $ct == $this->getOffset() ? false : true ) ) ;
+        if ( $ct == 1 && $result )
+        {
+            $element = false ;
+        }
+        else
+        {
+            $element = ( $ct == $this->getOffset() ? false : true ) ;
+        }
+
+        $this->loadController( $result->module_class_name , $element ) ;
     }
 
     protected function displayDefaultPage()

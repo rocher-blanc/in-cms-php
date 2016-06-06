@@ -298,10 +298,15 @@ class Controller
             $url = $this->getUrl( ($ct - 1) );
         }
 
+        \App\Kernel\Debug::save($url);
+
         $result = \DB::for_table('seo')
             ->select('seo_element_id')
             ->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_url' => $url])
             ->find_one();
+
+        \App\Kernel\Debug::save($result);
+        \App\Kernel\Debug::view();
 
         if ( $result ) $this->setId( $result->seo_element_id );
     }

@@ -137,6 +137,33 @@ $app->group('/menu', function () use ($app)
         $app->render('ext/menu/construct.twig.html', array( "id" => $id ,  "contentRows" => $contentRows ));
     })->name('menu_construct');
 
+    $app->get('/order/:idmenu/:parent/:token', function ( $menu , $parent , $token ) use ($app)
+    {
+        $Factory = \App\Kernel\Factory::getInstance();
+
+        if ( $Factory->Token()->check( $token ) == false )
+        {
+            $Factory->Response()->returnJSON( "Token invalide" ) ;
+        }
+        else
+        {
+            $get = $app->request()->get('table-idmenu-' . $menu );
+            if ( $get )
+            {
+                $position = 1;
+                foreach( $get as $row )
+                {
+                    $contentRow = \DB::for_table('menu_element')->where_id_is( $row )->find_one();
+                    $contentRow->menu_element_order = $position ;
+                    $contentRow->save();
+                    $position++;
+                }
+            }
+        }
+
+        $Factory->Response()->returnJSON( "L'ordre a bien été modifié" , true ) ;
+    })->name('menu_order');
+
     $app->get('/', function () use ($app)
     {
         $contentRows = \DB::for_table('menu')
