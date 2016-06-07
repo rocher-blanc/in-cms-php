@@ -9,10 +9,6 @@
             {% endif %}
             <td colspan="{{ 12 - level }}">
                 <a href="javascript:;" class="btn btn-xs btn-default orderTable{{ contentArray|length == 1 ? " disabled" : "" }}" data-tr="{{ contentRow.id }}" data-level="{{ level+1 }}" data-parent="{{ parent }}"><i class="fa fa-arrows"></i></a>
-                {#
-                <a href="javascript:;" data-title="Position" data-menuid="{{ contentRow.menuid }}" data-link="{{ siteUrl('ext/menu/element/order/up/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default ajaxMenu{% if loop.index == 1 %} disabled{% endif %}"><i class="fa fa-arrow-up"></i></a>
-                <a href="javascript:;" data-title="Position" data-menuid="{{ contentRow.menuid }}" data-link="{{ siteUrl('ext/menu/element/order/down/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default ajaxMenu{% if loop.index == contentArray|length %} disabled{% endif %}"><i class="fa fa-arrow-down"></i></a>
-                #}
                 <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ index+1 }}.</span>&nbsp;
 
                 {% if contentRow.type == 'page' %}
