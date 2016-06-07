@@ -47,7 +47,7 @@ class Translate
         return \App\Kernel\Lang::getInstance() ;
     }
 
-    public function getText( $key , $var )
+    public function getText( $key , $var = [] )
     {
         $str = ( $this->language !== NULL ? nl2br( $this->language->get( $key ) ) : '' ) ;
 
