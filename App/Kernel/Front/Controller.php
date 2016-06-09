@@ -657,6 +657,18 @@ class Controller
     /* ***************   PARSE VALUE   ****************** */
     /* ************************************************** */
 
+    protected function getSelectValue( $field , $value )
+    {
+        if ( $field->isAssociated() )
+        {
+            /*
+            \App\Kernel\Debug::save( "asso" );
+            \App\Kernel\Debug::save( $field );
+            \App\Kernel\Debug::view();
+            */
+        }
+    }
+
     protected function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
@@ -716,6 +728,10 @@ class Controller
             else if ( $row->getType() == 'checkbox' )
             {
                 $arrayElement[ $row->getName() ] = $this->getAssocValue( $row->getName() ) ;
+            }
+            else if ( $row->getType() == 'select' )
+            {
+                $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) ) ;
             }
             else if ( $row->getType() == 'date' )
             {

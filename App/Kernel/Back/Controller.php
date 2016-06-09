@@ -895,7 +895,9 @@ class Controller
     protected function pushDataAssoc( $nameField , $field )
     {
         // On supprime tous les infos en base
-        \DB::for_module_assoc( $this->getEntityName() , $nameField )->where_id_is( $this->getId() )->delete_many();
+        \DB::for_module_assoc( $this->getEntityName() , $nameField )
+            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+            ->delete_many();
 
         // On insere
         if ( $field->getValue() !== NULL && is_array( $field->getValue() ) )
@@ -1037,7 +1039,8 @@ class Controller
 
                 foreach( $this->getEntity()->getField() as $nameField => $field )
                 {
-                    if ( $field->hasLang() && $field->getType() == "checkbox" )
+                    // if ( $field->hasLang() && $field->getType() == "checkbox" )
+                    if ( $field->getType() == "checkbox" )
                     {
                         $this->pushDataAssoc( $nameField , $field ) ;
                     }
