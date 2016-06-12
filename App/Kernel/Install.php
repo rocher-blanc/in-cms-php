@@ -44,6 +44,67 @@ class Install
         self::checkIndex() ;
         self::minify() ;
         self::patchVendor() ;
+        self::patchModule() ;
+    }
+
+    protected static function patchModule()
+    {
+        $tab = ["Back","Front"];
+
+        $scan = glod(PROJECT_PATH . "Module/Entity/*.php");
+        if ( $scan )
+        {
+            foreach( $scan as $namePhp )
+            {
+                $name = str_replace(".php","",$namePhp);
+
+                // On génére le repository
+                foreach( $tab as $row )
+                {
+                    $php = '' ;
+                    $php.= "<"."?"."php\n\n" ;
+                    $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
+                    $php.= "class " . $name . "Repository extends \App\Kernel\\" . $row . "\Repository\n" ;
+                    $php.= "{\n" ;
+                    $php.= "\t\n" ;
+                    $php.= "}" ;
+                    self::create( PROJECT_PATH . "Module/Repository/" . $row . "/" . $name . ".php" , $php ) ;
+                }
+
+                // On génére le controller
+                foreach( $tab as $row )
+                {
+                    $php = '' ;
+                    $php.= "<"."?"."php\n\n" ;
+                    $php.= "namespace Project\Module\Controller\Front;\n\n" ;
+                    $php.= "class " . $name . " extends \App\Kernel\Front\Controller\n" ;
+                    $php.= "{\n" ;
+                    $php.= "\t\n" ;
+                    $php.= "}" ;
+
+                    $php = '' ;
+                    $php.= "<"."?"."php\n\n" ;
+                    $php.= "namespace Project\Module\Controller\\" . $row . ";\n\n" ;
+                    $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
+                    $php.= "{\n" ;
+                    $php.= "\t\n" ;
+                    $php.= "}" ;
+                    self::create( PROJECT_PATH . "Module/Controller/" . $row . "/" . $name . ".php" , $php ) ;
+                }
+
+                // On génére la class entity
+                $php = '' ;
+                $php.= "<"."?"."php\n\n" ;
+                $php.= "namespace Project\Module\Entity\Class\\" . $row . ";\n\n" ;
+
+                $php.= "/** @Entity @Table(name=\"addresses\") */\n" ;
+                $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
+                $php.= "{\n" ;
+                $php.= "\t\n" ;
+                $php.= "}" ;
+                self::create( PROJECT_PATH . "Module/Entity/Class/" . $name . ".php" , $php ) ;
+            }
+        }
     }
 
     protected static function patchVendor()

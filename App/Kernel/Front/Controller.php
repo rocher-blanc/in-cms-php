@@ -88,11 +88,6 @@ class Controller
         $this->_entity_name = ucfirst( $var ) ;
     }
 
-    protected function setEntity( $var )
-    {
-        $this->_entity = $var ;
-    }
-
     protected function setEntityId( $var )
     {
         $this->_entity_id = $var ;
@@ -118,6 +113,20 @@ class Controller
         $this->_var[ $key ] = $elt ;
     }
 
+    /* ***************************************************** */
+    /* ******************   CONTAINER   ******************** */
+    /* ***************************************************** */
+
+    public function getEntity()
+    {
+        return $this->Container()->module( $this->getEntityName() )->getEntity() ;
+    }
+
+    public function getRepository()
+    {
+        return $this->Container()->module( $this->getEntityName() )->getRepository() ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -125,11 +134,6 @@ class Controller
     public function getVar()
     {
         return $this->_var ;
-    }
-
-    public function getEntity()
-    {
-        return $this->_entity ;
     }
 
     public function getId()
@@ -272,8 +276,6 @@ class Controller
             return false ;
         }
 
-        $name = "\Project\Module\Entity\\" . ucfirst( $this->getEntityName() ) ;
-        $this->setEntity( new $name ) ;
         $this->setEntityId( $result->module_id ) ;
         $this->loadId();
 
@@ -444,7 +446,7 @@ class Controller
     {
         if ( $this->getEntity()->hasUrl() )
         {
-            if ( $this->count() > 0 )
+            if ( $this->getRepository()->count() > 0 )
             {
                 $langArray = [];
 
@@ -491,85 +493,9 @@ class Controller
         return false;
     }
 
-    protected function count()
-    {
-        return \DB::for_module( $this->getEntityName() )->count();
-    }
-
     /* ************************************************** */
     /* *****************   REQUEST    ******************* */
     /* ************************************************** */
-
-    protected function getoneRequest()
-    {
-        $table = \DB::getTableName( $this->getEntityName() ) ;
-
-        /* Requete pour aller chercher les données */
-        $result = \DB::for_module( $this->getEntityName() )->where_id_is( $this->getId() );
-        if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
-        if ( $this->getEntity()->hasMultiLang() )
-        {
-            $tableLang  	= \DB::getTableNameLang( $this->getEntityName() ) ;
-            $idName			= \DB::getIdName( $this->getEntityName() ) ;
-            $idNameInLang	= \DB::getIdNameInLang( $this->getEntityName() ) ;
-            $langIdLangName	= \DB::getLangIdLangName( $this->getEntityName() ) ;
-
-            $result = $result->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , $this->Lang()->getActive()->id );
-        }
-
-        return $result->find_one();
-    }
-
-    protected function getallRequest()
-    {
-        $table = \DB::getTableName( $this->getEntityName() ) ;
-
-        $all = \DB::for_module( $this->getEntityName() )->limit( $this->getLimitGetAll() );
-
-        if ( $this->getEntity()->hasValidation() ) 	$all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
-
-        if ( $this->getEntity()->hasMultiLang() )
-        {
-            $tableLang  	= \DB::getTableNameLang( $this->getEntityName() ) ;
-            $idName			= \DB::getIdName( $this->getEntityName() ) ;
-            $idNameInLang	= \DB::getIdNameInLang( $this->getEntityName() ) ;
-            $langIdLangName	= \DB::getLangIdLangName( $this->getEntityName() ) ;
-
-            $all = $all->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , $this->Lang()->getActive()->id );
-        }
-
-        if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
-        else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
-
-        return $all->find_many();
-    }
-
-    protected function getKitRequest()
-    {
-        $table = \DB::getTableName( $this->getEntityName() ) ;
-
-        $all = \DB::for_module( $this->getEntityName() )->limit( $this->getLimitGetAll() );
-
-        if ( $this->getEntity()->hasValidation() ) 	$all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
-
-        if ( $this->getEntity()->hasMultiLang() )
-        {
-            $tableLang  	= \DB::getTableNameLang( $this->getEntityName() ) ;
-            $idName			= \DB::getIdName( $this->getEntityName() ) ;
-            $idNameInLang	= \DB::getIdNameInLang( $this->getEntityName() ) ;
-            $langIdLangName	= \DB::getLangIdLangName( $this->getEntityName() ) ;
-
-            $all = $all->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , $this->Lang()->getActive()->id );
-        }
-
-        if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
-        else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
-
-        return $all;
-    }
 
     protected function getParseRequest( $request )
     {
@@ -601,7 +527,7 @@ class Controller
 
     protected function getoneAction()
     {
-        $result = $this->getoneRequest();
+        $result = $this->getRepository()->findOne( $this->getId() );
 
         /* Si pas de retour, 404 */
         if ( ! $result ) $this->getApp()->pass();
@@ -618,23 +544,14 @@ class Controller
 
     protected function getallAction()
     {
-        $result = \DB::for_module( $this->getEntityName() )
-            ->select( $this->getEntity()->get('date_updated')->getColumn() )
-            ->limit(1);
-
-        if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
-
-        if ( $this->getEntity()->hasOrder() ) 	$result = $result->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
-        else									$result = $result->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
-
-        $result = $result->find_one();
+        $result = $this->getRepository()->lastUpdated();
 
         if ( $result )
         {
             $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
             $this->getApp()->lastModified( intval( $date->format('U') ) );
 
-            $all = $this->getallRequest();
+            $all = $this->getRepository()->find();
 
             $elmts = [] ;
             foreach( $all as $row )
@@ -661,11 +578,12 @@ class Controller
     {
         if ( $field->isAssociated() )
         {
-            /*
-            \App\Kernel\Debug::save( "asso" );
+            $this->Container()->module( $field->getObject() );
+
+            //\App\Kernel\Debug::save( $this->Container()->module( $field->getObject() )->getController() );
             \App\Kernel\Debug::save( $field );
             \App\Kernel\Debug::view();
-            */
+
         }
     }
 
@@ -760,7 +678,7 @@ class Controller
                 $Seo->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
                 $Seo->setModuleId( $this->getEntityId() ) ;
                 $arrayElement['url'] = \App\Kernel\Http::getInstance()->getUrl() . '/' ;
-                if ( \App\Kernel\Lang::getInstance()->count() > 1 )
+                if ( $this->Lang()->count() > 1 )
                 {
                     $arrayElement['url'].= \App\Kernel\Lang::getInstance()->getActive()->url . "/" ;
                 }

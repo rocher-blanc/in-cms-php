@@ -63,6 +63,12 @@ class Container
 
     public function getEntity()
     {
+        if ( $this->entity === NULL )
+        {
+            $name = "\Project\Module\Entity\\" . $this->getName() ;
+            $this->setEntity( new $name );
+        }
+
         return $this->entity ;
     }
 
@@ -77,11 +83,13 @@ class Container
         return $this->class ;
     }
 
-    public function getRepository()
+    public function getRepository( $admin = false )
     {
         if ( $this->repository === NULL )
         {
-            $this->setRepository( \App\Kernel\Container::getInstance()->get('em')->getRepository( "\Project\Module\Entity\Class\\" . $this->getName() ) );
+            $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            $this->setRepository( new $name( $this->getName() ) );
+            // $this->setRepository( \App\Kernel\Container::getInstance()->get('em')->getRepository( "\Project\Module\Entity\Class\\" . $this->getName() ) );
         }
 
         return $this->repository ;
@@ -91,8 +99,8 @@ class Container
     {
         if ( $this->controller === NULL )
         {
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ))  $ControllerClass = "\Project\Module\Controller\Front\\" . $this->getName() ;
-            else																			$ControllerClass = '\App\Kernel\Front\Controller' ;
+            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )  $ControllerClass = "\Project\Module\Controller\Front\\" . $this->getName() ;
+            else																			 $ControllerClass = '\App\Kernel\Front\Controller' ;
 
             $Controller = new $ControllerClass;
             $Controller->setEntityName( $this->getName() );

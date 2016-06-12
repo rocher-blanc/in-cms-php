@@ -37,7 +37,7 @@ class Container
 
     public static function getInstance()
     {
-        if ( self::$instance === NULL ) self::$instance = new CMS;
+        if ( self::$instance === NULL ) self::$instance = new Container;
         return self::$instance ;
     }
 
