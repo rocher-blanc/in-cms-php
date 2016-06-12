@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Kernel;
+
 class Repository
 {
     public function __construct( $name )

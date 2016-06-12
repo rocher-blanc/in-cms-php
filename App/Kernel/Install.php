@@ -302,8 +302,6 @@ class Install
         $rst = fwrite( $fp , $content ) ;
         fclose( $fp ) ;
 
-        echo $nameFile . "\n";
-
         return $rst ;
     }
 
