@@ -51,7 +51,7 @@ class Install
     {
         $tab = ["Back","Front"];
 
-        $scan = glob(PROJECT_PATH . "Module/Entity/*.php");
+        $scan = glob(PROJECT_PATH . "/Module/Entity/*.php");
         if ( $scan )
         {
             foreach( $scan as $namePhp )
@@ -68,7 +68,7 @@ class Install
                     $php.= "{\n" ;
                     $php.= "\t\n" ;
                     $php.= "}" ;
-                    self::create( PROJECT_PATH . "Module/Repository/" . $row . "/" . $name . ".php" , $php ) ;
+                    self::create( PROJECT_PATH . "/Module/Repository/" . $row . "/" . $name . ".php" , $php ) ;
                 }
 
                 // On génére le controller
@@ -89,7 +89,7 @@ class Install
                     $php.= "{\n" ;
                     $php.= "\t\n" ;
                     $php.= "}" ;
-                    self::create( PROJECT_PATH . "Module/Controller/" . $row . "/" . $name . ".php" , $php ) ;
+                    self::create( PROJECT_PATH . "/Module/Controller/" . $row . "/" . $name . ".php" , $php ) ;
                 }
 
                 // On génére la class entity
@@ -102,7 +102,7 @@ class Install
                 $php.= "{\n" ;
                 $php.= "\t\n" ;
                 $php.= "}" ;
-                self::create( PROJECT_PATH . "Module/Entity/Class/" . $name . ".php" , $php ) ;
+                self::create( PROJECT_PATH . "/Module/Entity/Class/" . $name . ".php" , $php ) ;
             }
         }
     }
