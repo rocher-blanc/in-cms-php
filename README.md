@@ -47,5 +47,18 @@ Pour installer, ensuite, lancer un :
 
 	composer update
 
-Si vous avez besoin de librairies, il faut les rajoutere dans **require**.
+Si vous avez besoin de librairies, il faut les rajouter dans **require**.
+
+Le CMS fonctionne avec Twig et il y a des fonctions deja présente de base qui simplifie la vie :
+
+	siteUrl('/')
+	urlpage( id_page_speciale )
+	urlmodule( id_module )
+	
+	# Cela va remplacer cela par mondomaine.com/assets/img/test.jpg
+	asset('img/test.jpg')
+	
+	
+	# Cela va ajouter le vendor dans les header (pour le css) et dans la footer (pour les js)
+	vendor( string or table )
 
