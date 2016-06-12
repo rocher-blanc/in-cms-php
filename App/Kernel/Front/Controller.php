@@ -17,7 +17,6 @@ class Controller
     protected $_entity_name = '' ;
     protected $_action_name = '' ;
     protected $_var = [];
-    protected $_limit_get_all = 10;
     protected $_main = false;
 
     /* ************************************************** */
@@ -65,6 +64,7 @@ class Controller
 
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
+    /* ************************************************** */
     /* ************************************************** */
 
     protected function setId( $var )
@@ -170,11 +170,6 @@ class Controller
     public function getActionName()
     {
         return $this->_action_name ;
-    }
-
-    public function getLimitGetAll()
-    {
-        return $this->_limit_get_all ;
     }
 
     /* ************************************************** */
@@ -420,18 +415,14 @@ class Controller
 
     protected function getAssocValue( $nameField )
     {
-        $content = \DB::for_module_assoc( $this->getEntityName() , $nameField )
-            ->select( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) )
-            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
-            ->find_many();
-
-        $result  = array() ;
+        $content = $this->getRepository()->getAssocValue( $nameField , $this->getId() );
+        $result  = [] ;
 
         if ( $content )
         {
             foreach( $content as $row )
             {
-                $result[] = $row->get( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) ) ;
+                $result[] = $row->get('value') ;
             }
         }
 
@@ -551,7 +542,7 @@ class Controller
             $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
             $this->getApp()->lastModified( intval( $date->format('U') ) );
 
-            $all = $this->getRepository()->find();
+            $all = $this->getRepository()->findAll();
 
             $elmts = [] ;
             foreach( $all as $row )
@@ -578,13 +569,13 @@ class Controller
     {
         if ( $field->isAssociated() )
         {
-            $this->Container()->module( $field->getObject() );
+            $result = $this->Container()->module( $field->getObject() )->getRepository()->findOne( $value );
 
-            //\App\Kernel\Debug::save( $this->Container()->module( $field->getObject() )->getController() );
-            \App\Kernel\Debug::save( $field );
-            \App\Kernel\Debug::view();
-
+            if ( $result )  return $this->Container()->module( $field->getObject() )->getController()->parseValue( $result );
+            else            return NULL ;
         }
+
+        return NULL ;
     }
 
     protected function parseValue( $result )

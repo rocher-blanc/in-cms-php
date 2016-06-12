@@ -88,6 +88,7 @@ class Container
         if ( $this->repository === NULL )
         {
             $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+
             $this->setRepository( new $name( $this->getName() ) );
             // $this->setRepository( \App\Kernel\Container::getInstance()->get('em')->getRepository( "\Project\Module\Entity\Class\\" . $this->getName() ) );
         }

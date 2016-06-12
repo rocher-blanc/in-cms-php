@@ -16,6 +16,6 @@ class Repository
 
     public function getEntity()
     {
-        return $this->Container()->module( $this->getName() )->getEntity() ;
+        return \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity() ;
     }
 }

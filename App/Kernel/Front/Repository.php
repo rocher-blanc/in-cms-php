@@ -4,6 +4,13 @@ namespace App\Kernel\Front;
 
 class Repository extends \App\Kernel\Repository
 {
+    protected $_limit_get_all = 10;
+
+    public function getLimitGetAll()
+    {
+        return $this->_limit_get_all ;
+    }
+
     public function findOne( $id )
     {
         $table = \DB::getTableName( $this->getName() ) ;
@@ -87,6 +94,14 @@ class Repository extends \App\Kernel\Repository
         else									$result = $result->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
 
         return $result->find_one();
+    }
+    
+    public function getAssocValue( $nameField , $id )
+    {
+        return \DB::for_module_assoc( $this->getName() , $nameField )
+            ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) , 'value' )
+            ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
+            ->find_many();
     }
 
     public function count()

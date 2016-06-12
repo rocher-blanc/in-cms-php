@@ -105,7 +105,7 @@ class Helper
                     }
                     else
                     {
-                        return \App\Kernel\Factory::getInstance()->Response()->error('HELPER - Method don\'t exist on this entity') ;
+                        return \App\Kernel\Factory::getInstance()->Response()->error('HELPER - Method (' . $method . ') don\'t exist on this entity') ;
                     }
                 }
                 else
