@@ -51,8 +51,13 @@ Si vous avez besoin de librairies, il faut les rajouter dans **require**.
 
 Le CMS fonctionne avec Twig et il y a des fonctions deja présente de base qui simplifie la vie :
 
+	# 
 	siteUrl('/')
+	
+	# 
 	urlpage( id_page_speciale )
+	
+	# 
 	urlmodule( id_module )
 	
 	# Cela va remplacer cela par mondomaine.com/assets/img/test.jpg
