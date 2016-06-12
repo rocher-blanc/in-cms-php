@@ -1,4 +1,4 @@
-Pour installer le CMS :
+Pour installer le CMS, créer un fichier *composer.json* comme ceci :
 
 	{
 		"name": "jweb/site",
@@ -42,3 +42,8 @@ Pour installer le CMS :
 			]
 		}
 	}
+
+Pour installer, ensuite, lancer un :
+	composer update
+	
+
