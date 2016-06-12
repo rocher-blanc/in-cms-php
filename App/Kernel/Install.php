@@ -51,7 +51,7 @@ class Install
     {
         $tab = ["Back","Front"];
 
-        $scan = glod(PROJECT_PATH . "Module/Entity/*.php");
+        $scan = glob(PROJECT_PATH . "Module/Entity/*.php");
         if ( $scan )
         {
             foreach( $scan as $namePhp )
