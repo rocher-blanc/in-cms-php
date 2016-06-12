@@ -57,6 +57,7 @@ class Install
             foreach( $scan as $namePhp )
             {
                 $name = str_replace(".php","",$namePhp);
+                $name = str_replace(PROJECT_PATH . "/Module/Entity/","",$name);
 
                 // On génére le repository
                 foreach( $tab as $row )
