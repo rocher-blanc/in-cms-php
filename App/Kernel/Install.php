@@ -65,7 +65,7 @@ class Install
                     $php = '' ;
                     $php.= "<"."?"."php\n\n" ;
                     $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
-                    $php.= "class " . $name . "Repository extends \App\Kernel\\" . $row . "\Repository\n" ;
+                    $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Repository\n" ;
                     $php.= "{\n" ;
                     $php.= "\t\n" ;
                     $php.= "}" ;
