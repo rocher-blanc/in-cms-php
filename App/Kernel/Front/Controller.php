@@ -250,11 +250,6 @@ class Controller
 
     public function loadEntity()
     {
-        if ( !is_null( $this->getEntity() ) && is_object( $this->getEntity() ) )
-        {
-            return true ;
-        }
-
         $result = \DB::for_table('module')
             ->select('module_id')
             ->select('module_default')
