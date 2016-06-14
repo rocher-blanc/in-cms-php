@@ -104,6 +104,8 @@ $app->group('/moduleadmin', function () use ($app)
             $php.= "}" ;
             if ( ! file_exists( ENTITIES_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
 
+            \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
+
             $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
             $app->flash('__result',true);
             $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );

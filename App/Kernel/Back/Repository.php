@@ -49,8 +49,6 @@ class Repository extends \App\Kernel\Repository
 
     public function getOnIndex( $urlField , $id_module )
     {
-        $this->checkDatabase() ;
-
         $tbl    = \DB::getTableName( $this->getName() );
         $idName	= \DB::getIdName( $this->getName() ) ;
 
