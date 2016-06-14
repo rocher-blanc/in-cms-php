@@ -64,11 +64,11 @@ $app->group('/moduleadmin', function () use ($app)
                 $php = '' ;
                 $php.= "<"."?"."php\n\n" ;
                 $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
-                $php.= "class " . $name . "Repository extends \App\Kernel\\" . $row . "\Repository\n" ;
+                $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Repository\n" ;
                 $php.= "{\n" ;
                 $php.= "\t\n" ;
                 $php.= "}" ;
-                \App\Kernel\Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
+                if ( ! file_exists( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
             }
 
             // On génére le controller
@@ -89,7 +89,7 @@ $app->group('/moduleadmin', function () use ($app)
                 $php.= "{\n" ;
                 $php.= "\t\n" ;
                 $php.= "}" ;
-                \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
+                if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
             }
 
             // On génére la class entity
@@ -102,7 +102,7 @@ $app->group('/moduleadmin', function () use ($app)
             $php.= "{\n" ;
             $php.= "\t\n" ;
             $php.= "}" ;
-            \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
+            if ( ! file_exists( ENTITIES_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
 
             $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
             $app->flash('__result',true);

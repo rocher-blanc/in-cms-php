@@ -43,6 +43,8 @@ class Container
 
     public function module( $name )
     {
+        $name = ucfirst( $name );
+
         if ( array_key_exists( $name , $this->entity ) )
         {
             return $this->entity[ $name ] ;
@@ -53,7 +55,7 @@ class Container
         }
     }
 
-    public function get( $key )
+    public function get( $name )
     {
         if ( array_key_exists( $name , $this->_var ) )
         {

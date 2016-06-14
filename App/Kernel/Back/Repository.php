@@ -44,6 +44,37 @@ class Repository extends \App\Kernel\Repository
 
     public function checkDatabase()
     {
-        \DB::checkModuleTable( $this->getName() , $this->getEntity()->hasMultiLang() , $this->getEntity()->getField() ) ;
+        \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
+    }
+
+    public function getOnIndex( $urlField , $id_module )
+    {
+        $this->checkDatabase() ;
+
+        $tbl    = \DB::getTableName( $this->getName() );
+        $idName	= \DB::getIdName( $this->getName() ) ;
+
+        if ( ! $urlField->hasLang() )   $tblField = \DB::getTableName( $this->getName() );
+        else                            $tblField = \DB::getTableNameLang( $this->getName() );
+
+        $seo_module_one = \DB::for_module( $this->getName() )
+            ->select( 'seo.seo_title' )
+            ->select( 'seo.seo_description' )
+            ->select( 'seo.seo_keyword' )
+            ->select( $tbl . '.' . $idName , 'id' )
+            ->select( $tblField . '.' . $urlField->getColumn() , 'value' )
+            ->left_outer_join( 'seo' , [ 'seo.seo_element_id' , '=', $tbl . '.' . $idName ] );
+
+        if ( $urlField->hasLang() )
+        {
+            $seo_module_one->left_outer_join( $tblField , array( $tbl . '.' . $idName , '=', $tblField . '.' . \DB::getIdNameInLang( $this->getName() ) ))
+                ->where_equal($tblField . '.' . \DB::getLangIdLangName( $this->getName() ) , \App\Kernel\Lang::getInstance()->getDefault()->id);
+        }
+
+        $seo_module_one->where_equal('seo.seo_module_id', $id_module)
+            ->where_in('seo.seo_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
+            ->where_raw("(seo.seo_title IS NULL OR seo.seo_description IS NULL OR seo.seo_keyword IS NULL)",[])
+            ->group_by('seo.seo_element_id')
+            ->find_many();
     }
 }

@@ -401,6 +401,7 @@ class Builder extends Model
     protected function isURL()
     {
         $this->setUrlName( $this->field()->getName() );
+        \App\Kernel\Debug::save( $this->field()->getName() );
         $this->field()->setData( "isURL" , true ) ;
         $this->setUrl() ;
         $this->addAction("seo") ;
@@ -561,7 +562,8 @@ class Builder extends Model
     protected function isLang()
     {
         $this->field()->setLang() ;
-        if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getData("columnName") ) ;
+        // if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getData("columnName") ) ;
+        if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getName() ) ;
         $this->setMultilang() ;
         return $this ;
     }

@@ -32,68 +32,24 @@ $app->get('/', function () use ( $app ) {
     {
         foreach( $contentRows as $row )
         {
-            $entityName = ucfirst( $row->module_class_name ) ;
+            $entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
+            $tab[] = $row->module_id;
+            $urlField = $entity->get( $entity->getUrlName() ) ;
 
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $row->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Back\\" . $entityName;
-            else																			 				 $ControllerClass = '\\' . APP_NAME . '\Kernel\Back\Controller' ;
+            $seo_module_one = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getRepository( true )->getOnIndex( $urlField , $row->module_id );
 
-            $Controller = new $ControllerClass;
-            $Controller->setEntityName( $row->module_class_name );
-            if ( $Controller->loadEntity() == true )
+            if ( $seo_module_one )
             {
-                if ( $Controller->getEntity()->hasUrl() )
-                {
-                    $tab[] = $row->module_id;
+                $a = [
+                    'title' => $entity->get( $entity->getUrlName() )->getTitle(),
+                    'name' => $row->module_name,
+                    'icon' => $row->module_icon,
+                    'class' => $row->module_class_name,
+                    'tab' => $seo_module_one,
+                ];
 
-                    $urlField = $Controller->getEntity()->get( $Controller->getEntity()->getUrlName() ) ;
-
-                    $tbl    = DB::getTableName( $entityName );
-                    $idName	= \DB::getIdName( $entityName ) ;
-
-                    if ( ! $urlField->hasLang() )
-                    {
-                        $tblField = DB::getTableName( $entityName );
-                    }
-                    else
-                    {
-                        $tblField = DB::getTableNameLang( $entityName );
-                    }
-
-                    $seo_module_one = DB::for_module( $entityName )
-                        ->select( 'seo.seo_title' )
-                        ->select( 'seo.seo_description' )
-                        ->select( 'seo.seo_keyword' )
-                        ->select( $tbl . '.' . $idName , 'id' )
-                        ->select( $tblField . '.' . $urlField->getColumn() , 'value' )
-                        ->left_outer_join( 'seo' , [ 'seo.seo_element_id' , '=', $tbl . '.' . $idName ] );
-
-                    if ( $urlField->hasLang() )
-                    {
-                        $seo_module_one->left_outer_join( $tblField , array( $tbl . '.' . $idName , '=', $tblField . '.' . DB::getIdNameInLang( $entityName ) ))
-                            ->where_equal($tblField . '.' . DB::getLangIdLangName( $entityName ) , \App\Kernel\Lang::getInstance()->getDefault()->id);
-                    }
-
-                    $seo_module_one->where_equal('seo.seo_module_id', $row->module_id)
-                        ->where_in('seo.seo_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
-                        ->where_raw("(seo.seo_title IS NULL OR seo.seo_description IS NULL OR seo.seo_keyword IS NULL)",[])
-                        ->group_by('seo.seo_element_id')
-                        ->find_many();
-
-                    if ( $seo_module_one )
-                    {
-                        $a = [
-                            'title' => $Controller->getEntity()->get( $Controller->getEntity()->getUrlName() )->getTitle(),
-                            'name' => $row->module_name,
-                            'icon' => $row->module_icon,
-                            'class' => $row->module_class_name,
-                            'tab' => $seo_module_one,
-                        ];
-
-                        $module[] = $a;
-                    }
-                }
+                $module[] = $a;
             }
-            unset( $Controller );
         }
     }
 
