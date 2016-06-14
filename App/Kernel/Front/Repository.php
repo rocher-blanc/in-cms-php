@@ -57,7 +57,7 @@ class Repository extends \App\Kernel\Repository
         return $all->find_many();
     }
 
-    public function getKitRequest()
+    public function getKit()
     {
         $table = \DB::getTableName( $this->getName() ) ;
 

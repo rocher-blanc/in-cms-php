@@ -121,11 +121,6 @@ class Controller
         return $this->_entity_name ;
     }
 
-    public function getEntity()
-    {
-        return $this->_entity ;
-    }
-
     protected function Factory()
     {
         return \App\Kernel\Factory::getInstance() ;
@@ -157,6 +152,25 @@ class Controller
         else				 return $this->_msg[ $key ] ;
     }
 
+    /* ***************************************************** */
+    /* ******************   CONTAINER   ******************** */
+    /* ***************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
+
+    public function getEntity()
+    {
+        return $this->Container()->module( $this->getEntityName() )->getEntity() ;
+    }
+
+    public function getRepository()
+    {
+        return $this->Container()->module( $this->getEntityName() )->getRepository( true ) ;
+    }
+
     /* ************************************************** */
     /* *****************     INIT     ******************* */
     /* ************************************************** */
@@ -168,7 +182,8 @@ class Controller
 
     protected function init()
     {
-        $this->checkDatabase();
+        $this->getRepository()->checkDatabase();
+
         $this->appendEntityInfo();
         $this->initRender();
     }
@@ -228,12 +243,6 @@ class Controller
             return false ;
         }
 
-        $name = "\Project\Module\Entity\\" . ucfirst( $this->getEntityName() ) ;
-
-        if ( $name === false ) return false ;
-
-        $this->setEntity( new $name ) ;
-
         if ( !is_object( $this->getEntity() ) ) return false ;
         else							 		return true ;
     }
@@ -285,7 +294,7 @@ class Controller
 
         if ( $value == true )
         {
-            $content = $this->findOne();
+            $content = $this->getRepository()->findOne( $this->getId() );
 
             if ( ! $content )
             {
@@ -296,7 +305,7 @@ class Controller
             {
                 foreach( $this->Lang()->getAll() as $lang )
                 {
-                    $contentLang[ $lang->id ] = $this->findOneLang( $lang->id );
+                    $contentLang[ $lang->id ] = $this->getRepository()->findOneLang( $this->getId() , $lang->id );
                 }
             }
 
@@ -577,7 +586,7 @@ class Controller
 
     protected function delete()
     {
-        $content = $this->findOne();
+        $content = $this->getRepository()->findOne( $this->getId() );
         $this->deleteOnMenu() ;
         if ( $content )
         {
@@ -841,7 +850,7 @@ class Controller
             ->select('module_name')
             ->select('module_id')
             ->where(array('module_class_name' => $this->getEntityName() , 'module_active' => 1))
-            ->findOne();
+            ->find_one();
 
         if ( $this->getOption('noAppend') == false )
         {
@@ -857,55 +866,11 @@ class Controller
         $this->setEntityId( $rst->module_id ) ;
     }
 
-    protected function checkDatabase()
-    {
-        \DB::checkModuleTable( $this->getEntityName() , $this->getEntity()->hasMultiLang() , $this->getEntity()->getField() ) ;
-    }
-
     protected function checkToken()
     {
         if ( $this->Factory()->Token()->check( $this->getToken() ) == false )
         {
             $this->Factory()->Response()->returnJSON( $this->m("token_is_bad") ) ;
-        }
-    }
-
-    protected function findOne()
-    {
-        return \DB::for_module( $this->getEntityName() )->where_id_is( $this->getId() )->find_one();
-    }
-
-    protected function findOneLang( $idlang )
-    {
-        return \DB::for_module_lang( $this->getEntityName() , $this->getId() , $idlang )->find_one() ;
-
-    }
-
-    protected function create()
-    {
-        return \DB::for_module( $this->getEntityName() )->create();
-    }
-
-    protected function createLang()
-    {
-        return \DB::for_module_lang( $this->getEntityName() )->create();
-    }
-
-    /* Fonction appelée par "add" & "update" */
-    protected function pushDataAssoc( $nameField , $field )
-    {
-        // On supprime tous les infos en base
-        \DB::for_module_assoc( $this->getEntityName() , $nameField )
-            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
-            ->delete_many();
-
-        // On insere
-        if ( $field->getValue() !== NULL && is_array( $field->getValue() ) )
-        {
-            foreach( $field->getValue() as $row )
-            {
-                \DB::add_assoc( $this->getEntityName() , $nameField , $this->getId() , $row );
-            }
         }
     }
 
@@ -918,7 +883,7 @@ class Controller
             {
                 if ( $this->getId() !== NULL )
                 {
-                    $content = $this->findOne();
+                    $content = $this->getRepository()->findOne( $this->getId() );
                     if ( ! $content )
                     {
                         $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
@@ -933,7 +898,7 @@ class Controller
                 }
                 else
                 {
-                    $content = $this->create();
+                    $content = $this->getRepository()->create();
                 }
 
                 foreach( $this->Lang()->getAll() as $lang )
@@ -950,7 +915,7 @@ class Controller
                     }
                     else
                     {
-                        $contentLang[ $lang->url ] = $this->createLang();
+                        $contentLang[ $lang->url ] = $this->getRepository()->createLang();
                         $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
                     }
                 }
@@ -1042,7 +1007,7 @@ class Controller
                     // if ( $field->hasLang() && $field->getType() == "checkbox" )
                     if ( $field->getType() == "checkbox" )
                     {
-                        $this->pushDataAssoc( $nameField , $field ) ;
+                        $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
                     }
                 }
 
@@ -1153,7 +1118,7 @@ class Controller
 
     protected function updatePublication( $value )
     {
-        $content = $this->findOne();
+        $content = $this->getRepository()->findOne( $this->getId() );
 
         if ( ! $content ) return false ;
 

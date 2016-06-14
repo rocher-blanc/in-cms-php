@@ -32,11 +32,6 @@ class Controller
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
 
-    protected function Container()
-    {
-        return \App\Kernel\Container::getInstance() ;
-    }
-
     protected function Factory()
     {
         return \App\Kernel\Factory::getInstance() ;
@@ -116,6 +111,11 @@ class Controller
     /* ***************************************************** */
     /* ******************   CONTAINER   ******************** */
     /* ***************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
 
     public function getEntity()
     {
