@@ -350,7 +350,7 @@ class Field
 
     public function clearSqlInfos()
     {
-        $this->clearData( array("SQL_TYPE","SQL_VALUE","SQL_DEFAULT") ) ;
+        // $this->clearData( array("SQL_TYPE","SQL_VALUE","SQL_DEFAULT") ) ;
     }
 
     private function clearData( $field , $key )

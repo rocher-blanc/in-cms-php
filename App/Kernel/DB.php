@@ -64,6 +64,15 @@ class DB extends ORM
     /* ****************  CHECK   TABLE  ***************** */
     /* ************************************************** */
 
+    public static function patchModuleTable( $name )
+    {
+
+    }
+
+    /* ************************************************** */
+    /* ****************  CHECK   TABLE  ***************** */
+    /* ************************************************** */
+
     public static function checkModuleTable( $mod , $haveLang , $fields )
     {
         $isCreate = 0 ;

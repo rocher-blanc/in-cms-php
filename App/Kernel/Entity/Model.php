@@ -90,7 +90,7 @@ class Model
 	
 	protected function check()
 	{
-		if ( $this->getUrlName() != '' )
+        if ( $this->hasUrl() == true )
         {
             $this->setLast( $this->getUrlName() ) ;
             if ( $this->hasMultilang() == true && $this->field()->hasLang() == false )
@@ -99,7 +99,7 @@ class Model
             }
         }
 
-		if ( $this->hasImage() == true )
+        if ( $this->hasImage() == true )
 		{
 			if ( !is_dir( $this->getPathImage() ) )
 			{

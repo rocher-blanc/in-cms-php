@@ -41,6 +41,13 @@ class Builder extends Model
     protected $_hasURL = false;
 
     /*
+     * @string
+     * Contient le nom du champ URL
+     * NULL par défaut
+     */
+    protected $_url_name = NULL ;
+
+    /*
      * @boolean
      * Définit s'il y a des images dans le module
      */

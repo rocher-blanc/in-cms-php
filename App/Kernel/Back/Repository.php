@@ -47,23 +47,28 @@ class Repository extends \App\Kernel\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function getOnIndex( $urlField , $id_module )
+    public function patchDatabase()
+    {
+        \DB::patchModuleTable( $this->getName() ) ;
+    }
+
+    public function getOnIndex( $id_module )
     {
         $tbl    = \DB::getTableName( $this->getName() );
         $idName	= \DB::getIdName( $this->getName() ) ;
 
-        if ( ! $urlField->hasLang() )   $tblField = \DB::getTableName( $this->getName() );
-        else                            $tblField = \DB::getTableNameLang( $this->getName() );
+        if ( ! $this->getEntity()->get( $this->getEntity()->getUrlName() )->hasLang() )   $tblField = \DB::getTableName( $this->getName() );
+        else                                                                              $tblField = \DB::getTableNameLang( $this->getName() );
 
         $seo_module_one = \DB::for_module( $this->getName() )
             ->select( 'seo.seo_title' )
             ->select( 'seo.seo_description' )
             ->select( 'seo.seo_keyword' )
             ->select( $tbl . '.' . $idName , 'id' )
-            ->select( $tblField . '.' . $urlField->getColumn() , 'value' )
+            ->select( $tblField . '.' . $this->getEntity()->get( $this->getEntity()->getUrlName() )->getColumn() , 'value' )
             ->left_outer_join( 'seo' , [ 'seo.seo_element_id' , '=', $tbl . '.' . $idName ] );
 
-        if ( $urlField->hasLang() )
+        if ( $this->getEntity()->get( $this->getEntity()->getUrlName() )->hasLang() )
         {
             $seo_module_one->left_outer_join( $tblField , array( $tbl . '.' . $idName , '=', $tblField . '.' . \DB::getIdNameInLang( $this->getName() ) ))
                 ->where_equal($tblField . '.' . \DB::getLangIdLangName( $this->getName() ) , \App\Kernel\Lang::getInstance()->getDefault()->id);

@@ -33,22 +33,23 @@ $app->get('/', function () use ( $app ) {
         foreach( $contentRows as $row )
         {
             $entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
-            $tab[] = $row->module_id;
-            $urlField = $entity->get( $entity->getUrlName() ) ;
-
-            $seo_module_one = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getRepository( true )->getOnIndex( $urlField , $row->module_id );
-
-            if ( $seo_module_one )
+            if ( $entity->hasUrl() == true )
             {
-                $a = [
-                    'title' => $entity->get( $entity->getUrlName() )->getTitle(),
-                    'name' => $row->module_name,
-                    'icon' => $row->module_icon,
-                    'class' => $row->module_class_name,
-                    'tab' => $seo_module_one,
-                ];
+                $tab[] = $row->module_id;
+                $seo_module_one = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getRepository( true )->getOnIndex( $row->module_id );
 
-                $module[] = $a;
+                if ( $seo_module_one )
+                {
+                    $a = [
+                        'title' => $entity->get( $entity->getUrlName() )->getTitle(),
+                        'name' => $row->module_name,
+                        'icon' => $row->module_icon,
+                        'class' => $row->module_class_name,
+                        'tab' => $seo_module_one,
+                    ];
+
+                    $module[] = $a;
+                }
             }
         }
     }
