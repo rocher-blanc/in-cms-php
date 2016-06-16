@@ -70,13 +70,13 @@ $app->group('/langue', function () use ($app)
 
                 foreach( $row as $cle => $value )
                 {
-                    $src.= "\t\t\"$cle\" => \"" . htmlentities( trim( $value ) ) . "\",\n";
+                    if ( ! empty( $cle ) ) $src.= "\t\t\"$cle\" => \"" . htmlentities( trim( $value ) ) . "\",\n";
                 }
 
                 $src.= "\t];\n";
                 $src.= "}\n";
 
-                \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
+                if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
             }
 
             unlink( UPLOAD_PATH . '/' . $file ) ;

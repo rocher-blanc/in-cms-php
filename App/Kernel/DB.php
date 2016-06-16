@@ -66,7 +66,59 @@ class DB extends ORM
 
     public static function patchModuleTable( $name )
     {
+        $rst = self::for_table('')->raw_query("SHOW COLUMNS FROM " . self::getTableName( $name ) )->find_many();
+        $column = [];
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $column[ $row->Field ] = [
+                    'name' => $row->Field,
+                    'type' => $row->Type,
+                    'null' => $row->Null,
+                    'default' => $row->Default
+                ];
+            }
+        }
 
+        if ( \App\Kernel\Container::getInstance()->module( $name )->getEntity()->hasMultilang() == true )
+        {
+            $rst = self::for_table('')->raw_query("SHOW COLUMNS FROM " . self::getTableNameLang( $name ) )->find_many();
+            $columnLang = [];
+            if ( $rst )
+            {
+                foreach( $rst as $row )
+                {
+                    $columnLang[ $row->Field ] = [
+                        'name' => $row->Field,
+                        'type' => $row->Type,
+                        'null' => $row->Null,
+                        'default' => $row->Default
+                    ];
+                }
+            }
+        }
+
+        $sql = "" ;
+        foreach( \App\Kernel\Container::getInstance()->module( $name )->getEntity()->getField() as $field )
+        {
+            if ( ! $field->hasLang() )
+            {
+                if ( ! array_key_exists( $field->getColumn() , $column ) )
+                {
+                    $sql.= "ALTER TABLE `" . self::getTableName( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
+                }
+            }
+            else
+            {
+                if ( ! array_key_exists( $field->getColumn() , $columnLang ) )
+                {
+                    $sql.= "ALTER TABLE `" . self::getTableNameLang( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
+                }
+            }
+        }
+
+        if ( ! empty( $sql ) ) self::get_db()->exec( $sql ) ;
     }
 
     /* ************************************************** */
@@ -82,13 +134,19 @@ class DB extends ORM
             $array = [];
             foreach( $rst as $value )
             {
-                if ( $value->get( 'Tables_in_' . DB_DATABASE ) == self::getTableName( $mod ) ) $isCreate++ ;
-                else if ( $value->get( 'Tables_in_' . DB_DATABASE ) == self::getTableNameLang( $mod ) & $haveLang == true ) $isCreate++ ;
-
-                if ( ! ( $isCreate == 1 && $haveLang == false ) or ! ( $isCreate == 2 && $haveLang == true ) )
+                if ( $value->get( 'Tables_in_' . DB_DATABASE ) == self::getTableName( $mod ) )
                 {
-                    self::createTable( $fields , $mod ) ;
+                    $isCreate++ ;
                 }
+                else if ( $value->get( 'Tables_in_' . DB_DATABASE ) == self::getTableNameLang( $mod ) & $haveLang == true )
+                {
+                    $isCreate++ ;
+                }
+            }
+
+            if ( $isCreate == 0 or ( $isCreate == 1 && $haveLang == true ) )
+            {
+                self::createTable( $fields , $mod ) ;
             }
         }
 
@@ -142,6 +200,25 @@ class DB extends ORM
         self::get_db()->exec( $Tbl ) ;
     }
 
+    public static function createColumn( $field )
+    {
+        if ( $field->getData('SQL_VALUE') !== NULL )
+        {
+            if ( $field->getData('SQL_DEFAULT') !== NULL )
+            {
+                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT')  ;
+            }
+            else
+            {
+                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( self::getIdName( $module ) == $field->getColumn() ? ' AUTO_INCREMENT' : '' )  ;
+            }
+        }
+        else
+        {
+            return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . " " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" )  ;
+        }
+    }
+
     public static function createTable( $fields , $module )
     {
         $haveLang = false ;
@@ -153,21 +230,7 @@ class DB extends ORM
         {
             if ( $field->hasLang() == false && !empty( $field->getData('SQL_TYPE') ) )
             {
-                if ( $field->getData('SQL_VALUE') !== NULL )
-                {
-                    if ( $field->getData('SQL_DEFAULT') !== NULL )
-                    {
-                        $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT') . "',\n" ;
-                    }
-                    else
-                    {
-                        $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( self::getIdName( $module ) == $field->getColumn() ? ' AUTO_INCREMENT' : '' ) . ",\n" ;
-                    }
-                }
-                else
-                {
-                    $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . " " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ",\n" ;
-                }
+                $Tbl.= "\t" . self::createColumn( $field ). ",\n" ;
             }
             else if ( $field->hasLang() == true )
             {
@@ -191,21 +254,7 @@ class DB extends ORM
             {
                 if ( $field->hasLang() == true && !empty( $field->getData('SQL_TYPE') ) )
                 {
-                    if ( $field->getData('SQL_VALUE') !== NULL )
-                    {
-                        if ( $field->getData('SQL_DEFAULT') !== NULL )
-                        {
-                            $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT') . "',\n" ;
-                        }
-                        else
-                        {
-                            $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ",\n" ;
-                        }
-                    }
-                    else
-                    {
-                        $Tbl.= "\t`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . " " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ",\n" ;
-                    }
+                    $Tbl.= "\t" . self::createColumn( $field ) . ",\n" ;
                 }
             }
 

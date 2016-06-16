@@ -52,6 +52,36 @@ class Repository extends \App\Kernel\Repository
         \DB::patchModuleTable( $this->getName() ) ;
     }
 
+    public function getAllTableIndex()
+    {
+        $this->patchDatabase();
+
+        $content = \DB::for_module( $this->getName() );
+
+        if ( $this->getEntity()->hasMultiLang() )
+        {
+            $table 			= \DB::getTableName( $this->getName() ) ;
+            $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
+            $idName			= \DB::getIdName( $this->getName() ) ;
+            $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
+            $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
+
+            $content = $content->left_outer_join( $tableLang , array( $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ))
+                ->where_equal($tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getDefault()->id  );
+        }
+
+        if ( $this->getEntity()->hasOrder() )
+        {
+            $content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+        }
+        else
+        {
+            $content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
+        }
+
+        return $content->find_many();
+    }
+
     public function getOnIndex( $id_module )
     {
         $tbl    = \DB::getTableName( $this->getName() );
