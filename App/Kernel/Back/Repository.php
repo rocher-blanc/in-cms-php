@@ -4,6 +4,15 @@ namespace App\Kernel\Back;
 
 class Repository extends \App\Kernel\Repository
 {
+    public function checkIfPatchTable( $id )
+    {
+        if ( \App\Kernel\Container::getInstance()->param()->get('key_module_' . $id ) != md5_file( ENTITY_PATH . "/" . $this->getName() . ".php" ) )
+        {
+            \DB::patchModuleTable( $this->getName() ) ;
+            \App\Kernel\Container::getInstance()->param()->set('key_module_' . $id , md5_file( ENTITY_PATH . "/" . $this->getName() . ".php" ) );
+        }
+    }
+
     public function findOne( $id )
     {
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
@@ -47,15 +56,8 @@ class Repository extends \App\Kernel\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function patchDatabase()
-    {
-        \DB::patchModuleTable( $this->getName() ) ;
-    }
-
     public function getAllTableIndex()
     {
-        $this->patchDatabase();
-
         $content = \DB::for_module( $this->getName() );
 
         if ( $this->getEntity()->hasMultiLang() )

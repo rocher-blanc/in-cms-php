@@ -105,6 +105,7 @@ $app->group('/moduleadmin', function () use ($app)
             if ( ! file_exists( ENTITIES_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
 
             \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
+            \App\Kernel\Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
 
             $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
             $app->flash('__result',true);
@@ -126,6 +127,7 @@ $app->group('/moduleadmin', function () use ($app)
 
         if ( $contentRow )
         {
+            \App\Kernel\Container::getInstance()->param()->remove('key_module_' . $contentRow->module_id );
             \App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
 
             $msg = "Le module a bien été supprimé" ;

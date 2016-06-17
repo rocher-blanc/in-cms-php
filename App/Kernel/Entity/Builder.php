@@ -399,6 +399,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "SQL_AUTO_INCREMENT" , true ) ;
         $this->field()->setData( "noUpdate" , true ) ;
         $this->setIdName( $this->field()->getName() ) ;
 

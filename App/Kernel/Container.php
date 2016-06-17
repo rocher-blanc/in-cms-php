@@ -9,30 +9,27 @@ class Container
     /* ************************************************** */
 
     private static $instance = NULL ;
-    private $factory = NULL ;
+    private $param = NULL ;
     private $entity = [] ;
-    private $_var = [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
 
     /* ************************************************** */
     /* ****************     SETTER    ******************* */
     /* ************************************************** */
 
-    public function set( $key , $value )
-    {
-        $this->_var[ $key ] = $value ;
-    }
+
 
     /* ************************************************** */
     /* ****************     GETTER    ******************* */
+    /* ************************************************** */
+
+    /* ************************************************** */
+    /* ****************    SINGLETON   ****************** */
     /* ************************************************** */
 
     public static function getInstance()
@@ -40,6 +37,10 @@ class Container
         if ( self::$instance === NULL ) self::$instance = new Container;
         return self::$instance ;
     }
+
+    /* ************************************************** */
+    /* ****************     MODULE    ******************* */
+    /* ************************************************** */
 
     public function module( $name )
     {
@@ -55,51 +56,18 @@ class Container
         }
     }
 
-    public function get( $name )
-    {
-        if ( array_key_exists( $name , $this->_var ) )
-        {
-            return $this->_var[ $name ] ;
-        }
-        else
-        {
-            return NULL;
-        }
-    }
-
     /* ***************************************************** */
-    /* ****************     BOOTSTRAP    ******************* */
+    /* ****************       PARAM      ******************* */
     /* ***************************************************** */
 
-    private function bootstrap()
+    public function param()
     {
-        if ( $this->get('em') === NULL )
+        if ( $this->param === NULL )
         {
-            $config = new \Doctrine\ORM\Configuration();
-
-            $driverImpl = $config->newDefaultAnnotationDriver([
-                ENTITIES_PATH,
-                ENTITIES_PROJECT_PATH
-            ]);
-            $config->setMetadataDriverImpl( $driverImpl );
-
-            $cache = DEBUG ? new Cache\ArrayCache : new Cache\ApcCache;
-            $config->setMetadataCacheImpl( $cache );
-            $config->setQueryCacheImpl( $cache );
-
-            $config->setProxyDir( PROXIES_PATH );
-            $config->setProxyNamespace('\App\Proxies');
-
-            $connectionOptions = [
-                'driver'    => 'pdo_sqlite',
-                'host'      => DB_HOST,
-                'user'      => DB_USER,
-                'dbname'    => DB_DATABASE,
-                'password'  => DB_PASSWORD,
-            ];
-
-            $this->set('em', EntityManager::create( $connectionOptions, $config ) );
+            $this->param = new \App\Kernel\Param;
         }
+
+        return $this->param;
     }
 }
 

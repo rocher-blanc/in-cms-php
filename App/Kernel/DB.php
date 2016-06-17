@@ -206,11 +206,11 @@ class DB extends ORM
         {
             if ( $field->getData('SQL_DEFAULT') !== NULL )
             {
-                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT')  ;
+                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT') . "'"  ;
             }
             else
             {
-                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( self::getIdName( $module ) == $field->getColumn() ? ' AUTO_INCREMENT' : '' )  ;
+                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( $field->getData('SQL_AUTO_INCREMENT') ? ' AUTO_INCREMENT' : '' )  ;
             }
         }
         else

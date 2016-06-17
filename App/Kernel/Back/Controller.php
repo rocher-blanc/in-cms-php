@@ -182,9 +182,8 @@ class Controller
 
     protected function init()
     {
-        $this->getRepository()->checkDatabase();
-
         $this->appendEntityInfo();
+        $this->getRepository()->checkIfPatchTable( $this->getEntityId() );
         $this->initRender();
     }
 
