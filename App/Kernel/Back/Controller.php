@@ -895,20 +895,23 @@ class Controller
                 {
                     if ( ! $row->hasLang() )
                     {
-                        if ( $row->isOrder() == true && $this->getId() === NULL )
+                        if ( $row->isOrder() == true )
                         {
-                            $order = \DB::for_module( $this->getEntityName() );
-                            if ( $this->getEntity()->hasParent() )
+                            if ( $add == true )
                             {
-                                $parentValue = $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() ;
+                                $order = \DB::for_module( $this->getEntityName() );
+                                if ( $this->getEntity()->hasParent() )
+                                {
+                                    $parentValue = $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() ;
 
-                                if ( is_null( $parentValue ) )  $order = $order->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                                else                            $order = $order->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parentValue ) ;
+                                    if ( is_null( $parentValue ) )  $order = $order->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
+                                    else                            $order = $order->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parentValue ) ;
+                                }
+
+                                $order = $order->max( $row->getColumn() ) + 1;
+
+                                $content->set( $row->getColumn() , $order ) ;
                             }
-
-                            $order = $order->max( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) + 1;
-
-                            $content->set( $row->getColumn() , $order ) ;
                         }
                         else if ( $row->getType() != "checkbox" && $row->canUpdate() == true )
                         {
