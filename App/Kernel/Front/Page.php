@@ -54,6 +54,11 @@ abstract class Page
         return \App\Kernel\Lang::getInstance() ;
     }
 
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
+
     protected function getTemplate()
     {
         return $this->tpl ;

@@ -34,27 +34,7 @@ class Repository extends \App\Kernel\Repository
 
     public function findAll()
     {
-        $table = \DB::getTableName( $this->getName() ) ;
-
-        $all = \DB::for_module( $this->getName() )->limit( $this->getLimitGetAll() );
-
-        if ( $this->getEntity()->hasValidation() ) 	$all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
-
-        if ( $this->getEntity()->hasMultiLang() )
-        {
-            $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
-            $idName			= \DB::getIdName( $this->getName() ) ;
-            $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
-            $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
-
-            $all = $all->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
-        }
-
-        if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
-        else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
-
-        return $all->find_many();
+        return $this->getKit()->find_many();
     }
 
     public function getKit()

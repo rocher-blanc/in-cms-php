@@ -69,7 +69,7 @@ class Repository extends \App\Kernel\Repository
             $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
 
             $content = $content->left_outer_join( $tableLang , array( $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ))
-                ->where_equal($tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getDefault()->id  );
+                ->where_equal($tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getDefault()->id );
         }
 
         if ( $this->getEntity()->hasOrder() )
