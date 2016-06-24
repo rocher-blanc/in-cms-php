@@ -573,7 +573,7 @@ class Controller
         return NULL ;
     }
 
-    protected function parseValue( $result )
+    public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
