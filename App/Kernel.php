@@ -278,7 +278,7 @@ class Kernel
             "Project/Module/Repository/Front" => false ,
             "Project/Module/Controller/Back" => false ,
             "Project/Module/Controller/Front" => false ,
-            "Project/Controller/front" => false ,
+            "Project/Controller/Front" => false ,
             "Project/view/front/module" => false ,
             "Project/view/front/page" => false ,
             "cache/back" => false ,

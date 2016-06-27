@@ -8,7 +8,7 @@ defined('CONFIG_PATH') || define('CONFIG_PATH', APPLICATION_PATH . '/config');
 defined('FACTORY_PATH') || define('FACTORY_PATH', KERNEL_PATH . '/Factory');
 defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
 defined('LANG_PATH') || define('LANG_PATH', PROJECT_PATH . '/Lang');
-defined('CONTROLLER_PROJECT_PATH') || define('CONTROLLER_PROJECT_PATH', PROJECT_PATH . '/Controller/front');
+defined('CONTROLLER_PROJECT_PATH') || define('CONTROLLER_PROJECT_PATH', PROJECT_PATH . '/Controller/Front');
 defined('CONTROLLER_FOLDERS_PATH') || define('CONTROLLER_FOLDERS_PATH', serialize( [ CONTROLLER_PROJECT_PATH ] ) );
 defined('CONFIG_PROJECT_PATH') || define('CONFIG_PROJECT_PATH', PROJECT_PATH . '/config');
 defined('MODULE_PATH') || define('MODULE_PATH', PROJECT_PATH . '/Module');

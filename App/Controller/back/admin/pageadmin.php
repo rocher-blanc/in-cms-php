@@ -220,13 +220,20 @@ $app->group('/pageadmin', function () use ($app)
 				$php.= "{\n" ;
 				$php.= "\t\n" ;
 				$php.= "}" ;
-
-				if ( ! file_exists( PROJECT_PATH . "/Controller/front/Page" . $id . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/Controller/front/Page" . $id . ".php" , $php );
+				if ( ! file_exists( PROJECT_PATH . "/Controller/Front/Page" . $id . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/Controller/Front/Page" . $id . ".php" , $php );
 
 				/* ************ Création du template Twig ************ */
-				$tpl = '{% extend \'base.twig.html\' %}' . "\n";
+				$tpl = '{% extends \'base.twig.html\' %}' . "\n";
 				$tpl.= '{% block contenu %}Page ' . $id . '{% endblock %}' . "\n";
 				if ( ! file_exists( PROJECT_PATH . "/view/front/page/page-" . $id . ".twig.html" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/view/front/page/page-" . $id . ".twig.html" , $tpl );
+
+
+				/* ************ Création de base.twig.html s'il n'existe pas ************ */
+				$tpl = "{% extends 'layout.twig.html' %}\n" ;
+				$tpl.= '{% block content %}' . "\n";
+				$tpl.= "\t{{ block('contenu') }}\n" ;
+				$tpl.= '{% endblock %}' . "\n";
+				if ( ! file_exists( PROJECT_PATH . "/view/front/base.twig.html" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/view/front/base.twig.html" , $tpl );
 
 				$Factory = \App\Kernel\Factory::getInstance();
 				$Factory->Response()->flashAndRedirect("La page spéciale a bien été ajoutée", true, $url);
