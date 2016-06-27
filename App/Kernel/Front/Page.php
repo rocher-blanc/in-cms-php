@@ -28,6 +28,7 @@ abstract class Page
     public function setId( $var )
     {
         $this->id = $var ;
+        $this->setTemplate( 'page-' . $var . '.twig.html' );
     }
 
     protected function setTemplate( $var )

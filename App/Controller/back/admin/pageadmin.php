@@ -11,7 +11,13 @@ $app->group('/pageadmin', function () use ($app)
 		$app->render('admin/pageadmin/index.twig.html', array( "contentRows" => $contentRows ));
 
 	})->name('page_index');
-	
+
+
+
+
+/*
+
+
 	$app->map('/edit(/:id)', function ($id = -1) use ($app)
 	{
 		$tabFolders = unserialize( CONTROLLER_FOLDERS_PATH ) ;
@@ -30,7 +36,7 @@ $app->group('/pageadmin', function () use ($app)
 			}
 		}
 
-        if ( empty( $arrayController ) )
+		if ( empty( $arrayController ) )
 		{
 			$Factory = \App\Kernel\Factory::getInstance() ;
 			$Factory->Response()->flashAndRedirect("Il n'y a actuellement aucun controller de présent dans le projet", false , 'ext/page' ) ;
@@ -41,7 +47,7 @@ $app->group('/pageadmin', function () use ($app)
 				->select('page_id')
 				->select('page_controller')
 				->find_many();
-			
+
 			if ( $controllerRow )
 			{
 				foreach( $controllerRow as $row )
@@ -49,27 +55,27 @@ $app->group('/pageadmin', function () use ($app)
 					if ( $row->page_id != $id ) unset( $arrayController[ $row->page_controller ] ) ;
 				}
 			}
-			
+
 			if ( count( $arrayController ) == 0 )
 			{
-                $Factory = \App\Kernel\Factory::getInstance() ;
+				$Factory = \App\Kernel\Factory::getInstance() ;
 				$Factory->Response()->flashAndRedirect( "Il n'y a plus de controller libre dans le projet" , false , 'admin/pageadmin' ) ;
 			}
 		}
-		
+
 		$lang 	  = \App\Kernel\Lang::getInstance()->getAll() ;
 		$error 	  = false ;
 		$tabError = array() ;
-		
+
 		$contentRow = \DB::for_table('page')
 			->where_equal('page_id' , $id)
 			->find_one();
-		
+
 		if ( $id != -1 && !$contentRow )
 		{
 			$app->redirect( $app->config('admin.url') . '/pageadmin/page');
 		}
-		
+
 		if ( $app->request->isPost() )
 		{
 			$post = array(
@@ -77,51 +83,51 @@ $app->group('/pageadmin', function () use ($app)
 				"page_controller" => $app->request->post('page_controller'),
 				"page_active" => $app->request->post('page_active')
 			) ;
-			
+
 			if ( !$contentRow )
 			{
 				$contentRow = \DB::for_table('page')->create();
 				$add = true ;
-				
+
 				$ct = \DB::for_table('page')->count();
-				
+
 				if ( $ct == 0 )
 				{
 					$contentRow->page_default = 1;
 					$forceActive = true ;
 				}
 			}
-			
+
 			if ( $app->request->post('page_name') == "" )
 			{
-					$error = true ;
-					$tabError['page_name'] = "Veuillez remplir ce champ" ;
+				$error = true ;
+				$tabError['page_name'] = "Veuillez remplir ce champ" ;
 			}
-			
+
 			if ( $app->request->post('page_controller') == "" )
 			{
-					$error = true ;
-					$tabError['page_controller'] = "Veuillez sélectionner un élement" ;
+				$error = true ;
+				$tabError['page_controller'] = "Veuillez sélectionner un élement" ;
 			}
-			
+
 			if ( $error == false )
 			{
 				$contentRow->page_name 			= $app->request->post('page_name') ;
 				$contentRow->page_controller 	= $app->request->post('page_controller') ;
 				$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-				
+
 				if ( $forceActive == true ) $contentRow->page_active = 1;
-				
+
 				$contentRow->save() ;
-				
+
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 33 : 29 ) , $contentRow->page_name ) ;
-				
+
 				$id = $contentRow->page_id;
-				
+
 				if ( $app->request->post('submit') == "stay" ) 	$url = '/admin/pageadmin/edit/' . $id ;
 				else 											$url = '/admin/pageadmin' ;
 
-                $Factory = \App\Kernel\Factory::getInstance() ;
+				$Factory = \App\Kernel\Factory::getInstance() ;
 				$Factory->Response()->flashAndRedirect("La page spéciale a bien été " . ( $add == true ? "ajoutée" : "modifiée" ) , true , $url ) ;
 			}
 		}
@@ -129,11 +135,11 @@ $app->group('/pageadmin', function () use ($app)
 		{
 			$post = $contentRow ;
 		}
-		
+
 		$postLang = \DB::for_table('page_lang')
 			->where(['page_lang_page_id' => $id])
 			->find_many();
-		
+
 		$contentLang = [] ;
 		if ( $postLang )
 		{
@@ -145,7 +151,7 @@ $app->group('/pageadmin', function () use ($app)
 				$contentLang[ $row->page_lang_lang_id ]['page_lang_keyword'] 	 = $row->page_lang_keyword ;
 			}
 		}
-		
+
 		$app->render('admin/pageadmin/edit.twig.html', array(
 			"post" => $post,
 			"id" => $id,
@@ -155,5 +161,135 @@ $app->group('/pageadmin', function () use ($app)
 			"error"		 => ( $error === false ? "0" : "1" ),
 			"tabError"	 => json_encode( $tabError )
 		));
+	})->name('page_edit')->via('GET', 'POST');
+
+
+
+*/
+
+
+
+
+
+
+	#########################################################################################################
+
+	$app->map('/edit', function () use ($app)
+	{
+		$error 	  = false ;
+		$tabError = array() ;
+
+		$post = array(
+			"page_name" => $app->request->post('page_name'),
+			"page_controller" => $app->request->post('page_controller'),
+			"page_active" => $app->request->post('page_active')
+		) ;
+
+		if ( $app->request->isPost() ) {
+			$contentRow = \DB::for_table('page')->create();
+
+			$ct = \DB::for_table('page')->count();
+
+			if ($ct == 0) {
+				$contentRow->page_default = 1;
+				$forceActive = true;
+			}
+
+			if ($app->request->post('page_name') == "") {
+				$error = true;
+				$tabError['page_name'] = "Veuillez remplir ce champ";
+			}
+
+			if ($error == false) {
+				$contentRow->page_name = $app->request->post('page_name');
+				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+				$contentRow->save();
+
+				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
+
+				$id = $contentRow->page_id;
+
+				if ($app->request->post('submit') == "stay") $url = '/admin/pageadmin/edit/' . $id;
+				else                                         $url = '/admin/pageadmin';
+
+				/* ************ Création du controller PHP ************ */
+				$php = '' ;
+				$php.= "<"."?"."php\n\n" ;
+				$php.= "namespace Project\Controller\Front;\n\n" ;
+				$php.= "class Page" . $id . " extends \App\Kernel\Front\Page\n" ;
+				$php.= "{\n" ;
+				$php.= "\t\n" ;
+				$php.= "}" ;
+
+				if ( ! file_exists( PROJECT_PATH . "/Controller/front/Page" . $id . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/Controller/front/Page" . $id . ".php" , $php );
+
+				/* ************ Création du template Twig ************ */
+				$tpl = '{% extend \'base.twig.html\' %}' . "\n";
+				$tpl.= '{% block contenu %}Page ' . $id . '{% endblock %}' . "\n";
+				if ( ! file_exists( PROJECT_PATH . "/view/front/page/page-" . $id . ".twig.html" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/view/front/page/page-" . $id . ".twig.html" , $tpl );
+
+				$Factory = \App\Kernel\Factory::getInstance();
+				$Factory->Response()->flashAndRedirect("La page spéciale a bien été ajoutée", true, $url);
+			}
+		}
+
+		$app->render('admin/pageadmin/edit.twig.html', array(
+			"post" => $post,
+			"id" => -1,
+			"error"		 => ( $error === false ? "0" : "1" ),
+			"tabError"	 => json_encode( $tabError )
+		));
+
+	})->name('page_add')->via('GET', 'POST');
+
+	$app->map('/edit/:id', function ( $id ) use ($app)
+	{
+		$error 	  = false ;
+		$tabError = array() ;
+
+		$contentRow = \DB::for_table('page')
+			->where_equal('page_id' , $id)
+			->find_one();
+
+		$post = array(
+			"page_name" => $contentRow->page_name,
+			"page_active" => $contentRow->page_active
+		) ;
+
+		if ( $app->request->isPost() ) {
+			$post = array(
+				"page_name" => $app->request->post('page_name'),
+				"page_active" => $app->request->post('page_active')
+			) ;
+
+			if ($app->request->post('page_name') == "") {
+				$error = true;
+				$tabError['page_name'] = "Veuillez remplir ce champ";
+			}
+
+			if ($error == false) {
+				$contentRow->page_name = $app->request->post('page_name');
+				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+				$contentRow->save();
+
+				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
+
+				$id = $contentRow->page_id;
+
+				if ($app->request->post('submit') == "stay") $url = '/admin/pageadmin/edit/' . $id;
+				else                                         $url = '/admin/pageadmin';
+
+				$Factory = \App\Kernel\Factory::getInstance();
+				$Factory->Response()->flashAndRedirect("La page spéciale a bien été ajoutée", true, $url);
+			}
+		}
+
+		$app->render('admin/pageadmin/edit.twig.html', array(
+			"post" => $post,
+			"id" => $id,
+			"error"		 => ( $error === false ? "0" : "1" ),
+			"tabError"	 => json_encode( $tabError )
+		));
+
 	})->name('page_edit')->via('GET', 'POST');
 });

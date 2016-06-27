@@ -350,15 +350,13 @@ class Router
         if ( $page )
         {
             $app = $this->getApp() ;
-            if ( file_exists( CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ) )
+            if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-                require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
+                // require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
 				$app->get('/(:lang)', function ( $lang = NULL ) use ( $page )
                 {
-					$class = str_replace( "-" , '' , $page->page_controller );
-					$class = str_replace( ".php" , '' , $class );
-					$ControllerClass = '\Project\Controller\Front\\' . $class ;
-					
+                    $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
+
 					$pageClass = new $ControllerClass;
 					$pageClass->setId( $page->page_id );
 					$pageClass->execute();
@@ -386,14 +384,12 @@ class Router
         if ( $page )
         {
             $app = $this->getApp() ;
-            if ( file_exists( CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ) )
+            if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-				require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
+				// require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
 				$app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page )
                 {
-                    $class = str_replace( "-" , '' , $page->page_controller );
-					$class = str_replace( ".php" , '' , $class );
-					$ControllerClass = '\Project\Controller\Front\\' . $class ;
+                    $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 					
 					$pageClass = new $ControllerClass;
 					$pageClass->setId( $page->page_id );

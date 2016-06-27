@@ -30,8 +30,8 @@ class Loader
         #########################################################
 
         $kernel->setMiddleware(new \App\Kernel\Middleware\CsrfGuard( $kernel->config('token') ));
-        $kernel->setMiddleware(new \App\Kernel\Middleware\Auth);
-        $kernel->setMiddleware(new \App\Kernel\Middleware\Guard);
+        $kernel->setMiddleware(new \App\Kernel\Middleware\Back\Auth);
+        $kernel->setMiddleware(new \App\Kernel\Middleware\Back\Guard);
 
         #########################################################
         /* ****************   Extensions   ******************* */

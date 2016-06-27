@@ -23,6 +23,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="81024a34-ff0e-4038-a9e3-b65a89211f47" name="VPS1 - Photo" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfe1dfe0dffadfdbdf9edf9cdfdfdfe1dfc8dfdadf92df9c" username="photo">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Kernel\Middleware;
+namespace App\Kernel\Middleware\Back;
 
 class Guard extends \Slim\Middleware
 {
