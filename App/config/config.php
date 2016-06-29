@@ -53,6 +53,11 @@ else
     defined('DB') || define('DB',false);
 }
 
+if ( ! defined('ACTIVE_USER') )
+{
+    define('ACTIVE_USER', false );
+}
+
 // if ( ! defined('DB_HOST') ||! defined('DB_USER') ||! defined('DB_PASSWORD') ||! defined('DB_DATABASE') ) \App\Kernel\Factory::getInstance()->Response()->error('No information for database') ;
 // if ( ! defined('DEBUG') ) \App\Kernel\Factory::getInstance()->Response()->error('No information for debug') ;
 if ( ! defined('DEBUG') )
