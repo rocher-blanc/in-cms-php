@@ -103,6 +103,7 @@ class Model
 		{
 			if ( !is_dir( $this->getPathImage() ) )
 			{
+				die( $this->getPathImage() ); 
 				mkdir( $this->getPathImage() , 0755 );
 				mkdir( $this->getPathImage() . '/c' , 0755 ); // Crope
 				mkdir( $this->getPathImage() . '/t', 0755 ); // Thumb

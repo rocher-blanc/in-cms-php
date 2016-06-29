@@ -2,32 +2,20 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="f58c7a92-7ad4-4531-b25c-292a7d8f4a96" name="VPS1 - Ayat" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfcbdfd3dfcbdfdedf98df9adf9bdf9cdf80" username="ayat">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-        </fileTransfer>
-      </webServer>
-      <webServer id="01ae30ed-05af-44df-9362-4d83160ed9fc" name="VPS1 - Doctrine" url="http://vps1.jweb-creation.Fr">
-        <fileTransfer host="vps1.jweb-creation.Fr" port="21" rootFolder="/www" password="dfdedfc5dfdedfc5" username="doctrine">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-        </fileTransfer>
-      </webServer>
-      <webServer id="b5f2e18e-8112-4d7b-8eb2-2d7dc276efb9" name="VPS1 - Euroasian" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfdddf9edfdadff9dfcddffedf9ddf9e" username="euroasian">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-        </fileTransfer>
-      </webServer>
-      <webServer id="81024a34-ff0e-4038-a9e3-b65a89211f47" name="VPS1 - Photo" url="http://vps1.jweb-creation.fr">
+      <webServer id="7bf03af4-5472-494c-bfb5-5b104394352d" name="VPS1 - Photo" url="http://vps1.jweb-creation.fr">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfe1dfe0dffadfdbdf9edf9cdfdfdfe1dfc8dfdadf92df9c" username="photo">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="fdfd4bcd-faa8-4e85-81fd-3f2fb051cf82" name="VPS1 - Euroasian" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfdddf9edfdadff9dfcddffedf9ddf9e" username="euroasian">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
     </option>
