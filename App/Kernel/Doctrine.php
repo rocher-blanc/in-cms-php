@@ -80,6 +80,8 @@ class Doctrine
             'password'  => DB_PASSWORD
         );
 
+        if ( defined('DB_PORT') ) $connectionOptions['port'] = DB_PORT ;
+
         $this->_em = EntityManager::create($connectionOptions, $config);
         $this->connect() ;
     }

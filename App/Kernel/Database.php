@@ -24,7 +24,7 @@ class Database
 	{
 		require_once KERNEL_PATH . '/DB.php';
 		
-		\DB::configure('mysql:host=' . DB_HOST . ( defined( DB_PORT ) ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
+		\DB::configure('mysql:host=' . DB_HOST . ( defined('DB_PORT') ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
 		\DB::configure('username', DB_USER );
 		\DB::configure('password', DB_PASSWORD );
 		\DB::configure('driver_options', [

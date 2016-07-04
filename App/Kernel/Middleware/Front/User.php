@@ -54,9 +54,4 @@ class User extends \Slim\Middleware
             }
         }
     }
-
-    private function isLogged()
-    {
-        return ( isset( $_SESSION[ $this->app->config('session') ] ) && !empty( $_SESSION[ $this->app->config('session') ] ) );
-    }
 }
