@@ -49,14 +49,22 @@ class Model
 	{
         return $this->_action ;
     }
-	
+
 	public function getPathImage( $absolute = true )
 	{
 		$path = IMAGE_PATH . '/' . $this->getFolder() ;
-		
+
 		if ( $absolute ) return $path ;
 		else			 return str_replace( WEB_PATH , '' , $path ) ;
-    }
+	}
+
+	public function getPathDocument( $absolute = true )
+	{
+		$path = DOCUMENT_PATH . '/' . $this->getFolder() ;
+
+		if ( $absolute ) return $path ;
+		else			 return str_replace( WEB_PATH , '' , $path ) ;
+	}
     
     protected function getClassName( $lower = true )
 	{
@@ -99,24 +107,23 @@ class Model
             }
         }
 
-        if ( $this->hasImage() == true )
+		if ( $this->hasImage() == true )
 		{
 			if ( !is_dir( $this->getPathImage() ) )
 			{
-				die( $this->getPathImage() ); 
 				mkdir( $this->getPathImage() , 0755 );
 				mkdir( $this->getPathImage() . '/c' , 0755 ); // Crope
 				mkdir( $this->getPathImage() . '/t', 0755 ); // Thumb
 			}
 		}
-		/*
-		if ( $this->hasDoc() == true )
+
+		if ( $this->hasDocument() == true )
 		{
-			if ( !is_dir( $this->getPathDoc() ) )
+			if ( !is_dir( $this->getPathDocument() ) )
 			{
-				mkdir( $this->getPathDoc() , 0755 );
+				mkdir( $this->getPathDocument() , 0755 );
 			}
-		}*/
+		}
 	}
 	
 	/* ************************************************** */

@@ -285,6 +285,7 @@ class Kernel
             "cache/front" => false ,
             "web/uploads" => false ,
             "web/images" => false ,
+            "web/documents" => false ,
             "web/assets/css/dist" => false ,
             "web/assets/js/dist" => false
         ] ;

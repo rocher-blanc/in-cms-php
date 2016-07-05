@@ -22,6 +22,7 @@ defined('VENDOR_PATH') || define('VENDOR_PATH', ASSET_PATH . '/vendor');
 defined('BOWER_PATH') || define('BOWER_PATH', VENDOR_PATH . '/bower-asset');
 
 defined('IMAGE_PATH') || define('IMAGE_PATH', WEB_PATH . '/images');
+defined('DOCUMENT_PATH') || define('DOCUMENT_PATH', WEB_PATH . '/documents');
 defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
 defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 

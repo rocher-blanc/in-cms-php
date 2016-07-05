@@ -280,6 +280,7 @@ class Install
             "web/" . self::getAdminFolder() . "/assets/img",
             "web/uploads",
             "web/images",
+            "web/documents",
             "web/assets",
             "web/assets/css",
             "web/assets/sass",

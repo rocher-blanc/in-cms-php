@@ -8,7 +8,7 @@ class Builder extends Model
      * @array
      * Variable contenant tous les champs de l'entité
      */
-    protected $_field = array() ;
+    protected $_field = [] ;
 
     /*
      * @string
@@ -55,9 +55,9 @@ class Builder extends Model
 
     /*
      * @boolean
-     * Définit s'il y a des paragraphes dans le module
+     * Définit s'il y a des documents dans le module
      */
-    protected $_hasParagraph = false;
+    protected $_hasDocument = false;
 
     /*
      * @boolean
@@ -76,13 +76,19 @@ class Builder extends Model
      * @array
      * Variable contenant tous les messages d'erreurs par défaut
      */
-    protected $_msg = array();
+    protected $_msg = [];
 
     /*
      * @array
      * Variable contenant tous les champs images
      */
-    protected $_img_field = array();
+    protected $_img_field = [];
+
+    /*
+     * @array
+     * Variable contenant tous les champs documents
+     */
+    protected $_doc_field = [];
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -126,9 +132,9 @@ class Builder extends Model
         return $this->_hasImage ;
     }
 
-    public function hasParagraph()
+    public function hasDocument()
     {
-        return $this->_hasParagraph ;
+        return $this->_hasDocument ;
     }
 
     public function hasParent()
@@ -168,6 +174,11 @@ class Builder extends Model
     protected function setImage()
     {
         $this->_hasImage = true ;
+    }
+
+    protected function setDocument()
+    {
+        $this->_hasDocument = true ;
     }
 
     protected function setParent()
@@ -234,6 +245,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function setDocumentField( $name )
+    {
+        $this->_doc_field[] = $name ;
+        return $this ;
+    }
+
     protected function setCustomFolder( $name )
     {
         $this->_folder_name = $this->Factory()->Url()->encode( $name ) ;
@@ -257,6 +274,11 @@ class Builder extends Model
     public function getImageField()
     {
         return $this->_img_field ;
+    }
+
+    public function getDocumentField()
+    {
+        return $this->_doc_field ;
     }
 
     public function getIdName()
@@ -427,6 +449,27 @@ class Builder extends Model
 
         $this->setOrder() ;
         $this->setOrderName( $this->field()->getName() ) ;
+        return $this ;
+    }
+
+    protected function isDocument()
+    {
+        $this->field()->setData( "SQL_VALUE" , 11 ) ;
+        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "type" , "document" ) ;
+        $this->field()->setData( "module" , $this->getClassName(false) ) ;
+        $this->field()->setData( "folder" , $this->getPathDocument(false) ) ;
+
+        $this->setDocument() ;
+        $this->setDocumentField( $this->field()->getData("columnName") ) ;
+
+        $this->addAction("newupload") ;
+        $this->addAction("postupload") ;
+        $this->addAction("upload") ;
+        $this->addAction("postclick") ;
+        $this->addAction("media") ;
+        $this->addAction("deletemedia") ;
+
         return $this ;
     }
 

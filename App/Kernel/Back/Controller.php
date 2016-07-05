@@ -1075,7 +1075,6 @@ class Controller
                     $elmt->save();
                     $position++;
                 }
-
             }
 
             return true;
@@ -1441,5 +1440,21 @@ class Controller
 
         $this->getApp()->contentType('application/json');
         echo json_encode( [ 'id' => [ 'key' => 'id_' . $field->getColumn() , 'value' => $Media->getImageId() , 'linkCrop' => $this->Factory()->Url()->get( 'module/' . $this->getEntityName() . '/crop/' . $Media->getImageId() ) ] , 'files' => $json ] ) ;
+    }
+
+    /* ************************************************** */
+    /* ******************    MEDIA    ******************* */
+    /* ************************************************** */
+
+    protected function doc_uploadAction()
+    {
+        $Doc = new \App\Kernel\Back\Document;
+        $Doc->setModuleId( $this->getEntityId() ) ;
+        $Doc->upload( UPLOAD_PATH ) ;
+    }
+
+    protected function doc_newuploadAction()
+    {
+        $this->render('doc/upload.twig.html') ;
     }
 }
