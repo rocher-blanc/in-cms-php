@@ -18,6 +18,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="4b0ee100-ea99-4d9b-a758-14f74c5e4ae4" name="VPS1 - Syndicat" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="df9cdf9fdfd3dfe7dfdddf9cdfd2dfe2df98dfeb" username="syndicat">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

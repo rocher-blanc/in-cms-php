@@ -1157,11 +1157,10 @@ class Controller
 
         $this->setRender( 'id' , $this->getId() ) ;
 
-        if ( $this->getEntity()->hasUrl() or $this->getEntity()->hasParagraph() )
+        if ( $this->getEntity()->hasUrl() )
         {
             $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
             $this->setRender( 'tabs' , true ) ;
-            $this->setRender( 'content' , $this->getEntity()->hasParagraph() ) ;
             $this->setRender( 'seo' , $this->getEntity()->hasUrl() ) ;
         }
 
@@ -1443,8 +1442,46 @@ class Controller
     }
 
     /* ************************************************** */
-    /* ******************    MEDIA    ******************* */
+    /* *****************   DOCUMENT   ******************* */
     /* ************************************************** */
+
+    protected function documentAction()
+    {
+        $Doc = new \App\Kernel\Back\Document;
+        $Doc->setModuleId( $this->getEntityId() ) ;
+
+        $documents = $Doc->getAll() ;
+        if ( $documents )
+        {
+            $rqt = \DB::for_module( $this->getEntityName() );
+            $fieldDoc = $this->getEntity()->getDocumentField() ;
+            foreach( $fieldDoc as $field )
+            {
+                $rqt = $rqt->select( $field );
+            }
+            $rqt = $rqt->find_many();
+
+            if ( $rqt )
+            {
+                foreach( $rqt as $row )
+                {
+                    foreach( $fieldDoc as $field )
+                    {
+                        if ( array_key_exists( $row->get( $field ) , $documents ) ) $documents[ $row->get( $field ) ]->doc_delete = false ;
+                    }
+                }
+            }
+
+            $this->setRender( 'documents' , $documents ) ;
+            $this->setRender( 'path' , $this->getEntity()->getPathDocument(false) ) ;
+            $this->render('document/index.twig.html') ;
+        }
+        else
+        {
+            $this->setRender( 'noDocument' , true ) ;
+            $this->doc_newuploadAction() ;
+        }
+    }
 
     protected function doc_uploadAction()
     {
@@ -1455,6 +1492,45 @@ class Controller
 
     protected function doc_newuploadAction()
     {
-        $this->render('doc/upload.twig.html') ;
+        $this->render('document/upload.twig.html') ;
+    }
+
+    protected function doc_postuploadAction()
+    {
+        $field = $this->getEntity()->build( $this->getApp()->request->post('field') )->field();
+        $result = json_decode( $this->getApp()->request->post('data') ) ;
+
+        if ( $result )
+        {
+            foreach( $result as $row )
+            {
+                $this->parsePostDocument( $row->id , $this->getApp()->request->post('field') ) ;
+            }
+        }
+    }
+
+    protected function parsePostDocument( $idFile , $fieldName , $upload = true )
+    {
+        $field = $this->getEntity()->build( $fieldName )->field();
+        $Doc = new \App\Kernel\Back\Document;
+        $Doc->setModuleId( $this->getEntityId() ) ;
+        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+        $Doc->setDocumentId( $idFile ) ;
+        $Doc->getNameById() ;
+        $Doc->rename();
+
+        $json[] = [
+            'key' => "source_" . $field->getName(),
+            'file' => $this->Factory()->Url()->get( $this->getEntity()->getPathDocument( false ) . '/' . $Doc->getDocumentName() , true )
+        ];
+
+        $this->getApp()->contentType('application/json');
+        echo json_encode([
+            'id' => [
+                'key' => 'id_' . $field->getColumn() ,
+                'value' => $Doc->getDocumentId() 
+            ],
+            'files' => $json
+        ]) ;
     }
 }

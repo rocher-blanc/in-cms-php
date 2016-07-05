@@ -59,7 +59,7 @@ class Param
     public function remove( $key )
     {
         $rst = \DB::for_table('param')->where_equal('param_key',$key)->find_one();
-        $rst->delete();
+        if ( $rst ) $rst->delete();
     }
 }
 

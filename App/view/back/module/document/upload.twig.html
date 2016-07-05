@@ -1,0 +1,38 @@
+<div class="media">
+	<div class="title">
+		Gestion des documents
+		<span class="pull-right">
+			{% if noDocument != true %}<a href="{{ siteUrl('module/' ~ mod.name ~ '/document') }}" class="link-popup btn btn-xs btn-success"><i class="fa fa-picture-o"></i> Voir les documents</a>{% endif %}
+			<a href="javascript:;" class="close-popup btn btn-xs btn-danger"><i class="fa fa-times"></i> Fermer</a>
+		</span>
+	</div>
+	<div class="content">
+		<div class="blocUpload">
+			<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+			<span class="btn btn-success fileinput-button" id="btn-upload">
+				<i class="glyphicon glyphicon-plus"></i>
+				<span>Sélectionner un document</span>
+				<input type="file" name="files" id="fileupload" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/doc_postupload') }}" data-url="{{ siteUrl('module/' ~ mod.name ~ '/doc_upload') }}" />
+			</span>
+			<div class="loading">
+				<div id="num">1 %</div>
+				Upload en cours ...
+			</div>
+			<div class="progress" id="progress">
+				<div class="progress-bar progress-bar-success"></div>
+			</div>
+		</div>
+		<div class="postupload" id="postupload">
+			<div class="loading">
+				<span>
+                    Traitement du document en cours ...<br />
+                    Cette opération peut prendre plusieurs secondes en fonction de la taille du fichier.
+                </span>
+				<img src="{{ asset('img/ajax-loader-medium.gif') }}" alt="" />
+			</div>
+		</div>
+		<div class="files" id="files">
+			<div class="progress-bar progress-bar-success"></div>
+		</div>
+	</div>
+</div>

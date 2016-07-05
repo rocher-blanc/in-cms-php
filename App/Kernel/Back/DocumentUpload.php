@@ -4,16 +4,13 @@ namespace App\Kernel\Back;
 
 require VENDOR_PATH . '/blueimp/jquery-file-upload/server/php/UploadHandler.php';
 
-class Image extends \UploadHandler
+class DocumentUpload extends \UploadHandler
 {
 	function __construct($options = null, $initialize = true, $error_messages = null)
 	{
         $result = parent::__construct( $options, false, $error_messages ) ;
 		
 		unset( $this->options['image_versions']['thumbnail'] ) ;
-		
-		$this->error_messages['min_width']  = 'L\'image doit avoir une largeur minimum de ' . $this->options['min_width'] . 'px' ;
-        $this->error_messages['min_height'] = 'L\'image doit avoir une hauteur minimum de ' . $this->options['min_height'] . 'px' ;
 		
 		$this->initialize() ;
 	}
@@ -22,14 +19,7 @@ class Image extends \UploadHandler
 	{
         parent::initialize();
 		die; // ne pas toucher
-	}
-	
-	public function getAll()
-	{
-		return \DB::for_table('media')
-			->where_equal('module_id', $this->options['module_id'])
-			->find_many();
-	}
+    }
 	
     protected function handle_form_data($file, $index)
 	{
@@ -42,14 +32,14 @@ class Image extends \UploadHandler
         $file = parent::handle_file_upload($uploaded_file, $name, $size, $type, $error, $index, $content_range);
         if (empty($file->error))
 		{
-			$media = \DB::for_table('media')->create() ;
-            $media->media_name 		= $file->name;
-            $media->media_size 		= $file->size;
-            $media->media_type 		= $file->type;
-            $media->media_module_id = $this->options['module_id'];
-            $media->save() ;
+			$document = \DB::for_table('document')->create() ;
+            $document->document_name 		= $file->name;
+            $document->document_size 		= $file->size;
+            $document->document_type 		= $file->type;
+            $document->document_module_id 	= $this->options['module_id'];
+            $document->save() ;
 			
-			$file->id = $media->media_id ;
+			$file->id = $document->document_id ;
         }
         return $file;
     }
