@@ -4,7 +4,7 @@ namespace App\Kernel\Front;
 
 class Repository extends \App\Kernel\Repository
 {
-    protected $_limit_get_all = 10;
+    protected $_limit_get_all = NULL;
 
     public function getLimitGetAll()
     {
@@ -41,7 +41,8 @@ class Repository extends \App\Kernel\Repository
     {
         $table = \DB::getTableName( $this->getName() ) ;
 
-        $all = \DB::for_module( $this->getName() )->limit( $this->getLimitGetAll() );
+        $all = \DB::for_module( $this->getName() );
+        if ( $this->getLimitGetAll() !== NULL ) $all = $all->limit( $this->getLimitGetAll() );
 
         if ( $this->getEntity()->hasValidation() ) 	$all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
 
