@@ -469,10 +469,10 @@ class Controller
                 }
 
                 return $tab ;
-            break;
+                break;
             default :
                 if ( $this->getEntity()->hasParent() ) $content = $this->getTreeParent( $content , $alias ) ;
-            break;
+                break;
         }
 
 
@@ -505,62 +505,62 @@ class Controller
     /* ************************************************** */
 
     protected function deleteOnMenu()
-	{
-		$ct = \DB::for_table('menu_element')
-			->where(['menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
-			->count();
+    {
+        $ct = \DB::for_table('menu_element')
+            ->where(['menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
+            ->count();
 
-		if ( $ct > 0 )
-		{
-			$menus = \DB::for_table('menu')
-				->select('menu_id')
-				->find_many();
+        if ( $ct > 0 )
+        {
+            $menus = \DB::for_table('menu')
+                ->select('menu_id')
+                ->find_many();
 
-			if ( $menus )
-			{
-				foreach( $menus as $menu )
-				{
-					$elms = \DB::for_table('menu_element')
-						->where(['menu_element_menu_id' => $menu->menu_id , 'menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
-						->find_many();
+            if ( $menus )
+            {
+                foreach( $menus as $menu )
+                {
+                    $elms = \DB::for_table('menu_element')
+                        ->where(['menu_element_menu_id' => $menu->menu_id , 'menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
+                        ->find_many();
 
-					if ( $elms )
-					{
-						foreach( $elms as $elm )
-						{
-							$this->deleteElementByParent( $elm->menu_element_id , $menu->menu_id ) ;
-							$lang = \DB::for_table('menu_element_lang')
-								->where(['menu_element_lang_menu_element_id' => $elm->menu_element_id])
-								->delete_many();
+                    if ( $elms )
+                    {
+                        foreach( $elms as $elm )
+                        {
+                            $this->deleteElementByParent( $elm->menu_element_id , $menu->menu_id ) ;
+                            $lang = \DB::for_table('menu_element_lang')
+                                ->where(['menu_element_lang_menu_element_id' => $elm->menu_element_id])
+                                ->delete_many();
 
-							$parent_id = $elm->menu_element_parent_id ;
+                            $parent_id = $elm->menu_element_parent_id ;
 
-							$elm->delete();
+                            $elm->delete();
 
-							$brother = \DB::for_table('menu_element') ;
-							if ( is_null( $parent_id ) )   $bother = $brother->where_null('menu_element_parent_id') ;
-							else                           $bother = $brother->where_equal('menu_element_parent_id',$parent_id);
+                            $brother = \DB::for_table('menu_element') ;
+                            if ( is_null( $parent_id ) )   $bother = $brother->where_null('menu_element_parent_id') ;
+                            else                           $bother = $brother->where_equal('menu_element_parent_id',$parent_id);
 
-							$brother = $brother->where(['menu_element_menu_id' => $menu->menu_id])
-								->order_by_asc('menu_element_order')
-								->find_many();
+                            $brother = $brother->where(['menu_element_menu_id' => $menu->menu_id])
+                                ->order_by_asc('menu_element_order')
+                                ->find_many();
 
-							if ( $brother )
-							{
-								$index = 1;
-								foreach( $brother as $row )
-								{
-									$row->set('menu_element_order',$index);
-									$row->save();
-									$index++;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                            if ( $brother )
+                            {
+                                $index = 1;
+                                foreach( $brother as $row )
+                                {
+                                    $row->set('menu_element_order',$index);
+                                    $row->save();
+                                    $index++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     protected function deleteElementByParent( $idparent , $idmenu )
     {
@@ -880,7 +880,7 @@ class Controller
 
                         if ( ! $contentLang[ $lang->url ] )
                         {
-                            $contentLang[ $lang->url ] = $this->createLang();
+                            $contentLang[ $lang->url ] = $this->getRepository()->createLang();
                             $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
                         }
                     }
@@ -942,8 +942,8 @@ class Controller
                         if ( ! is_null( $saveParent ) ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $saveParent ) ;
                         else                            $result = $result->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                         $result = $result->where_not_equal( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() , $this->getId() )
-                                         ->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() )
-                                         ->find_many();
+                            ->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() )
+                            ->find_many();
 
                         if ( $result )
                         {
@@ -1528,7 +1528,7 @@ class Controller
         echo json_encode([
             'id' => [
                 'key' => 'id_' . $field->getColumn() ,
-                'value' => $Doc->getDocumentId() 
+                'value' => $Doc->getDocumentId()
             ],
             'files' => $json
         ]) ;

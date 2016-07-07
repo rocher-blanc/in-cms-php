@@ -26,6 +26,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="fcdbd3be-b67c-401d-9810-2879e2d742ab" name="VPS1 - Ayat" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfcbdfd3dfcbdfdedf98df9adf9bdf9ddf80" username="ayat">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

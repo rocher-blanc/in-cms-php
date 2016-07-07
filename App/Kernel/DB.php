@@ -104,14 +104,14 @@ class DB extends ORM
         {
             if ( ! $field->hasLang() )
             {
-                if ( ! array_key_exists( $field->getColumn() , $column ) )
+                if ( ! array_key_exists( $field->getColumn() , $column ) && $field->getData('SQL_TYPE') !== NULL )
                 {
                     $sql.= "ALTER TABLE `" . self::getTableName( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
                 }
             }
             else
             {
-                if ( ! array_key_exists( $field->getColumn() , $columnLang ) )
+                if ( ! array_key_exists( $field->getColumn() , $columnLang ) && $field->getData('SQL_TYPE') !== NULL )
                 {
                     $sql.= "ALTER TABLE `" . self::getTableNameLang( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
                 }
