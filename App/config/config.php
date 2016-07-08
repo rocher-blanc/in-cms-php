@@ -24,7 +24,6 @@ defined('BOWER_PATH') || define('BOWER_PATH', VENDOR_PATH . '/bower-asset');
 defined('IMAGE_PATH') || define('IMAGE_PATH', WEB_PATH . '/images');
 defined('DOCUMENT_PATH') || define('DOCUMENT_PATH', WEB_PATH . '/documents');
 defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
-defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 
 $configFileProject = PROJECT_PATH . '/config/config.php' ;
 
@@ -37,6 +36,8 @@ else
 {
     defined('FILE_CONFIG') || define('FILE_CONFIG',false);
 }
+
+defined('COUNTRY') || define('COUNTRY','fr');
 
 if ( defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_DATABASE') )
 {

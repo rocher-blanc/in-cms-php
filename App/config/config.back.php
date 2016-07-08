@@ -9,3 +9,5 @@ defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Back');
 defined('ASSETS_IMG_PATH') || define('ASSETS_IMG_PATH', WEB_PATH . '/' . \App\Kernel\Install::getAdminFolder() . '/assets/img');
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
+
+defined('COUNTRY') || define('COUNTRY','fr');
