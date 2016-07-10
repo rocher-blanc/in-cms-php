@@ -37,6 +37,7 @@ class Menu
 
     public function load( $id )
     {
+
         $contentRows = \DB::for_table('menu_element')
             ->left_outer_join('menu_element_lang', array('menu_element.menu_element_id', '=', 'menu_element_lang.menu_element_lang_menu_element_id'))
             ->where(['menu_element_lang.menu_element_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id,'menu_element.menu_element_menu_id' => $id])
@@ -119,13 +120,26 @@ class Menu
                     $obj->submenu 	= false;
                     $obj->subpages 	= [] ;
                     $obj->blank     = false ;
-                    $obj->active    = false ;
+                    $obj->active    = ( $this->Factory()->Url()->getFullUrl() == '/' . $obj->url ? true : false ) ;
 
                     $result[] = $obj ;
                 }
             }
 
             return $result ;
+        }
+
+        return false ;
+    }
+
+    private function isActive( $result )
+    {
+        if ( $result )
+        {
+            foreach( $result as $item )
+            {
+                if ( $item->active == true ) return true;
+            }
         }
 
         return false ;
@@ -197,6 +211,7 @@ class Menu
                         {
                             $obj->url = NULL ;
                             $obj->subpages = $this->getElementModule( $row->menu_element_module_id ) ;
+                            $obj->active = $this->isActive( $obj->subpages );
                         }
                     }
                     else
