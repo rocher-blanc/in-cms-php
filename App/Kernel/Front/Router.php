@@ -326,7 +326,7 @@ class Router
         $urlTab = $this->getUrl() ;
         $ct     = count( $urlTab ) ;
 
-        if ( $ct == 1 && $result )
+        if ( $ct == 1 && $result or ( $ct == 2 && $this->Lang()->count() > 1 ) )
         {
             $element = false ;
         }

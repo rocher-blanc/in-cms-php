@@ -30,13 +30,13 @@ class Repository extends \App\Kernel\Repository
         \DB::for_module_assoc( $this->getName() , $nameField )
             ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
             ->delete_many();
-
+ 
         // On insere
         if ( $field->getValue() !== NULL && is_array( $field->getValue() ) )
         {
             foreach( $field->getValue() as $row )
             {
-                \DB::add_assoc( $this->getName() , $nameField , $this->getId() , $row );
+                \DB::add_assoc( $this->getName() , $nameField , $id , $row );
             }
         }
     }

@@ -89,8 +89,9 @@ class Debug
         }
     }
 
-    public static function view()
+    public static function view( $var = NULL )
     {
+        if ( $var !== NULL ) self::save( $var );
         if ( !empty( self::$sql ) ) self::dump( self::$sql , "SQL" , false , true ) ;
         if ( !empty( self::$value ) )
         {
