@@ -408,9 +408,9 @@ class Controller
     /* *****************   CHECKBOX   ******************* */
     /* ************************************************** */
 
-    protected function getAssocValue( $nameField )
+    protected function getAssocValue( $field )
     {
-        $content = $this->getRepository()->getAssocValue( $nameField , $this->getId() );
+        $content = $this->getRepository()->getAssocValue( $field->getName()  , $this->getId() );
         $result  = [] ;
 
         if ( $content )
@@ -421,7 +421,25 @@ class Controller
             }
         }
 
-        return $result ;
+        if ( $result )
+        {
+            $rows = $this->Container()->module( $field->getObject() )->getRepository()->findIn( $result );
+            if ( $rows )
+            {
+                $elmts = [] ;
+
+                foreach( $rows as $row )
+                {
+                    $elmts[] = $this->Container()->module( $field->getObject() )->getController()->parseValue( $row );
+                }
+
+                return $elmts;
+            }
+        }
+        else
+        {
+            return [];
+        }
     }
 
     /* ************************************************** */
@@ -631,7 +649,7 @@ class Controller
             }
             else if ( $row->getType() == 'checkbox' )
             {
-                $arrayElement[ $row->getName() ] = $this->getAssocValue( $row->getName() ) ;
+                $arrayElement[ $row->getName() ] = $this->getAssocValue( $row ) ;
             }
             else if ( $row->getType() == 'select' )
             {
@@ -647,11 +665,11 @@ class Controller
                     {
                         $arrayElement[ $row->getName() ][ $name ] = strftime( $format , strtotime( $result->get( $row->getColumn() ) ) ) ;
                     }
-                }
+                }/*
                 else
                 {
                     $arrayElement[ $row->getName() ] = $this->getAssocValue( $row->getName() ) ;
-                }
+                }*/
             }
             else
             {

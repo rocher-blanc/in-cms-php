@@ -34,6 +34,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="c7a26ffa-34f7-438f-888b-112ceb1907af" name="VPS1 - Juliette" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="df99dfcfdf98dfc2dfe9dfe7df9ddf9fdfcfdfc7dffcdff8" username="juliette">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Photo">
+  <component name="PublishConfigData" serverName="VPS1 - Juliette">
     <serverData>
       <paths name="VPS1 - Ayat">
         <serverdata>
@@ -10,6 +10,13 @@
         </serverdata>
       </paths>
       <paths name="VPS1 - Euroasian">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/vendor/jweb/cms" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - Juliette">
         <serverdata>
           <mappings>
             <mapping deploy="/vendor/jweb/cms" local="$PROJECT_DIR$" web="/" />
@@ -31,6 +38,5 @@
         </serverdata>
       </paths>
     </serverData>
-    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

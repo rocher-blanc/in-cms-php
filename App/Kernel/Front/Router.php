@@ -490,5 +490,7 @@ class Router
                 $this->Lang()->setUrl( $module->module_lang_lang_id , $module->module_lang_url . '/' . $urlElement[ $module->module_lang_lang_id ] );
             }
         }
+
+        $this->Lang()->setFront();
     }
 }

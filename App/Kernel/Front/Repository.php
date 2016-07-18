@@ -32,6 +32,13 @@ class Repository extends \App\Kernel\Repository
         return $result->find_one();
     }
 
+    public function findIn( $tab )
+    {
+        $idName	= \DB::getIdName( $this->getName() ) ;
+
+        return $this->getKit()->where_in( $idName , $tab )->find_many();
+    }
+
     public function findAll()
     {
         return $this->getKit()->find_many();

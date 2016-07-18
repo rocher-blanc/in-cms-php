@@ -28,7 +28,7 @@
         <link rel="canonical" href="{{ siteUrl( site.url ) }}" />
         {% if lang.count > 1 %}
             {% for l in lang.all %}
-               {% if l.url != lang.active.url %}<link rel="alternate" href="{{ siteUrl( '/' ~ l.url ~ site.alternate ) }}" hreflang="{{ l.url }}" />{% endif %}
+               {% if l.url != lang.active.url %}<link rel="alternate" href="{{ l.alternate }}" hreflang="{{ l.url }}" />{% endif %}
             {% endfor %}
         {% endif %}
     </head>

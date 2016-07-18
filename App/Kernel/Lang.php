@@ -35,7 +35,7 @@ class Lang
     {
         if ( is_object( $obj ) )
         {
-            $this->_lang[ $obj->lang_id ] = $obj ;
+            $this->_lang[ $obj->id ] = $obj ;
         }
     }
 
@@ -50,6 +50,8 @@ class Lang
 
         if ( $url == $this->getDefault()->url && $id_lang == $this->getDefault()->id )  $this->_url[ $id_lang ].= '' ;
         else                                                                            $this->_url[ $id_lang ].= ( $preffix == true ? $this->get( $id_lang )->url . "/" : '' ) . $url ;
+
+        \App\Kernel\Debug::save( $this->_url[ $id_lang ] , $id_lang );
     }
 
     public function setActive( $obj )
@@ -128,13 +130,14 @@ class Lang
             $langObj 		    = new \stdClass();
             $langObj->id	    = $r->lang_id;
             $langObj->url 	    = $r->lang_url;
-            $langObj->full_url  = $this->_url[ $r->id_lang ] ;
+            $langObj->full_url  = $this->_url[ intval( $r->lang_id ) ] ;
             $langObj->name 	    = $r->lang_display;
             $langObj->locale 	= $r->lang_locale;
             $langObj->flag 	    = $r->lang_flag;
 
             $this->setTabLang( $r->lang_id ) ;
             $this->setLang( $langObj );
+
             if ( $i == 0 ) $this->setDefault( $langObj );
             $i++;
         }

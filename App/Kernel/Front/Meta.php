@@ -53,7 +53,6 @@ class Meta
         $this->CMS()->view()->appendData([
             'site' => [
                 'url' => $this->Factory()->Url()->getFullUrl(),
-                'alternate' => str_replace( '/' . $this->Lang()->getActive()->url . '/' , '/' , $this->Factory()->Url()->getFullUrl() ),
                 'referer' => $_SERVER['HTTP_REFERER'],
                 'get' => $_GET
             ],
