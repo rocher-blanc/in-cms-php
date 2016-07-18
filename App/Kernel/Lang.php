@@ -12,6 +12,7 @@ class Lang
 
     private $_lang 		= [] ;
     private $_tab 		= [] ;
+    private $_url 		= [] ;
     private $_default 	= NULL ;
     private $_active 	= NULL ;
     private $_count 	= 0 ;
@@ -34,13 +35,21 @@ class Lang
     {
         if ( is_object( $obj ) )
         {
-            array_push( $this->_lang , $obj );
+            $this->_lang[ $obj->lang_id ] = $obj ;
         }
     }
 
     private function setDefault( $obj )
     {
         $this->_default = $obj ;
+    }
+
+    public function setUrl( $id_lang , $url , $preffix = true )
+    {
+        $this->_url[ $id_lang ] = \App\Kernel\Http::getInstance()->getUrl() . '/' ;
+
+        if ( $url == $this->getDefault()->url && $id_lang == $this->getDefault()->id )  $this->_url[ $id_lang ].= '' ;
+        else                                                                            $this->_url[ $id_lang ].= ( $preffix == true ? $this->get( $id_lang )->url . "/" : '' ) . $url ;
     }
 
     public function setActive( $obj )
@@ -98,6 +107,11 @@ class Lang
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
 
+    public function get( $id )
+    {
+        return $this->_lang[ $id ] ;
+    }
+
     private function loadActiveLang( $front = false )
     {
         $rows = \DB::for_table('lang')
@@ -114,6 +128,7 @@ class Lang
             $langObj 		    = new \stdClass();
             $langObj->id	    = $r->lang_id;
             $langObj->url 	    = $r->lang_url;
+            $langObj->full_url  = $this->_url[ $r->id_lang ] ;
             $langObj->name 	    = $r->lang_display;
             $langObj->locale 	= $r->lang_locale;
             $langObj->flag 	    = $r->lang_flag;

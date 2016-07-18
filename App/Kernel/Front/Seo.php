@@ -65,4 +65,24 @@ class Seo
         if ( $row ) return $row->seo_url ;
         else        return '' ;
     }
+
+    public function getAllUrl()
+    {
+        $tab  = [];
+        $rows = \DB::for_table('seo')
+            ->select('seo_url')
+            ->select('seo_lang_id')
+            ->where([ 'seo_element_id' => $this->getElementId() , 'seo_module_id' => $this->getModuleId()])
+            ->find_many();
+
+        if ( $rows )
+        {
+            foreach( $rows as $row )
+            {
+                $tab[ $row->seo_lang_id ] = $row->seo_url;
+            }
+        }
+
+        return $tab ;
+    }
 }

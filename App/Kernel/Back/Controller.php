@@ -451,7 +451,7 @@ class Controller
         if ( $this->getEntity()->hasOrder() )        $content = $content->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
         else                                         $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
 
-        if ( $this->getEntity()->hasValidation() )   $content = $content->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
+        // if ( $this->getEntity()->hasValidation() )   $content = $content->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
 
         $content = $content->find_many();
 

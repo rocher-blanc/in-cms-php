@@ -299,6 +299,7 @@ class Router
         {
             $result = \DB::for_table('module')
                 ->select('module_class_name')
+                ->select('module_id')
                 ->where(['module_default' => 1, 'module_active' => 1])
                 ->find_one();
         }
@@ -310,6 +311,8 @@ class Router
                 ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
                 ->find_one();
         }
+  
+ //        if ( $this->Lang()->count() > 1 ) $this->urlElementModule( $mp , $id , $result-> );
 
         $this->loadController( $result->module_class_name , true , $mp ) ;
     }
@@ -318,6 +321,7 @@ class Router
     {
         $result = \DB::for_table('module')
             ->select('module.module_class_name')
+            ->select('module.module_id')
             ->left_outer_join('module_lang', array('module.module_id', '=', 'module_lang.module_lang_module_id'))
             ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_url' => $this->getUrl( $this->getOffset() )])
             ->where_equal('module.module_active', 1)
@@ -349,6 +353,8 @@ class Router
 
         if ( $page )
         {
+            if ( $this->Lang()->count() > 1 ) $this->urlDefaultPage() ;
+
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
@@ -383,6 +389,8 @@ class Router
 
         if ( $page )
         {
+            if ( $this->Lang()->count() > 1 ) $this->urlPage( $page->page_id ) ;
+
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
@@ -400,6 +408,86 @@ class Router
             else
             {
                 $app->pass() ;
+            }
+        }
+    }
+
+    /* ************************************************** */
+    /* *****************     URL      ******************* */
+    /* ************************************************** */
+
+    protected function urlPage( $id )
+    {
+        $urlPage = \DB::for_table('page_lang')
+            ->select('page_lang_url')
+            ->select('page_lang_lang_id')
+            ->where(['page_lang_page_id' => $id])
+            ->find_many();
+
+        foreach( $urlPage as $row )
+        {
+            $this->Lang()->setUrl( $row->page_lang_lang_id , $row->page_lang_url );
+        }
+
+        $this->Lang()->setFront();
+    }
+
+    protected function urlDefaultPage()
+    {
+        foreach( $this->Lang()->getAll() as $l )
+        {
+            $this->Lang()->setUrl( $l->id , ( $this->Lang()->getDefault()->id != $l->id ? $l->url : '' )  , false );
+        }
+
+        $this->Lang()->setFront();
+    }
+
+    protected function urlModule( $id )
+    {
+        $result = \DB::for_table('module_lang')
+            ->select('module_lang_url')
+            ->select('module_lang_lang_id')
+            ->where(['module_lang_module_id' => $id])
+            ->find_many();
+
+        foreach( $result as $row )
+        {
+            $this->Lang()->setUrl( $row->module_lang_lang_id , $row->module_lang_url );
+        }
+
+        $this->Lang()->setFront();
+    }
+
+    protected function urlElementModule( $mp , $id , $id_module )
+    {
+        if ( $mp )
+        {
+            $Seo = new \App\Kernel\Front\Seo;
+            $Seo->setElementId( $id ) ;
+            $Seo->setModuleId( $id_module ) ;
+            $urlElement = $Seo->getAllUrl() ;
+
+            foreach( $urlElement as $lang_id => $url )
+            {
+                $this->Lang()->setUrl( $lang_id , $url );
+            }
+        }
+        else
+        {
+            $Seo = new \App\Kernel\Front\Seo;
+            $Seo->setElementId( $id ) ;
+            $Seo->setModuleId( $id_module ) ;
+            $urlElement = $Seo->getAllUrl() ;
+
+            $result = \DB::for_table('module_lang')
+                ->select('module_lang_url')
+                ->select('module_lang_lang_id')
+                ->where(['module_lang_module_id' => $id_module])
+                ->find_many();
+
+            foreach( $result as $module )
+            {
+                $this->Lang()->setUrl( $module->module_lang_lang_id , $module->module_lang_url . '/' . $urlElement[ $module->module_lang_lang_id ] );
             }
         }
     }
