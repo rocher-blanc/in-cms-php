@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Back;
 
-class Document extends \App\Kernel\Document
+class Document extends \App\Kernel\Common\Document
 {
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
