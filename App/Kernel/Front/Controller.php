@@ -647,6 +647,26 @@ class Controller
                     $arrayElement[ $row->getName() ] = $tab;
                 }
             }
+            else if ( $row->getType() == 'document' )
+            {
+                if ( $result->get( $row->getColumn() ) == 0 )
+                {
+                    $arrayElement[ $row->getName() ] = [];
+                }
+                else
+                {
+                    $Doc = new \App\Kernel\Front\Document;
+                    $Doc->setDocumentId( $result->get( $row->getColumn() ) );
+                    $Doc->getNameById();
+
+                    $tab = [];
+
+                    $tab['url']  = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
+                    $tab['icon'] = $Doc->getIcon( $Doc->getDocumentName() );
+
+                    $arrayElement[ $row->getName() ] = $tab;
+                }
+            }
             else if ( $row->getType() == 'checkbox' )
             {
                 $arrayElement[ $row->getName() ] = $this->getAssocValue( $row ) ;
@@ -657,19 +677,15 @@ class Controller
             }
             else if ( $row->getType() == 'date' )
             {
+                $arrayElement[ $row->getName() ]['source'] = $result->get( $row->getColumn() );
+
                 if ( $row->hasFormat() )
                 {
-                    $arrayElement[ $row->getName() ]['source'] = $result->get( $row->getColumn() );
-
                     foreach( $row->getFormat() as $name => $format )
                     {
                         $arrayElement[ $row->getName() ][ $name ] = strftime( $format , strtotime( $result->get( $row->getColumn() ) ) ) ;
                     }
-                }/*
-                else
-                {
-                    $arrayElement[ $row->getName() ] = $this->getAssocValue( $row->getName() ) ;
-                }*/
+                }
             }
             else
             {
