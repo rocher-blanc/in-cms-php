@@ -20,9 +20,9 @@ class Document
 		else																		return true ;
 	}
 	
-	private function validValue( $mini )
+	private function validValue( $file )
 	{
-        if ( $this->hasValue() && file_exists( WEB_PATH . $mini ) ) 	return true ;
+        if ( $this->hasValue() && file_exists( WEB_PATH . $file ) ) 	return true ;
 		else															return false ;
 	}
 	
@@ -33,30 +33,36 @@ class Document
 		$this->_lib_js  = [
 			'jquery-file-upload/js/vendor/jquery.ui.widget.js',
 			'jquery-file-upload/js/jquery.iframe-transport.js',
-			'jquery-file-upload/js/jquery.fileupload.js',
-			'jcrop/js/jquery.Jcrop.min.js'
+			'jquery-file-upload/js/jquery.fileupload.js'
 		];
 		
 		$this->_lib_css = [
-			'jquery-file-upload/css/jquery.fileupload.css',
-			'jcrop/css/jquery.Jcrop.min.css'
+			'jquery-file-upload/css/jquery.fileupload.css'
 		];
 		
 		if ( $this->hasValue() ) 
 		{
 			$this->_doc->setDocumentId( $value );
-			$this->_doc->getById();
+            $this->_doc->getNameById();
 		}
 
 		$html = '
-		<div id="bloc_doc_id_' . $name . '">
+		<div id="bloc_doc_id_' . $name . '" data-nodoc="' . \App\Kernel\Message::getInstance()->get("no_document") . '">
 			<input type="hidden" name="' . $name . '" id="id_' . $name . '" value="' . ( $this->validValue( $value ) == true ? $value : '' ) . '" />
 				<div class="blocDocument" id="doc_source_' . $field->getName() . '">' ;
 					if ( $this->hasValue() )
 					{
 						// on affiche le document
+                        $ico = $this->_doc->getIcon( $this->_doc->getDocumentName() );
+                        $html.= '<i class="fa fa-file' . $ico->class . '-o" style="color: ' . $ico->color . '"></i> ' ;
+                        $html.= '<span>' . $this->_doc->getDocumentName() . '</span>' ;
 					}
-					$html.= '
+					else
+                    {
+                        $html.= \App\Kernel\Message::getInstance()->get("no_document") ;
+                    }
+
+        $html.= '
 				</div>
 				<a class="btn btn-info fileinput-button openDocument" data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/document' ) . '">
 					<i class="fa fa-plus"></i>

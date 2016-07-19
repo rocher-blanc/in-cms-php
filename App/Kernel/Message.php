@@ -59,7 +59,15 @@ class Message
 			"deletemedia_delete_is_impossible"	=> "L'image ne peut pas être supprimée car elle est encore utilisée",
 			"deletemedia_media_not_found"		=> "L'image n'existe plus dans la base de données",
 			"deletemedia_no_ressource"			=> "Il n'y a plus aucune image en base de données",
-			
+
+            /* DOCUMENT */
+            "no_document"                           => "Aucun document n'est actuellement sélectionné",
+            "deletedocument_success"                => "Le document a bien été supprimé",
+            "deletedocument_failed"                 => "Une erreur est survenue lors de la suppression du document",
+            "deletedocument_delete_is_impossible"   => "Le document ne peut pas être supprimé car elle est encore utilisé",
+            "deletedocument_media_not_found"        => "Le document n'existe plus dans la base de données",
+            "deletedocument_no_ressource"           => "Il n'y a plus aucun document en base de données",
+
 			/* METADATA */
 			"metadata_success" 	=> "Les métadonnées ont bien été mis à jour",
 

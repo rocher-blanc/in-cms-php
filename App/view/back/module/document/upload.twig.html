@@ -2,7 +2,7 @@
 	<div class="title">
 		Gestion des documents
 		<span class="pull-right">
-			{% if noDocument != true %}<a href="{{ siteUrl('module/' ~ mod.name ~ '/document') }}" class="link-popup btn btn-xs btn-success"><i class="fa fa-picture-o"></i> Voir les documents</a>{% endif %}
+			{% if noDocument != true %}<a href="{{ siteUrl('module/' ~ mod.name ~ '/document') }}" class="link-popup-doc btn btn-xs btn-success"><i class="fa fa-picture-o"></i> Voir les documents</a>{% endif %}
 			<a href="javascript:;" class="close-popup btn btn-xs btn-danger"><i class="fa fa-times"></i> Fermer</a>
 		</span>
 	</div>
@@ -12,7 +12,7 @@
 			<span class="btn btn-success fileinput-button" id="btn-upload">
 				<i class="glyphicon glyphicon-plus"></i>
 				<span>Sélectionner un document</span>
-				<input type="file" name="files" id="fileupload" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/doc_postupload') }}" data-url="{{ siteUrl('module/' ~ mod.name ~ '/doc_upload') }}" />
+				<input type="file" name="files" id="doc_fileupload" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/doc_postupload') }}" data-url="{{ siteUrl('module/' ~ mod.name ~ '/doc_upload') }}" />
 			</span>
 			<div class="loading">
 				<div id="num">1 %</div>

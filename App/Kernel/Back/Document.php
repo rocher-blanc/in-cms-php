@@ -127,7 +127,30 @@ class Document
         return $arrayDoc ;
     }
 
-    private function getIcon( $name )
+    public function delete()
+    {
+        $this->getNameById() ;
+
+        $path = DOCUMENT_PATH . '/' . $this->getFolder() . '/' ;
+        $doc  = $path . '/' . $this->getDocumentName() ;
+
+        if ( file_exists( $doc ) )
+        {
+            unlink( $doc ) ;
+
+            $document = \DB::for_table('document')
+                ->where_id_is( $this->getDocumentId() )
+                ->find_one();
+
+            $document->delete();
+
+            return true ;
+        }
+
+        return false ;
+    }
+
+    public function getIcon( $name )
     {
         $exp 	= explode( "." , $name ) ;
         $ext 	= end( $exp ) ;
@@ -214,7 +237,10 @@ class Document
             ->where_equal( 'document_id' , $this->getDocumentId() )
             ->find_one();
 
-        if ( $rst ) $this->setDocumentName( $rst->document_name ) ;
+        if ( $rst )
+        {
+            $this->setDocumentName( $rst->document_name ) ;
+        }
 
         if ( $rst )	return true ;
         else		return false ;

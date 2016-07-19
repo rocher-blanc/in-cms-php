@@ -3,7 +3,7 @@
 	<div class="title">
 		Gestion des documents
 		<span class="pull-right">
-			<a href="{{ siteUrl('module/' ~ mod.name ~ '/doc_newupload') }}" class="link-popup btn btn-xs btn-success"><i class="fa fa-upload"></i> Uploader un nouveau fichier</a>
+			<a href="{{ siteUrl('module/' ~ mod.name ~ '/doc_newupload') }}" class="link-popup-doc btn btn-xs btn-success"><i class="fa fa-upload"></i> Uploader un nouveau fichier</a>
 			<a href="javascript:;" class="close-popup btn btn-xs btn-danger"><i class="fa fa-times"></i> Fermer</a>
 		</span>
 	</div>
@@ -12,7 +12,7 @@
 			<div class="doc">
 				<div class="row">
 					<div class="col-xs-8">
-						<a href="javascript:;" class="actionclickmedia" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/postclick') }}" data-id="{{ document.document_id }}">
+						<a href="javascript:;" class="actionclickdocument" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/doc_postclick') }}" data-id="{{ document.document_id }}">
 							<i class="fa fa-file{{ document.document_icon.class }}-o" style="color: {{ document.document_icon.color }}"></i> {{ document.document_name }}
 						</a>
 					</div>
@@ -20,7 +20,7 @@
 						{{ document.document_size }}
 					</div>
 					<div class="col-xs-2">
-						<a{% if document.document_delete == true %} class="btn btn-xs btn-danger deleteMedia" data-module="{{ mod.name }}" data-id="{{ document.document_id }}" href="{{ siteUrl('module/' ~ mod.name ~ '/deletedocument/' ~ document.document_id ~ '/' ~ csrf_token) }}"{% else %} class="btn btn-xs btn-default disabled"{% endif %}>
+						<a{% if document.document_delete == true %} class="btn btn-xs btn-danger deleteDocument" data-module="{{ mod.name }}" data-id="{{ document.document_id }}" href="{{ siteUrl('module/' ~ mod.name ~ '/deletedocument/' ~ document.document_id ~ '/' ~ csrf_token) }}"{% else %} class="btn btn-xs btn-default disabled"{% endif %}>
 							<i class="fa fa-trash-o"></i> Supprimer
 						</a>
 					</div>

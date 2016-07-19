@@ -19,19 +19,6 @@ class User
         return 'jcontent_user' ;
     }
 
-    /* ************************************************** */
-    /* ****************     TOOLS     ******************* */
-    /* ************************************************** */
-
-    protected function post( $key )
-    {
-        return \App\Kernel\CMS::getInstance()->request()->post( $key ) ;
-    }
-
-    /* ************************************************** */
-    /* ****************   FUNCTIONS   ******************* */
-    /* ************************************************** */
-
     public static function getInstance()
     {
         if ( self::$instance === NULL )
@@ -42,18 +29,29 @@ class User
         return self::$instance ;
     }
 
-    protected function login()
+    /* ************************************************** */
+    /* ****************     TOOLS     ******************* */
+    /* ************************************************** */
+
+    protected function post( $key )
     {
+        return \App\Kernel\CMS::getInstance()->request()->post( $key ) ;
+    }
+
+    /* ************************************************** */
+    /* ****************    ACTIONS    ******************* */
+    /* ************************************************** */
+
+    public function login()
+    {
+        /*
+         * @POST
+         * user_login
+         * user_password
+         */
+
         if ( ! $this->isLogged() )
         {
-            /*
-             * @POST
-             * user_login
-             * user_password
-             */
-
-            // on utilise password_verify()
-
             $login    = $this->post('user_login') ;
             $password = $this->post('user_password') ;
 
@@ -79,17 +77,6 @@ class User
                 return false ;
             }
         }
-    }
-
-    protected function save( $user )
-    {
-        $_SESSION[ $this->getSessionName() ] = [
-            'id' 		=> $user->user_front_id,
-            'login' 	=> $user->user_front_login,
-            'group_id' 	=> $user->user_front_group_id,
-            'logged_in' => true,
-            'ip' 		=> $this->getIp()
-        ];
     }
 
     protected function logout()
@@ -142,6 +129,21 @@ class User
              * user_login
              */
         }
+    }
+
+    /* ************************************************** */
+    /* ****************   FUNCTIONS   ******************* */
+    /* ************************************************** */
+
+    protected function save( $user )
+    {
+        $_SESSION[ $this->getSessionName() ] = [
+            'id' 		=> $user->user_front_id,
+            'login' 	=> $user->user_front_login,
+            'group_id' 	=> $user->user_front_group_id,
+            'logged_in' => true,
+            'ip' 		=> $this->getIp()
+        ];
     }
 
     protected function isLogged()

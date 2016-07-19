@@ -1438,7 +1438,14 @@ class Controller
         }
 
         $this->getApp()->contentType('application/json');
-        echo json_encode( [ 'id' => [ 'key' => 'id_' . $field->getColumn() , 'value' => $Media->getImageId() , 'linkCrop' => $this->Factory()->Url()->get( 'module/' . $this->getEntityName() . '/crop/' . $Media->getImageId() ) ] , 'files' => $json ] ) ;
+        echo json_encode([
+            'id' => [
+                'key' => 'id_' . $field->getColumn() ,
+                'value' => $Media->getImageId() ,
+                'linkCrop' => $this->Factory()->Url()->get( 'module/' . $this->getEntityName() . '/crop/' . $Media->getImageId() )
+            ],
+            'files' => $json
+        ]) ;
     }
 
     /* ************************************************** */
@@ -1467,7 +1474,7 @@ class Controller
                 {
                     foreach( $fieldDoc as $field )
                     {
-                        if ( array_key_exists( $row->get( $field ) , $documents ) ) $documents[ $row->get( $field ) ]->doc_delete = false ;
+                        if ( array_key_exists( $row->get( $field ) , $documents ) ) $documents[ $row->get( $field ) ]->document_delete = false ;
                     }
                 }
             }
@@ -1480,6 +1487,43 @@ class Controller
         {
             $this->setRender( 'noDocument' , true ) ;
             $this->doc_newuploadAction() ;
+        }
+    }
+
+    protected function deletedocumentAction()
+    {
+        $this->checkToken() ;
+
+        $Doc = new \App\Kernel\Back\Document;
+        $Doc->setModuleId( $this->getEntityId() ) ;
+        $Doc->setDocumentId( $this->getId() );
+        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+        $docs = $Doc->getAll() ;
+
+        if ( $docs )
+        {
+            if ( array_key_exists( $this->getId() , $docs ) )
+            {
+                if ( $docs[ $this->getId() ]->document_delete == true )
+                {
+                    $rst = $Doc->delete();
+
+                    if ( $rst ) $this->Factory()->Response()->returnJSON( $this->m("deletedocument_success") , true ) ;
+                    else		$this->Factory()->Response()->returnJSON( $this->m("deletedocument_failed") ) ;
+                }
+                else
+                {
+                    $this->Factory()->Response()->returnJSON( $this->m("deletedocument_delete_is_impossible") ) ;
+                }
+            }
+            else
+            {
+                $this->Factory()->Response()->returnJSON( $this->m("deletedocument_media_not_found") ) ;
+            }
+        }
+        else
+        {
+            $this->Factory()->Response()->returnJSON( $this->m("deletedocument_no_ressource") ) ;
         }
     }
 
@@ -1509,6 +1553,15 @@ class Controller
         }
     }
 
+    protected function doc_postclickAction()
+    {
+        $Doc = new \App\Kernel\Back\Document;
+        $Doc->setDocumentId( $this->getApp()->request->post('dataid') );
+        $Doc->getNameById();
+
+        $this->parsePostDocument( $Doc->getDocumentId() , $this->getApp()->request->post('field') , false ) ;
+    }
+
     protected function parsePostDocument( $idFile , $fieldName , $upload = true )
     {
         $field = $this->getEntity()->build( $fieldName )->field();
@@ -1521,7 +1574,8 @@ class Controller
 
         $json[] = [
             'key' => "source_" . $field->getName(),
-            'file' => $this->Factory()->Url()->get( $this->getEntity()->getPathDocument( false ) . '/' . $Doc->getDocumentName() , true )
+            'name' => $Doc->getDocumentName(),
+            'ico' => $Doc->getIcon( $Doc->getDocumentName() ),
         ];
 
         $this->getApp()->contentType('application/json');
