@@ -53,5 +53,7 @@ class User extends \Slim\Middleware
                 $this->user()->validation();
             }
         }
+
+        $this->user()->appendVar();
     }
 }

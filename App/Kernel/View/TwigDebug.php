@@ -23,7 +23,13 @@ class TwigDebug extends \Twig_Extension
         if ( ! DEBUG ) return;
 
         ob_start();
-        if ( func_num_args() > 0 ) \App\Kernel\Debug::dump( func_get_args() , null , false , false ) ;
+        if ( func_num_args() > 0 )
+        {
+            foreach( func_get_args() as $row )
+            {
+                \App\Kernel\Debug::dump( $row , null , false , false ) ;
+            }
+        }
         return ob_get_clean();
     }
 }

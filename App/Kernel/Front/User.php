@@ -19,6 +19,11 @@ class User
         return $this->CMS()->request()->isAjax() ;
     }
 
+    protected function isLogged()
+    {
+        return ( isset( $_SESSION[ $this->getSessionName() ] ) && !empty( $_SESSION[ $this->getSessionName() ] ) );
+    }
+
     /* ************************************************** */
     /* ****************    GETTER     ******************* */
     /* ************************************************** */
@@ -62,6 +67,11 @@ class User
         return $this->CMS()->request()->post( $key ) ;
     }
 
+    protected function getIp()
+    {
+        return $this->CMS()->request()->getIp() ;
+    }
+
     protected function returnError( $key , $result = false )
     {
         if ( $this->isAjax() )
@@ -77,6 +87,15 @@ class User
                 ]
             ]);
         }
+    }
+
+    public function appendVar()
+    {
+        $this->CMS()->view()->appendData([
+            'user' => [
+                'isLogged' => $this->isLogged()
+            ]
+        ]);
     }
 
     /* ************************************************** */
@@ -191,10 +210,5 @@ class User
             'logged_in' => true,
             'ip' 		=> $this->getIp()
         ];
-    }
-
-    protected function isLogged()
-    {
-        return ( isset( $_SESSION[ $this->getSessionName() ] ) && !empty( $_SESSION[ $this->getSessionName() ] ) );
     }
 }

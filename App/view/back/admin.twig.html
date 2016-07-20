@@ -102,12 +102,12 @@
                                 </li>
                                 <li{% if menu == 'user' %} class="active"{% endif %}>
 									<a href="{{ siteUrl('/ext/user') }}">
-										<i class="fa fa-user"></i> <span>Utilisateurs</span>
+										<i class="fa fa-user"></i> <span>Administrateurs</span>
 									</a>
 								</li>
 								<li{% if menu == 'group' %} class="active"{% endif %}>
 									<a href="{{ siteUrl('/ext/group') }}">
-										<i class="fa fa-users"></i> <span>Groupes d'utilisateurs</span>
+										<i class="fa fa-users"></i> <span>Groupes d'administrateurs</span>
 									</a>
 								</li>
 								<li{% if menu == 'langue' %} class="active"{% endif %}>
@@ -117,26 +117,47 @@
 								</li>
 							</ul>
 						</li>
-						<li class="parent{% if menu == 'metadata' or menu == 'redirect' %} expanded active{% endif %}">
-							<a href="#">
-								<i class="fa fa-line-chart"></i>
-								<span>SEO</span>
-							</a>
-							<ul class="nav children">
-								<li{% if menu == 'metadata' %} class="active"{% endif %}>
-									<a href="{{ siteUrl('/ext/metadata') }}">
-										<i class="fa fa-rss"></i> <span>Métadonnées</span>
-									</a>
-								</li>
-								<!--
+                        <li class="parent{% if menu == 'metadata' or menu == 'redirect' %} expanded active{% endif %}">
+                            <a href="#">
+                                <i class="fa fa-line-chart"></i>
+                                <span>SEO</span>
+                            </a>
+                            <ul class="nav children">
+                                <li{% if menu == 'metadata' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/metadata') }}">
+                                        <i class="fa fa-rss"></i> <span>Métadonnées</span>
+                                    </a>
+                                </li>
+                                <!--
 								<li{% if menu == 'redirect' %} class="active"{% endif %}>
 									<a href="{{ siteUrl('/admin/redirect') }}">
 										<i class="fa fa-retweet"></i> <span>Redirection 301</span>
 									</a>
 								</li>
 								-->
-							</ul>
-						</li>
+                            </ul>
+                        </li>
+						{% if isAdmin == true %}
+                            <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' %} expanded active{% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-line-chart"></i>
+                                    <span>Utilisateurs</span>
+                                </a>
+                                <ul class="nav children">
+                                    <li{% if menu == 'user_front' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/user_front') }}">
+                                            <i class="fa fa-user"></i> <span>Utilisateurs</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'user_front_group' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/user_front_group') }}">
+                                            <i class="fa fa-users"></i> <span>Groupes d'utilisateurs</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+						{% endif %}
 						{% if isAdmin == true %}
                             <li class="parent{% if menu == 'log' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
                                 <a href="#">

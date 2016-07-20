@@ -97,7 +97,8 @@ class Menu
 		$this->getApp()->view()->appendData([
             'adminFolder'   => \App\Kernel\Install::getAdminFolder(),
             'menu'          => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
-			'menuTree'      => $rowsArray
+			'menuTree'      => $rowsArray,
+			'user'     		=> ACTIVE_USER
         ]);
 	}
 }
