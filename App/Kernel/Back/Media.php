@@ -8,34 +8,16 @@ class Media
 	/* ****************   VARIABLES   ******************* */
 	/* ************************************************** */
 	
-	private $image_id = NULL ;
 	private $module_id = NULL ;
-	private $image_name = NULL ;
 	private $folder_name = NULL ;
-
-	/* ************************************************** */
-	/* ****************   CONSTRUCT   ******************* */
-	/* ************************************************** */
-
-	public function __construct() {}
 
 	/* ************************************************** */
 	/* ******************   SETTER   ******************** */
 	/* ************************************************** */
 
-	public function setImageId( $var )
-	{
-		$this->image_id = $var ;
-	}
-
 	public function setModuleId( $var )
 	{
 		$this->module_id = $var ;
-	}
-
-	public function setImageName( $var )
-	{
-		$this->image_name = $var ;
 	}
 
 	public function setFolder( $var )
@@ -50,16 +32,6 @@ class Media
 	public function getModuleId()
 	{
 		return $this->module_id ;
-	}
-	
-	public function getImageId()
-	{
-		return $this->image_id ;
-	}
-	
-	public function getImageName()
-	{
-		return $this->image_name ;
 	}
 	
 	public function getFolder()
@@ -104,19 +76,6 @@ class Media
 
 		return $arrayMedia ;
 	}
-
-    public function getNameById()
-    {
-        $rst = \DB::for_table('media')
-            ->select('media_name')
-            ->where_equal( 'media_id' , $this->getImageId() )
-            ->find_one();
-
-        if ( $rst ) $this->setImageName( $rst->media_name ) ;
-
-        if ( $rst )	return true ;
-        else		return false ;
-    }
 	
 	public function getIdByName()
 	{
@@ -262,19 +221,6 @@ class Media
 	private function getMiniName( $name )
 	{
 		return $this->getMini( $name , 't' , 100 , 100 ) ;
-	}
-	
-	public function getMini( $name , $type , $width , $height )
-	{
-		$exp 	= explode( "." , $name ) ;
-		$ct  	= count( $exp ) ;
-		$ext 	= $exp[ $ct - 1 ] ;
-		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
-		$name   = substr( $name , 0 , $extlen ) ;
-		
-		if ( empty( $name ) ) return false ;
-
-        return $type  . '/' . $name . "-".$width."x".$height."." . $ext ;
 	}
 	
 	private function getExtension( $name )
