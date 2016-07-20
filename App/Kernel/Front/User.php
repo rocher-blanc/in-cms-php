@@ -11,6 +11,15 @@ class User
     protected static $instance = NULL ;
 
     /* ************************************************** */
+    /* ****************     ISER      ******************* */
+    /* ************************************************** */
+
+    protected function isAjax()
+    {
+        return $this->CMS()->request()->isAjax() ;
+    }
+
+    /* ************************************************** */
     /* ****************    GETTER     ******************* */
     /* ************************************************** */
 
@@ -33,9 +42,41 @@ class User
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
 
+    protected function CMS()
+    {
+        return \App\Kernel\CMS::getInstance() ;
+    }
+
+    protected function text( $key )
+    {
+        return \App\Kernel\Front\Translate::getInstance()->getText( $key ) ;
+    }
+
+    protected function Factory()
+    {
+        return \App\Kernel\Factory::getInstance() ;
+    }
+
     protected function post( $key )
     {
-        return \App\Kernel\CMS::getInstance()->request()->post( $key ) ;
+        return $this->CMS()->request()->post( $key ) ;
+    }
+
+    protected function returnError( $key , $result = false )
+    {
+        if ( $this->isAjax() )
+        {
+            $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+        }
+        else
+        {
+            $this->CMS()->view()->appendData([
+                'user_error' => [
+                    'result' => $result,
+                    'msg' => $this->text( $key )
+                ]
+            ]);
+        }
     }
 
     /* ************************************************** */
@@ -57,7 +98,7 @@ class User
 
             if ( $login !== '' && $password !== '' )
             {
-                $login = htmlentities($login, ENT_QUOTES) ;
+                $login = htmlentities( $login, ENT_QUOTES ) ;
 
                 $user = \DB::for_table('user_front')
                     ->where_equal('user_front_login', $login)
@@ -65,15 +106,21 @@ class User
 
                 if ( is_object( $user ) && $user->user_front_login === $login && password_verify( $password , $user->user_front_password ) == true )
                 {
+                    $this->returnError( "user_login_successful" , true ) ;
+
                     return $this->save( $user ) ;
                 }
                 else
                 {
+                    $this->returnError( "user_login_failed" ) ;
+
                     return false ;
                 }
             }
             else
             {
+                $this->returnError( "user_login_field_empty" ) ;
+
                 return false ;
             }
         }

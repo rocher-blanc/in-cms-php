@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Syndicat">
+  <component name="PublishConfigData" serverName="VPS1 - Syndicat (1)">
     <serverData>
       <paths name="VPS1 - Ayat">
         <serverdata>
@@ -33,7 +33,7 @@
       <paths name="VPS1 - Syndicat">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/vendor/jweb/cms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
@@ -45,6 +45,5 @@
         </serverdata>
       </paths>
     </serverData>
-    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
