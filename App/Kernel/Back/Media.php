@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Back;
 
-class Media
+class Media extends \App\Kernel\Common\Media
 {
 	/* ************************************************** */
 	/* ****************   VARIABLES   ******************* */
