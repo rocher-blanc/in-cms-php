@@ -155,9 +155,8 @@ class Debug
         {
             $header.= '<h2 style="' . self::_getHeaderCss() . '">Calltrace</h2>';
             $calltrace = self::generateCallTrace() . "\n\n";
+            $calltrace.= '<h2 style="' . self::_getHeaderCss() . '">Variable</h2>';
         }
-
-        $calltrace.= '<h2 style="' . self::_getHeaderCss() . '">Variable</h2>';
 
         print '<pre style="' . self::_getContainerCss() . '">' . $header . $calltrace . $output . '</pre>';
         if ( $stop ) die;

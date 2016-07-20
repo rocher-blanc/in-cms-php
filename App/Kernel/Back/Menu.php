@@ -44,7 +44,7 @@ class Menu
 			->order_by_asc('module_group_order')
 			->find_many();
 		
-		$rowsArray = array();
+		$rowsArray = [];
 		if ( $rst )
 		{
 			foreach( $rst as $row )
@@ -59,7 +59,7 @@ class Menu
 							->order_by_asc('module_order')
 							->find_many() ;
 				
-				$std->children = array() ;
+				$std->children = [] ;
 				if ( $childs ) 
 				{
 					foreach( $childs as $child )

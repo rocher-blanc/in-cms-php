@@ -35,12 +35,7 @@ class Loader
             }
         }
 
-        /*
-        $kernel->setMiddleware(new \App\Kernel\Middleware\APCCache([
-            'ttl'            => 300,
-            'caching_prefix' => 'SlimCache_' . md5( $_SERVER['SERVER_NAME'] ) . '_'
-        ]));
-        */
+        $kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
 
         #########################################################
         /* ****************   Extensions   ******************* */
@@ -51,6 +46,7 @@ class Loader
         $kernel->setParserExtension(new \App\Kernel\View\TwigHelper);
         $kernel->setParserExtension(new \App\Kernel\View\TwigMenu);
         $kernel->setParserExtension(new \App\Kernel\View\TwigLang);
+        $kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
 
         #########################################################
         /* ****************     Plugin     ******************* */

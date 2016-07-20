@@ -37,13 +37,6 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
-      <webServer id="135a7efa-c1fa-4e39-a902-f350081e9eb3" name="VPS1 - Syndicat (1)" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="df9cdf9fdfd3dfe7dfdddf9cdfd2dfe2df98dfeb" username="syndicat">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-        </fileTransfer>
-      </webServer>
     </option>
   </component>
 </project>

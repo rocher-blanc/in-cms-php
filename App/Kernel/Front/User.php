@@ -126,7 +126,7 @@ class User
         }
     }
 
-    protected function logout()
+    public function logout()
     {
         if ( $this->isLogged() )
         {
@@ -135,7 +135,7 @@ class User
         }
     }
 
-    protected function register()
+    public function register()
     {
         if ( ! $this->isLogged() )
         {
@@ -148,7 +148,7 @@ class User
         }
     }
 
-    protected function update()
+    public function update()
     {
         if ( $this->isLogged() )
         {
@@ -156,7 +156,7 @@ class User
         }
     }
 
-    protected function validation()
+    public function validation()
     {
         if ( ! $this->isLogged() )
         {
@@ -167,7 +167,7 @@ class User
         }
     }
 
-    protected function lostPassword()
+    public function lostPassword()
     {
         if ( ! $this->isLogged() )
         {

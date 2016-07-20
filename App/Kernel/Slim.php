@@ -136,7 +136,7 @@ class Slim
 		$this->_slim->view()->twigTemplateDirs = $viewArray ;
 		$this->_slim->view()->parserExtensions = [
 			new \Twig_Extensions_Extension_Text(),
-			new \Slim\Views\TwigExtension()
+			new \Slim\Views\TwigExtension(),
 		];
 	}
 	
