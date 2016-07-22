@@ -61,13 +61,19 @@ class Builder extends Model
 
     /*
      * @boolean
-     * Définit s'il y a des famille dans le module
+     * Définit s'il y a des familles dans le module
      */
     protected $_hasParent = false;
 
     /*
      * @boolean
-     * Définit s'il y a des dépendance
+     * Définit s'il y a des paragraphes dans le module
+     */
+    protected $_hasParagraph = false;
+
+    /*
+     * @boolean
+     * Définit s'il y a des dépendances
      */
     public $_hasDependency = false;
 
@@ -140,6 +146,11 @@ class Builder extends Model
     public function hasParent()
     {
         return $this->_hasParent ;
+    }
+
+    public function hasParagraph()
+    {
+        return $this->_hasParagraph ;
     }
 
     public function hasDependency()
