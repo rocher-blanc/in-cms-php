@@ -77,6 +77,7 @@ class User
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+            die;
         }
         else
         {
