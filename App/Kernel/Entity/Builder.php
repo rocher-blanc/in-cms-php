@@ -530,7 +530,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isFloat( $step = 0.01 )
+    protected function isFloat( $step = 1 )
     {
         $this->field()->setData( "SQL_TYPE" , "FLOAT" ) ;
         $this->field()->setData( "type" , "number" ) ;
