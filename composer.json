@@ -48,6 +48,7 @@
     "bower-asset/fontawesome": "dev-master",
     "bower-asset/TableDnD": "dev-master",
     "bower-asset/slick-carousel": "1.6.*",
+    "bower-asset/masonry": "4.1.*",
     "bower-asset/cmsmedias": "dev-master"
   },
   "authors": [

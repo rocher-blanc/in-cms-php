@@ -7,6 +7,7 @@
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
       <webServer id="fdfd4bcd-faa8-4e85-81fd-3f2fb051cf82" name="VPS1 - Euroasian" url="http://vps1.jweb-creation.fr">
@@ -14,6 +15,7 @@
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
       <webServer id="4b0ee100-ea99-4d9b-a758-14f74c5e4ae4" name="VPS1 - Syndicat" url="http://vps1.jweb-creation.fr">
@@ -21,6 +23,7 @@
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
       <webServer id="fcdbd3be-b67c-401d-9810-2879e2d742ab" name="VPS1 - Ayat" url="http://vps1.jweb-creation.fr">
@@ -28,6 +31,7 @@
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
       <webServer id="c7a26ffa-34f7-438f-888b-112ceb1907af" name="VPS1 - Juliette" url="http://vps1.jweb-creation.fr">
@@ -35,6 +39,7 @@
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
+          <option name="port" value="21" />
         </fileTransfer>
       </webServer>
     </option>
