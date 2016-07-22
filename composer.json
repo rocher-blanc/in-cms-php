@@ -1,7 +1,7 @@
 {
   "name": "jweb/cms",
-  "description": "The JWeb Creation CMS",
-  "homepage": "http://www.jweb-creation.fr",
+  "description": "JContent has CMS of JWeb Creation",
+  "homepage": "https://www.jweb-creation.fr",
   "type": "library",
   "version": "1.0.11.1",
   "require": {
