@@ -19,6 +19,8 @@ class User extends \Slim\Middleware
 
     public function observe()
     {
+        $this->user()->observe();
+
         if ( $this->app->request->isPost() )
         {
             if ( $this->app->request->post('user_action') == 'login' )

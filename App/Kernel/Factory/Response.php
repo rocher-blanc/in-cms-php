@@ -15,19 +15,26 @@ class Response
     }
 
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
-	public function flashAndRedirect( $msg , $result = false , $url = '' )
-	{
-		if ( $url == '' )
+    public function flashAndRedirect( $msg , $result = false , $url = '' )
+    {
+        if ( $url == '' )
         {
             $urlTab = $this->Factory()->Url()->cutUrl();
             $url = "module/" . $urlTab[1] ;
         }
-		
-		$this->getApp()->flash('__msg', addslashes( json_encode( $msg ) ) );
-		$this->getApp()->flash('__result', $result );
-		$this->getApp()->redirect( $this->getApp()->config('admin.url') . '/' . ltrim( $url , '/' ) );
-		die;
-	}
+
+        $this->getApp()->flash('__msg', addslashes( json_encode( $msg ) ) );
+        $this->getApp()->flash('__result', $result );
+        $this->getApp()->redirect( $this->getApp()->config('admin.url') . '/' . ltrim( $url , '/' ) );
+        die;
+    }
+
+    /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
+    public function redirect( $url = '' )
+    {
+        $this->getApp()->redirect( $url );
+        die;
+    }
 	
 	/* Retour des messages d'erreurs par JSON pour les RQT en AJAX */
 	public function returnJSON( $msg , $result = false )

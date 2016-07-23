@@ -5,12 +5,6 @@ namespace App\Kernel;
 class Database
 {
 	/* ************************************************** */
-	/* ****************   VARIABLES   ******************* */
-	/* ************************************************** */
-
-	public $isConnect = false ;
-
-	/* ************************************************** */
 	/* ****************   CONSTRUCT   ******************* */
 	/* ************************************************** */
 
@@ -39,7 +33,8 @@ class Database
             });
         }
 
-		$this->isConnect = true ;
+        \DB::for_table('')->raw_query("SELECT 1")->find_one(); ;
+
 		defined('DB_CONNECT') || define('DB_CONNECT', true );
 	}
 
@@ -47,11 +42,4 @@ class Database
 	{
 		if ( ! DEBUG ) \DB::configure('caching', true);
 	}
-
-	public function isConnect()
-	{
-		return $this->isConnect ;
-	}
-
-
 }

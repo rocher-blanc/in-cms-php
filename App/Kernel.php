@@ -67,7 +67,7 @@ class Kernel
         }
         else
         {
-            $doctrine = new \App\Kernel\Doctrine;
+            /*$doctrine = new \App\Kernel\Doctrine;
             if ( ! $doctrine->isConnect() )
             {
                 $this->viewTemplateError('database') ;
@@ -75,7 +75,7 @@ class Kernel
             else
             {
 
-            }
+            }*/
         }
     }
 
@@ -202,8 +202,15 @@ class Kernel
             $this->viewTemplateError('bdd') ;
         }
 
-        $this->getDb()->connect() ;
-        if ( $this->_caching_db == true	) $this->getDb()->caching() ;
+        try
+        {
+            $this->getDb()->connect() ;
+            if ( $this->_caching_db == true	) $this->getDb()->caching() ;
+        }
+        catch (\Exception $e)
+        {
+            $this->viewTemplateError('database') ;
+        }
     }
 
     public function activeDbCaching()
