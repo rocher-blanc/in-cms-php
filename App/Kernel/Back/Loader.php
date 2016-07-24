@@ -4,7 +4,9 @@ namespace App\Kernel\Back;
 
 class Loader
 {
-    public function index()
+    protected $kernel = NULL ;
+
+    protected function preload()
     {
         #########################################################
         /* ************* General Configuration *************** */
@@ -12,7 +14,7 @@ class Loader
 
         $admin = "/" . \App\Kernel\Install::getAdminFolder() ;
 
-        $kernel = new \App\Kernel([
+        $this->kernel = new \App\Kernel([
             'admin.url' 	=> $admin,
             'token' 		=> 'csrf_token',
             'config' 		=> 'back',
@@ -29,26 +31,30 @@ class Loader
         /* ****************   Middleware   ******************* */
         #########################################################
 
-        $kernel->setMiddleware(new \App\Kernel\Middleware\CsrfGuard( $kernel->config('token') ));
-        $kernel->setMiddleware(new \App\Kernel\Middleware\Back\Auth);
-        $kernel->setMiddleware(new \App\Kernel\Middleware\Back\Guard);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\CsrfGuard( $this->kernel->config('token') ));
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Auth);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Guard);
 
         #########################################################
         /* ****************   Extensions   ******************* */
         #########################################################
 
-        $kernel->setParserExtension(new \App\Kernel\View\TwigAdmin);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigAdmin);
 
         #########################################################
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $kernel->addPlugin(new \App\Kernel\Back\Router([
+        $this->kernel->addPlugin(new \App\Kernel\Back\Router([
             CONTROLLERS_PATH
         ])) ;
-        $kernel->addPlugin(new \App\Kernel\Back\Menu) ;
-        $kernel->addPlugin(new \App\Kernel\Back\Theme) ;
+        $this->kernel->addPlugin(new \App\Kernel\Back\Menu) ;
+        $this->kernel->addPlugin(new \App\Kernel\Back\Theme) ;
+    }
 
-        $kernel->run();
+    public function index()
+    {
+        $this->preload();
+        $this->kernel->run();
     }
 }

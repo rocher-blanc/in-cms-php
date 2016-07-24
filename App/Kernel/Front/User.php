@@ -35,7 +35,7 @@ class User
     }
 
     /* ************************************************** */
-    /* ****************    GETTER     ******************* */
+    /* ****************    SETTER     ******************* */
     /* ************************************************** */
 
     protected function setId( $var )
@@ -54,7 +54,7 @@ class User
     }
 
     /* ************************************************** */
-    /* ****************    SETTER     ******************* */
+    /* ****************    GETTER     ******************* */
     /* ************************************************** */
 
     protected function getSessionName()
@@ -111,6 +111,11 @@ class User
         return $this->CMS()->request()->post( $key ) ;
     }
 
+    protected function get( $key )
+    {
+        return $this->CMS()->request()->get( $key ) ;
+    }
+
     protected function getIp()
     {
         return $this->CMS()->request()->getIp() ;
@@ -131,6 +136,8 @@ class User
                     'msg' => $this->text( $key )
                 ]
             ]);
+
+            return $result ;
         }
     }
 
@@ -190,19 +197,21 @@ class User
 
                 if ( is_object( $user ) && $user->user_front_login === $login && password_verify( $password , $user->user_front_password ) == true )
                 {
+                    $date = new \DateTime();
+                    $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
+                    $user->save();
+
                     $this->returnError( "user_login_successful" , true ) ;
                     return $this->save( $user ) ;
                 }
                 else
                 {
-                    $this->returnError( "user_login_failed" ) ;
-                    return false ;
+                    return $this->returnError( "user_login_failed" ) ;
                 }
             }
             else
             {
-                $this->returnError( "user_login_field_empty" ) ;
-                return false ;
+                return $this->returnError( "user_login_field_empty" ) ;
             }
         }
         else
@@ -260,69 +269,60 @@ class User
              *
              */
 
-            $login              = $this->post('user_login') ;
-            $password           = $this->post('user_password') ;
-            $newPassword        = $this->post('user_new_password') ;
-            $newPasswordConfirm = $this->post('user_new_password_confiorm') ;
+            $login              = trim( $this->post('user_login') ) ;
+            $password           = trim( $this->post('user_password') ) ;
+            $newPassword        = trim( $this->post('user_new_password') ) ;
+            $newPasswordConfirm = trim( $this->post('user_new_password_confirm') ) ;
 
-            $user               = $this->get();
+            $user               = $this->getById();
 
             if ( empty( $login ) )
             {
-                $this->returnError( "user_update_login_empty" ) ;
-                return false ;
+                return $this->returnError( "user_update_login_empty" ) ;
             }
             else if ( ! filter_var( $login, FILTER_VALIDATE_EMAIL ) )
             {
-                $this->returnError( "user_update_login_not_valid" ) ;
-                return false ;
+                return $this->returnError( "user_update_login_not_valid" ) ;
             }
             else if ( ! $this->uniqLogin( $login ) )
             {
-                $this->returnError( "user_update_login_not_uniq" ) ;
-                return false ;
+                return $this->returnError( "user_update_login_not_uniq" ) ;
             }
             else if ( ! empty( $password ) or ! empty( $newPassword ) or ! empty( $newPasswordConfirm ) )
             {
                 if ( empty( $password ) )
                 {
-                    $this->returnError( "user_update_password_empty" ) ;
-                    return false ;
+                    return $this->returnError( "user_update_password_empty" ) ;
                 }
                 else if ( empty( $newPassword ) )
                 {
-                    $this->returnError( "user_update_new_password_empty" ) ;
-                    return false ;
+                    return $this->returnError( "user_update_new_password_empty" ) ;
                 }
                 else if ( empty( $newPasswordConfirm ) )
                 {
-                    $this->returnError( "user_update_new_password_confirm_empty" ) ;
-                    return false ;
+                    return $this->returnError( "user_update_new_password_confirm_empty" ) ;
                 }
                 else if ( $newPassword != $newPasswordConfirm )
                 {
-                    $this->returnError( "user_update_new_password_different" ) ;
-                    return false ;
+                    return $this->returnError( "user_update_new_password_different" ) ;
                 }
                 else if ( ! password_verify( $password , $user->user_front_password ) )
                 {
-                    $this->returnError( "user_update_last_password_invalid" ) ;
-                    return false ;
+                    return $this->returnError( "user_update_last_password_invalid" ) ;
                 }
                 else
                 {
-                    $this->loadUpdate( $user  ) ;
+                    return $this->loadUpdate( $user  ) ;
                 }
             }
             else
             {
-                $this->loadUpdate( $user ) ;
+                return $this->loadUpdate( $user ) ;
             }
         }
         else
         {
-            $this->returnError( "user_update_not_logged" ) ;
-            return false ;
+            return $this->returnError( "user_update_not_logged" ) ;
         }
     }
 
@@ -337,8 +337,7 @@ class User
         }
         $user->save();
 
-        $this->returnError( "user_update_successful" , true ) ;
-        return false ;
+        return $this->returnError( "user_update_successful" , true ) ;
     }
 
     ###################################################################################################################################
@@ -353,6 +352,26 @@ class User
              * @GET
              * token
              */
+            if ( $this->get('token') != '' )
+            {
+                $user = \DB::for_table('user_front')
+                    ->where_equal('user_front_token', $this->get('token') )
+                    ->where_equal('user_front_active', 0 )
+                    ->find_one();
+
+                if ( $user )
+                {
+                    $user->user_front_token  = $this->getNewToken();
+                    $user->user_front_active = 1;
+                    $user->save();
+
+                    return $this->returnError( "user_validation_successful" , true ) ;
+                }
+                else
+                {
+                    return $this->returnError( "user_validation_failed" , true ) ;
+                }
+            }
         }
     }
 
@@ -368,7 +387,51 @@ class User
              * @POST
              * user_login
              */
+            $user = \DB::for_table('user_front')
+                ->where_equal('user_front_login', $this->post('user_login') )
+                ->where_equal('user_front_active', 1 )
+                ->find_one();
+
+            if ( $user )
+            {
+                $pass = $this->generatePassword();
+                $user->user_front_password = $this->hashPassword( $pass ) ;
+                $user->user_front_token    = $this->getNewToken();
+                $user->save();
+
+                // On envoie un email avec le mot de pass
+
+                unset( $pass );
+            }
+            else
+            {
+                return $this->returnError( "user_password_failed" , true ) ;
+            }
         }
+    }
+
+    protected function generatePassword( $length = 10 )
+    {
+        $alpha          = "abcdefghijklmnopqrstuvwxyz";
+        $alpha_upper    = strtoupper($alpha);
+        $numeric        = "0123456789";
+        $special        = ".-+=_,!@$#*%<>[]{}";
+
+        $chars          = $alpha . $alpha_upper . $numeric;
+        $len            = strlen( $chars );
+        $pw             = '';
+
+        for ( $i = 0; $i < $length; $i++ )
+        {
+            $pw .= substr( $chars, rand( 0 , $len - 1 ) , 1 ) ;
+        }
+
+        return str_shuffle( $pw );
+    }
+
+    protected function hashPassword( $pass )
+    {
+        return password_hash( $pass ,PASSWORD_BCRYPT,['cost' => 9]) ;
     }
 
     ###################################################################################################################################
@@ -465,7 +528,7 @@ class User
         else            return false ;
     }
 
-    protected function get()
+    protected function getById()
     {
         return \DB::for_table('user_front')
             ->where_equal('user_front_id', $this->getId() )

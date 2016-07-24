@@ -4,18 +4,20 @@ namespace App\Kernel\Front;
 
 class Loader
 {
-    public function index()
+    protected $kernel = NULL ;
+
+    protected function preload()
     {
         #########################################################
         /* ************* General Configuration *************** */
         #########################################################
 
-        $kernel = new \App\Kernel([
+        $this->kernel = new \App\Kernel([
             'session' 		=> 'auth_user',
             'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
         ]);
 
-        $kernel->activeDbCaching() ;
+        $this->kernel->activeDbCaching() ;
 
         #########################################################
         /* ****************   Middleware   ******************* */
@@ -31,31 +33,35 @@ class Loader
                 $class = str_replace( ".php" , '' , $class );
                 $class = str_replace( "/" , '\\' , $class );
 
-                $kernel->setMiddleware(new $class);
+                $this->kernel->setMiddleware(new $class);
             }
         }
 
-        $kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
 
         #########################################################
         /* ****************   Extensions   ******************* */
         #########################################################
 
-        $kernel->setParserExtension(new \App\Kernel\View\TwigFront);
-        $kernel->setParserExtension(new \App\Kernel\View\TwigUrl);
-        $kernel->setParserExtension(new \App\Kernel\View\TwigHelper);
-        $kernel->setParserExtension(new \App\Kernel\View\TwigMenu);
-        $kernel->setParserExtension(new \App\Kernel\View\TwigLang);
-        $kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigFront);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigUrl);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigHelper);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigMenu);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigLang);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
 
         #########################################################
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $kernel->addPlugin(new \App\Kernel\Front\Router) ;
-        $kernel->addPlugin(new \App\Kernel\Front\Language) ;
-        $kernel->addPlugin(new \App\Kernel\Front\Meta) ;
+        $this->kernel->addPlugin(new \App\Kernel\Front\Router) ;
+        $this->kernel->addPlugin(new \App\Kernel\Front\Language) ;
+        $this->kernel->addPlugin(new \App\Kernel\Front\Meta) ;
+    }
 
-        $kernel->run();
+    public function index()
+    {
+        $this->preload();
+        $this->kernel->run();
     }
 }
