@@ -6,16 +6,22 @@ class Loader
 {
     protected $kernel = NULL ;
 
+    public function __construct()
+    {
+        $this->kernel = new \App\Kernel();
+    }
+
     protected function preload()
     {
         #########################################################
         /* ************* General Configuration *************** */
         #########################################################
 
-        $this->kernel = new \App\Kernel([
+        $this->kernel->config([
             'session' 		=> 'auth_user',
             'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
         ]);
+        $this->kernel->load();
 
         $this->kernel->activeDbCaching() ;
 

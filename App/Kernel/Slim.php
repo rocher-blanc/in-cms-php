@@ -33,7 +33,7 @@ class Slim
 
     public function setTemplateFolder( $folder )
     {
-        $this->templateFolder = $folder ;
+        $this->templateFolder[] = $folder ;
     }
 	
 	/* ************************************************** */

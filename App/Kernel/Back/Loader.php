@@ -6,6 +6,11 @@ class Loader
 {
     protected $kernel = NULL ;
 
+    public function __construct()
+    {
+        $this->kernel = new \App\Kernel();
+    }
+
     protected function preload()
     {
         #########################################################
@@ -14,7 +19,7 @@ class Loader
 
         $admin = "/" . \App\Kernel\Install::getAdminFolder() ;
 
-        $this->kernel = new \App\Kernel([
+        $this->kernel->config([
             'admin.url' 	=> $admin,
             'token' 		=> 'csrf_token',
             'config' 		=> 'back',
@@ -26,6 +31,7 @@ class Loader
             'logout.url' 	=> $admin . '/secured/logout',
             'forbidden.url' => $admin . '/secured/forbidden'
         ]);
+        $this->kernel->load();
 
         #########################################################
         /* ****************   Middleware   ******************* */

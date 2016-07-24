@@ -50,10 +50,13 @@ class Kernel
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
-    public function __construct( $config = array() )
+    public function __construct( $config = [] )
     {
         $this->config( $config ) ;
+    }
 
+    public function load()
+    {
         defined('APPLICATION_PATH') || define('APPLICATION_PATH', VENDOR_PATH . '/jweb/cms/App');
 
         require APPLICATION_PATH . '/config/config.php';
@@ -64,18 +67,6 @@ class Kernel
         if ( FILE_CONFIG === false )
         {
             $this->configFileNotFound() ;
-        }
-        else
-        {
-            /*$doctrine = new \App\Kernel\Doctrine;
-            if ( ! $doctrine->isConnect() )
-            {
-                $this->viewTemplateError('database') ;
-            }
-            else
-            {
-
-            }*/
         }
     }
 
