@@ -52,6 +52,7 @@
     "bower-asset/slick-carousel": "1.6.*",
     "bower-asset/masonry": "4.1.*",
     "bower-asset/flexslider": "2.6.1",
+    "bower-asset/dropzone": "4.3.0",
     "bower-asset/cmsmedias": "dev-master"
   },
   "authors": [

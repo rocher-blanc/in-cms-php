@@ -41,25 +41,8 @@ class Gallery extends \App\Kernel\Back\Form
 		];
 
 		$html = '
-		<div id="bloc_gallery_id_' . $name . '" class="block_gallery">
-            <div class="img-source">
-                <div class="blocImage" id="source_' . $field->getName() . '">' ;
-                    if ( $this->hasValue() )
-                    {
-                        $html.= '<img src="' ;
-
-                        if ( file_exists( WEB_PATH . $mini ) )	$html.= $this->Factory()->Url()->get( $mini , true ) ;
-                        else									$html.= \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg');
-
-                        $html.= '" class="img-responsive" />' ;
-                    }
-                    $html.= '
-                </div>
-                <div class="type">Nouvelle image</div>
-                <a class="btn btn-info fileinput-button openMedia" style="width" data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" data-minwidth="' . $this->min_width . '" data-minheight="' . $this->min_height . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/media' ) . '">
-                    <i class="fa fa-plus"></i> <span>Sélectionner</span>
-                </a>
-            </div>
+		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
+            <a class="btn btn-info btnAdd"><i class="fa fa-plus"></i> Ajouter</a>
 	    </div>
 	    ' ;
 	
