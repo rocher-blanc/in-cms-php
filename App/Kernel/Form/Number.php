@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Number
+class Number extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{

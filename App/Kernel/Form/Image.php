@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Image
+class Image extends \App\Kernel\Back\Form
 {
 	public $min_height = 1 ;
 	public $min_width  = 1 ;
@@ -10,11 +10,6 @@ class Image
 	public function __construct()
 	{
 		$this->_media = new \App\Kernel\Back\Media;
-	}
-	
-	protected function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
 	}
 	
 	private function hasValue()
@@ -154,21 +149,5 @@ class Image
 		}
 		
 		return $html ;
-	}
-	
-	private function initLib()
-	{
-		$this->_lib_js  = '' ;
-		$this->_lib_css = '' ;
-	}
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
 	}
 }

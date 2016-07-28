@@ -55,6 +55,12 @@ class Builder extends Model
 
     /*
      * @boolean
+     * Définit s'il y a des galeries dans le module
+     */
+    protected $_hasGallery = false;
+
+    /*
+     * @boolean
      * Définit s'il y a des documents dans le module
      */
     protected $_hasDocument = false;
@@ -89,6 +95,12 @@ class Builder extends Model
      * Variable contenant tous les champs images
      */
     protected $_img_field = [];
+
+    /*
+     * @array
+     * Variable contenant tous les champs galeries
+     */
+    protected $_gallery_field = [];
 
     /*
      * @array
@@ -138,6 +150,11 @@ class Builder extends Model
         return $this->_hasImage ;
     }
 
+    public function hasGallery()
+    {
+        return $this->_hasGallery ;
+    }
+
     public function hasDocument()
     {
         return $this->_hasDocument ;
@@ -180,6 +197,12 @@ class Builder extends Model
     protected function setValidation()
     {
         $this->_hasValidation = true ;
+    }
+
+    protected function setGallery()
+    {
+        $this->setImage() ;
+        $this->_hasGallery = true ;
     }
 
     protected function setImage()
@@ -247,6 +270,12 @@ class Builder extends Model
     protected function setParentTarget( $name )
     {
         $this->_parent_target_name = $name ;
+        return $this ;
+    }
+
+    protected function setGalleryField( $name )
+    {
+        $this->_gallery_field[] = $name ;
         return $this ;
     }
 
@@ -555,6 +584,26 @@ class Builder extends Model
         $this->addAction("postclick") ;
         $this->addAction("media") ;
         $this->addAction("deletemedia") ;
+
+        return $this ;
+    }
+
+    protected function isGallery()
+    {
+        $this->field()->setData( "SQL_TYPE" , "TEXT" ) ;
+        $this->field()->setData( "type" , "gallery" ) ;
+        $this->field()->setData( "module" , $this->getClassName(false) ) ;
+        $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
+
+        $this->setGallery() ;
+        $this->setGalleryField( $this->field()->getColumn() ) ;
+
+        /*$this->addAction("newupload") ;
+        $this->addAction("postupload") ;
+        $this->addAction("upload") ;
+        $this->addAction("postclick") ;
+        $this->addAction("media") ;
+        $this->addAction("deletemedia") ;*/
 
         return $this ;
     }

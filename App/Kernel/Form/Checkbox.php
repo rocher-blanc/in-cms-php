@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Checkbox
+class Checkbox extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
@@ -32,21 +32,5 @@ class Checkbox
 				' . $select . '
 			</select>
 		</div>' ;
-	}
-	
-	private function initLib()
-	{
-		$this->_lib_js  = '' ;
-		$this->_lib_css = '' ;
-	}
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
 	}
 }

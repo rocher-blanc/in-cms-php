@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Textarea
+class Textarea extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
     {
@@ -35,10 +35,5 @@ class Textarea
         }
 
         return $html ;
-    }
-
-    public function getLibJs()
-    {
-        return $this->_lib_js ;
     }
 }

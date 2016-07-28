@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Select
+class Select extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
@@ -64,20 +64,4 @@ class Select
 
         return $select ;
     }
-
-    private function initLib()
-    {
-        $this->_lib_js  = '' ;
-        $this->_lib_css = '' ;
-    }
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
-	}
 }

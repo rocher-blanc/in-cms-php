@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Radio
+class Radio extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
@@ -18,21 +18,5 @@ class Radio
 		return '
 		<input type="hidden" name="' . $name . '" value="0" />
 		<input type="checkbox" value="1"' . ( $value == 1 ? ' checked="checked"' : '' ) . ' data-plugin-ios-switch name="' . $name . '" id="id_' . $name . '">' ;
-	}
-	
-	private function initLib()
-	{
-		$this->_lib_js  = '' ;
-		$this->_lib_css = '' ;
-	}
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
 	}
 }

@@ -9,11 +9,6 @@ class Document
 		$this->_doc = new \App\Kernel\Back\Document;
 	}
 	
-	protected function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
-	}
-	
 	private function hasValue()
 	{
 		if ( $this->value === NULL or $this->value === 0 or $this->value === '0' ) 	return false ;
@@ -71,21 +66,5 @@ class Document
 		</div>' ;
 	
 		return $html;
-	}
-
-	private function initLib()
-	{
-		$this->_lib_js  = '' ;
-		$this->_lib_css = '' ;
-	}
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
 	}
 }

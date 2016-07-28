@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Link
+class Link extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{

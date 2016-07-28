@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Date
+class Date extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
@@ -18,15 +18,5 @@ class Date
 						</span>
 						<input type="text" data-plugin-datepicker class="form-control" name="' . $name . '" id="id_' . $field->getColumn() . '" value="' . $value . '" />
 					</div>' ;
-	}
-	
-	public function getLibCss()
-	{
-		return $this->_lib_css ;
-	}
-	
-	public function getLibJs()
-	{
-		return $this->_lib_js ;
 	}
 }
