@@ -4,48 +4,48 @@ namespace App\Kernel\Form;
 
 class Gallery extends \App\Kernel\Back\Form
 {
-	public $min_height = 1 ;
-	public $min_width  = 1 ;
-	
-	public function __construct()
-	{
-		$this->_media = new \App\Kernel\Back\Media;
-	}
-	
-	private function hasValue()
-	{
-		if ( $this->value === NULL or $this->value === 0 or $this->value === '0' ) 	return false ;
-		else																		return true ;
-	}
-	
-	private function validValue( $mini )
-	{
-        if ( $this->hasValue() && file_exists( WEB_PATH . $mini ) ) 	return true ;
-		else															return false ;
-	}
-	
-	public function html( $field, $name, $value = NULL )
-	{
-		$this->value = $value ;
-		
-		$this->_lib_js  = [
-			'jquery-file-upload/js/vendor/jquery.ui.widget.js',
-			'jquery-file-upload/js/jquery.iframe-transport.js',
-			'jquery-file-upload/js/jquery.fileupload.js',
-			'jcrop/js/jquery.Jcrop.min.js'
-		];
-		
-		$this->_lib_css = [
-			'jquery-file-upload/css/jquery.fileupload.css',
-			'jcrop/css/jquery.Jcrop.min.css'
-		];
+    public $min_height = 1 ;
+    public $min_width  = 1 ;
 
-		$html = '
+    public function __construct()
+    {
+
+    }
+
+    public function html( $field, $name, $value = NULL )
+    {
+        $this->value = $value ;
+
+        $this->_lib_js  = [
+            'dropzone/dist/min/dropzone.min.js'
+        ];
+
+        $this->_lib_css = [
+            'dropzone/dist/min/basic.min.css',
+            'dropzone/dist/min/dropzone.min.css'
+        ];
+/*
+        $html = '
 		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
-            <a class="btn btn-info btnAdd"><i class="fa fa-plus"></i> Ajouter</a>
+            <form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
+
+              <div class="dz-message needsclick">
+                Drop files here or click to upload.<br>
+                <span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
+              </div>
+
+            </form>
 	    </div>
 	    ' ;
-	
-		return $html;
-	}
+*/
+        $html = '
+		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
+            <a class="btn btn-info btnAdd openGallery" data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/gallery' ) . '">
+                <i class="fa fa-plus"></i> Ajouter
+            </a>
+	    </div>
+	    ' ;
+
+        return $html;
+    }
 }

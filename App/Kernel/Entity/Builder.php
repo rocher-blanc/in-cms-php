@@ -598,11 +598,12 @@ class Builder extends Model
         $this->setGallery() ;
         $this->setGalleryField( $this->field()->getColumn() ) ;
 
+        $this->addAction("gallery") ;
+
         /*$this->addAction("newupload") ;
         $this->addAction("postupload") ;
         $this->addAction("upload") ;
         $this->addAction("postclick") ;
-        $this->addAction("media") ;
         $this->addAction("deletemedia") ;*/
 
         return $this ;

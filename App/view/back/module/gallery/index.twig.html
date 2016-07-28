@@ -1,0 +1,19 @@
+<div class="media">
+	<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+	<div class="title">
+		Upload d'une nouvelle image
+		<span class="pull-right">
+			<a href="javascript:;" class="close-popup btn btn-xs btn-danger"><i class="fa fa-times"></i> Fermer</a>
+		</span>
+	</div>
+	<div class="content">
+		<form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
+
+			<div class="dz-message needsclick">
+				Drop files here or click to upload.<br>
+				<span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
+			</div>
+
+		</form>
+	</div>
+</div>

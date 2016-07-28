@@ -1587,4 +1587,13 @@ class Controller
             'files' => $json
         ]) ;
     }
+
+    /* ************************************************** */
+    /* *****************   GALLERY    ******************* */
+    /* ************************************************** */
+
+    protected function galleryAction()
+    {
+        $this->render('gallery/index.twig.html') ;
+    }
 }
