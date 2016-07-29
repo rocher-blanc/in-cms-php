@@ -40,7 +40,7 @@ class Gallery extends \App\Kernel\Back\Form
 */
         $html = '
 		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
-            <a class="btn btn-info btnAdd openGallery" data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/gallery' ) . '">
+            <a class="btn btn-info btnAdd openGallery" data-jmedia data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/gallery' ) . '">
                 <i class="fa fa-plus"></i> Ajouter
             </a>
 	    </div>

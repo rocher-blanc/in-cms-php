@@ -1,6 +1,6 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Utilisateurs{% endblock %}
+{% block title_page %}Administrateurs{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
@@ -11,7 +11,7 @@
 				<div class="panel-actions">
 					<a href="{{ siteUrl('ext/user/edit') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
 				</div>
-				<h2 class="panel-title">Liste des utilisateurs du back-office</h2>
+				<h2 class="panel-title">Liste des administrateurs</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -46,7 +46,7 @@
 						</tbody>
 					</table>
 				{% else %}
-					<span>Aucun utilisateur n'est enregistré.</span>
+					<span>Aucun administrateur n'est enregistré.</span>
 				{% endif %}
 				</div>
 			</div>

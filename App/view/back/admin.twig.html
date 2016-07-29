@@ -137,10 +137,10 @@
 								-->
                             </ul>
                         </li>
-						{% if isAdmin == true %}
+						{% if active_user == true %}
                             <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' %} expanded active{% endif %}">
                                 <a href="#">
-                                    <i class="fa fa-line-chart"></i>
+                                    <i class="fa fa-user-secret"></i>
                                     <span>Utilisateurs</span>
                                 </a>
                                 <ul class="nav children">

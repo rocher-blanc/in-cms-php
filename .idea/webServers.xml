@@ -2,14 +2,6 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="7bf03af4-5472-494c-bfb5-5b104394352d" name="VPS1 - Photo" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfe1dfe0dffadfdbdf9edf9cdfdfdfe1dfc8dfdadf92df9c" username="photo">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
       <webServer id="fdfd4bcd-faa8-4e85-81fd-3f2fb051cf82" name="VPS1 - Euroasian" url="http://vps1.jweb-creation.fr">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www" password="dfdddf9edfdadff9dfcddffedf9ddf9e" username="euroasian">
           <advancedOptions>

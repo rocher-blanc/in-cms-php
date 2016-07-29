@@ -1,13 +1,13 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Utilisateurs{% endblock %}
+{% block title_page %}Administrateurs{% endblock %}
 
 {% if id != -1 %}
 	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'un utilisateur' %}
+	{% set title_block_page = 'Modification d\'un administrateur' %}
 {% else %}
 	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'un nouvel utilisateur' %}
+	{% set title_block_page = 'Ajout d\'un nouvel administrateur' %}
 {% endif %}
 
 {% block module %}
@@ -54,7 +54,7 @@
 					{% endif %}
 					
 					<div class="form-group">
-						<label class="col-md-3 control-label">Groupe d'utilisateurs</label>
+						<label class="col-md-3 control-label">Groupe d'administrateurs</label>
 						<div class="col-md-6">
 							<select name="user_group_id" class="form-control">
 								{% for group in groupRows %}

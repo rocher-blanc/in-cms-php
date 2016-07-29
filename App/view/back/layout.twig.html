@@ -19,6 +19,7 @@
         <link rel="stylesheet" href="{{ vendor('flag-icon-css/css/flag-icon.min.css') }}">
         {{ block('stylesheets') }}
         <link rel="stylesheet" href="{{ asset('css/std.css') }}" />
+        <link rel="stylesheet" href="{{ asset('css/media_v2.css') }}" />
         <script src="{{ asset('js/init.js') }}"></script>
         {{ block('javascript_head') }}
     </head>
@@ -38,6 +39,7 @@
             var siteurl = site + '/{{ adminFolder }}/' ;
         </script>
         {{ debugbar.body }}
+        <script src="{{ asset('js/jmedia.js') }}"></script>
         <script src="{{ asset('js/script.js') }}"></script>
     </body>
 </html>
