@@ -17,12 +17,14 @@ class Gallery extends \App\Kernel\Back\Form
         $this->value = $value ;
 
         $this->_lib_js  = [
-            'dropzone/dist/min/dropzone.min.js'
+            'dropzone/dist/min/dropzone.min.js',
+            'cmsmedias/js/jgallery.js'
         ];
 
         $this->_lib_css = [
             'dropzone/dist/min/basic.min.css',
-            'dropzone/dist/min/dropzone.min.css'
+            'dropzone/dist/min/dropzone.min.css',
+            'cmsmedias/css/jgallery.css'
         ];
 /*
         $html = '
@@ -40,7 +42,7 @@ class Gallery extends \App\Kernel\Back\Form
 */
         $html = '
 		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
-            <a class="btn btn-info btnAdd openGallery" data-jmedia data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/gallery' ) . '">
+            <a class="btn btn-info btnAdd openGallery" data-jgallery data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery' ) . '">
                 <i class="fa fa-plus"></i> Ajouter
             </a>
 	    </div>

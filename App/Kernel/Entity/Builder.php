@@ -598,7 +598,7 @@ class Builder extends Model
         $this->setGallery() ;
         $this->setGalleryField( $this->field()->getColumn() ) ;
 
-        $this->addAction("gallery") ;
+        $this->addAction("jgallery") ;
 
         /*$this->addAction("newupload") ;
         $this->addAction("postupload") ;
