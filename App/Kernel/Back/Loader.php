@@ -11,13 +11,18 @@ class Loader
         $this->kernel = new \App\Kernel();
     }
 
+    protected function getAdminFolder()
+    {
+        return "/" . \App\Kernel\Install::getAdminFolder() ;
+    }
+
     protected function preload()
     {
         #########################################################
         /* ************* General Configuration *************** */
         #########################################################
 
-        $admin = "/" . \App\Kernel\Install::getAdminFolder() ;
+        $admin = $this->getAdminFolder() ;
 
         $this->kernel->config([
             'admin.url' 	=> $admin,
