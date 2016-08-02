@@ -32,7 +32,7 @@
 
     "fxp/composer-asset-plugin": "dev-master",
 
-    "bower-asset/bootstrap": ">3.0",
+    "bower-asset/bootstrap": ">3.0-stable",
     "bower-asset/bootstrap-multiselect": "0.9.*",
     "bower-asset/bootstrap-datepicker": "1.6.*",
     "bower-asset/ckeditor": "dev-master",
