@@ -1609,5 +1609,12 @@ class Controller
         $Gallery->setField( $this->getApp()->request->post('field') );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
         $Gallery->add();
+
+        $this->Factory()->Response()->printJSON([
+            'file'  => $Gallery->getImageName(),
+            'id'    => $Gallery->getImageId(),
+            'field' => $Gallery->getField(),
+            'mini'  => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 )
+        ]) ;
     }
 }

@@ -20,6 +20,8 @@ class Gallery extends \App\Kernel\Common\Gallery
             $gallery->gallery_field = $this->getField();
             $gallery->save();
 
+            $this->setImageId( $gallery->gallery_id );
+
             return true;
         }
         else
@@ -75,7 +77,7 @@ class Gallery extends \App\Kernel\Common\Gallery
     {
         $filename = $this->updateName( $_FILES['file']['name'] ) ;
         $path     = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-        $img      = $path . '/' . $filename ;
+        $img      = $path . $filename ;
 
         if ( ! file_exists( $img ) )
         {
@@ -88,16 +90,17 @@ class Gallery extends \App\Kernel\Common\Gallery
             while( $exist == true )
             {
                 $newname = $i . "-" . $filename ;
-                if ( file_exists( $path . "/" . $newname ) )
+                if ( ! file_exists( $path . $newname ) )
                 {
                     $exist = false ;
-                    return $newname ;
                 }
                 else
                 {
                     $i++;
                 }
             }
+
+            return $newname ;
         }
     }
 }

@@ -8,11 +8,12 @@ class Gallery
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $image_name = NULL ;
-    protected $folder_name = NULL ;
-    protected $module_id = NULL ;
-    protected $element_id = NULL ;
-    protected $field = NULL ;
+    protected $image_name   = NULL ;
+    protected $folder_name  = NULL ;
+    protected $module_id    = NULL ;
+    protected $element_id   = NULL ;
+    protected $image_id     = NULL ;
+    protected $field        = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -27,6 +28,11 @@ class Gallery
     public function setFolder( $var )
     {
         $this->folder_name = $var ;
+    }
+
+    public function setImageId( $var )
+    {
+        $this->image_id = $var ;
     }
 
     public function setModuleId( $var )
@@ -61,6 +67,11 @@ class Gallery
     public function getModuleId()
     {
         return $this->module_id ;
+    }
+
+    public function getImageId()
+    {
+        return $this->image_id ;
     }
 
     public function getElementId()

@@ -43,7 +43,7 @@ class Gallery extends \App\Kernel\Back\Form
         $html = '
         <input type="hidden" value="' . $value . '" name="' . $name . '" id="id_element_dropzone" />
         <input type="hidden" value="' . $field->getName() . '" name="field_dropzone" id="field_dropzone" />
-		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
+		<div id="gallery_' . $field->getName() . '" class="blockGallery">
             <a class="btn btn-info btnAdd" data-jgallery data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery' ) . '">
                 <i class="fa fa-plus"></i> Ajouter
             </a>
