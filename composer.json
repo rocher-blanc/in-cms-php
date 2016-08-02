@@ -8,8 +8,8 @@
     "slim/slim": "2.6.2",
     "slim/views": "0.1.3",
 
-    "twig/twig": "1.*@dev",
-    "twig/extensions": "1.2.*@dev",
+    "twig/twig": "~1.0",
+    "twig/extensions": "1.3.*",
 
     "j4mie/idiorm": "1.5.1",
     "jdorn/sql-formatter": "dev-master",
@@ -32,15 +32,16 @@
 
     "fxp/composer-asset-plugin": "dev-master",
 
-    "bower-asset/bootstrap": "dev-master",
+    "bower-asset/bootstrap": "3.3.*",
     "bower-asset/bootstrap-multiselect": "0.9.*",
     "bower-asset/bootstrap-datepicker": "dev-master",
     "bower-asset/bootstrap-colorpicker": "dev-master",
     "bower-asset/ckeditor": "dev-master",
     "bower-asset/codemirror": "dev-master",
-    "bower-asset/jcrop": "dev-master",
-    "bower-asset/magnific-popup": "dev-master",
-    "bower-asset/jquery-ui": "dev-master",
+    "bower-asset/jcrop": "2.0.*",
+    "bower-asset/magnific-popup": "1.1.0",
+    "bower-asset/jquery": "3.1.0",
+    "bower-asset/jquery-ui": "1.12.*",
     "bower-asset/jquery-file-upload": "dev-master",
     "bower-asset/flag-icon-css": "dev-master",
     "bower-asset/normalize.css": "dev-master",
