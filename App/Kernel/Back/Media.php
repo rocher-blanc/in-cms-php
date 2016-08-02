@@ -38,7 +38,7 @@ class Media extends \App\Kernel\Common\Media
 	{
 		return $this->folder_name ;
 	}
-	
+
 	protected function Factory()
 	{
 		return \App\Kernel\Factory::getInstance() ;
