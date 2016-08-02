@@ -592,6 +592,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_TYPE" , "TEXT" ) ;
         $this->field()->setData( "type" , "gallery" ) ;
+
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
 
@@ -599,6 +600,7 @@ class Builder extends Model
         $this->setGalleryField( $this->field()->getColumn() ) ;
 
         $this->addAction("jgallery") ;
+        $this->addAction("jgallery_upload") ;
 
         /*$this->addAction("newupload") ;
         $this->addAction("postupload") ;

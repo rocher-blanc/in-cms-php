@@ -1,3 +1,5 @@
-<form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
-	<img src="{{ asset('img/jgallery/form-upload.jpg') }}" alt="" title="" />
+<form action="{{ siteUrl('module/' ~ mod.name ~ '/jgallery_upload') }}" class="dropzone needsclick dz-clickable" id="demo-upload">
+	<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+	<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+	<img src="{{ asset('img/jgallery/form-upload.jpg') }}" alt="Uploader vos images" title="Uploader vos images" class="img-upload img-responsive" />
 </form>

@@ -4,11 +4,35 @@ namespace App\Kernel\Back;
 
 class Form
 {
-    public function initLib()
+    /* ************************************************** */
+    /* ****************   VARIABLES   ******************* */
+    /* ************************************************** */
+
+    protected $_lib_js  = '' ;
+    protected $_lib_css = '' ;
+    protected $_id      = NULL ;
+
+    /* ************************************************** */
+    /* ******************   TOOLS   ********************* */
+    /* ************************************************** */
+
+    protected function Factory()
     {
-        $this->_lib_js  = '' ;
-        $this->_lib_css = '' ;
+        return \App\Kernel\Factory::getInstance() ;
     }
+
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
+
+    public function setId( $var )
+    {
+        $this->_id = $var;
+    }
+
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
 
     public function getLibCss()
     {
@@ -20,8 +44,18 @@ class Form
         return $this->_lib_js ;
     }
 
-    protected function Factory()
+    public function getId()
     {
-        return \App\Kernel\Factory::getInstance() ;
+        return $this->_id ;
+    }
+
+    /* ************************************************** */
+    /* *****************  FUNCTIONS  ******************** */
+    /* ************************************************** */
+
+    public function initLib()
+    {
+        $this->_lib_js  = '' ;
+        $this->_lib_css = '' ;
     }
 }

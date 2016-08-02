@@ -6,6 +6,7 @@
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('/module/' ~ mod.name ~ '/add') }}" role="form" class="form-horizontal group-border-dashed">
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}"/>
+    <input type="hidden" name="id_element" value="-1" />
     <div class="row">
         <div class="col-xs-12">
             <section class="panel">
@@ -47,7 +48,6 @@
     <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}"/>
     <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/media.css') }}"/>
-
 {% endblock %}
 
 {% block javascripts %}

@@ -332,6 +332,10 @@ class Controller
                             $date  = new \DateTime( $content->get( $row->getColumn() ) ) ;
                             $value = $date->format('d/m/Y');
                         }
+                        else if ( $row->getType() == 'gallery' )
+                        {
+                            $value = $this->getId();
+                        }
                         else
                         {
                             $value = $content->get( $row->getColumn() );
@@ -1595,5 +1599,15 @@ class Controller
     protected function jgalleryAction()
     {
         $this->render('jgallery/index.twig.html') ;
+    }
+
+    protected function jgallery_uploadAction()
+    {
+        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery->setElementId( $this->getApp()->request->post('id') );
+        $Gallery->setModuleId( $this->getEntityId() );
+        $Gallery->setField( $this->getApp()->request->post('field') );
+        $Gallery->setFolder( $this->getEntity()->getFolder() );
+        $Gallery->add();
     }
 }

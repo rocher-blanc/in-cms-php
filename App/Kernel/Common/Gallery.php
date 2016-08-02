@@ -60,12 +60,12 @@ class Gallery
 
     public function getModuleId()
     {
-        return $this->folder_name ;
+        return $this->module_id ;
     }
 
     public function getElementId()
     {
-        return $this->folder_name ;
+        return $this->element_id ;
     }
 
     public function getField()

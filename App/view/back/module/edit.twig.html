@@ -6,6 +6,7 @@
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~ id ) }}" role="form" class="form-horizontal group-border-dashed">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <input type="hidden" name="id_element" value="{{id}}" />
 	{% include tabs ? 'module/edit.tabs.twig.html' : 'module/edit.normal.twig.html' with {'field':field, 'action':action} %}
 	<div class="row" style="margin-top: 20px;">
 
