@@ -32,10 +32,9 @@
 
     "fxp/composer-asset-plugin": "dev-master",
 
-    "bower-asset/bootstrap": "3.3.*",
+    "bower-asset/bootstrap": "3.3.7",
     "bower-asset/bootstrap-multiselect": "0.9.*",
-    "bower-asset/bootstrap-datepicker": "dev-master",
-    "bower-asset/bootstrap-colorpicker": "dev-master",
+    "bower-asset/bootstrap-datepicker": "1.6.*",
     "bower-asset/ckeditor": "dev-master",
     "bower-asset/codemirror": "dev-master",
     "bower-asset/jcrop": "2.0.*",
