@@ -1592,8 +1592,8 @@ class Controller
     /* *****************   GALLERY    ******************* */
     /* ************************************************** */
 
-    protected function galleryAction()
+    protected function jgalleryAction()
     {
-        $this->render('gallery/index.twig.html') ;
+        $this->render('jgallery/index.twig.html') ;
     }
 }

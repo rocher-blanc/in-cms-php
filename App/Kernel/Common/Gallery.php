@@ -84,7 +84,7 @@ class Gallery
 
     public function getAllByField()
     { 
-        $rst = \DB::for_table('gallery')
+        $rst = \DB::for_table('jgallery')
             ->select('gallery_name')
             ->select('gallery_id')
             ->where_equal( 'gallery_module_id' , $this->getModuleId() )
