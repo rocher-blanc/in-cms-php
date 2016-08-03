@@ -106,6 +106,7 @@ class Container
             $Controller = new $ControllerClass;
             $Controller->setEntityName( $this->getName() );
             $result = $Controller->loadEntity();
+            if ( $admin ) $Controller->init();
 
             if ( $result ) $this->setController( $Controller );
         }

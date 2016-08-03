@@ -275,14 +275,10 @@ class Router
         if ( ! $mp ) $replaceString.= $this->getUrl( ( $this->Lang()->count() > 1 ? 1 : 0 ) ) ;
         $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
 
-        if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $class ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $class );
-        else																			$ControllerClass = '\App\Kernel\Front\Controller' ;
-
         $app = $this->getApp() ;
-        $app->map(':page+', function ( $page = [] ) use ( $ControllerClass , $class , $url , $element )
+        $app->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
         {
-            $Controller = new $ControllerClass;
-            $Controller->setEntityName( $class );
+            $Controller = \App\Kernel\Container::getInstance()->module( $class )->getController();
             $Controller->setUrl( explode('/',$url) );
             if ( $element ) $Controller->setElement();
             $Controller->execute();

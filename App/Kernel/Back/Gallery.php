@@ -28,7 +28,6 @@ class Gallery extends \App\Kernel\Common\Gallery
         {
             return false;
         }
-
     }
 
     protected function move()

@@ -111,7 +111,7 @@ class Controller
         return $this->_action_name . 'Action' ;
     }
 
-    protected function getEntityId()
+    public function getEntityId()
     {
         return $this->_entity_id ;
     }
@@ -177,10 +177,10 @@ class Controller
 
     protected function initRender()
     {
-        $this->_renderArray = array() ;
+        $this->_renderArray = [] ;
     }
 
-    protected function init()
+    public function init()
     {
         $this->appendEntityInfo();
         $this->getRepository()->checkIfPatchTable( $this->getEntityId() );
@@ -1611,10 +1611,16 @@ class Controller
         $Gallery->add();
 
         $this->Factory()->Response()->printJSON([
-            'file'  => $Gallery->getImageName(),
-            'id'    => $Gallery->getImageId(),
-            'field' => $Gallery->getField(),
-            'mini'  => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 )
+            'file'       => $Gallery->getImageName(),
+            'id'         => $Gallery->getImageId(),
+            'field'      => $Gallery->getField(),
+            'mini'       => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 ),
+            'delete_url' => \App\Kernel\Http::getInstance()->getUrl() . '/' . \App\Kernel\Install::getAdminFolder() . '/module/' . $this->getEntityName() . '/jgallery_delete'
         ]) ;
+    }
+
+    protected function jgallery_deleteAction()
+    {
+
     }
 }

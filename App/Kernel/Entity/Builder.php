@@ -590,9 +590,7 @@ class Builder extends Model
 
     protected function isGallery()
     {
-        $this->field()->setData( "SQL_TYPE" , "TEXT" ) ;
         $this->field()->setData( "type" , "gallery" ) ;
-
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
 
@@ -601,6 +599,7 @@ class Builder extends Model
 
         $this->addAction("jgallery") ;
         $this->addAction("jgallery_upload") ;
+        $this->addAction("jgallery_delete") ;
 
         /*$this->addAction("newupload") ;
         $this->addAction("postupload") ;

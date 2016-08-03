@@ -104,7 +104,7 @@ class Gallery
 
     public function getAllByField()
     { 
-        $rst = \DB::for_table('jgallery')
+        $rst = \DB::for_table('gallery')
             ->select('gallery_name')
             ->select('gallery_id')
             ->where_equal( 'gallery_module_id' , $this->getModuleId() )
@@ -119,7 +119,7 @@ class Gallery
             foreach( $rst as $row )
             {
                 $tab[ $row->gallery_id ]['source']  = $row->gallery_name ;
-                $tab[ $row->gallery_id ]['100x100'] = $this->getMini( $row->gallery_name , 100 , 100 ) ;
+                $tab[ $row->gallery_id ]['100x100'] = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , 100 , 100 ) ;
             }
         }
 
