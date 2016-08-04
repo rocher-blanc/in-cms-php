@@ -600,12 +600,7 @@ class Builder extends Model
         $this->addAction("jgallery") ;
         $this->addAction("jgallery_upload") ;
         $this->addAction("jgallery_delete") ;
-
-        /*$this->addAction("newupload") ;
-        $this->addAction("postupload") ;
-        $this->addAction("upload") ;
-        $this->addAction("postclick") ;
-        $this->addAction("deletemedia") ;*/
+        $this->addAction("jgallery_order") ;
 
         return $this ;
     }

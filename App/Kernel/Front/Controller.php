@@ -537,8 +537,11 @@ class Controller
         if ( ! $result ) $this->getApp()->pass();
 
         /* Date de dernière modification */
-        $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-        $this->getApp()->lastModified( intval( $date->format('U') ) );
+        if ( ! DEBUG )
+        {
+            $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
+            $this->getApp()->lastModified( intval( $date->format('U') ) );
+        }
 
         if ( $this->getEntity()->hasUrl() ) $this->loadMeta();
 
@@ -548,7 +551,6 @@ class Controller
 
     protected function getallAction()
     {
-
         $result = $this->getRepository()->lastUpdated();
 
         if ( $result )
@@ -651,6 +653,18 @@ class Controller
 
                     $arrayElement[ $row->getName() ] = $tab;
                 }
+            }
+            else if ( $row->getType() == 'gallery' )
+            {
+                $Gal = new \App\Kernel\Front\Gallery;
+                $Gal->setElementId( $this->getId() );
+                $Gal->setModuleId( $this->getEntityId() );
+                $Gal->setModuleName( $this->getEntityName() );
+                $Gal->setField( $row->getName() );
+                $Gal->setFolder( $this->getEntity()->getFolder() );
+                $tab = $Gal->getAllByField();
+
+                $arrayElement[ $row->getName() ] = $tab;
             }
             else if ( $row->getType() == 'document' )
             {

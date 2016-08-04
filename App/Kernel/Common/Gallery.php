@@ -10,6 +10,7 @@ class Gallery
 
     protected $image_name   = NULL ;
     protected $folder_name  = NULL ;
+    protected $module_name  = NULL ;
     protected $module_id    = NULL ;
     protected $element_id   = NULL ;
     protected $image_id     = NULL ;
@@ -55,6 +56,11 @@ class Gallery
         $this->image_name = $var ;
     }
 
+    public function setModuleName( $var )
+    {
+        $this->module_name = $var ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -89,6 +95,11 @@ class Gallery
         return $this->image_name ;
     }
 
+    public function getModuleName()
+    {
+        return $this->module_name ;
+    }
+
     /* ************************************************** */
     /* *****************    TOOLS     ******************* */
     /* ************************************************** */
@@ -102,28 +113,28 @@ class Gallery
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
 
-    public function getAllByField()
-    { 
-        $rst = \DB::for_table('gallery')
-            ->select('gallery_name')
-            ->select('gallery_id')
-            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
-            ->where_equal( 'gallery_element_id' , $this->getElementId() )
-            ->where_equal( 'gallery_field' , $this->getField() )
-            ->find_many();
-
-        $tab = [];
-
-        if ( $rst )
+    protected function formatBytes( $bytes )
+    {
+        if ( $bytes > 1000 )
         {
-            foreach( $rst as $row )
-            {
-                $tab[ $row->gallery_id ]['source']  = $row->gallery_name ;
-                $tab[ $row->gallery_id ]['100x100'] = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , 100 , 100 ) ;
-            }
+            // KO
+            return number_format($bytes/1000, 0, '.', ' ') . " Ko";
         }
-
-        return $tab ;
+        else if ( $bytes > 1000000 )
+        {
+            // MO
+            return number_format($bytes/1000000, 0, '.', ' ') . " Mo";
+        }
+        else if ( $bytes > 1000000000 )
+        {
+            // GO
+            return number_format($bytes/1000000000, 0, '.', ' ') . " Go";
+        }
+        else
+        {
+            // O
+            return number_format($bytes, 0, '.', ' ') . " octets";
+        }
     }
 
     public function getMini( $name , $width , $height )

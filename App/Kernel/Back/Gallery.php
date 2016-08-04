@@ -4,12 +4,98 @@ namespace App\Kernel\Back;
 
 class Gallery extends \App\Kernel\Common\Gallery
 {
+    /* ************************************************** */
+    /* ****************   VARIABLES   ******************* */
+    /* ************************************************** */
+
+    protected $image_size = 0;
+    protected $order = [];
+    protected $thumb = [];
+
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
+
+    public function setSize( $var )
+    {
+        $this->image_size = $var;
+    }
+
+    public function setOrder( $var )
+    {
+        $this->order = $var;
+    }
+
+    public function setThumb( $width , $height )
+    {
+        $this->thumb[ $width . "x" . $height ] = [
+            'w' => $width,
+            'h' => $height,
+        ];
+    }
+
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
+
+    public function getSize()
+    {
+        return $this->formatBytes( $this->image_size ) ;
+    }
+
+    public function getOrder()
+    {
+        return $this->order ;
+    }
+
+    public function getThumb()
+    {
+        return $this->thumb ;
+    }
+
+    /* ************************************************** */
+    /* *****************  FUNCTIONS  ******************** */
+    /* ************************************************** */
+
+    public function order()
+    {
+        $i = 1;
+        if ( ! empty( $this->getOrder() ) )
+        {
+            foreach( $this->getOrder() as $row )
+            {
+                if ( ! empty( $row ) )
+                {
+                    $id = str_replace('gallery-' , '' , $row );
+
+                    $gallery = \DB::for_table('gallery')
+                        ->select('gallery_position')
+                        ->select('gallery_id')
+                        ->where_equal( 'gallery_id' , $id )
+                        ->find_one();
+
+                    $gallery->gallery_position = $i;
+                    $gallery->save();
+                    $i++;
+                }
+            }
+        }
+    }
+
     public function add()
     {
         $this->setImageName( $this->getNewFilename() );
         if ( $this->move() )
         {
             $this->genThumb( 100 , 100 );
+
+            if ( ! empty( $this->getThumb() ) )
+            {
+                foreach( $this->getThumb() as $thb )
+                {
+                    $this->genThumb( $thb['w'] , $thb['h'] );
+                }
+            }
 
             $gallery = \DB::for_table('gallery')->create();
             $gallery->gallery_name = $this->getImageName();
@@ -18,9 +104,11 @@ class Gallery extends \App\Kernel\Common\Gallery
             $gallery->gallery_module_id = $this->getModuleId();
             $gallery->gallery_element_id = $this->getElementId();
             $gallery->gallery_field = $this->getField();
+            $gallery->gallery_position = 9999;
             $gallery->save();
 
             $this->setImageId( $gallery->gallery_id );
+            $this->setSize( $_FILES['file']['size'] );
 
             return true;
         }
@@ -28,6 +116,76 @@ class Gallery extends \App\Kernel\Common\Gallery
         {
             return false;
         }
+    }
+
+    public function deleteElement()
+    {
+        $rst = \DB::for_table('gallery')
+            ->select('gallery_name')
+            ->select('gallery_id')
+            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
+            ->where_equal( 'gallery_element_id' , $this->getElementId() )
+            ->where_equal( 'gallery_field' , $this->getField() )
+            ->find_many();
+
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                if ( ! empty( $this->getThumb() ) )
+                {
+                    foreach( $this->getThumb() as $thb )
+                    {
+                        if ( file_exists( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) ) )
+                        {
+                            unlink( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) );
+                        }
+                    }
+                }
+
+                if ( file_exists( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ) unlink( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ;
+                if ( file_exists( $path . $row->gallery_name ) ) unlink( $path . $row->gallery_name ) ;
+
+                $row->delete();
+            }
+        }
+    }
+
+    public function delete()
+    {
+        $img = $this->getById();
+
+        foreach( $img as $key => $row )
+        {
+            if ( file_exists( $row ) )
+            {
+                unlink( $row );
+            }
+        }
+
+        $rst = \DB::for_table('gallery')
+            ->where_equal( 'gallery_id' , $this->getImageId() )
+            ->find_one();
+
+        $rst->delete();
+    }
+
+    public function getById()
+    {
+        $row = \DB::for_table('gallery')
+            ->select('gallery_name')
+            ->select('gallery_id')
+            ->where_equal( 'gallery_id' , $this->getImageId() )
+            ->find_one();
+
+        $tab = [];
+
+        $tab['source']  = IMAGE_PATH . '/' . $this->getFolder() . '/' . $row->gallery_name ;
+        $tab['100x100'] = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , 100 , 100 ) ;
+
+        return $tab ;
     }
 
     protected function move()
@@ -101,5 +259,54 @@ class Gallery extends \App\Kernel\Common\Gallery
 
             return $newname ;
         }
+    }
+
+    public function updateZero()
+    {
+        $rst = \DB::for_table('gallery')
+            ->select('gallery_id')
+            ->select('gallery_element_id')
+            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
+            ->where_equal( 'gallery_element_id' , 0 )
+            ->where_equal( 'gallery_field' , $this->getField() )
+            ->order_by_asc('gallery_position')
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $row->gallery_element_id = $this->getElementId() ;
+                $row->save();
+            }
+        }
+    }
+
+    public function getAllByField()
+    {
+        $rst = \DB::for_table('gallery')
+            ->select('gallery_name')
+            ->select('gallery_size')
+            ->select('gallery_id')
+            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
+            ->where_equal( 'gallery_element_id' , $this->getElementId() )
+            ->where_equal( 'gallery_field' , $this->getField() )
+            ->order_by_asc('gallery_position')
+            ->find_many();
+
+        $tab = [];
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $tab[ $row->gallery_id ]['size']    = $this->formatBytes( $row->gallery_size ) ;
+                $tab[ $row->gallery_id ]['name']    = $row->gallery_name ;
+                $tab[ $row->gallery_id ]['source']  = $row->gallery_name ;
+                $tab[ $row->gallery_id ]['100x100'] = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , 100 , 100 ) ;
+            }
+        }
+
+        return $tab ;
     }
 }

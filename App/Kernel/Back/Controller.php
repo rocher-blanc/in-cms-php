@@ -609,6 +609,22 @@ class Controller
                             ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
                             ->delete_many();
                     }
+                    else if ( $row->getType() == 'gallery' )
+                    {
+                        $Gallery = new \App\Kernel\Back\Gallery;
+                        $Gallery->setElementId( $this->getId() );
+                        $Gallery->setField( $row->getName() );
+                        $Gallery->setModuleId( $this->getEntityId() );
+                        if ( $row->hasThumb() )
+                        {
+                            foreach( $row->getThumb() as $thumb )
+                            {
+                                // width, height
+                                $Gallery->setThumb( $thumb[0] , $thumb[1] );
+                            }
+                        }
+                        $Gallery->deleteElement();
+                    }
                 }
             }
 
@@ -986,6 +1002,15 @@ class Controller
                     if ( $field->getType() == "checkbox" )
                     {
                         $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
+                    }
+                    else if ( $row->getType() == "gallery" && $add == true )
+                    {
+                        // On met a jour les 0
+                        $Gallery = new \App\Kernel\Back\Gallery;
+                        $Gallery->setElementId( $this->getId() );
+                        $Gallery->setField( $field->getName() );
+                        $Gallery->setModuleId( $this->getEntityId() );
+                        $Gallery->updateZero();
                     }
                 }
 
@@ -1603,17 +1628,30 @@ class Controller
 
     protected function jgallery_uploadAction()
     {
+        $field = $this->getEntity()->get( $this->getApp()->request->post('field') );
+
         $Gallery = new \App\Kernel\Back\Gallery;
         $Gallery->setElementId( $this->getApp()->request->post('id') );
         $Gallery->setModuleId( $this->getEntityId() );
         $Gallery->setField( $this->getApp()->request->post('field') );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
+
+        if ( $field->hasThumb() )
+        {
+            foreach( $field->getThumb() as $thumb )
+            {
+                // width, height
+                $Gallery->setThumb( $thumb[0] , $thumb[1] );
+            }
+        }
+
         $Gallery->add();
 
         $this->Factory()->Response()->printJSON([
             'file'       => $Gallery->getImageName(),
             'id'         => $Gallery->getImageId(),
             'field'      => $Gallery->getField(),
+            'filesize'   => $Gallery->getSize(),
             'mini'       => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 ),
             'delete_url' => \App\Kernel\Http::getInstance()->getUrl() . '/' . \App\Kernel\Install::getAdminFolder() . '/module/' . $this->getEntityName() . '/jgallery_delete'
         ]) ;
@@ -1623,9 +1661,18 @@ class Controller
     {
         $Gallery = new \App\Kernel\Back\Gallery;
         $Gallery->setImageId( $this->getApp()->request->post('id') );
-        $Gallery->setModuleId( $this->getEntityId() );
-        $Gallery->setField( $this->getApp()->request->post('field') );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
-        $Gallery->add();
+        $Gallery->delete();
+    }
+
+    protected function jgallery_orderAction()
+    {
+        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery->setElementId( $this->getApp()->request->post('id') );
+        $Gallery->setField( $this->getApp()->request->post('field') );
+        $Gallery->setOrder( $this->getApp()->request->post('order') );
+        $Gallery->setModuleId( $this->getEntityId() );
+        $Gallery->setFolder( $this->getEntity()->getFolder() );
+        $Gallery->order();
     }
 }
