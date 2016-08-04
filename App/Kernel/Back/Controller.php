@@ -1621,6 +1621,11 @@ class Controller
 
     protected function jgallery_deleteAction()
     {
-
+        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery->setImageId( $this->getApp()->request->post('id') );
+        $Gallery->setModuleId( $this->getEntityId() );
+        $Gallery->setField( $this->getApp()->request->post('field') );
+        $Gallery->setFolder( $this->getEntity()->getFolder() );
+        $Gallery->add();
     }
 }

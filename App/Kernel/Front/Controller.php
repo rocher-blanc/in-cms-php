@@ -548,6 +548,7 @@ class Controller
 
     protected function getallAction()
     {
+
         $result = $this->getRepository()->lastUpdated();
 
         if ( $result )
@@ -586,6 +587,10 @@ class Controller
 
             if ( $result )  return $this->Container()->module( $field->getObject() )->getController()->parseValue( $result );
             else            return NULL ;
+        }
+        else
+        {
+            return $field->getOption( $value );
         }
 
         return NULL ;

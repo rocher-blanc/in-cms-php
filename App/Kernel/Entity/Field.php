@@ -207,6 +207,19 @@ class Field
         return $this->getData('object') ;
     }
 
+    public function getOptions()
+    {
+        return $this->getData('option') ;
+    }
+
+    public function getOption( $key )
+    {
+        return [
+            "key" => $key,
+            "value" => $this->getData('option')[ $key ]
+        ];
+    }
+
     public function getValue( $lang = NULL )
     {
         if ( $lang === NULL )
