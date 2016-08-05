@@ -1,6 +1,9 @@
 {% extends 'layout.twig.html' %}
 
 {% block javascript_head %}
+    <script>
+        var siteurl = site + '/{{ adminFolder }}/' ;
+    </script>
     <style>
         header.top {
             border-bottom: 4px solid #008fc1;
