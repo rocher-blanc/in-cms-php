@@ -686,6 +686,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function comment( $t )
+    {
+        $this->field()->setData( "comment" , $t ) ;
+        return $this ;
+    }
+
     protected function unit( $unit , $where )
     {
         $this->field()->setData( "unit" , $unit ) ;

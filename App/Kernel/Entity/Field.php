@@ -286,6 +286,11 @@ class Field
         return $this->getData('title') ;
     }
 
+    public function getComment()
+    {
+        return $this->getData('comment') ;
+    }
+
     public function getEntityName()
     {
         return $this->entity_name ;

@@ -19,6 +19,7 @@
                         <label class="col-md-3 control-label">{{ c.title }}</label>
                         <div class="col-md-{{ c.type == 'image' ? '9' : '6' }}">
                             {{ c.Form_HTML }}
+                            {% if c.comment != '' %}<span class="help-block">{{ c.comment }}</span>{% endif %}
                         </div>
                     </div>
                     {% endfor %}

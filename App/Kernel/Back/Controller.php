@@ -376,6 +376,7 @@ class Controller
                         "Form_HTML" => $form->genHTML( $row ),
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
+                        "comment"	=> $row->getComment(),
                         "error" 	=> $row->getError()
                     ];
                 }
