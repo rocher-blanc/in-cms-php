@@ -13,6 +13,11 @@ class Repository extends \App\Kernel\Repository
         }
     }
 
+    public function findAllForSelect( $target , $alias , $parentName )
+    {
+        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName ) ;
+    }
+
     public function findOne( $id )
     {
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();

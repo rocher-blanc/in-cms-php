@@ -10,10 +10,15 @@
 
             {% for index2,row in contentRow.td %}
                 {% if loop.first %}
-                    <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 35 * level }}px;"{% endif %}>
+                    <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 5 * level }}px;"{% endif %}>
                         {% if hasOrder %}
-                            <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/up/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == 1 %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="up"><i class="fa fa-arrow-up"></i></a>
-                            <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/down/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == contentArray|length %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="down"><i class="fa fa-arrow-down"></i></a>
+                            {#
+                                <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/up/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == 1 %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="up"><i class="fa fa-arrow-up"></i></a>
+                                <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/down/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == contentArray|length %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="down"><i class="fa fa-arrow-down"></i></a>
+                            #}
+                            <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/order') }}" class="btn btn-xs btn-default orderBtn{% if contentArray|length == 1 %} disabled{% endif %}">
+                                <i class="fa fa-arrows"></i>
+                            </a>
                         {% endif %}
                         <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ index+1 }}.</span>&nbsp;{{ row }}
                     </td>

@@ -256,16 +256,17 @@ class Controller
         $alias  = 'titre' ;
         $array  = [] ;
 
-        $content = \DB::find_all_for_select( $this->getEntityName() , $target , $alias , $this->Lang()->getDefault()->id , $this->getEntity()->getParentName() ) ;
+        $content = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+
         if ( $content ) $array = $this->getTreeParent( $content , $alias ) ;
 
         return $array;
     }
 
-    protected function getTreeParent($rows, $alias, $parent_id = -1, $level = 0)
+    protected function getTreeParent( $rows , $alias , $parent_id = -1 , $level = 0 )
     {
         $tree = [];
-        foreach ($rows as $key => $row)
+        foreach( $rows as $key => $row )
         {
             if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
             {
@@ -354,7 +355,7 @@ class Controller
                 if ( $row->isParent() == true )
                 {
                     $opt = $this->getParent();
-                    $this->getEntity()->get( $row->getName() )->setData( 'option' , $this->getParent() );
+                    $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
                 }
                 else if ( $row->isAssociated() == true )
                 {
@@ -804,11 +805,9 @@ class Controller
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
         $this->setRender( 'type' , $typeArray ) ;
-
-        if ( $this->getEntity()->hasOrder() ) $this->setRender( 'max' , $this->getMax() ) ;
     }
 
-    protected function getTreeTableParent($rows, $parent_id = -1)
+    protected function getTreeTableParent( $rows, $parent_id = -1 )
     {
         $tree = [];
 
@@ -824,11 +823,6 @@ class Controller
         }
 
         return $tree;
-    }
-
-    protected function getMax()
-    {
-        return \DB::for_module( $this->getEntityName() )->max( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
     }
 
     /* ************************************************** */
@@ -879,13 +873,6 @@ class Controller
                     {
                         $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
                     }
-                    else
-                    {
-                        if ( $this->getEntity()->hasParent() )
-                        {
-                            $saveParent = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                        }
-                    }
                 }
                 else
                 {
@@ -919,18 +906,7 @@ class Controller
                         {
                             if ( $add == true )
                             {
-                                $order = \DB::for_module( $this->getEntityName() );
-                                if ( $this->getEntity()->hasParent() )
-                                {
-                                    $parentValue = $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() ;
-
-                                    if ( is_null( $parentValue ) )  $order = $order->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                                    else                            $order = $order->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parentValue ) ;
-                                }
-
-                                $order = $order->max( $row->getColumn() ) + 1;
-
-                                $content->set( $row->getColumn() , $order ) ;
+                                $content->set( $row->getColumn() , $row->getDefault() ) ;
                             }
                         }
                         else if ( $row->getType() != "checkbox" && $row->canUpdate() == true )
@@ -943,37 +919,6 @@ class Controller
                         foreach( $this->Lang()->getAll() as $lang )
                         {
                             $contentLang[ $lang->url ]->set( $row->getColumn() , $row->getValue( $lang->url ) ) ;
-                        }
-                    }
-                }
-
-                if ( $this->getId() !== NULL && $this->getEntity()->hasParent() == true && $this->getEntity()->hasOrder() == true )
-                {
-                    if ( $saveParent != $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() )
-                    {
-                        $order = \DB::for_module( $this->getEntityName() );
-                        if ( ! is_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() ) )  $order = $order->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getEntity()->get( $this->getEntity()->getParentName() )->getValue() ) ;
-                        else                                                                                            $order = $order->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                        $order = $order->count() + 1;
-
-                        $content->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order ) ;
-
-                        $result = \DB::for_module( $this->getEntityName() );
-                        if ( ! is_null( $saveParent ) ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $saveParent ) ;
-                        else                            $result = $result->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
-                        $result = $result->where_not_equal( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() , $this->getId() )
-                            ->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() )
-                            ->find_many();
-
-                        if ( $result )
-                        {
-                            $index = 1;
-                            foreach( $result as $row )
-                            {
-                                $row->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $index );
-                                $row->save();
-                                $index++;
-                            }
                         }
                     }
                 }
@@ -998,12 +943,11 @@ class Controller
 
                 foreach( $this->getEntity()->getField() as $nameField => $field )
                 {
-                    // if ( $field->hasLang() && $field->getType() == "checkbox" )
                     if ( $field->getType() == "checkbox" )
                     {
                         $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
                     }
-                    else if ( $row->getType() == "gallery" && $add == true )
+                    else if ( $field->getType() == "gallery" && $add == true )
                     {
                         // On met a jour les 0
                         $Gallery = new \App\Kernel\Back\Gallery;

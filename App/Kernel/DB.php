@@ -306,7 +306,7 @@ class DB extends ORM
             $idName			= self::getIdName( $entity ) ;
 
             $content = self::for_module( $entity )
-                ->select( $table . "." . $target->getColumn() , 'url' )
+                ->select( $table . "." . $target->getColumn() , $alias )
                 ->select( $table . "." . $idName , 'id' )
                 ->order_by_asc( $table . "." . $target->getColumn() ) ;
         }

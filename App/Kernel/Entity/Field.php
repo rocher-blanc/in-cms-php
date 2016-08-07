@@ -356,6 +356,11 @@ class Field
                     $return = false ;
                 }
             }
+
+            if ( $this->isParent() == true && $this->getValue() == '' )
+            {
+                $this->setValue( NULL ) ;
+            }
         }
 
         return $return ;

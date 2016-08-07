@@ -480,13 +480,16 @@ class Builder extends Model
 
     protected function isOrder()
     {
+        $default = 9999;
+
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
-        $this->field()->setData( "SQL_DEFAULT" , 0 ) ;
+        $this->field()->setData( "SQL_DEFAULT" , $default ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "order" , true ) ;
 
         $this->addAction("order") ;
 
+        $this->defaut( $default ) ;
         $this->setOrder() ;
         $this->setOrderName( $this->field()->getName() ) ;
         return $this ;
