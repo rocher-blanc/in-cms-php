@@ -297,8 +297,7 @@ class DB extends ORM
                 ->select( $tableLang . "." . $target->getColumn() , $alias )
                 ->select( $table . "." . $idName , 'id' )
                 ->left_outer_join( $tableLang , array( $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ))
-                ->where_equal( $tableLang . '.' . $langIdLangName , $idlang )
-                ->order_by_asc( $tableLang . "." . $target->getColumn() );
+                ->where_equal( $tableLang . '.' . $langIdLangName , $idlang ) ;
         }
         else
         {
@@ -307,14 +306,19 @@ class DB extends ORM
 
             $content = self::for_module( $entity )
                 ->select( $table . "." . $target->getColumn() , $alias )
-                ->select( $table . "." . $idName , 'id' )
-                ->order_by_asc( $table . "." . $target->getColumn() ) ;
+                ->select( $table . "." . $idName , 'id' ) ;
         }
 
         if ( $parent !== NULL )
         {
             $content = $content->select( $table . "." . self::getColumnName( $parent , $entity ) , $parent );
         }
+
+        $entity = \App\Kernel\Container::getInstance()->module( $entity )->getEntity();
+
+        if ( $entity->hasOrder() )  $content = $content->order_by_asc( $table . "." . $entity->get( $entity->getOrderName() )->getColumn() )->order_by_asc( $table . "." . $entity->get( $entity->getIdName() )->getColumn() );
+        else                        $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
+
 
         return $content->find_many() ;
     }

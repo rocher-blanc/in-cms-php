@@ -471,7 +471,6 @@ class Builder extends Model
     protected function isURL()
     {
         $this->setUrlName( $this->field()->getName() );
-        \App\Kernel\Debug::save( $this->field()->getName() );
         $this->field()->setData( "isURL" , true ) ;
         $this->setUrl() ;
         $this->addAction("seo") ;

@@ -76,6 +76,11 @@ class Controller
         $this->_token = $var ;
     }
 
+    public function setOption( $key , $var )
+    {
+        $this->_options[ $key ] = $var ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -268,7 +273,7 @@ class Controller
         $tree = [];
         foreach( $rows as $key => $row )
         {
-            if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
+            if ( $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) == $parent_id or ( $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) === NULL && $parent_id == -1 ) )
             {
                 $obj = new \stdClass();
                 $obj->id 		= $row->get('id');
@@ -280,6 +285,7 @@ class Controller
                 $tree[] = $obj;
             }
         }
+
         return $tree;
     }
 
@@ -388,23 +394,10 @@ class Controller
         $this->setRender( 'field' , $arrayField ) ;
     }
 
-    protected function getControllerClass( $entity )
-    {
-        if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $entity ) . '.php' ) ) return "\Project\Module\Controller\Back\\" . ucfirst( $entity );
-        else																			  return "\\" . APP_NAME . "\Kernel\Back\Controller" ;
-    }
-
     // Systeme de many / one TO many / one
     protected function getValueAssociated( $row , $returnType = NULL )
     {
-        $ControllerClass = $this->getControllerClass( $row->getObject() ) ;
-
-        $Controller = new $ControllerClass([
-            'noAppend' => true
-        ]);
-        $Controller->setEntityName( $row->getObject() );
-        $Controller->loadEntity();
-        $Controller->init() ;
+        $Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
         if ( $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
         {
@@ -421,18 +414,18 @@ class Controller
         {
             $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType ) ;
             unset( $Controller );
-
             return $tab ;
         }
     }
 
     public function getElementForAssociation( $name , $returnType = NULL )
     {
+        /*
         $idName     = \DB::getIdName( $this->getEntityName() ) ;
         $table 	    = \DB::getTableName( $this->getEntityName() ) ;
-        $target     = $this->getEntity()->get( $name );
+
         $tableLang  = \DB::getTableNameLang( $this->getEntityName() ) ;
-        $alias      = 'titre' ;
+
 
         if ( ! $target->hasLang() )
         {
@@ -448,18 +441,28 @@ class Controller
             $content = \DB::for_module( $this->getEntityName() )
                 ->select( $tableLang . "." . $target->getColumn() , $alias )
                 ->select( $table . "." . $idName , 'id' )
-                ->left_outer_join( $tableLang , array( $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ))
+                ->left_outer_join( $tableLang ,[ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ])
                 ->where_equal( $tableLang . '.' . $langIdLangName , $this->Lang()->getDefault()->id );
         }
 
         if ( $this->getEntity()->hasParent() )       $content = $content->select( $table . "." . $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getEntity()->getParentName() );
 
-        if ( $this->getEntity()->hasOrder() )        $content = $content->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
+        if ( $this->getEntity()->hasOrder() )        $content = $content->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() )->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
         else                                         $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
 
         // if ( $this->getEntity()->hasValidation() )   $content = $content->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
 
         $content = $content->find_many();
+        */
+
+        $alias      = 'titre' ;
+        $target     = $this->getEntity()->get( $name );
+        $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+
+        if ( $this->getEntity()->hasParent() )
+        {
+            $returnType = NULL;
+        }
 
         switch( $returnType )
         {
@@ -480,7 +483,6 @@ class Controller
                 if ( $this->getEntity()->hasParent() ) $content = $this->getTreeParent( $content , $alias ) ;
                 break;
         }
-
 
         return $content ;
     }
@@ -798,7 +800,6 @@ class Controller
         if ( $this->getEntity()->hasParent() )
         {
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
-            //\App\Kernel\Debug::dump( $tdArray );
         }
 
         $this->setRender( 'right' , $rightArray ) ;

@@ -96,7 +96,7 @@ class Container
         return $this->repository ;
     }
 
-    public function getController( $admin = false )
+    public function getController( $admin = false , $opt = [] )
     {
         if ( $this->controller === NULL )
         {
@@ -106,7 +106,17 @@ class Container
             $Controller = new $ControllerClass;
             $Controller->setEntityName( $this->getName() );
             $result = $Controller->loadEntity();
-            if ( $admin ) $Controller->init();
+            if ( $admin )
+            {
+                if ( ! empty( $opt ) )
+                {
+                    foreach( $opt as $key => $value )
+                    {
+                        $Controller->setOption( $key , $value );
+                    }
+                    $Controller->init();
+                }
+            }
 
             if ( $result ) $this->setController( $Controller );
         }
