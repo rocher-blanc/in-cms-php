@@ -60,7 +60,6 @@ class Loader
             CONTROLLERS_PATH
         ])) ;
         $this->kernel->addPlugin(new \App\Kernel\Back\Menu) ;
-        $this->kernel->addPlugin(new \App\Kernel\Back\Theme) ;
     }
 
     public function index()
