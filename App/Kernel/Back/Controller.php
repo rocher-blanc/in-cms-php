@@ -798,6 +798,7 @@ class Controller
         if ( $this->getEntity()->hasParent() )
         {
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
+            //\App\Kernel\Debug::dump( $tdArray );
         }
 
         $this->setRender( 'right' , $rightArray ) ;

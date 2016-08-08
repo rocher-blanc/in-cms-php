@@ -35,6 +35,7 @@
     "bower-asset/bootstrap": "dev-master",
     "bower-asset/bootstrap-multiselect": "0.9.*",
     "bower-asset/bootstrap-datepicker": "dev-master",
+    "bower-asset/bootstrap-timepicker": "dev-master",
     "bower-asset/bootstrap-colorpicker": "dev-master",
     "bower-asset/ckeditor": "dev-master",
     "bower-asset/codemirror": "dev-master",

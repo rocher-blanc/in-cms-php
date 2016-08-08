@@ -1,7 +1,7 @@
 {% macro display_tree(contentArray, level, hierarchy, hasOrder, right, hasValidation, csrf_token, mod, type) %}
     {% set colors = ['info', 'warning', 'success', 'danger'] %}
     {% for index,contentRow in contentArray %}
-        <tr class="tr1">
+        <tr class="tr1" data-parent="{{ contentRow.parent_id == '' ? 0 : contentRow.parent_id }}" id="{{ contentRow.id }}">
             {% if level > 0 %}
                 {% for i in 0..(level - 1) %}
                     <td style="width:30px;border-right-style:none;"></td>
@@ -12,11 +12,7 @@
                 {% if loop.first %}
                     <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 5 * level }}px;"{% endif %}>
                         {% if hasOrder %}
-                            {#
-                                <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/up/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == 1 %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="up"><i class="fa fa-arrow-up"></i></a>
-                                <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/down/' ~  contentRow.id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default orderBtn{% if loop.parent.loop.index == contentArray|length %} disabled{% endif %}" data-id="{{ contentRow.id }}" data-token="{{csrf_token}}" data-action="down"><i class="fa fa-arrow-down"></i></a>
-                            #}
-                            <a href="javascript:void(0)" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/order') }}" class="btn btn-xs btn-default orderBtn{% if contentArray|length == 1 %} disabled{% endif %}">
+                            <a href="javascript:void(0)" class="btn btn-xs btn-default orderTable{% if contentArray|length == 1 %} disabled{% endif %}">
                                 <i class="fa fa-arrows"></i>
                             </a>
                         {% endif %}
@@ -33,10 +29,10 @@
                 {% endif %}
             {% endfor %}
 
-            <td class="text-right">
-                {% if hasValidation and right.validation == true %}<a id="moduleValidation{{ contentRow.id }}" class="btn btn-xs btn-{{ contentRow.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ contentRow.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ contentRow.validation }}"><i class="fa fa-thumbs-{{ contentRow.validation == 1 ? 'up' : 'down' }}"></i></a>{% endif %}
-                {% if right.edit == true %}<a class="btn btn-xs btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  contentRow.id ) }}"><i class="fa fa-pencil"></i></a>{% endif %}
-                {% if right.delete == true %}<a class="btn btn-xs btn-danger modal-module-delete" href="#deleteModal" data-id="{{ contentRow.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ contentRow.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i></a>{% endif %}
+            <td class="text-right" style="width: 300px;">
+                {% if hasValidation and right.validation == true %}<a id="moduleValidation{{ content.id }}" class="btn btn-sm btn-{{ content.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ content.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ content.validation }}"><i class="fa fa-thumbs-{{ content.validation == 1 ? 'up' : 'down' }}"></i> {{ content.validation == 1 ? 'Activer' : 'Désactiver' }}</a>{% endif %}
+                {% if right.edit == true %}<a class="btn btn-sm btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  content.id ) }}"><i class="fa fa-pencil"></i> Editer</a>{% endif %}
+                {% if right.delete == true %}<a class="btn btn-sm btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i> Supprimer</a>{% endif %}
             </td>
         </tr>
         {% if contentRow.subpages|length > 0 %}
@@ -46,7 +42,7 @@
 {% endmacro %}
 
 {% if td|length > 0 %}
-	<table class="table table-striped mb-none table-hover table-gestion">
+	<table class="table table-striped mb-none table-hover table-gestion table-parent{% if hasOrder and right.edit == true %} table-dnd{% endif %}" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/order/0/' ~ csrf_token ) }}" id="table-{{ mod.name }}">
 		<thead>
 			<tr>
 				{% for title in th %}
