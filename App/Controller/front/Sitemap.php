@@ -47,10 +47,13 @@ $app->get('/sitemap.xml', function () use ( $app )
             if ( $module->module_default == 0 )
             {
                 $url.= '/' . $module->module_lang_url . '/' ;
-                echo "\t" . '<url>' . "\n" ;
+                if ( file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
+                {
+                    echo "\t" . '<url>' . "\n" ;
                     echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
                     echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
-                echo "\t" . '</url>' . "\n" ;
+                    echo "\t" . '</url>' . "\n" ;
+                }
             }
             else
             {
