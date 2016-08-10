@@ -44,7 +44,6 @@
 								</td>
 								<td class="text-right">
 									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/page/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i></a>
-									<a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.page_id }}" data-link="{{ siteUrl('ext/page/delete/' ~ row.page_id) }}" data-text="Êtes-vous sûr de vouloir supprimer la page '{{ row.page_name }}' ?"><i class="fa fa-times"></i></a>
 								</td>
 							</tr>
 						{% endfor %}

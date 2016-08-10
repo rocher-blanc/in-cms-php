@@ -18,9 +18,8 @@
 {% for name,content in og if content != '' %}
         <meta property="og:{{ name }}" content="{{ content }}" />
 {% endfor %}
-    {{ block('meta') }}{{
-       block('stylesheets') }}{{
-       css() }}{{
+    {{ block('meta') }}{% block stylesheets %}{{
+        css() }}{% endblock %}{{
        block('javascript_head') }}{{
        webmaster_tools.google }}{{
        webmaster_tools.bing }}{{
@@ -34,9 +33,8 @@
     </head>
     <body{{ block('classbody') }}>
         {{ block('content') }}
-        {{
-            javascript() }}{{
-            block('javascripts') }}{{
+        {% block javascripts %}{{
+        javascript() }}{% endblock %}{{
             tracking.footer
         }}{{
         analytics.google  }}

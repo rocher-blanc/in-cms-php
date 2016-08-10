@@ -235,7 +235,7 @@ class Install
             $php.= 'images_dir = "img"' . "\n" ;
             $php.= 'javascripts_dir = "js"' . "\n" ;
             $php.= 'line_comments = false' . "\n" ;
-            $php.= '#output_style = :compressed' . "\n" ;
+            $php.= 'output_style = :compressed' . "\n" ;
 
             self::create( $rubyFile , $php ) ;
         }

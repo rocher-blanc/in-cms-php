@@ -241,7 +241,6 @@ class Menu
                             $obj->url.= $moduleUrl->module_lang_url . "/" ;
                         }
 
-
                         $obj->url.= $Seo->getUrl() ;
                     }
                     break;
@@ -250,7 +249,7 @@ class Menu
                     break;
             }
 
-            if ( $this->Factory()->Url()->getFullUrl() == '/' . $obj->url )
+            if ( $this->Factory()->Url()->getFullUrl() == '/' . $obj->url && $obj->url !== NULL )
             {
                 $active = true ;
                 $obj->active = true ;
