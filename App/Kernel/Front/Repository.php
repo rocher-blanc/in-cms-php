@@ -11,6 +11,16 @@ class Repository extends \App\Kernel\Repository
         return $this->_limit_get_all ;
     }
 
+    public function getTbl()
+    {
+        return \DB::getTableName( $this->getName() ) ;
+    }
+
+    public function getTblLang()
+    {
+        return \DB::getTableNameLang( $this->getName() ) ;
+    }
+
     public function findOne( $id )
     {
         $table = \DB::getTableName( $this->getName() ) ;

@@ -23,7 +23,7 @@ class User
         return $this->CMS()->request()->isAjax() ;
     }
 
-    protected function isLogged()
+    public function isLogged()
     {
         return ( isset( $_SESSION[ $this->getSessionName() ] ) && !empty( $_SESSION[ $this->getSessionName() ] ) );
     }
@@ -431,7 +431,7 @@ class User
 
     protected function hashPassword( $pass )
     {
-        return password_hash( $pass ,PASSWORD_BCRYPT,['cost' => 9]) ;
+        return password_hash( $pass , PASSWORD_BCRYPT , ['cost' => 9] ) ;
     }
 
     ###################################################################################################################################

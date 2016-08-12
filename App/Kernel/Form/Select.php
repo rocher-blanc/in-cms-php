@@ -42,7 +42,8 @@ class Select extends \App\Kernel\Back\Form
 
     private function chieldParent( $chield , $target , $value , $hierarchy )
     {
-        $index = 1;
+        $select = '';
+        $index  = 1;
         foreach( $chield as $row )
         {
             if ( $row->noview != true )
