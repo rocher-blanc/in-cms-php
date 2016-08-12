@@ -27,7 +27,7 @@ class Repository extends \App\Kernel\Repository
 
         /* Requete pour aller chercher les données */
         $result = \DB::for_module( $this->getName() )->where_id_is( $id );
-        if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
+        if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
         if ( $this->getEntity()->hasMultiLang() )
         {
             $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
