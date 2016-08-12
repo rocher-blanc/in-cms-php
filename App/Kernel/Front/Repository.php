@@ -23,20 +23,17 @@ class Repository extends \App\Kernel\Repository
 
     public function findOne( $id )
     {
-        $table = \DB::getTableName( $this->getName() ) ;
-
         /* Requete pour aller chercher les données */
         $result = \DB::for_module( $this->getName() )->where_id_is( $id );
         if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
         if ( $this->getEntity()->hasMultiLang() )
         {
-            $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
             $idName			= \DB::getIdName( $this->getName() ) ;
             $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
             $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
 
-            $result = $result->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
+            $result = $result->left_outer_join( $this->getTblLang() , [ $this->getTbl() . '.' . $idName , '=', $this->getTblLang() . '.' . $idNameInLang ] )
+                ->where_equal( $this->getTblLang() . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
         }
 
         return $result->find_one();
@@ -56,8 +53,6 @@ class Repository extends \App\Kernel\Repository
 
     public function getKit()
     {
-        $table = \DB::getTableName( $this->getName() ) ;
-
         $all = \DB::for_module( $this->getName() );
         if ( $this->getLimitGetAll() !== NULL ) $all = $all->limit( $this->getLimitGetAll() );
 
@@ -65,13 +60,12 @@ class Repository extends \App\Kernel\Repository
 
         if ( $this->getEntity()->hasMultiLang() )
         {
-            $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
             $idName			= \DB::getIdName( $this->getName() ) ;
             $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
             $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
 
-            $all = $all->left_outer_join( $tableLang , [ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ] )
-                ->where_equal( $tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
+            $all = $all->left_outer_join( $this->getTblLang() , [ $this->getTbl() . '.' . $idName , '=', $this->getTblLang() . '.' . $idNameInLang ] )
+                ->where_equal( $this->getTblLang() . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
         }
 
         if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
