@@ -49,12 +49,13 @@ class Select extends \App\Kernel\Back\Form
             if ( $row->noview != true )
             {
                 $select .= '<option value="' . $row->id . '"' . ( $row->id == $value ? ' selected' : '' ) . '>' ;
-                for( $i = 0; $i < $row->level; $i++)
+                for( $i = 0; $i < $row->level; $i++ )
                 {
                     $select .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ;
                 }
                 $select .= '<span style="font-weight: bold;">' . $hierarchy . $index .'.</span> ' ;
                 $select .= $row->$target . '</option>' ;
+
                 if ( !empty( $row->subpages ) )
                 {
                     $select .= $this->chieldParent( $row->subpages , $target , $value , $hierarchy . $index . "." ) ;

@@ -38,6 +38,7 @@ else
 }
 
 defined('COUNTRY') || define('COUNTRY','fr');
+defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
 
 if ( defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_DATABASE') )
 {

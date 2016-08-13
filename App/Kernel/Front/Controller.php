@@ -601,6 +601,10 @@ class Controller
     public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
+        if ( $this->getId() === NULL )
+        {
+            $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+        }
 
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )

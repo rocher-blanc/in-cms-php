@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Back;
 
-class Repository extends \App\Kernel\Repository
+class Repository extends \App\Kernel\Common\Repository
 {
     public function checkIfPatchTable( $id )
     {

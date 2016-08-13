@@ -270,10 +270,11 @@ class Controller
 
     protected function getTreeParent( $rows , $alias , $parent_id = -1 , $level = 0 )
     {
+
         $tree = [];
         foreach( $rows as $key => $row )
         {
-            if ( $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) == $parent_id or ( $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) === NULL && $parent_id == -1 ) )
+            if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
             {
                 $obj = new \stdClass();
                 $obj->id 		= $row->get('id');
@@ -365,7 +366,7 @@ class Controller
                 }
                 else if ( $row->isAssociated() == true )
                 {
-                    $opt = $this->getValueAssociated( $row , "array" );
+                    $opt = $this->getValueAssociated( $row , "array" , true );
                     $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
                 }
             }
@@ -395,7 +396,7 @@ class Controller
     }
 
     // Systeme de many / one TO many / one
-    protected function getValueAssociated( $row , $returnType = NULL )
+    protected function getValueAssociated( $row , $returnType = NULL , $form = false )
     {
         $Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
@@ -404,6 +405,8 @@ class Controller
             $this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
             $this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
             $this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
+
+            if ( $form ) $returnType = NULL ;
         }
 
         if ( $Controller === false )
@@ -413,6 +416,8 @@ class Controller
         else
         {
             $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType ) ;
+
+            //\App\Kernel\Debug::view( $tab );
             unset( $Controller );
             return $tab ;
         }
@@ -459,10 +464,10 @@ class Controller
         $target     = $this->getEntity()->get( $name );
         $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
 
-        if ( $this->getEntity()->hasParent() )
+        /*if ( $this->getEntity()->hasParent() )
         {
             $returnType = NULL;
-        }
+        }*/
 
         switch( $returnType )
         {
@@ -727,6 +732,7 @@ class Controller
 
             if ( $content )
             {
+                // TH
                 foreach( $this->getEntity()->getField() as $field )
                 {
                     if ( $field->getData('index') == true )
@@ -741,6 +747,7 @@ class Controller
                     }
                 }
 
+                // TD
                 $i = 0;
                 foreach( $content as $row )
                 {
@@ -799,6 +806,7 @@ class Controller
 
         if ( $this->getEntity()->hasParent() )
         {
+
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
         }
 
@@ -814,7 +822,7 @@ class Controller
     {
         $tree = [];
 
-        foreach ($rows as $key => $row)
+        foreach ( $rows as $key => $row )
         {
             if ( $row[ $this->getEntity()->getParentName() ] == $parent_id or ( $row[ $this->getEntity()->getParentName() ] === NULL && $parent_id == -1 ) )
             {

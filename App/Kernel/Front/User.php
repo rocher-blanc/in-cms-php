@@ -13,6 +13,7 @@ class User
     protected $id    = NULL;
     protected $login = NULL;
     protected $group = NULL;
+    protected $_var  = [];
 
     /* ************************************************** */
     /* ****************     ISER      ******************* */
@@ -40,17 +41,25 @@ class User
 
     protected function setId( $var )
     {
+        $this->setVar( 'id' , $var );
         $this->id = $var ;
     }
 
     protected function setLogin( $var )
     {
+        $this->setVar( 'login' , $var );
         $this->login = $var ;
     }
 
     protected function setGroup( $var )
     {
+        $this->setVar( 'group' , $var );
         $this->group = $var ;
+    }
+
+    protected function setVar( $key , $value )
+    {
+        $this->_var[ $key ] = $value ;
     }
 
     /* ************************************************** */
@@ -65,6 +74,11 @@ class User
     protected function getId()
     {
         return $this->id ;
+    }
+
+    protected function getVar()
+    {
+        return $this->_var ;
     }
 
     protected function getLogin()
@@ -132,6 +146,7 @@ class User
         {
             $this->CMS()->view()->appendData([
                 'user_error' => [
+                    'action' => $this->post('user_action'),
                     'result' => $result,
                     'msg' => $this->text( $key )
                 ]
@@ -157,12 +172,12 @@ class User
     public function appendVar()
     {
         $this->CMS()->view()->appendData([
-            'user' => [
+            'user' => array_merge([
                 'id'        => $this->getId(),
                 'login'     => $this->getLogin(),
                 'group'     => $this->getGroup(),
                 'isLogged'  => $this->isLogged()
-            ]
+            ], $this->getVar() )
         ]);
     }
 
@@ -538,12 +553,15 @@ class User
     protected function pushData( $id = NULL )
     {
         $user = \DB::for_table('user_front')
-            ->left_outer_join('user_front_group', ['user.user_front_group_id', '=', 'user_front_group.user_front_group_id'] )
+            ->left_outer_join('user_front_profile', ['user_front.user_front_id', '=', 'user_front_profile.user_front_profile_user_front_id'] )
+            ->left_outer_join('user_front_group', ['user_front.user_front_user_front_group_id', '=', 'user_front_group.user_front_group_id'] )
             ->where_equal( 'user_front_id' , ( $id !== NULL ? $id : $_SESSION[ $this->getSessionName() ]['id'] ) )
             ->find_one();
 
         $this->setId( $user->user_front_id );
         $this->setLogin( $user->user_front_login );
-        $this->setGroup( $user->user_front_group_id );
+        $this->setGroup( $user->user_front_user_front_group_id );
+
+        return $user ;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Front;
 
-class Repository extends \App\Kernel\Repository
+class Repository extends \App\Kernel\Common\Repository
 {
     protected $_limit_get_all = NULL;
 
