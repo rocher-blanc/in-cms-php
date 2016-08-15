@@ -195,7 +195,7 @@ class DB extends ORM
         else			$Tbl.= "\t`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_assoc . "` int(11) NOT NULL,\n" ;
 
         $Tbl.= "\tPRIMARY KEY  (`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_id . "`)\n" ;
-        $Tbl.= ") ENGINE=MyISAM;\n\n" ;
+        $Tbl.= ") ENGINE=MyISAM CHARACTER SET=utf8;\n\n" ;
 
         self::get_db()->exec( $Tbl ) ;
     }
@@ -239,7 +239,7 @@ class DB extends ORM
         }
 
         $Tbl.= "\tPRIMARY KEY  (`" . self::getIdName( $module ) . "`)\n" ;
-        $Tbl.= ") ENGINE=MyISAM;\n\n" ;
+        $Tbl.= ") ENGINE=MyISAM CHARACTER SET=utf8;\n\n" ;
 
         /* *************************** MULTI-LANGUE *************************** */
 
@@ -259,7 +259,7 @@ class DB extends ORM
             }
 
             $Tbl.= "\tPRIMARY KEY  (`" . self::getIdLangName( $module ) . "`)\n" ;
-            $Tbl.= ") ENGINE=MyISAM;\n\n" ;
+            $Tbl.= ") ENGINE=MyISAM CHARACTER SET=utf8;\n\n" ;
 
             self::get_db()->exec( $Tbl ) ;
         }
@@ -406,5 +406,10 @@ class DB extends ORM
 
     public function where_date_gte($column_name, $value=null) {
         return $this->_add_date_condition('where', $column_name, '>=', $value);
+    }
+
+    public function order_by_rand() {
+        $this->_order_by[] = "RAND()";
+        return $this;
     }
 }

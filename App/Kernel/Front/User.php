@@ -11,6 +11,7 @@ class User
     protected static $instance = NULL ;
 
     protected $id    = NULL;
+    protected $tmpId = NULL;
     protected $login = NULL;
     protected $group = NULL;
     protected $_var  = [];
@@ -45,6 +46,11 @@ class User
         $this->id = $var ;
     }
 
+    protected function setTmpId( $var )
+    {
+        $this->tmpId = $var ;
+    }
+
     protected function setLogin( $var )
     {
         $this->setVar( 'login' , $var );
@@ -74,6 +80,11 @@ class User
     protected function getId()
     {
         return $this->id ;
+    }
+
+    protected function getTmpId()
+    {
+        return $this->tmpId ;
     }
 
     protected function getVar()
@@ -260,14 +271,115 @@ class User
 
     public function register()
     {
-        if ( ! $this->isLogged() )
-        {
-            /*
-             * @POST
-             *
-             */
+        /*
+         * @POST
+         *
+         */
 
+        if ( $this->checkRegister() )
+        {
             // on utilise pour le mot de passe : password_hash( $password , PASSWORD_BCRYPT , ['cost' => 9] ) ;
+
+            $login              = trim( $this->post('user_login') ) ;
+            $password           = trim( $this->post('user_password') ) ;
+            $confirmPassword    = trim( $this->post('user_password_confirm') ) ;
+
+            $date = new \DateTime();
+
+            $user = \DB::for_table('user_front')->create();
+            $user->user_front_token         = $this->getNewToken();
+            $user->user_front_login         = $login;
+            $user->user_front_password      = $this->hashPassword( $password );
+            $user->user_front_date_created  = $date->format('Y-m-d H:i:s');
+            $user->user_front_active        = ( USER_ACTIVATION_MAIL ? 0 : 1 ) ;
+            $user->save();
+
+            $this->setTmpId( $user->user_front_id ) ;
+            $this->addProfile();
+
+            if ( USER_ACTIVATION_MAIL )
+            {
+                $mail = new Mail;
+                $mail->add( $user->user_front_login )
+                     ->setSubject('Validation de votre compte')
+                     ->parse('validation', [
+                         'token' => $user->user_front_token,
+                         'login' => $user->user_front_login,
+                     ]);
+
+                unset( $_POST );
+
+                if ( ! $mail->send() )
+                {
+                    return $this->returnError( "user_register_send_mail_error" ) ;
+                }
+                else
+                {
+                    return $this->returnError( "user_register_send_mail_successful" , true ) ;
+                }
+            }
+            else
+            {
+                unset( $_POST );
+                return $this->returnError( "user_register_successful" , true ) ;
+            }
+        }
+    }
+
+    protected function addProfile()
+    {
+        $profile = \DB::for_table('user_front_profile')->create();
+        $profile->user_front_profile_user_front_id = $this->getTmpId();
+        $profile = $this->addProfileOtherInformation( $profile ) ;
+        $profile->save();
+    }
+
+    protected function addProfileOtherInformation( $profile )
+    {
+        return $profile ;
+    }
+
+    protected function checkRegister()
+    {
+        /*
+         * @POST
+         *
+         */
+        $login              = trim( $this->post('user_login') ) ;
+        $password           = trim( $this->post('user_password') ) ;
+        $passwordConfirm    = trim( $this->post('user_password_confirm') ) ;
+
+        if ( $this->isLogged() )
+        {
+            return $this->returnError( "user_register_logged" ) ;
+        }
+        else if ( empty( $login ) )
+        {
+            return $this->returnError( "user_register_login_empty" ) ;
+        }
+        else if ( ! filter_var( $login, FILTER_VALIDATE_EMAIL ) )
+        {
+            return $this->returnError( "user_register_login_not_valid" ) ;
+        }
+        else if ( ! $this->uniqLogin( $login ) )
+        {
+            return $this->returnError( "user_register_login_not_uniq" ) ;
+        }
+        else if ( empty( $password ) )
+        {
+            return $this->returnError( "user_register_password_empty" ) ;
+        }
+        else if ( empty( $passwordConfirm ) )
+        {
+            return $this->returnError( "user_register_confirm_password_empty" ) ;
+        }
+        else if ( $password != $passwordConfirm )
+        {
+            return $this->returnError( "user_register_password_different" ) ;
+        }
+        else
+        {
+            return true ;
         }
     }
 
@@ -327,7 +439,7 @@ class User
                 }
                 else
                 {
-                    return $this->loadUpdate( $user  ) ;
+                    return $this->loadUpdate( $user ) ;
                 }
             }
             else
@@ -521,12 +633,26 @@ class User
         return $token ;
     }
 
+    protected function passwordIsSecured( $pass )
+    {
+        if ( strlen( $pass ) < 8 )
+        {
+            return false ;
+        }
+
+        return true ;
+    }
+
     protected function uniqLogin( $login )
     {
-        $ct = \DB::for_table('user_front')
-            ->where_not_equal('user_front_id', $this->getId() )
-            ->where_equal('user_front_login', $login )
-            ->count();
+        $ct = \DB::for_table('user_front');
+
+        if ( $this->getId() !== NULL )
+        {
+            $ct = $ct->where_not_equal('user_front_id', $this->getId() );
+        }
+
+        $ct = $ct->where_equal('user_front_login', $login )->count();
 
         if ( $ct == 0 ) return true ;
         else            return false ;

@@ -191,4 +191,26 @@ class Url
 
 		return $alias;
 	}
+
+    public function page( $id )
+    {
+        $cLang = \DB::for_table('page_lang')
+            ->select('page_lang_url')
+            ->where(['page_lang_page_id' => $id, 'page_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
+            ->find_one();
+
+        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->page_lang_url ;
+        else			return "#" ;
+    }
+
+    public function module( $id )
+    {
+        $cLang = \DB::for_table('module_lang')
+            ->select('module_lang_url')
+            ->where(['module_lang_module_id' => $id, 'module_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
+            ->find_one();
+
+        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->module_lang_url ;
+        else			return "#" ;
+    }
 }

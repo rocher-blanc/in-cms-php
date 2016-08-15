@@ -60,6 +60,11 @@ abstract class Page
         return \App\Kernel\Container::getInstance() ;
     }
 
+    protected function Factory()
+    {
+        return \App\Kernel\Factory::getInstance() ;
+    }
+
     protected function getTemplate()
     {
         return $this->tpl ;

@@ -38,8 +38,24 @@ else
 }
 
 defined('COUNTRY') || define('COUNTRY','fr');
+
+// SESSION
 defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
 
+// USER
+defined('ACTIVE_USER') || define('ACTIVE_USER', false );
+defined('USER_ACTIVATION_MAIL') || define('USER_ACTIVATION_MAIL', 0 );
+
+// MAIL
+defined('MAIL_HTML') || define('MAIL_HTML', true );
+defined('MAIL_SMTP') || define('MAIL_SMTP', false );
+defined('MAIL_SMTP_HOST') || define('MAIL_SMTP_HOST', "" );
+defined('MAIL_SMTP_USER') || define('MAIL_SMTP_USER', "" );
+defined('MAIL_SMTP_PASSWORD') || define('MAIL_SMTP_PASSWORD', "" );
+defined('MAIL_SMTP_PORT') || define('MAIL_SMTP_PORT', 587 );
+defined('MAIL_SMTP_SECURE') || define('MAIL_SMTP_SECURE', 'tls' );
+
+// DATABASE
 if ( defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_DATABASE') )
 {
     if ( DB_HOST == '' || DB_USER == '' || DB_DATABASE == '' )
@@ -56,13 +72,6 @@ else
     defined('DB') || define('DB',false);
 }
 
-if ( ! defined('ACTIVE_USER') )
-{
-    define('ACTIVE_USER', false );
-}
-
-// if ( ! defined('DB_HOST') ||! defined('DB_USER') ||! defined('DB_PASSWORD') ||! defined('DB_DATABASE') ) \App\Kernel\Factory::getInstance()->Response()->error('No information for database') ;
-// if ( ! defined('DEBUG') ) \App\Kernel\Factory::getInstance()->Response()->error('No information for debug') ;
 if ( ! defined('DEBUG') )
 {
     define('SLIM_MODE', 'development');

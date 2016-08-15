@@ -603,7 +603,8 @@ class Controller
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
         if ( $this->getId() === NULL )
         {
-            $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+            if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+            if ( ! $result ) dump( $this );
         }
 
         $arrayElement = [];

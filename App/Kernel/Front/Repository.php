@@ -51,7 +51,7 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->getKit()->find_many();
     }
 
-    public function getKit()
+    public function getKit( $order = true )
     {
         $all = \DB::for_module( $this->getName() );
         if ( $this->getLimitGetAll() !== NULL ) $all = $all->limit( $this->getLimitGetAll() );
@@ -68,8 +68,11 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where_equal( $this->getTblLang() . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
         }
 
-        if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
-        else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+        if ( $order )
+        {
+            if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
+            else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+        }
 
         return $all;
     }
