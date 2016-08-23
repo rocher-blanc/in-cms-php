@@ -20,7 +20,8 @@ class Mail
 
         if ( MAIL_SMTP )
         {
-            if ( DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
+            if ( DEBUG && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
+
             $this->obj->isSMTP();                            // Set mailer to use SMTP
             $this->obj->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
             $this->obj->SMTPAuth     = true;                 // Enable SMTP authentication
@@ -34,8 +35,8 @@ class Mail
             $this->obj->isSendmail();
         }
 
-       // if ( defined('MAIL_FROM_ADDRESS') && defined('MAIL_FROM_NAME') ) $this->obj->setFrom( MAIL_FROM_ADDRESS , MAIL_FROM_NAME );
-       // if ( defined('MAIL_REPLY_ADDRESS') && defined('MAIL_REPLY_NAME') ) $this->obj->addReplyTo( MAIL_REPLY_ADDRESS , MAIL_REPLY_NAME );
+       if ( defined('MAIL_FROM_ADDRESS') && defined('MAIL_FROM_NAME') ) $this->obj->setFrom( MAIL_FROM_ADDRESS , MAIL_FROM_NAME );
+       if ( defined('MAIL_REPLY_ADDRESS') && defined('MAIL_REPLY_NAME') ) $this->obj->addReplyTo( MAIL_REPLY_ADDRESS , MAIL_REPLY_NAME );
 
         $this->obj->isHTML(true);                            // Set email format to HTML
         $this->obj->CharSet = 'UTF-8';

@@ -49,6 +49,7 @@ defined('USER_ACTIVATION_MAIL') || define('USER_ACTIVATION_MAIL', 0 );
 // MAIL
 defined('MAIL_HTML') || define('MAIL_HTML', true );
 defined('MAIL_SMTP') || define('MAIL_SMTP', false );
+defined('SMTP_DEBUG') || define('SMTP_DEBUG', false );
 defined('MAIL_SMTP_HOST') || define('MAIL_SMTP_HOST', "" );
 defined('MAIL_SMTP_USER') || define('MAIL_SMTP_USER', "" );
 defined('MAIL_SMTP_PASSWORD') || define('MAIL_SMTP_PASSWORD', "" );

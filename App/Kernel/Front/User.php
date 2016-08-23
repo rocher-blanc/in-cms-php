@@ -92,6 +92,11 @@ class User
         return $this->_var ;
     }
 
+    public function getProfile( $key )
+    {
+        return $this->_var[ $key ] ;
+    }
+
     protected function getLogin()
     {
         return $this->login ;
@@ -219,6 +224,7 @@ class User
 
                 $user = \DB::for_table('user_front')
                     ->where_equal('user_front_login', $login)
+                    ->where_equal('user_front_active', 1)
                     ->find_one();
 
                 if ( is_object( $user ) && $user->user_front_login === $login && password_verify( $password , $user->user_front_password ) == true )
@@ -307,8 +313,6 @@ class User
                          'login' => $user->user_front_login,
                      ]);
 
-                unset( $_POST );
-
                 if ( ! $mail->send() )
                 {
                     return $this->returnError( "user_register_send_mail_error" ) ;
@@ -320,7 +324,6 @@ class User
             }
             else
             {
-                unset( $_POST );
                 return $this->returnError( "user_register_successful" , true ) ;
             }
         }
@@ -514,26 +517,51 @@ class User
              * @POST
              * user_login
              */
-            $user = \DB::for_table('user_front')
-                ->where_equal('user_front_login', $this->post('user_login') )
-                ->where_equal('user_front_active', 1 )
-                ->find_one();
 
-            if ( $user )
+            $login = trim( $this->post('user_login') ) ;
+
+            if ( empty( $login ) )
             {
-                $pass = $this->generatePassword();
-                $user->user_front_password = $this->hashPassword( $pass ) ;
-                $user->user_front_token    = $this->getNewToken();
-                $user->save();
-
-                // On envoie un email avec le mot de pass
-
-                unset( $pass );
+                return $this->returnError( "user_lost_password_login_empty" ) ;
             }
             else
             {
-                return $this->returnError( "user_password_failed" , true ) ;
+                $user = \DB::for_table('user_front')
+                    ->where_equal('user_front_login', $login )
+                    ->where_equal('user_front_active', 1 )
+                    ->find_one();
+
+                if ( $user )
+                {
+                    $pass = $this->generatePassword();
+                    $user->user_front_password = $this->hashPassword( $pass ) ;
+                    $user->user_front_token    = $this->getNewToken();
+                    $user->save();
+
+                    $mail = new Mail;
+                    $mail->add( $login )
+                        ->setSubject('Validation de votre compte')
+                        ->parse('lost-password', [
+                            'password' => $pass,
+                            'login' => $login,
+                        ]);
+
+                    if ( ! $mail->send() )
+                    {
+                        return $this->returnError( "user_lost_password_send_mail_error" ) ;
+                    }
+                    else
+                    {
+                        return $this->returnError( "user_lost_password_send_mail_successful" , true ) ;
+                    }
+                }
+                else
+                {
+                    return $this->returnError( "user_lost_password_failed" ) ;
+                }
             }
+
+
         }
     }
 
@@ -560,6 +588,12 @@ class User
     {
         return password_hash( $pass , PASSWORD_BCRYPT , ['cost' => 9] ) ;
     }
+
+    ###################################################################################################################################
+    ######################################                  PROFIL                   ##################################################
+    ###################################################################################################################################
+
+
 
     ###################################################################################################################################
     ######################################                  OBSERVE                  ##################################################

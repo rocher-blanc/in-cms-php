@@ -604,7 +604,6 @@ class Controller
         if ( $this->getId() === NULL )
         {
             if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
-            if ( ! $result ) dump( $this );
         }
 
         $arrayElement = [];
