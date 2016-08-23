@@ -77,7 +77,7 @@ class User
         return 'jcontent_user' ;
     }
 
-    protected function getId()
+    public function getId()
     {
         return $this->id ;
     }

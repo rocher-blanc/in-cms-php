@@ -384,6 +384,7 @@ class Controller
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
                         "comment"	=> $row->getComment(),
+                        "required"	=> $row->isRequired(),
                         "error" 	=> $row->getError()
                     ];
                 }
