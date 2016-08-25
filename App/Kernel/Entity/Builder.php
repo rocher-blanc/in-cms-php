@@ -30,6 +30,12 @@ class Builder extends Model
 
     /*
      * @boolean
+     * Définit s'il y a une gestion des restrictions d'affichage dans pour les groupes d'utulisateurs
+     */
+    protected $_hasRestrictionGroup = false;
+
+    /*
+     * @boolean
      * Définit si une gestion de validation est présente
      */
     protected $_hasValidation = false;
@@ -135,6 +141,11 @@ class Builder extends Model
         return $this->_hasOrder ;
     }
 
+    public function hasRestrictionGroup()
+    {
+        return $this->_hasRestrictionGroup ;
+    }
+
     public function hasValidation()
     {
         return $this->_hasValidation ;
@@ -187,6 +198,11 @@ class Builder extends Model
     protected function setOrder()
     {
         $this->_hasOrder = true ;
+    }
+
+    protected function setRestrictionGroup()
+    {
+        $this->_hasRestrictionGroup = true ;
     }
 
     protected function setUrl()

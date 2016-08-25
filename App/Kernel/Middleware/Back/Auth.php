@@ -174,6 +174,12 @@ class Auth extends \Slim\Middleware
 				->left_outer_join('user_group', array('user.user_group_id', '=', 'user_group.user_group_id'))
 				->where_equal( 'user_id' , $_SESSION[ $this->app->config('session') ]['id'] )
 				->find_one();
+
+        if ( ! $user )
+        {
+            $this->logout() ;
+            $this->Factory()->Response()->redirectLogin() ;
+        }
 		
 		$this->app->environment['user'] = array(
 			'id' 		 => $user->user_id,
