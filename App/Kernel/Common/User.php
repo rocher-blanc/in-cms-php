@@ -14,7 +14,7 @@ class User
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
 
-    protected function getNewToken()
+    public function getNewToken()
     {
         $length = 32 ;
         $uniq   = false ;
