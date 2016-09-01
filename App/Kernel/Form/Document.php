@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Form;
 
-class Document
+class Document extends \App\Kernel\Back\Form
 {
 	public function __construct()
 	{

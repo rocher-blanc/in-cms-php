@@ -16,6 +16,11 @@ class Loader
         return "/" . \App\Kernel\Install::getAdminFolder() ;
     }
 
+    protected function getRouterFolder()
+    {
+        return [] ;
+    }
+
     protected function preload()
     {
         #########################################################
@@ -56,9 +61,9 @@ class Loader
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $this->kernel->addPlugin(new \App\Kernel\Back\Router([
+        $this->kernel->addPlugin(new \App\Kernel\Back\Router(array_merge([
             CONTROLLERS_PATH
-        ])) ;
+        ], $this->getRouterFolder()))) ;
         $this->kernel->addPlugin(new \App\Kernel\Back\Menu) ;
     }
 

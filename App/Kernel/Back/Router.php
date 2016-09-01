@@ -104,8 +104,8 @@ class Router
 				case "ext" :
 				case "admin" :
                     $folders = $this->folders ;
-					$app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $folders )
-					{
+                    $app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $folders )
+                    {
                         $file = '' ;
                         foreach( $folders as $folder )
                         {
@@ -119,10 +119,32 @@ class Router
                     $file = '' ;
                     foreach( $this->folders as $folder )
                     {
-                        if ( file_exists( $folder . '/' . $urlTab[0] . '.php' ) ) $file = $folder . '/' . $urlTab[0] . '.php' ;
+                        if ( file_exists( $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ) )
+                        {
+                            $file = $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ;
+                            $group = true ;
+                        }
+                        else if ( file_exists( $folder . '/' . $urlTab[0] . '.php' ) )
+                        {
+                            $file = $folder . '/' . $urlTab[0] . '.php' ;
+                            $group = false ;
+                        }
                     }
 
-                    if ( ! empty( $file ) ) require $file ;
+                    if ( ! empty( $file ) )
+                    {
+                        if ( $group )
+                        {
+                            $app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $file )
+                            {
+                                require $file ;
+                            });
+                        }
+                        else
+                        {
+                            require $file ;
+                        }
+                    }
 				break;
 			}
 			

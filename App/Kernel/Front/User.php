@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Front;
 
-class User
+class User extends \App\Kernel\Common\User
 {
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
@@ -639,32 +639,6 @@ class User
             'isLogged'  => true,
             'ip' 		=> $this->getIp()
         ];
-    }
-
-    protected function getNewToken()
-    {
-        $length = 32 ;
-        $uniq   = false ;
-
-        while( $uniq == false )
-        {
-            if ( function_exists('mcrypt_create_iv') )
-            {
-                $token = bin2hex(mcrypt_create_iv( $length , MCRYPT_DEV_URANDOM ) );
-            }
-            else if ( function_exists('random_bytes') )
-            {
-                $token = bin2hex( random_bytes( $length ) );
-            }
-            else if ( function_exists('openssl_random_pseudo_bytes') )
-            {
-                $token = bin2hex( openssl_random_pseudo_bytes( $length ) );
-            }
-
-            $uniq = $this->uniqToken( $token ) ;
-        }
-
-        return $token ;
     }
 
     protected function passwordIsSecured( $pass )
