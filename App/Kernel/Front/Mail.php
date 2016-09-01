@@ -83,6 +83,18 @@ class Mail
         return $this ;
     }
 
+    public function from( $mail , $name )
+    {
+        $this->obj->setFrom( $mail , $name );
+        return $this ;
+    }
+
+    public function replyTo( $mail , $name )
+    {
+        $this->obj->addReplyTo( $mail , $name );
+        return $this ;
+    }
+
     public function add( $var )
     {
         $this->obj->addAddress( $var );
