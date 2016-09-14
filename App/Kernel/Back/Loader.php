@@ -62,7 +62,8 @@ class Loader
         #########################################################
 
         $this->kernel->addPlugin(new \App\Kernel\Back\Router(array_merge([
-            CONTROLLERS_PATH
+            CONTROLLERS_PATH,
+            PROJECT_EXT_CONTROLLER_PATH
         ], $this->getRouterFolder()))) ;
         $this->kernel->addPlugin(new \App\Kernel\Back\Menu) ;
     }

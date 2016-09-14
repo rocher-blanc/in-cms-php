@@ -275,6 +275,9 @@ class User extends \App\Kernel\Common\User
     ######################################                REGISTER                   ##################################################
     ###################################################################################################################################
 
+    /**
+     * @return bool
+     */
     public function register()
     {
         /*
@@ -293,11 +296,12 @@ class User extends \App\Kernel\Common\User
             $date = new \DateTime();
 
             $user = \DB::for_table('user_front')->create();
-            $user->user_front_token         = $this->getNewToken();
-            $user->user_front_login         = $login;
-            $user->user_front_password      = $this->hashPassword( $password );
-            $user->user_front_date_created  = $date->format('Y-m-d H:i:s');
-            $user->user_front_active        = ( USER_ACTIVATION_MAIL ? 0 : 1 ) ;
+            $user->user_front_token                 = $this->getNewToken();
+            $user->user_front_login                 = $login;
+            $user->user_front_password              = $this->hashPassword( $password );
+            $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
+            $user->user_front_active                = ( USER_ACTIVATION_MAIL ? 0 : $this->getActiveRegister() ) ;
+            $user->user_front_user_front_group_id   = $this->getDefaultGroup() ;
             $user->save();
 
             $this->setTmpId( $user->user_front_id ) ;
@@ -327,6 +331,16 @@ class User extends \App\Kernel\Common\User
                 return $this->returnError( "user_register_successful" , true ) ;
             }
         }
+    }
+
+    protected function getActiveRegister()
+    {
+        return 1;
+    }
+
+    protected function getDefaultGroup()
+    {
+        return 0;
     }
 
     protected function addProfile()
@@ -467,7 +481,19 @@ class User extends \App\Kernel\Common\User
         }
         $user->save();
 
+        $this->updateProfile() ;
+
         return $this->returnError( "user_update_successful" , true ) ;
+    }
+
+    protected function updateProfile()
+    {
+        $profile = $this->updateProfileOtherInformation( $profile ) ;
+    }
+
+    protected function updateProfileOtherInformation( $profile )
+    {
+        return $profile ;
     }
 
     ###################################################################################################################################

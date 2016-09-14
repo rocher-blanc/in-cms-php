@@ -112,6 +112,7 @@ class Mail
         $this->obj->addBCC( $var );
         return $this ;
     }
+
     public function parse( $template , $var )
     {
         $this->setBody( $this->CMS()->view()->fetch( 'mail/' . $template . '.twig.html' , $var ) ) ;
@@ -123,6 +124,8 @@ class Mail
 
     public function send()
     {
-        return $this->obj->send();
+        $ret = $this->obj->send();
+        if ( ! $ret && SMTP_DEBUG && DEBUG ) dump( $this->getError() );
+        return $ret ;
     }
 }

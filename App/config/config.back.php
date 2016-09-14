@@ -2,6 +2,7 @@
 defined('REPOSITORY_PATH') || define('REPOSITORY_PATH', REPOSITORY_PROJECT_PATH . '/Back');
 defined('CONTROLLERS_PATH') || define('CONTROLLERS_PATH', APPLICATION_PATH . '/Controller/back');
 defined('PROJECT_CONTROLLER_PATH') || define('PROJECT_CONTROLLER_PATH', MODULE_PATH . '/Controller/Back');
+defined('PROJECT_EXT_CONTROLLER_PATH') || define('PROJECT_EXT_CONTROLLER_PATH', PROJECT_PATH . '/Controller/Back');
 defined('CACHE_PATH') || define('CACHE_PATH', _PATH_ . '/cache/back');
 defined('TEMPLATES_PATH') || define('TEMPLATES_PATH', APPLICATION_PATH . '/view/back');
 defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/view/back');
