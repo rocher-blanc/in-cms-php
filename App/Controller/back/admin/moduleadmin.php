@@ -92,18 +92,6 @@ $app->group('/moduleadmin', function () use ($app)
                 if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
             }
 
-            // On génére la class entity
-            $php = '' ;
-            $php.= "<"."?"."php\n\n" ;
-            $php.= "namespace Project\Module\Entity\Class\\" . $row . ";\n\n" ;
-
-            $php.= "/** @Entity @Table(name=\"addresses\") */\n" ;
-            $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
-            $php.= "{\n" ;
-            $php.= "\t\n" ;
-            $php.= "}" ;
-            if ( ! file_exists( ENTITIES_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( ENTITIES_PROJECT_PATH . "/" . $name . ".php" , $php );
-
             \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
             \App\Kernel\Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
 
