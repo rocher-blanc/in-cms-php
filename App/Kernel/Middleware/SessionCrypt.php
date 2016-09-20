@@ -42,7 +42,7 @@ class SessionCrypt extends \Slim\Middleware\SessionCookie
             $this->app->setCookie(
                 $this->settings['name'],
                 $value,
-                $this->settings['expires'],
+                ( time() + SESSION_LIFETIME ),
                 $this->settings['path'],
                 $this->settings['domain'],
                 $this->settings['secure'],

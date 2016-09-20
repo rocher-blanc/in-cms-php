@@ -122,6 +122,8 @@ class Slim
 			'autoescape' => false
 		];
 
+        $viewArray[] = VIEW_PROJECT_PATH ;
+
         if ( ! empty( $this->templateFolder ) )
         {
             foreach( $this->templateFolder as $row )
@@ -130,7 +132,6 @@ class Slim
             }
         }
 
-        $viewArray[] = VIEW_PROJECT_PATH ;
         $viewArray[] = TEMPLATES_PATH ;
 		
 		$this->_slim->view()->twigTemplateDirs = $viewArray ;
