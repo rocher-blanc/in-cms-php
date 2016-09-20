@@ -4,37 +4,7 @@
     <script>
         var siteurl = site + '{{ adminFolder }}/' ;
     </script>
-    <style>
-        header.top {
-            border-bottom: 4px solid #008fc1;
-        }
-
-        .nav-sidebar > .expanded.active > a,
-        .nav-sidebar > .expanded.active > a:hover,
-        .nav-sidebar > .expanded.active> a:focus {
-            border-left: 2px solid #008fc1;
-        }
-
-        .nav-sidebar > .active,
-        .nav-sidebar > .active > a,
-        .nav-sidebar .parent .children a:hover,
-        .nav-sidebar > .parent > .children > .active > a,
-        .nav-sidebar > li > a:focus,
-        .nav-sidebar > li > a:hover,
-        .nav-sidebar > li > a:focus,
-        .nav-sidebar > li:hover,
-        header.top .profile.open .dropdown-menu li a i,
-        header.top .viewfront:hover,
-        .title-alone .panel-heading h2 {
-            color: #008fc1;
-        }
-        .form-control:focus {
-            border-color: #008fc1;
-            outline: 0;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px #008fc1;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px #008fc1;
-        }
-    </style>
+    {% include 'style.twig.html' with {'color': color} %}
     {{ parent() }}
 {% endblock %}
 
@@ -44,7 +14,7 @@
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar">
 					<div id="logo">
-                        <img src="{{ asset('img/j-content-logo.png') }}" class="img-responsive" alt="JContent" title="JContent" />
+                        {% include 'logo.twig.html' %}
                     </div>
                     <div class="overborder"></div>
                     <ul class="nav nav-sidebar">
@@ -60,6 +30,7 @@
 								<span>Menu</span>
 							</a>
 						</li>
+                        {% include 'menu/top-module.twig.html' with {'menu':menu} %}
 						{% for group in menuTree %}
 							{% if group.children|length > 1 %}
 								<li class="parent{% if group.open == true %} expanded active{% endif %}">
@@ -87,6 +58,7 @@
 								{% endfor %}
 							{% endif %}
 						{% endfor %}
+                        {% include 'menu/bottom-module.twig.html' with {'menu':menu} %}
 						<li class="parent{% if menu == 'group' or menu == 'parammodule' or menu == 'page' or menu == 'user' or menu == 'langue' %} expanded active{% endif %}">
 							<a href="#">
 								<i class="fa fa-cogs"></i>

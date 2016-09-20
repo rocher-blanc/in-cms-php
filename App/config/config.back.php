@@ -12,3 +12,8 @@ defined('ASSETS_IMG_PATH') || define('ASSETS_IMG_PATH', WEB_PATH . '/' . \App\Ke
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 
 defined('COUNTRY') || define('COUNTRY','fr');
+
+
+/* Thème du back office pour JContent */
+defined('COLOR') || define('COLOR','#008fc1');
+defined('TECHNO') || define('TECHNO','JContent');

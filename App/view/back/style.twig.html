@@ -1,0 +1,31 @@
+<style>
+    header.top {
+        border-bottom: 4px solid {{ color }};
+    }
+
+    .nav-sidebar > .expanded.active > a,
+    .nav-sidebar > .expanded.active > a:hover,
+    .nav-sidebar > .expanded.active> a:focus {
+        border-left: 2px solid {{ color }};
+    }
+
+    .nav-sidebar > .active,
+    .nav-sidebar > .active > a,
+    .nav-sidebar .parent .children a:hover,
+    .nav-sidebar > .parent > .children > .active > a,
+    .nav-sidebar > li > a:focus,
+    .nav-sidebar > li > a:hover,
+    .nav-sidebar > li > a:focus,
+    .nav-sidebar > li:hover,
+    header.top .profile.open .dropdown-menu li a i,
+    header.top .viewfront:hover,
+    .title-alone .panel-heading h2 {
+        color: {{ color }};
+    }
+    .form-control:focus {
+        border-color: {{ color }};
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px {{ color }};
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px {{ color }};
+    }
+</style>
