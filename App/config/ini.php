@@ -4,7 +4,7 @@ ini_set('upload_max_filesize', '10M');
 ini_set('default_charset', 'utf-8');
 ini_set('magic_quotes_runtime', 0);
 ini_set('magic_quotes_sybase', 0);
-ini_set("session.gc_maxlifetime", SESSION_LIFETIME );
+ini_set("session.dd", SESSION_LIFETIME );
 
 if ( DEBUG )
 {

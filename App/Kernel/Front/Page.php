@@ -92,7 +92,12 @@ abstract class Page
     public function execute()
     {
         $this->loadMeta() ;
-		$this->render() ;
+        $this->render() ;
+    }
+
+    public function post( $key )
+    {
+        return $this->CMS()->request()->post( $key );
     }
 
     /* ************************************************** */

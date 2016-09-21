@@ -30,10 +30,10 @@
 									</td>
 									<td class="text-right">
 										<div class="btn-group">
-											<button class="btn btn-default btn-md dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-database"></i> Base de données <span class="caret"></span></button>
+											<button class="btn btn-default btn-md dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-bomb"></i> Actions <span class="caret"></span></button>
 											<ul class="dropdown-menu" role="menu">
-												<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}">Vider les tables</a></li>
-												<li><a href="{{ siteUrl('admin/moduleadmin/patch/' ~  row.module_id ~ '/' ~ csrf_token) }}">Patcher les tables</a></li>
+												<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}">Vider les tables MySQL</a></li>
+												{% if img[ row.module_id ] == true %}<li><a href="{{ siteUrl('admin/moduleadmin/image/' ~  row.module_id ~ '/' ~ csrf_token) }}">Regénérer les images</a></li>{% endif %}
 											</ul>
 										</div>
 										{% if row.module_active == 0 %}

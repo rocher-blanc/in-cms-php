@@ -20,6 +20,17 @@ $app->group('/moduleadmin', function () use ($app)
             }
         }
 
+        $img = [];
+
+        if ( $contentRows )
+        {
+            foreach( $contentRows as $row )
+            {
+                $entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
+                $img[ $row->module_id ] = $entity->hasImage();
+            }
+        }
+
         $files = glob( ENTITY_PATH . "/*.php");
         $list = [];
 
@@ -35,7 +46,8 @@ $app->group('/moduleadmin', function () use ($app)
         }
 
         $app->render('admin/moduleadmin/index.twig.html', [
-            "contentRows" => $contentRows ,
+            "img" => $img,
+            "contentRows" => $contentRows,
             "noInstall" => $list
         ]);
 
@@ -105,6 +117,76 @@ $app->group('/moduleadmin', function () use ($app)
         }
 
     })->name('moduleadmin_install');
+
+    $app->get('/image/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $ret = false;
+            $contentRow = \DB::for_table('module')
+                ->where_equal('module_id', $id)
+                ->find_one();
+
+            if ( $contentRow )
+            {
+                $entity = \App\Kernel\Container::getInstance()->module($contentRow->module_class_name)->getEntity();
+                if ( $entity->hasImage() )
+                {
+                    foreach( $entity->getField() as $field )
+                    {
+                        if ( $field->getType() == 'image' )
+                        {
+                            $content = \DB::for_module( $contentRow->module_class_name )
+                                ->select( $field->getColumn() , 'value' )
+                                ->find_many();
+
+                            if ( $content )
+                            {
+                                foreach( $content as $row )
+                                {
+                                    $Media = new \App\Kernel\Back\Media;
+                                    $Media->setModuleId( $contentRow->module_id ) ;
+                                    $Media->setImageId( $row->get('value') );
+                                    $Media->setFolder( $entity->getFolder() ) ;
+                                    $Media->getNameById() ;
+
+                                    if ( $field->hasThumb() )
+                                    {
+                                        foreach( $field->getThumb() as $thumb )
+                                        {
+                                            // width, height
+                                            $Media->genThumb( $thumb[0] , $thumb[1] ) ;
+                                        }
+                                    }
+
+                                    if ( $field->hasCrop() )
+                                    {
+                                        foreach( $field->getCrop() as $crop )
+                                        {
+                                            // width, height
+                                            $Media->genThumb( $crop[0] , $crop[1] , true ) ;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    $app->flash('__msg',addslashes( json_encode( "Les images ont bien été regénéré") ) );
+                    $app->flash('__result',true);
+                    $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+                }
+            }
+            else
+            {
+                $app->flash('__msg',addslashes( json_encode( "Problème technique lors de l'opération") ) );
+                $app->flash('__result',false);
+
+                $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+            }
+        }
+
+        echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+    })->name('moduleadmin_image');
 
     $app->delete('/delete/:id', function ($id) use ($app)
     {
