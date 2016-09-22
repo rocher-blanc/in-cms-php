@@ -311,7 +311,7 @@ class User extends \App\Kernel\Common\User
             {
                 $mail = new Mail;
                 $mail->add( $user->user_front_login )
-                     ->setSubject('Validation de votre compte')
+                     ->setSubject( $this->text('user_mail_subjet_validation') )
                      ->parse('validation', [
                          'token' => $user->user_front_token,
                          'login' => $user->user_front_login,
@@ -404,7 +404,7 @@ class User extends \App\Kernel\Common\User
     ######################################                  UPDATE                   ##################################################
     ###################################################################################################################################
 
-    public function update()
+    public function checkUpdate()
     {
         if ( $this->isLogged() )
         {
@@ -456,12 +456,12 @@ class User extends \App\Kernel\Common\User
                 }
                 else
                 {
-                    return $this->loadUpdate( $user ) ;
+                    return true ;
                 }
             }
             else
             {
-                return $this->loadUpdate( $user ) ;
+                return true ;
             }
         }
         else
@@ -470,25 +470,32 @@ class User extends \App\Kernel\Common\User
         }
     }
 
-    public function loadUpdate( $user )
+    public function update()
     {
-        $user->user_front_login = $this->post('user_login') ;
-        $user->user_front_token = $this->getNewToken() ;
-
-        if ( $this->post('user_new_password') != '' )
+        if ( $this->checkUpdate() )
         {
-            $user->user_front_password = password_hash( $this->post('user_new_password') , PASSWORD_BCRYPT , ['cost' => 9] ) ;
+            $user = $this->getById();
+
+            $user->user_front_login = $this->post('user_login') ;
+            $user->user_front_token = $this->getNewToken() ;
+
+            if ( $this->post('user_new_password') != '' )
+            {
+                $user->user_front_password = password_hash( $this->post('user_new_password') , PASSWORD_BCRYPT , ['cost' => 9] ) ;
+            }
+            $user->save();
+
+            $this->updateProfile() ;
+
+            return $this->returnError( "user_update_successful" , true ) ;
         }
-        $user->save();
-
-        $this->updateProfile() ;
-
-        return $this->returnError( "user_update_successful" , true ) ;
     }
 
     protected function updateProfile()
     {
+        $profile = \DB::for_table('user_front_profile')->where_equal('user_front_profile_user_front_id', $this->getId())->find_one();
         $profile = $this->updateProfileOtherInformation( $profile ) ;
+        $profile->save();
     }
 
     protected function updateProfileOtherInformation( $profile )
@@ -566,7 +573,7 @@ class User extends \App\Kernel\Common\User
 
                     $mail = new Mail;
                     $mail->add( $login )
-                        ->setSubject('Validation de votre compte')
+                        ->setSubject( $this->text('user_mail_subjet_lost_password') )
                         ->parse('lost-password', [
                             'password' => $pass,
                             'login' => $login,
@@ -586,8 +593,6 @@ class User extends \App\Kernel\Common\User
                     return $this->returnError( "user_lost_password_failed" ) ;
                 }
             }
-
-
         }
     }
 
@@ -614,12 +619,6 @@ class User extends \App\Kernel\Common\User
     {
         return password_hash( $pass , PASSWORD_BCRYPT , ['cost' => 9] ) ;
     }
-
-    ###################################################################################################################################
-    ######################################                  PROFIL                   ##################################################
-    ###################################################################################################################################
-
-
 
     ###################################################################################################################################
     ######################################                  OBSERVE                  ##################################################

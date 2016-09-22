@@ -33,7 +33,7 @@ class User extends \Slim\Middleware
                 $this->user()->lostPassword();
             }
 
-            if ( $this->app->request->post('user_action') == 'update_user' )
+            if ( $this->app->request->post('user_action') == 'update' )
             {
                 $this->user()->update();
             }
