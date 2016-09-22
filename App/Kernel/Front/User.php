@@ -97,7 +97,7 @@ class User extends \App\Kernel\Common\User
         return $this->_var[ $key ] ;
     }
 
-    protected function getLogin()
+    public function getLogin()
     {
         return $this->login ;
     }
@@ -404,7 +404,7 @@ class User extends \App\Kernel\Common\User
     ######################################                  UPDATE                   ##################################################
     ###################################################################################################################################
 
-    public function checkUpdate()
+    protected function checkUpdate()
     {
         if ( $this->isLogged() )
         {

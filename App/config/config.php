@@ -41,6 +41,7 @@ defined('COUNTRY') || define('COUNTRY','fr');
 
 // SESSION
 defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
+defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
 
 // USER
 defined('ACTIVE_USER') || define('ACTIVE_USER', false );

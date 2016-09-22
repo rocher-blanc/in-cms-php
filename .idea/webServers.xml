@@ -2,7 +2,7 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="e5b92269-442c-4f55-858c-53c5e2825bf2" name="VPS1 - Syndicat" url="http://vps1.jweb-creation.fr">
+      <webServer id="e5b92269-442c-4f55-858c-53c5e2825bf2" name="VPS1 - Syndicat (project level)" url="http://vps1.jweb-creation.fr">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
