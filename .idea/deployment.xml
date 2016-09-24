@@ -44,6 +44,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="VPS1 - Syndicat (project level)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
     <option name="myAutoUpload" value="ALWAYS" />
   </component>

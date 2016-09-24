@@ -689,9 +689,14 @@ class Builder extends Model
     protected function isLang()
     {
         $this->field()->setLang() ;
-        // if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getData("columnName") ) ;
         if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getName() ) ;
         $this->setMultilang() ;
+        return $this ;
+    }
+
+    protected function search()
+    {
+        $this->field()->setData( "search" , true ) ;
         return $this ;
     }
 

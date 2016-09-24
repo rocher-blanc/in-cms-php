@@ -712,10 +712,11 @@ class Controller
 
     protected function generateTable()
     {
-        $rightArray = [] ;
-        $thArray 	= [] ;
-        $tdArray 	= [] ;
-        $typeArray  = [] ;
+        $rightArray     = [] ;
+        $thArray 	    = [] ;
+        $searchArray 	= [] ;
+        $tdArray 	    = [] ;
+        $typeArray      = [] ;
 
         $Guard = new \App\Kernel\Back\Acl;
         $Guard->setModule( $this->getEntityName() );
@@ -744,6 +745,13 @@ class Controller
                         {
                             $option = $this->getValueAssociated( $field , 'array' );
                             $this->getEntity()->get( $field->getName() )->setData('option',$option);
+                        }
+
+                        if ( $field->isSearch() == true )
+                        {
+                            $searchArray[ $field->getName() ] = [
+                                'type' => $field->getType(),
+                            ];
                         }
                     }
                 }
@@ -814,6 +822,7 @@ class Controller
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
+        $this->setRender( 'search' , $searchArray ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
         $this->setRender( 'type' , $typeArray ) ;
