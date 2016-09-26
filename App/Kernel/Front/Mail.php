@@ -116,6 +116,7 @@ class Mail
     public function parse( $template , $var )
     {
         $this->setBody( $this->CMS()->view()->fetch( 'mail/' . $template . '.twig.html' , $var ) ) ;
+        return $this ;
     }
 
     /* ************************************************** */

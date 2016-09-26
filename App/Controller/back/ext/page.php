@@ -230,9 +230,10 @@ $app->group('/page', function () use ($app)
 					
 					$Factory = \App\Kernel\Factory::getInstance() ;
 
+                    $lasturl = $app->request->post('last_page_lang_url_' . $l->url ) ;
                     $url = $app->request->post('page_lang_url_' . $l->url ) ;
                     if ( $url == '' ) $url = $contentRow->page_name ;
-                    $url = $Factory->Url()->uniq( $url , $l->id ) ;
+                    if ( $url != $lasturl ) $url = $Factory->Url()->uniq( $url , $l->id ) ;
 					
 					$cLang->page_lang_page_id 		= $id ;
 					$cLang->page_lang_lang_id 		= $l->id ;

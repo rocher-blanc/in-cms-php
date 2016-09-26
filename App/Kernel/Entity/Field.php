@@ -105,6 +105,12 @@ class Field
         else										return false ;
     }
 
+    public function isSearch()
+    {
+        if ( $this->getData('search') === true ) 	return true ;
+        else										return false ;
+    }
+
     public function isParent()
     {
         if ( $this->getData('parent') === true ) 	return true ;

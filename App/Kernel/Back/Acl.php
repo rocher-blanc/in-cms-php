@@ -29,7 +29,8 @@ class Acl
 	private $_validation = false ;
 	private $_config 	 = false ;
 	
-	public function __construct() {
+	public function __construct()
+    {
 		if ( isset( $_SESSION[ $this->getApp()->config('session') ] ) )
         {
             $this->setGroupId( $_SESSION[ $this->getApp()->config('session') ]['group_id'] ) ;

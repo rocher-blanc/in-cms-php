@@ -48,6 +48,7 @@
                                             <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                                         </span>
                                     </span>
+                                    <input type="hidden" id="last_page_lang_url_{{ l.url }}" name="last_page_lang_url_{{ l.url }}" value="{{ contentLang[ l.id ]['page_lang_url'] }}" />
                                     <input type="text" id="page_lang_url_{{ l.url }}" name="page_lang_url_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['page_lang_url'] }}" />
                                 </div>
                                 {% endfor %}
