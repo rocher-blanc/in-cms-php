@@ -70,7 +70,7 @@ $app->group('/langue', function () use ($app)
 
                 foreach( $row as $cle => $value )
                 {
-                    if ( ! empty( $cle ) ) $src.= "\t\t\"$cle\" => \"" . htmlentities( trim( $value ) ) . "\",\n";
+                    if ( ! empty( $cle ) ) $src.= "\t\t\"" . trim( $cle ) . "\" => \"" . htmlentities( trim( $value ) ) . "\",\n";
                 }
 
                 $src.= "\t];\n";
