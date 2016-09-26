@@ -106,9 +106,12 @@ $app->group('/langue', function () use ($app)
             if ( file_exists( $file ) )
             {
                 $className = "\Project\Lang\\" . strtoupper( $lang->url ) ;
-                $class = new $className ;
+                $class     = new $className ;
+                $arrayTrad = $class->getVar();
 
-                foreach( $class->getVar() as $key => $value )
+                ksort( $arrayTrad );
+
+                foreach( $arrayTrad as $key => $value )
                 {
                     if ( array_key_exists( $key , $tabIndex ) )
                     {
