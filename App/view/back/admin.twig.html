@@ -113,7 +113,7 @@
                             </ul>
                         </li>
 						{% if active_user == true %}
-                            <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' %} expanded active{% endif %}">
+                            <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' or menuUser == true %} expanded active{% endif %}">
                                 <a href="#">
                                     <i class="fa fa-user-secret"></i>
                                     <span>Utilisateurs</span>
@@ -129,7 +129,7 @@
                                             <i class="fa fa-users"></i> <span>Groupes d'utilisateurs</span>
                                         </a>
                                     </li>
-
+                                    {% include 'menu/user.twig.html' with {'menu':menu} %}
                                 </ul>
                             </li>
 						{% endif %}
