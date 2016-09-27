@@ -246,6 +246,8 @@ class Install
         $folders = [
             "Project",
             "Project/CustomClass",
+            "Project/CustomClass/Back",
+            "Project/CustomClass/Front",
             "Project/Lang",
             "Project/config",
             "Project/Controller",
