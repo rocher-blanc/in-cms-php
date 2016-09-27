@@ -63,6 +63,8 @@ $app->group('/langue', function () use ($app)
 
             foreach( $arrayTrad as $lang => $row )
             {
+                $Parsedown = new \Parsedown();
+
                 $src = "<"."?php\n";
                 $src.= "namespace Project\Lang;\n";
                 $src.= "class " . strtoupper( $lang ) . " extends \App\Kernel\Front\LanguageModel {\n";
@@ -70,7 +72,11 @@ $app->group('/langue', function () use ($app)
 
                 foreach( $row as $cle => $value )
                 {
-                    if ( ! empty( $cle ) ) $src.= "\t\t\"" . trim( $cle ) . "\" => \"" . htmlentities( trim( $value ) ) . "\",\n";
+                    $txt = $Parsedown->text( htmlentities( trim( $value ) ) );
+                    $txt = str_replace( '<p>' , '' , $txt );
+                    $txt = str_replace( '</p>' , '' , $txt );
+
+                    if ( ! empty( $cle ) ) $src.= "\t\t\"" . trim( $cle ) . "\" => \"" . $txt . "\",\n";
                 }
 
                 $src.= "\t];\n";
