@@ -48,7 +48,20 @@ class Param
         }
         else
         {
-            return NULL;
+            $content = \DB::for_table('param')
+                    ->select('param_value')
+                    ->where_equal('param_key',$key)
+                    ->find_one();
+
+            if ( $content )
+            {
+                $this->_var[ $key ] = $content->param_value ;
+                return $content->param_value;
+            }
+            else
+            {
+                return NULL ;
+            }
         }
     }
 

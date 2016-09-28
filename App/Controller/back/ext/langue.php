@@ -72,9 +72,14 @@ $app->group('/langue', function () use ($app)
 
                 foreach( $row as $cle => $value )
                 {
-                    $txt = $Parsedown->text( htmlentities( trim( $value ) ) );
-                    $txt = str_replace( '<p>' , '' , $txt );
-                    $txt = str_replace( '</p>' , '' , $txt );
+                    $txt = htmlentities( trim( $value ) );
+
+                    if ( strpos( $txt , '*' ) !== false )
+                    {
+                        $txt = $Parsedown->text( $txt );
+                        $txt = str_replace( '<p>' , '' , $txt );
+                        $txt = str_replace( '</p>' , '' , $txt );
+                    }
 
                     if ( ! empty( $cle ) ) $src.= "\t\t\"" . trim( $cle ) . "\" => \"" . $txt . "\",\n";
                 }
@@ -179,7 +184,7 @@ $app->group('/langue', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->info( 14 , $contentRows->lang_display ) ;
 
-                    $id = $contentRow->lang_id;
+                    $id = $contentRows->lang_id;
 
                     $app->flash('__msg',addslashes( json_encode( "La langue a bien été modifiée" ) ) );
                     $app->flash('__result',true);

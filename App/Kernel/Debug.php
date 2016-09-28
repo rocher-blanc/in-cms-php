@@ -126,7 +126,17 @@ class Debug
         ob_start();
 
         // generate the output
-        var_dump($variable);
+        if ( $caption == 'SQL' )
+        {
+            foreach( $variable as $rqt )
+            {
+                echo $rqt ;
+            }
+        }
+        else
+        {
+            var_dump( $variable );
+        }
 
         // get the output
         $output = ob_get_clean();

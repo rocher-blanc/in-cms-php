@@ -111,7 +111,7 @@ class User extends \App\Kernel\Common\User
     {
         if ( self::$instance === NULL )
         {
-            if ( file_exists( CLASS_PROJECT_PATH . '/User.php' ) )  self::$instance = new \Project\CustomClass\User;
+            if ( file_exists( CLASS_PROJECT_PATH . '/User.php' ) )  self::$instance = new \Project\CustomClass\Front\User;
             else                                                    self::$instance = new User;
         }
         return self::$instance ;
