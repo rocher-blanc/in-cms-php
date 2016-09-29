@@ -248,6 +248,7 @@ class Install
             "Project/CustomClass",
             "Project/CustomClass/Back",
             "Project/CustomClass/Front",
+            "Project/CustomClass/Common",
             "Project/Lang",
             "Project/config",
             "Project/Controller",
