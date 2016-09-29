@@ -16,6 +16,8 @@ class User
 
     public function getNewToken()
     {
+        dump( "je suis ici" );
+
         $length = 32 ;
         $uniq   = false ;
 
@@ -38,5 +40,15 @@ class User
         }
 
         return $token ;
+    }
+
+    protected function uniqToken( $token )
+    {
+        $ct = \DB::for_table('user_front')
+            ->where_equal('user_front_token', $token )
+            ->count();
+
+        if ( $ct == 0 ) return true ;
+        else            return false ;
     }
 }

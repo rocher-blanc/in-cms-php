@@ -99,7 +99,7 @@ $app->group('/user_front', function () use ($app)
                 }
 
                 $contentRow->user_front_login 		            = $app->request->post('user_front_login');
-                if ( $id != -1 ) $contentRow->user_front_token  = \App\Kernel\Back\User::getInstance()->getNewToken();
+                if ( $id == -1 ) $contentRow->user_front_token  = \App\Kernel\Back\User::getInstance()->getNewToken();
                 $contentRow->user_front_user_front_group_id 	= $app->request->post('user_front_group_id');
                 $contentRow->save();
 
