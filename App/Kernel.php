@@ -196,12 +196,28 @@ class Kernel
         try
         {
             $this->getDb()->connect() ;
+
+            try
+            {
+                $this->getDb()->testTable() ;
+            }
+            catch (\Exception $e)
+            {
+                $this->generateTable();
+            }
+
             if ( $this->_caching_db == true	) $this->getDb()->caching() ;
         }
         catch (\Exception $e)
         {
             $this->viewTemplateError('database') ;
         }
+    }
+
+    protected function generateTable()
+    {
+        $Base = new \App\Kernel\Base;
+        $Base->insertBase();
     }
 
     public function activeDbCaching()

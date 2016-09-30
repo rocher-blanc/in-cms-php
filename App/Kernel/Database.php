@@ -13,7 +13,7 @@ class Database
 	/* ************************************************** */
 	/* ****************   FUNCTIONS   ******************* */
 	/* ************************************************** */
-	
+
 	public function connect()
 	{
 		require_once KERNEL_PATH . '/DB.php';
@@ -33,13 +33,21 @@ class Database
             });
         }
 
-        \DB::for_table('')->raw_query("SELECT 1")->find_one(); ;
-
-		defined('DB_CONNECT') || define('DB_CONNECT', true );
+        \DB::for_table('')->raw_query("SELECT 1")->find_one();
 	}
 
-	public function caching()
-	{
-		if ( ! DEBUG ) \DB::configure('caching', true);
-	}
+    public function caching()
+    {
+        if ( ! DEBUG ) \DB::configure('caching', true);
+    }
+
+    public function testTable()
+    {
+        if ( DEBUG )
+        {
+            \DB::for_table('param')->limit(1)->find_one();
+        }
+
+        defined('DB_CONNECT') || define('DB_CONNECT', true );
+    }
 }
