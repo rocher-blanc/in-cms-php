@@ -27,7 +27,6 @@ $app->group('/page', function () use ($app)
 			
 				$msg = "La page a bien été supprimé" ;
 				$ret = true ;
-				$cLang = \DB::for_table('page_lang')->where(['page_lang_page_id' => $id])->delete_many();
 				$contentRow->delete();
 			}
 			else
