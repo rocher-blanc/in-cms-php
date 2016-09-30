@@ -10,12 +10,11 @@ $app->map('/:entity(/:action(/:id(/:token(/:lang))))', function ( $entity , $act
 	$Controller->setLang( $lang );
 	$Controller->execute();
 
-})->conditions(	array(
-					'entity' => '[_a-zA-Z0-9]+', 
-					'action' => '[_a-zA-Z0-9]+', 
-					'id' => '[0-9]+', 
-					'token' => '[a-zA-Z0-9]+', 
-					'lang' => '[0-9]+'
-				)
-			)
-  ->via('GET', 'POST');
+})->conditions([
+    'entity' => '[_a-zA-Z0-9]+',
+    'action' => '[_a-zA-Z0-9]+',
+    'id' => '[0-9]+',
+    'token' => '[a-zA-Z0-9]+',
+    'lang' => '[0-9]+'
+])
+->via('GET', 'POST');

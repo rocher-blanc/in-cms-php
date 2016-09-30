@@ -16,8 +16,6 @@ class User
 
     public function getNewToken()
     {
-        dump( "je suis ici" );
-
         $length = 32 ;
         $uniq   = false ;
 
