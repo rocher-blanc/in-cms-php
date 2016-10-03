@@ -27,10 +27,12 @@ class Install
         define("VENDOR_PATH", _PATH_ . "/vendor");
 
         define('WEB_PATH', _PATH_ . '/web');
+        define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
         define('ASSET_PATH', WEB_PATH . '/assets');
         define('BOWER_PATH', ASSET_PATH . '/vendor');
 
         require VENDOR_PATH . '/autoload.php';
+        require KERNEL_PATH . '/DB.php';
 
         self::postInstall() ;
     }
@@ -44,68 +46,18 @@ class Install
         self::checkIndex() ;
         self::minify() ;
         self::patchVendor() ;
-        self::patchModule() ;
+        self::patchDb() ;
     }
 
-    protected static function patchModule()
+    protected static function patchDb()
     {
-        $tab = ["Back","Front"];
 
-        $scan = glob(PROJECT_PATH . "/Module/Entity/*.php");
-        if ( $scan )
-        {
-            foreach( $scan as $namePhp )
-            {
-                $name = str_replace(".php","",$namePhp);
-                $name = str_replace(PROJECT_PATH . "/Module/Entity/","",$name);
-
-                // On génére le repository
-                foreach( $tab as $row )
-                {
-                    $php = '' ;
-                    $php.= "<"."?"."php\n\n" ;
-                    $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
-                    $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Repository\n" ;
-                    $php.= "{\n" ;
-                    $php.= "\t\n" ;
-                    $php.= "}" ;
-                    if ( ! file_exists( PROJECT_PATH . "/Module/Repository/" . $row . "/" . $name . ".php" ) ) self::create( PROJECT_PATH . "/Module/Repository/" . $row . "/" . $name . ".php" , $php ) ;
-                }
-
-                // On génére le controller
-                foreach( $tab as $row )
-                {
-                    $php = '' ;
-                    $php.= "<"."?"."php\n\n" ;
-                    $php.= "namespace Project\Module\Controller\Front;\n\n" ;
-                    $php.= "class " . $name . " extends \App\Kernel\Front\Controller\n" ;
-                    $php.= "{\n" ;
-                    $php.= "\t\n" ;
-                    $php.= "}" ;
-
-                    $php = '' ;
-                    $php.= "<"."?"."php\n\n" ;
-                    $php.= "namespace Project\Module\Controller\\" . $row . ";\n\n" ;
-                    $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
-                    $php.= "{\n" ;
-                    $php.= "\t\n" ;
-                    $php.= "}" ;
-                    if ( ! file_exists( PROJECT_PATH . "/Module/Controller/" . $row . "/" . $name . ".php" ) ) self::create( PROJECT_PATH . "/Module/Controller/" . $row . "/" . $name . ".php" , $php ) ;
-                }
-
-                // On génére la class entity
-                $php = '' ;
-                $php.= "<"."?"."php\n\n" ;
-                $php.= "namespace Project\Module\Entity\Class\\" . $row . ";\n\n" ;
-
-                $php.= "/** @Entity @Table(name=\"addresses\") */\n" ;
-                $php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
-                $php.= "{\n" ;
-                $php.= "\t\n" ;
-                $php.= "}" ;
-                if ( ! file_exists( PROJECT_PATH . "/Module/Entity/Class/" . $name . ".php" ) ) self::create( PROJECT_PATH . "/Module/Entity/Class/" . $name . ".php" , $php ) ;
-            }
-        }
+        \DB::configure('mysql:host=' . DB_HOST . ( defined('DB_PORT') ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
+        \DB::configure('username', DB_USER );
+        \DB::configure('password', DB_PASSWORD );
+        \DB::configure('driver_options', [
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+        ]);
     }
 
     protected static function patchVendor()
@@ -124,8 +76,6 @@ class Install
         self::minCSS( BOWER_PATH . "/cmsmedias/css/std.css" ) ;
         self::minCSS( BOWER_PATH . "/cmsmedias/css/error.css" ) ;
 
-        self::minJS( BOWER_PATH . "/cmsmedias/js/i2n.functions.js" ) ;
-        self::minJS( BOWER_PATH . "/cmsmedias/js/i2n.text.js" ) ;
         self::minJS( BOWER_PATH . "/cmsmedias/js/init.js" ) ;
         self::minJS( BOWER_PATH . "/cmsmedias/js/script.js" ) ;
     }

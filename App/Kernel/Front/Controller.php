@@ -408,9 +408,9 @@ class Controller
     /* *****************   CHECKBOX   ******************* */
     /* ************************************************** */
 
-    protected function getAssocValue( $field )
+    protected function getAssocValue( $field , $id )
     {
-        $content = $this->getRepository()->getAssocValue( $field->getName()  , $this->getId() );
+        $content = $this->getRepository()->getAssocValue( $field->getName() , $id );
         $result  = [] ;
 
         if ( $content )
@@ -601,13 +601,13 @@ class Controller
     public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
-        /*
+
         if ( $this->getId() === NULL )
         {
             if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
         }
-        */
-        if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+
+        //if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
 
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
@@ -695,7 +695,7 @@ class Controller
             }
             else if ( $row->getType() == 'checkbox' )
             {
-                $arrayElement[ $row->getName() ] = $this->getAssocValue( $row ) ;
+                $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
             }
             else if ( $row->getType() == 'select' )
             {

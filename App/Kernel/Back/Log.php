@@ -116,6 +116,11 @@ class Log
 
             45 => "Le module \"%i\" a été vidé",
             46 => "Le module \"%i\" a été patché",
+
+            47 => "Les images du module \"%i\" viennent d'être regénérées",
+            48 => "L'utilisateur front \"%i\" vient d'être supprimé",
+            49 => "L'utilisateur front \"%i\" vient d'être modifié",
+            50 => "L'utilisateur front \"%i\" vient d'être ajouté",
         );
     }
 

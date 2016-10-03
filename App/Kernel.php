@@ -318,7 +318,7 @@ class Kernel
                 else
                 {
                     $folders[ $folder ] = true ;
-                    unlink( _PATH_ . "/" . $folder . "/test.txt" ) ;
+                    @unlink( _PATH_ . "/" . $folder . "/test.txt" ) ;
                 }
             }
         }

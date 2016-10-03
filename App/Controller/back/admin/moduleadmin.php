@@ -171,6 +171,8 @@ $app->group('/moduleadmin', function () use ($app)
                         }
                     }
 
+                    \App\Kernel\Back\Log::getInstance()->warning( 47 , $contentRow->module_name ) ;
+
                     $app->flash('__msg',addslashes( json_encode( "Les images ont bien été regénéré") ) );
                     $app->flash('__result',true);
                     $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
@@ -197,7 +199,6 @@ $app->group('/moduleadmin', function () use ($app)
 
         if ( $contentRow )
         {
-            \App\Kernel\Container::getInstance()->param()->remove('key_module_' . $contentRow->module_id );
             \App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
 
             $msg = "Le module a bien été supprimé" ;

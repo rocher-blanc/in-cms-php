@@ -264,11 +264,7 @@ $app->group('/group', function () use ($app)
 			if ( $contentRow )
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_group_name ) ;
-				
-				$permission = \DB::for_table('permission')
-					->where_equal('permission_group_id' , $id)
-					->delete_many();
-				
+
 				$msg = "Le groupe a bien été supprimé" ;
 				$ret = true ;
 				$contentRow->delete();
