@@ -308,8 +308,6 @@ class Router
                 ->find_one();
         }
   
- //        if ( $this->Lang()->count() > 1 ) $this->urlElementModule( $mp , $id , $result-> );
-
         $this->loadController( $result->module_class_name , true , $mp ) ;
     }
 
@@ -363,7 +361,7 @@ class Router
 					$pageClass->setId( $page->page_id );
 					$pageClass->execute();
 					
-                })->via('GET', 'POST');
+                })->conditions(['lang' => '[a-z]+'])->via('GET', 'POST');
             }
             else
             {
@@ -390,7 +388,6 @@ class Router
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-				// require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
 				$app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page )
                 {
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;

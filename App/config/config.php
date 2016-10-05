@@ -15,7 +15,8 @@ defined('MODULE_PATH') || define('MODULE_PATH', PROJECT_PATH . '/Module');
 defined('ENTITY_PATH') || define('ENTITY_PATH', MODULE_PATH . '/Entity');
 defined('ENTITIES_PROJECT_PATH') || define('ENTITIES_PROJECT_PATH', ENTITY_PATH . '/Class');
 defined('REPOSITORY_PROJECT_PATH') || define('REPOSITORY_PROJECT_PATH', MODULE_PATH . '/Repository');
- 
+defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJECT_PATH . '/CustomClass/Common');
+
 defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
 defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
 defined('VENDOR_PATH') || define('VENDOR_PATH', ASSET_PATH . '/vendor');

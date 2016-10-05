@@ -98,7 +98,7 @@ function getElementModule( $id )
     return false ;
 }
 
-function deleteByParent( $parent , $idmenu )
+function deleteByParent( $idparent , $idmenu )
 {
     $contentRow = \DB::for_table('menu_element')
         ->where(['menu_element_parent_id' => $idparent , 'menu_element_menu_id' => $idmenu])
@@ -109,10 +109,6 @@ function deleteByParent( $parent , $idmenu )
         foreach( $contentRow as $row )
         {
             deleteByParent( $row->menu_element_id , $idmenu ) ;
-
-            $lang = \DB::for_table('menu_element_lang')
-                ->where(['menu_element_lang_menu_element_id' => $row->menu_element_id])
-                ->delete_many();
 
             $row->delete();
         }
@@ -356,10 +352,6 @@ $app->group('/menu', function () use ($app)
         {
             $idmenu = $contentRow->menu_element_menu_id ;
             deleteByParent( $id , $idmenu ) ;
-
-            $lang = \DB::for_table('menu_element_lang')
-                ->where(['menu_element_lang_menu_element_id' => $id])
-                ->delete_many();
 
             $contentRow->delete();
             $msg = "L'élément a bien été supprimé" ;

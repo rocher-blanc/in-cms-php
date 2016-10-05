@@ -99,11 +99,11 @@ $app->group('/user_front', function () use ($app)
                 }
 
                 $contentRow->user_front_login 		            = $app->request->post('user_front_login');
-                if ( $id != -1 ) $contentRow->user_front_token  = \App\Kernel\Back\User::getInstance()->getNewToken();
+                if ( $id == -1 ) $contentRow->user_front_token  = \App\Kernel\Back\User::getInstance()->getNewToken();
                 $contentRow->user_front_user_front_group_id 	= $app->request->post('user_front_group_id');
                 $contentRow->save();
 
-                \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 4 : 5 ) , $contentRow->user_front_name ) ;
+                \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 50 : 49 ) , $contentRow->user_front_name ) ;
 
                 $id = $contentRow->user_front_id;
 
@@ -157,22 +157,11 @@ $app->group('/user_front', function () use ($app)
                     ->where_equal( 'user_front_profile_user_front_id', $contentRow->user_front_id )
                     ->find_one();
 
-				if ( $contentRow->user_front_user_front_group_id == 1 )
-				{
-					$msg = "Impossible de supprimer ce compte pour des raisons techniques" ;
-				}
-				else
-				{
-					$log = \DB::for_table('log')
-						->where_equal('log_user_id' , $id)
-						->delete_many();
-					
-					\App\Kernel\Back\Log::getInstance()->warning( 3 , $contentRow->user_front_name ) ;
-				
-					$msg = "L'utilisateur a bien été supprimé" ;
-					$ret = true ;
-					$contentRow->delete();
-				}
+                \App\Kernel\Back\Log::getInstance()->warning( 48 , $contentRow->user_front_name ) ;
+
+                $msg = "L'utilisateur a bien été supprimé" ;
+                $ret = true ;
+                $contentRow->delete();
 			}
 			else
 			{
