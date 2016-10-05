@@ -27,7 +27,6 @@ class Install
         define("VENDOR_PATH", _PATH_ . "/vendor");
 
         define('WEB_PATH', _PATH_ . '/web');
-        define('PROJECT_PATH', _PATH_ . '/Project');
         define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
         define('ASSET_PATH', WEB_PATH . '/assets');
         define('BOWER_PATH', ASSET_PATH . '/vendor');
