@@ -12,13 +12,13 @@ $app->group('/langue', function () use ($app)
 
     })->name('langue_index');
 
-    $app->post('/import', function () {
+    $app->post('/import', function () use ($app) {
         $upload_dir 	= UPLOAD_PATH . '/' ;
         $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
         $upload_handler = new \App\Kernel\Back\Upload([
             'upload_dir' => $upload_dir,
             'param_name' => 'files'
-        ], true, null, function( $file ) {
+        ], true, null, function( $file ) use ($app) {
             $objPHPExcel = \PHPExcel_IOFactory::load( UPLOAD_PATH . '/' . $file );
             $sheetData   = $objPHPExcel->getActiveSheet()->toArray(NULL, FALSE, FALSE, TRUE);
 
@@ -90,7 +90,13 @@ $app->group('/langue', function () use ($app)
                 if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
             }
 
-            unlink( UPLOAD_PATH . '/' . $file ) ;
+            $login = strtolower( $_SESSION[ $app->config('session') ]['username'] ) ;
+            $login = str_replace( ' ' , '' , $login ) ;
+            $date  = date('Y-m-d--H-i-s') ;
+            $exp   = explode( "." , $file ) ;
+            $ext   = end( $exp ) ;
+
+            rename( UPLOAD_PATH . '/' . $file , TRAD_PATH . "/" . $date . "-" . $login . "-import." . $ext ) ;
 
             \App\Kernel\Factory::getInstance()->Response()->returnJSON( "Les traductions ont bien été importées" , true );
         });

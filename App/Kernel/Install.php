@@ -227,6 +227,8 @@ class Install
             "cache",
             "cache/back",
             "cache/front",
+            "cache/save",
+            "cache/save/traduction",
             "web",
             "web/" . self::getAdminFolder(),
             "web/uploads",

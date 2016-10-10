@@ -26,12 +26,18 @@ defined('IMAGE_PATH') || define('IMAGE_PATH', WEB_PATH . '/images');
 defined('DOCUMENT_PATH') || define('DOCUMENT_PATH', WEB_PATH . '/documents');
 defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
 
-$configFileProject = PROJECT_PATH . '/config/config.php' ;
+$configFileProject       = PROJECT_PATH . '/config/config.php' ;
+$configFileProjectDomain = PROJECT_PATH . '/config/config.' . $_SERVER['HTTP_HOST'] . '.php' ;
 
 if ( file_exists( $configFileProject ) )
 {
     defined('FILE_CONFIG') || define('FILE_CONFIG',true);
     require $configFileProject ;
+}
+else if ( file_exists( $configFileProjectDomain ) )
+{
+    defined('FILE_CONFIG') || define('FILE_CONFIG',true);
+    require $configFileProjectDomain ;
 }
 else
 {

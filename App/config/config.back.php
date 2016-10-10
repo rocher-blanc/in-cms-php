@@ -11,6 +11,8 @@ defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_
 defined('ASSETS_IMG_PATH') || define('ASSETS_IMG_PATH', WEB_PATH . '/' . \App\Kernel\Install::getAdminFolder() . '/assets/img');
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Back');
+defined('SAVE_PATH') || define('SAVE_PATH', _PATH_ . '/cache/save');
+defined('TRAD_PATH') || define('TRAD_PATH', SAVE_PATH . '/traduction');
 
 
 defined('COUNTRY') || define('COUNTRY','fr');

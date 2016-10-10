@@ -150,14 +150,14 @@ class Auth extends \Slim\Middleware
 
     private function login( $user )
 	{
-		$_SESSION[ $this->app->config('session') ] = array(
+		$_SESSION[ $this->app->config('session') ] = [
             'id' 		=> $user->user_id,
             'username' 	=> $user->user_name,
             'group_id' 	=> $user->user_group_id,
             'name' 		=> ucfirst( $user->user_fname ) . ' ' . strtoupper( $user->user_lname ),
             'logged_in' => true,
             'ip' 		=> $this->getIp()
-        );
+        ];
 		
 		$this->pushData() ;
 		
