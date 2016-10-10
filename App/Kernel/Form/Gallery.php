@@ -7,11 +7,6 @@ class Gallery extends \App\Kernel\Back\Form
     public $min_height = 1 ;
     public $min_width  = 1 ;
 
-    public function __construct()
-    {
-
-    }
-
     public function html( $field, $name, $value = NULL )
     {
         $this->value = $value ;
@@ -26,20 +21,7 @@ class Gallery extends \App\Kernel\Back\Form
             'dropzone/dist/min/dropzone.min.css',
             'cmsmedias/css/jgallery.css'
         ];
-/*
-        $html = '
-		<div id="bloc_gallery_id_' . $name . '" class="blockGallery">
-            <form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
 
-              <div class="dz-message needsclick">
-                Drop files here or click to upload.<br>
-                <span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
-              </div>
-
-            </form>
-	    </div>
-	    ' ;
-*/
         $Gal = new \App\Kernel\Back\Gallery;
         $Gal->setElementId( ( $value == '' ? 0 : $value ) );
         $Gal->setModuleId( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getController(true)->getEntityId() );
@@ -59,12 +41,20 @@ class Gallery extends \App\Kernel\Back\Form
         {
             foreach( $rst as $key => $img )
             {
+                $crop = '' ;
+
+                if ( $field->hasCrop() )
+                {
+                    $crop = '<a href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_crop' ) . '" class="crop" data-image-id="' . $key . '"><i class="fa fa-crop"></i></a>&nbsp;&nbsp;' ;
+                }
+
                 $html.= '
                 <div class="mini-img" id="gallery-' . $key . '">
                     <img src="' . $img['100x100'] . '"/>
                     <div class="btn-bar">
                         <a href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_delete' ) . '" class="delete" data-image-id="' . $key . '"><i class="fa fa-trash"></i></a>&nbsp;&nbsp;
                         <i class="fa fa-arrows move"></i>&nbsp;&nbsp;
+                        '  . $crop . '
                         <i class="fa fa-info-circle" data-toggle="tooltip" title="' . $img['size'] . ' | ' . $img['name'] . '"></i>
                     </div>
                 </div>

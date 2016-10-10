@@ -1,0 +1,8 @@
+<div class="drop-close">
+	<a class="" href="javascript:;"><i class="fa fa-floppy-o"></i> Sauvegarder</a>
+	<a class="" href="javascript:;"><i class="fa fa-times"></i> Fermer</a>
+</div>
+<form action="{{ siteUrl('module/' ~ mod.name ~ '/jgallery_crop') }}" class="dropzone needsclick dz-clickable" id="demo-upload">
+	<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+	image
+</form>
