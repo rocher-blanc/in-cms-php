@@ -297,6 +297,7 @@ class Kernel
             "Project/view/front/page" => false ,
             "cache/back" => false ,
             "cache/front" => false ,
+            "cache/save/traduction" => false ,
             "web/uploads" => false ,
             "web/images" => false ,
             "web/documents" => false ,
