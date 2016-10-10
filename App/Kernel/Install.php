@@ -51,13 +51,17 @@ class Install
 
     protected static function patchDb()
     {
+        if ( file_exists( PROJECT_PATH . "/config/config.php" ) )
+        {
+            require PROJECT_PATH . "/config/config.php" ;
 
-        \DB::configure('mysql:host=' . DB_HOST . ( defined('DB_PORT') ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
-        \DB::configure('username', DB_USER );
-        \DB::configure('password', DB_PASSWORD );
-        \DB::configure('driver_options', [
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        ]);
+            \DB::configure('mysql:host=' . DB_HOST . ( defined('DB_PORT') ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
+            \DB::configure('username', DB_USER );
+            \DB::configure('password', DB_PASSWORD );
+            \DB::configure('driver_options', [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+            ]);
+        }
     }
 
     protected static function patchVendor()
