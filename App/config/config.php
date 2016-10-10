@@ -44,6 +44,11 @@ else
     defined('FILE_CONFIG') || define('FILE_CONFIG',false);
 }
 
+if ( file_exists( PROJECT_PATH . '/config/config.common.php' ) )
+{
+    require PROJECT_PATH . '/config/config.common.php' ;
+}
+
 defined('COUNTRY') || define('COUNTRY','fr');
 
 // SESSION
