@@ -112,7 +112,7 @@
 								-->
                             </ul>
                         </li>
-						{% if active_user == true %}
+                        {% if active_user == true %}
                             <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' or menuUser == true %} expanded active{% endif %}">
                                 <a href="#">
                                     <i class="fa fa-user-secret"></i>
@@ -132,7 +132,18 @@
                                     {% include 'menu/user.twig.html' with {'menu':menu} %}
                                 </ul>
                             </li>
-						{% endif %}
+                        {% endif %}
+                        {% if active_emailing == true %}
+                            <li class="parent{% if menuEmailing == true %} expanded active{% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-paper-plane"></i>
+                                    <span>Emailing</span>
+                                </a>
+                                <ul class="nav children">
+                                    {% include 'menu/emailing.twig.html' with {'menu':menu} %}
+                                </ul>
+                            </li>
+                        {% endif %}
 						{% if isAdmin == true %}
                             <li class="parent{% if menu == 'log' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
                                 <a href="#">
