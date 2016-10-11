@@ -611,6 +611,7 @@ class Builder extends Model
         $this->field()->setData( "type" , "gallery" ) ;
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
+        $this->field()->setData( "noUpdate" , true ) ;
 
         $this->setGallery() ;
         $this->setGalleryField( $this->field()->getColumn() ) ;
