@@ -53,6 +53,14 @@ class Gallery extends \App\Kernel\Common\Gallery
                         $tab[ $row->gallery_id ][$thumb[0] . 'x' . $thumb[1]] = $path . $this->getMini( $row->gallery_name , $thumb[0] , $thumb[1] ) ;
                     }
                 }
+
+                if ( $field->hasCrop() )
+                {
+                    foreach( $field->hasCrop() as $crop )
+                    {
+                        $tab[ $row->gallery_id ][$crop[0] . 'x' . $crop[1]] = $path . $this->getMini( $row->gallery_name , $crop[0] , $crop[1] , 'c' ) ;
+                    }
+                }
             }
         }
 

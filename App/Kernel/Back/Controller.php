@@ -1610,15 +1610,25 @@ class Controller
             }
         }
 
+        if ( $field->hasCrop() )
+        {
+            foreach( $field->getCrop() as $crop )
+            {
+                // width, height
+                $Gallery->setCrop( $crop[0] , $crop[1] );
+            }
+        }
+
         $Gallery->add();
 
         $this->Factory()->Response()->printJSON([
-            'file'       => $Gallery->getImageName(),
-            'id'         => $Gallery->getImageId(),
-            'field'      => $Gallery->getField(),
-            'filesize'   => $Gallery->getSize(),
-            'mini'       => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 ),
-            'delete_url' => \App\Kernel\Http::getInstance()->getUrl() . '/' . \App\Kernel\Install::getAdminFolder() . '/module/' . $this->getEntityName() . '/jgallery_delete'
+            'file'        => $Gallery->getImageName(),
+            'id'          => $Gallery->getImageId(),
+            'field'       => $Gallery->getField(),
+            'filesize'    => $Gallery->getSize(),
+            'mini'        => str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . '/' . $Gallery->getMini( $Gallery->getImageName() , 100 , 100 ),
+            'delete_url'  => \App\Kernel\Http::getInstance()->getUrl() . $this->getApp()->config('admin.url') . '/module/' . $this->getEntityName() . '/jgallery_delete',
+            'delete_crop' => \App\Kernel\Http::getInstance()->getUrl() . $this->getApp()->config('admin.url') . '/module/' . $this->getEntityName() . '/jgallery_crop'
         ]) ;
     }
 
@@ -1639,5 +1649,39 @@ class Controller
         $Gallery->setModuleId( $this->getEntityId() );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
         $Gallery->order();
+    }
+
+    protected function jgallery_cropAction()
+    {
+        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery->setImageId( $this->getApp()->request->get('id') );
+        $Gallery->setFolder( $this->getEntity()->getFolder() );
+
+        $field = $this->getEntity()->get( $this->getApp()->request->get('field') ) ;
+
+        $crop   = $field->getCrop();
+        $width  = $crop[0][0];
+        $height = $crop[0][1];
+
+        $img = $Gallery->getById() ;
+        $img = str_replace( WEB_PATH , '' , $img['source'] );
+
+        $this->setRender('crop_width' , $width ) ;
+        $this->setRender('crop_height' , $height ) ;
+        $this->setRender('crop_ratio' , ( $width / $height) ) ;
+        $this->setRender('image_src' , $img ) ;
+        $this->setRender('field' , $field->getName() ) ;
+        $this->setRender('image_id' , $this->getApp()->request->get('id') ) ;
+        $this->render('jgallery/crop.twig.html') ;
+    }
+
+    protected function jgallery_cropostAction()
+    {
+        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery->setImageId( $this->getApp()->request->post('id') );
+        $Gallery->setFolder( $this->getEntity()->getFolder() );
+        $Gallery->crop() ;
+
+        $this->Factory()->Response()->returnJSON( $this->m("crop_image_gallery") , true ) ;
     }
 }

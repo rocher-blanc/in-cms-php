@@ -79,6 +79,9 @@ class Message
 
             /* SECURITE */
             "security_success" => "La sécurité de l'administration a bien été mis à jour",
+
+            /* JGALLERY */
+            "crop_image_gallery" => "L'image a bien été redimensionnee",
 		) ;
 	}
 }

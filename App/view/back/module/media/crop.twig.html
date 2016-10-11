@@ -11,6 +11,7 @@
 	<form id="formCropImage" action="{{ siteUrl('module/' ~ mod.name ~ '/cropimage') }}" method="post">
 		<input type="hidden" name="image" id="image" value="{{ path }}/{{ imageName }}" />
 		<input type="hidden" name="imageName" id="imageName" value="{{ imageName }}" />
+		<input type="hidden" name="field" id="field" value="{{ field }}" />
 		<input type="hidden" name="crop_x" id="crop_x" value="0" />
 		<input type="hidden" name="crop_y" id="crop_y" value="0" />
 		<input type="hidden" name="crop_x2" id="crop_x2" value="0" />

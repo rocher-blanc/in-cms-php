@@ -109,6 +109,11 @@ class Gallery
         return \App\Kernel\Factory::getInstance() ;
     }
 
+    protected function CMS()
+    {
+        return \App\Kernel\CMS::getInstance() ;
+    }
+
     /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
@@ -137,7 +142,7 @@ class Gallery
         }
     }
 
-    public function getMini( $name , $width , $height )
+    public function getMini( $name , $width , $height , $type = "t" )
     {
         $exp 	= explode( "." , $name ) ;
         $ext 	= end( $exp ) ;
@@ -146,6 +151,6 @@ class Gallery
 
         if ( empty( $name ) ) return false ;
 
-        return 't/' . $name . "-" . $width . "x" . $height . "." . $ext ;
+        return $type . '/' . $name . "-" . $width . "x" . $height . "." . $ext ;
     }
 }

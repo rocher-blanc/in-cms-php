@@ -13,12 +13,14 @@ class Gallery extends \App\Kernel\Back\Form
 
         $this->_lib_js  = [
             'dropzone/dist/min/dropzone.min.js',
+            'jcrop/js/jquery.Jcrop.min.js',
             'cmsmedias/js/jgallery.js'
         ];
 
         $this->_lib_css = [
             'dropzone/dist/min/basic.min.css',
             'dropzone/dist/min/dropzone.min.css',
+            'jcrop/css/jquery.Jcrop.min.css',
             'cmsmedias/css/jgallery.css'
         ];
 
@@ -32,7 +34,7 @@ class Gallery extends \App\Kernel\Back\Form
         $html = '
         <input type="hidden" value="' . $value . '" name="' . $name . '" id="id_element_dropzone" />
         <input type="hidden" value="' . $field->getName() . '" name="field_dropzone" id="field_dropzone" />
-		<div id="gallery_' . $field->getName() . '" class="blockGallery" data-value="' . $value . '" data-url="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_order' ) . '" data-field="' . $field->getName() . '">
+		<div id="gallery_' . $field->getName() . '" class="blockGallery" data-crop="' . ( $field->hasCrop() ? '1' : '0' ) . '" data-value="' . $value . '" data-url="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_order' ) . '" data-field="' . $field->getName() . '">
             <a class="btn btn-info btnAdd" data-jgallery data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery' ) . '">
                 <i class="fa fa-plus"></i> Ajouter
             </a>' ;
@@ -45,7 +47,7 @@ class Gallery extends \App\Kernel\Back\Form
 
                 if ( $field->hasCrop() )
                 {
-                    $crop = '<a href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_crop' ) . '" class="crop" data-image-id="' . $key . '"><i class="fa fa-crop"></i></a>&nbsp;&nbsp;' ;
+                    $crop = '<a href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/jgallery_crop' ) . '" class="crop" data-field="' . $field->getName() . '" data-image-id="' . $key . '"><i class="fa fa-crop"></i></a>&nbsp;&nbsp;' ;
                 }
 
                 $html.= '

@@ -11,6 +11,7 @@ class Gallery extends \App\Kernel\Common\Gallery
     protected $image_size = 0;
     protected $order = [];
     protected $thumb = [];
+    protected $crop  = [];
 
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
@@ -24,6 +25,14 @@ class Gallery extends \App\Kernel\Common\Gallery
     public function setOrder( $var )
     {
         $this->order = $var;
+    }
+
+    public function setCrop( $width , $height )
+    {
+        $this->crop[ $width . "x" . $height ] = [
+            'w' => $width,
+            'h' => $height,
+        ];
     }
 
     public function setThumb( $width , $height )
@@ -53,6 +62,11 @@ class Gallery extends \App\Kernel\Common\Gallery
         return $this->thumb ;
     }
 
+    public function getCrop()
+    {
+        return $this->crop ;
+    }
+
     /* ************************************************** */
     /* *****************  FUNCTIONS  ******************** */
     /* ************************************************** */
@@ -74,9 +88,12 @@ class Gallery extends \App\Kernel\Common\Gallery
                         ->where_equal( 'gallery_id' , $id )
                         ->find_one();
 
-                    $gallery->gallery_position = $i;
-                    $gallery->save();
-                    $i++;
+                    if ( $gallery )
+                    {
+                        $gallery->gallery_position = $i;
+                        $gallery->save();
+                        $i++;
+                    }
                 }
             }
         }
@@ -94,6 +111,14 @@ class Gallery extends \App\Kernel\Common\Gallery
                 foreach( $this->getThumb() as $thb )
                 {
                     $this->genThumb( $thb['w'] , $thb['h'] );
+                }
+            }
+
+            if ( ! empty( $this->getCrop() ) )
+            {
+                foreach( $this->getCrop() as $crp )
+                {
+                    $this->genDefaultCrop( $crp['w'] , $crp['h'] );
                 }
             }
 
@@ -116,6 +141,30 @@ class Gallery extends \App\Kernel\Common\Gallery
         {
             return false;
         }
+    }
+
+    public function crop()
+    {
+        $row = \DB::for_table('gallery')
+            ->select('gallery_name')
+            ->select('gallery_id')
+            ->where_equal( 'gallery_id' , $this->getImageId() )
+            ->find_one();
+
+        $this->setImageName( $row->gallery_name );
+
+        $x  = $this->CMS()->request()->post('crop_x') ;
+        $y  = $this->CMS()->request()->post('crop_y') ;
+        $x2 = $this->CMS()->request()->post('crop_x2') ;
+        $y2 = $this->CMS()->request()->post('crop_y2') ;
+
+        $imageName  = $this->CMS()->request()->post('imageName') ;
+        $image  	= $this->CMS()->request()->post('image') ;
+        $width  	= $this->CMS()->request()->post('crop_width') ;
+        $height  	= $this->CMS()->request()->post('crop_height') ;
+
+        $img = new \abeautifulsite\SimpleImage( IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
+        $img->crop($x, $y, $x2, $y2)->resize( $width , $height )->save( IMAGE_PATH . '/' . $this->getFolder() . '/c/' . $this->updateName( $this->getImageName() , $width . "x" . $height ) );
     }
 
     public function deleteElement()
@@ -193,23 +242,25 @@ class Gallery extends \App\Kernel\Common\Gallery
         return move_uploaded_file( $_FILES['file']['tmp_name'] , IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
     }
 
-    public function genThumb( $width , $height )
+    protected function genDefaultCrop( $width , $height )
+    {
+        return $this->genThumb( $width , $height , true ) ;
+    }
+
+    public function genThumb( $width , $height , $crop = false )
     {
         $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
         $img  = $path . $this->getImageName() ;
 
         try {
             $miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
-            $file = $path . "t/" . $miniName ;
+            $file = $path . ( $crop == true ? 'c' : 't' ) . "/" . $miniName ;
 
-            if ( ! file_exists( $file ) )
-            {
-                $tmpImg = new \abeautifulsite\SimpleImage( $img );
-                $tmpImg->best_fit( $width , $height );
+            $tmpImg = new \abeautifulsite\SimpleImage( $img );
+            $tmpImg->best_fit( $width , $height );
 
-                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
-                $destImg->overlay($tmpImg)->save($file);
-            }
+            $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
+            $destImg->overlay($tmpImg)->save($file);
 
             return $miniName ;
         } catch(Exception $e) {

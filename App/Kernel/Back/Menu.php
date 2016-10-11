@@ -101,7 +101,7 @@ class Menu
 			'active_user'       => ACTIVE_USER,
 			'active_emailing'   => ACTIVE_EMAILING,
 			'color'             => COLOR,
-			'techno'            => TECHNO,
+			'techno'            => TECHNO
         ]);
 	}
 }

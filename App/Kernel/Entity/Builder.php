@@ -619,6 +619,7 @@ class Builder extends Model
         $this->addAction("jgallery_upload") ;
         $this->addAction("jgallery_delete") ;
         $this->addAction("jgallery_crop") ;
+        $this->addAction("jgallery_cropost") ;
         $this->addAction("jgallery_order") ;
 
         return $this ;
