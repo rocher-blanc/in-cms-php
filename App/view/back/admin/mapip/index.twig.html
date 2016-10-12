@@ -1,0 +1,65 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Gestion des connexions' %}
+
+{% block title_page %}Surveillance des IP{% endblock %}
+
+{% block module %}
+    <div class="row">
+	<div class="col-md-12">
+		<section class="panel">
+			<header class="panel-heading">
+				<h2 class="panel-title">Carte</h2>
+			</header>
+			<div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="map" style="width:100%; height:450px;"></div>
+                    </div>
+                </div>
+			</div>
+		</section>
+	</div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
+	<link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAntQV5i52T4m6kTxXB7k8U0H2avDramKk"></script>
+    <script>
+        var locations = [
+                {% for row in list %}['{{ row.ip_address }}', {{ row.ip_geoip_latitude }}, {{ row.ip_geoip_longitude }}, 4]{% if loop.last == false %},{% endif %}{% endfor %}
+        ];
+        console.log( locations );
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: new google.maps.LatLng(46.1278895,-2.2775273,6),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+        for (i = 0; i < locations.length; i++)
+        {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                map: map
+            });
+
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infowindow.setContent(locations[i][0]);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+    </script>
+{% endblock %}
