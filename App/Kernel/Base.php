@@ -48,6 +48,21 @@ CREATE TABLE `extension` (
   `extension_user` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `ip` (
+  `ip_id` int(11) NOT NULL,
+  `ip_address` varchar(15) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_host` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_date` datetime DEFAULT NULL,
+  `ip_geoip_country_code` varchar(5) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_geoip_country_name` varchar(75) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_geoip_region` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_geoip_city` varchar(100) COLLATE utf8_general_ci DEFAULT NULL,
+  `ip_geoip_dma_code` int(11) DEFAULT NULL,
+  `ip_geoip_area_code` int(11) DEFAULT NULL,
+  `ip_geoip_latitude` float DEFAULT NULL,
+  `ip_geoip_longitude` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `extension` (`extension_id`, `extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
 (1, 'user', 'Utilisateurs', 1, 1, 1, 0),
 (2, 'group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
