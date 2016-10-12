@@ -8,6 +8,7 @@ class Ip extends \Slim\Middleware
 
     public function call()
     {
+        $this->app->hook('slim.before', array($this, 'observe'));
         $this->next->call();
     }
 

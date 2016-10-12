@@ -360,8 +360,12 @@ ALTER TABLE `user_front_profile`
 
 ALTER TABLE `user_group`
   ADD PRIMARY KEY (`user_group_id`);
+  
+ALTER TABLE `ip`
+  ADD PRIMARY KEY (`ip_id`);
 
-
+ALTER TABLE `ip`
+  MODIFY `ip_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `extension`
   MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `gallery`

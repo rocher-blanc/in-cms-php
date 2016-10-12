@@ -25,12 +25,19 @@ class Ip
     /* ****************    GETTER     ******************* */
     /* ************************************************** */
 
-
+    protected function getIp()
+    {
+        return $this->CMS()->request()->getIp();
+    }
 
     /* ************************************************** */
     /* ****************    TOOLS      ******************* */
     /* ************************************************** */
 
+    protected function CMS()
+    {
+        return \App\Kernel\CMS::getInstance() ;
+    }
 
     /* ************************************************** */
     /* ****************   FUNCTIONS   ******************* */
@@ -51,7 +58,7 @@ class Ip
     private function exist()
     {
         $ct = \DB::for_table('ip')
-            ->where_equal('ip_address', $this->app->request()->getIp() )
+            ->where_equal('ip_address', $this->getIp() )
             ->count();
 
         if ( $ct == 0 ) return false ;
@@ -63,8 +70,8 @@ class Ip
         $ip = \DB::for_table('ip')->create();
 
         $date = new \DateTime;
-        $ip->ip_address             = $this->app->request()->getIp() ;
-        $ip->ip_host                = gethostbyaddr( $this->app->request()->getIp() ) ;
+        $ip->ip_address             = $this->getIp() ;
+        $ip->ip_host                = gethostbyaddr( $this->getIp() ) ;
         $ip->ip_date                = $date->format('Y-m-d H:i:s') ;
         $ip->ip_geoip_country_code  = $this->geo('COUNTRY_CODE') ;
         $ip->ip_geoip_country_name  = $this->geo('COUNTRY_NAME') ;
@@ -85,7 +92,7 @@ class Ip
     private function update()
     {
         $ip = \DB::for_table('ip')
-            ->where_equal('ip_address', $this->app->request()->getIp() )
+            ->where_equal('ip_address', $this->getIp() )
             ->find_one();
 
         $ip->ip_geoip_country_code  = $this->geo('COUNTRY_CODE') ;
