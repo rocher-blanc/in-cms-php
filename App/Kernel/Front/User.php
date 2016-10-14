@@ -2,6 +2,10 @@
 
 namespace App\Kernel\Front;
 
+use Facebook\FacebookRedirectLoginHelper;
+use Facebook\FacebookRequest;
+use Facebook\FacebookSession;
+
 class User extends \App\Kernel\Common\User
 {
     /* ************************************************** */
@@ -14,6 +18,7 @@ class User extends \App\Kernel\Common\User
     protected $tmpId = NULL;
     protected $login = NULL;
     protected $group = NULL;
+    protected $facebook_url = NULL;
     protected $_var  = [];
 
     /* ************************************************** */
@@ -63,6 +68,11 @@ class User extends \App\Kernel\Common\User
         $this->group = $var ;
     }
 
+    protected function setFacebookUrl( $var )
+    {
+        $this->facebook_url = $var ;
+    }
+
     protected function setVar( $key , $value )
     {
         $this->_var[ $key ] = $value ;
@@ -105,6 +115,11 @@ class User extends \App\Kernel\Common\User
     protected function getGroup()
     {
         return $this->group ;
+    }
+
+    protected function getFacebookUrl()
+    {
+        return $this->facebook_url ;
     }
 
     public static function getInstance()
@@ -192,6 +207,7 @@ class User extends \App\Kernel\Common\User
                 'id'        => $this->getId(),
                 'login'     => $this->getLogin(),
                 'group'     => $this->getGroup(),
+                'fb_url'    => $this->getFacebookUrl(),
                 'isLogged'  => $this->isLogged()
             ], $this->getVar() )
         ]);
@@ -268,6 +284,56 @@ class User extends \App\Kernel\Common\User
         else
         {
             $this->returnRedirect('/');
+        }
+    }
+
+    ###################################################################################################################################
+    ######################################          CONNECT WITH FACEBOOK            ##################################################
+    ###################################################################################################################################
+
+    /**
+     * @return bool
+     */
+    public function connectWithFacebook()
+    {
+        dump( 'connect with facebook' );
+        dump( FB_APP_ID );
+        dump( FB_APP_SECRET );
+        dump( FB_APP_PAGE );
+        if ( FB_APP_ID === NULL && FB_APP_SECRET === NULL && FB_APP_PAGE === NULL ) return false ;
+        dump( 'connect with facebook 2' );
+
+        if ( ! $this->isLogged() )
+        {
+            FacebookSession::setDefaultApplication( FB_APP_ID , FB_APP_SECRET );
+            $helper = new FacebookRedirectLoginHelper( $this->Factory()->Url()->page( FB_APP_PAGE ) );
+
+            $session = $helper->getSessionFromRedirect();
+
+            if ( $session )
+            {
+                try
+                {
+                    $request = new FacebookRequest( $session , 'GET' , '/me');
+                    $profile = $request->execute()->getGraphObject('Facebook\GraphUser');
+
+                    if ( $profile->getEmail() === NULL )
+                    {
+                        throw new \Exception('L\'email n\'est pas disponible');
+                    }
+
+                    return $profile;
+
+                }
+                catch (\Exception $e)
+                {
+                    return $helper->getReRequestUrl(['email']);
+                }
+            }
+            else
+            {
+                return $helper->getLoginUrl(['email']);
+            }
         }
     }
 

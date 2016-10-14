@@ -45,6 +45,8 @@ class User extends \Slim\Middleware
         }
         else
         {
+            $this->user()->connectWithFacebook() ;
+
             if ( $this->app->request->get('logout') == 'me' )
             {
                 $this->user()->logout();

@@ -15,7 +15,6 @@
     "jdorn/sql-formatter": "dev-master",
     "erusev/parsedown": "1.6.0",
 
-
     "abeautifulsite/simpleimage": "2.5.5",
     "blueimp/jquery-file-upload": "9.10.0",
 
@@ -30,6 +29,7 @@
     "symfony/yaml": "2.*",
 
     "google/recaptcha": "~1.1",
+    "facebook/php-sdk-v4" : "4.0.*",
     "phpmailer/phpmailer" : "5.2.13",
 
     "fxp/composer-asset-plugin": "dev-master",
