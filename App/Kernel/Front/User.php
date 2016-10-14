@@ -290,52 +290,7 @@ class User extends \App\Kernel\Common\User
 
     /**
      * @return bool
-     *//*
-    public function connectWithFacebook()
-    {
-        if ( FB_APP_ID === NULL && FB_APP_SECRET === NULL && FB_APP_PAGE === NULL ) return false ;
-
-        if ( ! $this->isLogged() )
-        {
-            $url_redirect = \App\Kernel\Http::getInstance()->getUrl() . '/' . $this->Factory()->Url()->page( FB_APP_PAGE ) ;
-
-            FacebookSession::setDefaultApplication( FB_APP_ID , FB_APP_SECRET );
-            $helper = new FacebookRedirectLoginHelper( $url_redirect );
-            $session = $helper->getSessionFromRedirect();
-
-            if ( $session )
-            {
-                try
-                {
-                    $request = new FacebookRequest( $session , 'GET' , '/me');
-                    $profile = $request->execute()->getGraphObject('Facebook\GraphUser');
-
-                    if ( $profile->getEmail() === NULL )
-                    {
-                        throw new \Exception('L\'email n\'est pas disponible');
-                    }
-                    else
-                    {
-                        // script de connexion / inscription
-                    }
-
-                    return $profile;
-
-                }
-                catch (\Exception $e)
-                {
-                    return $helper->getReRequestUrl(['email']);
-                }
-            }
-            else
-            {
-                $url = $helper->getLoginUrl(['email']);
-                $this->setFacebookUrl( $url );
-                return false ;
-            }
-        }
-    }
-*/
+     */
     public function connectWithFacebook()
     {
         if ( FB_APP_ID === NULL && FB_APP_SECRET === NULL && FB_APP_PAGE === NULL ) return false ;
@@ -354,29 +309,70 @@ class User extends \App\Kernel\Common\User
                 $accessToken = $helper->getAccessToken();
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                 // When Graph returns an error
-                echo 'Graph returned an error: ' . $e->getMessage();
-                exit;
+                // echo 'Graph returned an error: ' . $e->getMessage();
+                // exit;
             } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                 // When validation fails or other local issues
-                echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
-                dump( $e );
-                exit;
+                // echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
+                // exit;
             }
 
             if ( isset( $accessToken ) )
             {
                 $fb->setDefaultAccessToken( $accessToken );
                 try {
-                    $response = $fb->get('/me?fields=email,name,birthday,first_name,last_name');
+                    $response = $fb->get('/me?fields=email,name,first_name,last_name');
                     $userNode = $response->getGraphUser();
                 } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-                    echo 'Graph returned an error: ' . $e->getMessage();
-                    exit;
+                    // echo 'Graph returned an error: ' . $e->getMessage();
+                    // exit;
                 } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
-                    echo 'Facebook 3 SDK returned an error: ' . $e->getMessage();
-                    exit;
+                    // echo 'Facebook 3 SDK returned an error: ' . $e->getMessage();
+                    // exit;
+                }
+
+                if ( is_object( $userNode ) )
+                {
+                    $user = \DB::for_table('user_front')
+                        ->where_equal('user_front_login' , $userNode->getId() )
+                        ->find_one();
+
+                    if ( ! $user )
+                    {
+                        $user = \DB::for_table('user_front')
+                            ->where_equal('user_front_fb_id' , $userNode->getEmail() )
+                            ->find_one();
+
+                        if ( ! $user )
+                        {
+                            // on creer l'utilisateur
+                            $pass = $this->generatePassword();
+                            $this->registerInBase( $userNode->getEmail() , $pass , $userNode->getId() ) ;
+
+                            $user = \DB::for_table('user_front')
+                                ->where_equal('user_front_login', $userNode->getEmail())
+                                ->where_equal('user_front_active', 1)
+                                ->find_one();
+
+                            $this->returnError( "user_login_successful" , true ) ;
+                            return $this->save( $user );
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        // on check si son FB ID est présent
+
+                    }
+                }
+                else
+                {
+                    return $this->returnError( "user_connect_facebook_error" ) ;
                 }
             }
             else
@@ -386,8 +382,6 @@ class User extends \App\Kernel\Common\User
                 $this->setFacebookUrl( $loginUrl );
             }
         }
-
-        dump( $_SESSION );
     }
 
     protected function getScopeFacebook()
@@ -430,49 +424,56 @@ class User extends \App\Kernel\Common\User
 
         if ( $this->checkRegister() )
         {
-            // on utilise pour le mot de passe : password_hash( $password , PASSWORD_BCRYPT , ['cost' => 9] ) ;
+            $login    = trim( $this->post('user_login') ) ;
+            $password = trim( $this->post('user_password') ) ;
 
-            $login              = trim( $this->post('user_login') ) ;
-            $password           = trim( $this->post('user_password') ) ;
-            $confirmPassword    = trim( $this->post('user_password_confirm') ) ;
+            return $this->registerInBase( $login , $password ) ;
+        }
+    }
 
-            $date = new \DateTime();
+    protected function registerInBase( $login , $password , $fb_id = NULL )
+    {
+        $date = new \DateTime();
 
-            $user = \DB::for_table('user_front')->create();
-            $user->user_front_token                 = $this->getNewToken();
-            $user->user_front_login                 = $login;
-            $user->user_front_password              = $this->hashPassword( $password );
-            $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
-            $user->user_front_active                = ( USER_ACTIVATION_MAIL ? 0 : $this->getActiveRegister() ) ;
-            $user->user_front_user_front_group_id   = $this->getDefaultGroup() ;
-            $user->save();
+        $active = ( USER_ACTIVATION_MAIL ? 0 : $this->getActiveRegister() ) ;
+        if ( $fb_id !== NULL ) $active = 1;
 
-            $this->setTmpId( $user->user_front_id ) ;
-            $this->addProfile();
+        $user = \DB::for_table('user_front')->create();
+        $user->user_front_token                 = $this->getNewToken();
+        $user->user_front_login                 = $login;
+        $user->user_front_password              = $this->hashPassword( $password );
+        $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
+        $user->user_front_active                = $active;
+        $user->user_front_user_front_group_id   = $this->getDefaultGroup() ;
+        if ( $fb_id !== NULL ) $user->user_front_user_fb_id = $fb_id ;
 
-            if ( USER_ACTIVATION_MAIL )
+        $user->save();
+
+        $this->setTmpId( $user->user_front_id ) ;
+        $this->addProfile();
+
+        if ( USER_ACTIVATION_MAIL )
+        {
+            $mail = new Mail;
+            $mail->add( $user->user_front_login )
+                ->setSubject( $this->text('user_mail_subjet_validation') )
+                ->parse('validation', [
+                    'token' => $user->user_front_token,
+                    'login' => $user->user_front_login,
+                ]);
+
+            if ( ! $mail->send() )
             {
-                $mail = new Mail;
-                $mail->add( $user->user_front_login )
-                     ->setSubject( $this->text('user_mail_subjet_validation') )
-                     ->parse('validation', [
-                         'token' => $user->user_front_token,
-                         'login' => $user->user_front_login,
-                     ]);
-
-                if ( ! $mail->send() )
-                {
-                    return $this->returnError( "user_register_send_mail_error" ) ;
-                }
-                else
-                {
-                    return $this->returnError( "user_register_send_mail_successful" , true ) ;
-                }
+                return $this->returnError( "user_register_send_mail_error" ) ;
             }
             else
             {
-                return $this->returnError( "user_register_successful" , true ) ;
+                return $this->returnError( "user_register_send_mail_successful" , true ) ;
             }
+        }
+        else
+        {
+            return $this->returnError( "user_register_successful" , true ) ;
         }
     }
 
