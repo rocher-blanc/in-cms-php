@@ -120,11 +120,17 @@ class Router
                 {
                     if ( $this->getUrl(0) == $this->Lang()->getDefault()->url )
                     {
-                        $this->getApp()->redirect('test');
+                        $this->getApp()->redirect('/');
                     }
 
                     $this->updateRoute() ;
                     $this->displayDefaultPage() ;
+                }
+                else if ( $this->isWebservice() )
+                {
+                    // c'est un webservice
+                    $this->updateRoute() ;
+                    $this->displayWebservice() ;
                 }
                 else if ( $this->isPage() )
                 {
@@ -221,6 +227,12 @@ class Router
         }
     }
 
+    protected function isWebservice()
+    {
+        if ( $this->getUrl(0) == 'api' ) return true ;
+        else                             return false ;
+    }
+
     protected function isPage()
     {
         if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
@@ -288,6 +300,23 @@ class Router
     /* ************************************************** */
     /* *****************   DISPLAY    ******************* */
     /* ************************************************** */
+
+    protected function displayWebservice()
+    {
+        $result = \DB::for_table('module')
+            ->select('module_class_name')
+            ->where(['module_class_name' => $this->getUrl(1), 'module_active' => 1])
+            ->find_one();
+
+        if ( $result )
+        {
+
+        }
+        else
+        {
+
+        }
+    }
 
     protected function displayModuleElement( $mp = true )
     {
