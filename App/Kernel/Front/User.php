@@ -2,10 +2,6 @@
 
 namespace App\Kernel\Front;
 
-use Facebook\FacebookRedirectLoginHelper;
-use Facebook\FacebookRequest;
-use Facebook\FacebookSession;
-
 class User extends \App\Kernel\Common\User
 {
     /* ************************************************** */
@@ -293,21 +289,17 @@ class User extends \App\Kernel\Common\User
 
     /**
      * @return bool
-     */
+     *//*
     public function connectWithFacebook()
     {
-        dump( 'connect with facebook' );
-        dump( FB_APP_ID );
-        dump( FB_APP_SECRET );
-        dump( FB_APP_PAGE );
         if ( FB_APP_ID === NULL && FB_APP_SECRET === NULL && FB_APP_PAGE === NULL ) return false ;
-        dump( 'connect with facebook 2' );
 
         if ( ! $this->isLogged() )
         {
-            FacebookSession::setDefaultApplication( FB_APP_ID , FB_APP_SECRET );
-            $helper = new FacebookRedirectLoginHelper( $this->Factory()->Url()->page( FB_APP_PAGE ) );
+            $url_redirect = \App\Kernel\Http::getInstance()->getUrl() . '/' . $this->Factory()->Url()->page( FB_APP_PAGE ) ;
 
+            FacebookSession::setDefaultApplication( FB_APP_ID , FB_APP_SECRET );
+            $helper = new FacebookRedirectLoginHelper( $url_redirect );
             $session = $helper->getSessionFromRedirect();
 
             if ( $session )
@@ -321,6 +313,10 @@ class User extends \App\Kernel\Common\User
                     {
                         throw new \Exception('L\'email n\'est pas disponible');
                     }
+                    else
+                    {
+                        // script de connexion / inscription
+                    }
 
                     return $profile;
 
@@ -332,8 +328,23 @@ class User extends \App\Kernel\Common\User
             }
             else
             {
-                return $helper->getLoginUrl(['email']);
+                $url = $helper->getLoginUrl(['email']);
+                $this->setFacebookUrl( $url );
+                return false ;
             }
+        }
+    }
+*/
+    public function connectWithFacebook()
+    {
+        if ( FB_APP_ID === NULL && FB_APP_SECRET === NULL && FB_APP_PAGE === NULL ) return false ;
+
+        if ( ! $this->isLogged() )
+        {
+            $fb = new Facebook\Facebook([
+                'app_id' => FB_APP_ID,
+                'app_secret' => FB_APP_SECRET
+            ]);
         }
     }
 

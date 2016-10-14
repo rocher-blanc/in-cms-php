@@ -195,11 +195,13 @@ class Url
     public function page( $id )
     {
         $cLang = \DB::for_table('page_lang')
+            ->select('page_default')
             ->select('page_lang_url')
+            ->join( 'page', ['page_id', '=', 'page_lang_page_id'] )
             ->where(['page_lang_page_id' => $id, 'page_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
             ->find_one();
 
-        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->page_lang_url ;
+        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
         else			return "#" ;
     }
 

@@ -45,7 +45,9 @@ class User extends \Slim\Middleware
         }
         else
         {
-            $this->user()->connectWithFacebook() ;
+            $rst = $this->user()->connectWithFacebook() ;
+            dump( 'retour fonction' );
+            dump( $rst );
 
             if ( $this->app->request->get('logout') == 'me' )
             {
