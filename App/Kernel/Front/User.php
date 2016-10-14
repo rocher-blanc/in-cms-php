@@ -115,6 +115,7 @@ class User extends \App\Kernel\Common\User
 
     protected function getFacebookUrl()
     {
+        $this->parseFacebookState();
         return $this->facebook_url ;
     }
 
@@ -341,10 +342,75 @@ class User extends \App\Kernel\Common\User
 
         if ( ! $this->isLogged() )
         {
-            $fb = new Facebook\Facebook([
+            $fb = new \Facebook\Facebook([
                 'app_id' => FB_APP_ID,
-                'app_secret' => FB_APP_SECRET
+                'app_secret' => FB_APP_SECRET,
+                'default_graph_version' => 'v2.4'
             ]);
+
+            $helper = $fb->getRedirectLoginHelper();
+            // Callback
+            try {
+                $accessToken = $helper->getAccessToken();
+            } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+                // When Graph returns an error
+                echo 'Graph returned an error: ' . $e->getMessage();
+                exit;
+            } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+                // When validation fails or other local issues
+                echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
+                dump( $e );
+                exit;
+            }
+
+            if ( isset( $accessToken ) )
+            {
+                $fb->setDefaultAccessToken( $accessToken );
+                try {
+                    $response = $fb->get('/me?fields=email,name,birthday,first_name,last_name');
+                    $userNode = $response->getGraphUser();
+                } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+                    // When Graph returns an error
+                    echo 'Graph returned an error: ' . $e->getMessage();
+                    exit;
+                } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+                    // When validation fails or other local issues
+                    echo 'Facebook 3 SDK returned an error: ' . $e->getMessage();
+                    exit;
+                }
+            }
+            else
+            {
+                $url_redirect = \App\Kernel\Http::getInstance()->getUrl() . '/' . $this->Factory()->Url()->page( FB_APP_PAGE ) ;
+                $loginUrl = $helper->getLoginUrl( $url_redirect , $this->getScopeFacebook() );
+                $this->setFacebookUrl( $loginUrl );
+            }
+        }
+
+        dump( $_SESSION );
+    }
+
+    protected function getScopeFacebook()
+    {
+        return ['email'];
+    }
+
+    protected function parseFacebookState()
+    {
+        foreach( $_SESSION as $k => $v )
+        {
+            if ( strpos( $k , "FBRLH_" ) !== false )
+            {
+                $this->CMS()->getApp()->setCookie(
+                    "fb_state",
+                    $_SESSION[$k],
+                    ( time() + COOKIE_EXPIRES ),
+                    $this->settings['path'],
+                    $this->settings['domain'],
+                    $this->settings['secure'],
+                    $this->settings['httponly']
+                );
+            }
         }
     }
 
