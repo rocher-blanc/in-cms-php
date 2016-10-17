@@ -15,7 +15,11 @@ defined('MODULE_PATH') || define('MODULE_PATH', PROJECT_PATH . '/Module');
 defined('ENTITY_PATH') || define('ENTITY_PATH', MODULE_PATH . '/Entity');
 defined('ENTITIES_PROJECT_PATH') || define('ENTITIES_PROJECT_PATH', ENTITY_PATH . '/Class');
 defined('REPOSITORY_PROJECT_PATH') || define('REPOSITORY_PROJECT_PATH', MODULE_PATH . '/Repository');
+
+/* COMMON */
 defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJECT_PATH . '/CustomClass/Common');
+defined('VIEW_PROJECT_COMMON_PATH') || define('VIEW_PROJECT_COMMON_PATH', PROJECT_PATH . '/view/common');
+defined('TEMPLATES_COMMON_PATH') || define('TEMPLATES_COMMON_PATH', APPLICATION_PATH . '/view/common');
 
 defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
 defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');

@@ -123,6 +123,7 @@ class Slim
 		];
 
         $viewArray[] = VIEW_PROJECT_PATH ;
+        $viewArray[] = VIEW_PROJECT_COMMON_PATH ;
 
         if ( ! empty( $this->templateFolder ) )
         {
@@ -133,7 +134,8 @@ class Slim
         }
 
         $viewArray[] = TEMPLATES_PATH ;
-		
+        $viewArray[] = TEMPLATES_COMMON_PATH ;
+
 		$this->_slim->view()->twigTemplateDirs = $viewArray ;
 		$this->_slim->view()->parserExtensions = [
 			new \Twig_Extensions_Extension_Text(),
