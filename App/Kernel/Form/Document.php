@@ -15,10 +15,10 @@ class Document extends \App\Kernel\Back\Form
 		else																		return true ;
 	}
 	
-	private function validValue( $file )
+	private function validValue( $id )
 	{
-        if ( $this->hasValue() && file_exists( WEB_PATH . $file ) ) 	return true ;
-		else															return false ;
+        if ( $this->hasValue()  ) 	return true ;
+		else						return false ;
 	}
 	
 	public function html( $field, $name, $value = NULL )
@@ -43,7 +43,7 @@ class Document extends \App\Kernel\Back\Form
 
 		$html = '
 		<div id="bloc_doc_id_' . $name . '" data-nodoc="' . \App\Kernel\Message::getInstance()->get("no_document") . '">
-			<input type="hidden" name="' . $name . '" id="id_' . $name . '" value="' . ( $this->validValue( $value ) == true ? $value : '' ) . '" />
+			<input type="hidden" name="' . $name . '" id="id_' . $name . '" value="' . ( $this->validValue( $value ) == true ? $value : '' ) . '" data-value="' . $value . '" /> 
 				<div class="blocDocument" id="doc_source_' . $field->getName() . '">' ;
 					if ( $this->hasValue() )
 					{

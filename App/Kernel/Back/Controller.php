@@ -923,12 +923,9 @@ class Controller
                 {
                     if ( ! $row->hasLang() )
                     {
-                        if ( $row->isOrder() == true )
+                        if ( $row->isOrder() == true && $add == true )
                         {
-                            if ( $add == true )
-                            {
-                                $content->set( $row->getColumn() , $row->getDefault() ) ;
-                            }
+                            $content->set( $row->getColumn() , $row->getDefault() ) ;
                         }
                         else if ( $row->getType() != "checkbox" && $row->canUpdate() == true )
                         {
