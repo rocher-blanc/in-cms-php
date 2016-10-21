@@ -8,6 +8,8 @@ defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/vie
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Front');
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Front');
 
+defined('ADMIN') || define('ADMIN',false);
+
 defined('FB_APP_ID') || define('FB_APP_ID', NULL );
 defined('FB_APP_SECRET') || define('FB_APP_SECRET', NULL );
 defined('FB_APP_PAGE') || define('FB_APP_PAGE', NULL );

@@ -16,6 +16,7 @@ defined('TRAD_PATH') || define('TRAD_PATH', SAVE_PATH . '/traduction');
 
 
 defined('COUNTRY') || define('COUNTRY','fr');
+defined('ADMIN') || define('ADMIN',true);
 
 
 /* Thème du back office pour JContent */
