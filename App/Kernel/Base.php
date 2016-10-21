@@ -63,6 +63,14 @@ CREATE TABLE `ip` (
   `ip_geoip_longitude` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `document` (
+  `document_id` int(11) NOT NULL,
+  `document_module_id` int(11) DEFAULT NULL,
+  `document_name` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `document_size` int(11) NOT NULL,
+  `document_type` varchar(100) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `extension` (`extension_id`, `extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
 (1, 'user', 'Utilisateurs', 1, 1, 1, 0),
 (2, 'group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
@@ -363,7 +371,12 @@ ALTER TABLE `user_group`
   
 ALTER TABLE `ip`
   ADD PRIMARY KEY (`ip_id`);
+  
+ALTER TABLE `document`
+  ADD PRIMARY KEY (`document_id`);
 
+ALTER TABLE `document`
+  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `ip`
   MODIFY `ip_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `extension`

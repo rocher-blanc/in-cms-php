@@ -2,20 +2,16 @@
 
 $app->group('/user_front', function () use ($app)
 {
-	$app->get('/', function () use ($app) {
+	$app->get('/', function () use ($app)
+    {
+		$contentRows = \DB::for_table('user_front')
+            ->join( 'user_front_profile', ['user_front_profile_user_front_id', '=', 'user_front_id'] )
+            ->order_by_asc('user_front_id')
+			->find_many();
 
-		$contentRows = \DB::for_table('user_front');
-        // Jointure sur la table profile
-        $contentRows->join( 'user_front_profile', ['user_front_profile_user_front_id', '=', 'user_front_id'] );
-
-		if ( $app->environment['user']['group_id'] != 1 ) {
-			$contentRows = $contentRows->where_not_equal('user_front_user_front_group_id' , 1 ) ;
-		}
-
-		$contentRows = $contentRows->order_by_asc('user_front_id')
-								   ->find_many();
-
-        $app->render('ext/user_front/index.twig.html', array( "contentRows" => $contentRows ));
+        $app->render('ext/user_front/index.twig.html', [
+            "contentRows" => $contentRows
+        ]);
 
 	})->name('user_front_index');
 
@@ -28,11 +24,12 @@ $app->group('/user_front', function () use ($app)
 		}
 		
 		$error    = false ;
-		$tabError = array() ;
+		$tabError = [] ;
 		
 		$contentRow = \DB::for_table('user_front')
 			->where(array('user_front_id' => $id))
 			->find_one();
+
         if( $contentRow !== false )
         {
             $contentProfile = \DB::for_table('user_front_profile')
@@ -40,18 +37,21 @@ $app->group('/user_front', function () use ($app)
                 ->find_one();
         }
 
-		if ( $id != -1 && !$contentRow ) {
+		if ( $id != -1 && !$contentRow )
+		{
 			$app->redirect( $app->config('admin.url') . '/ext/user_front');
 		}
-		else {
+		else
+		{
 			$post = $contentRow ;
 		}
 		
-		if ( $app->request->isPost() ) {
-			$post = array(
+		if ( $app->request->isPost() )
+		{
+			$post = [
 				"user_front_login" => $app->request->post('user_front_login'),
 				"user_front_group_id" => $app->request->post('user_front_group_id')
-			) ;
+            ] ;
 			
 			if ( $app->request->post('user_front_login') == "" ) {
 				$error = true ;

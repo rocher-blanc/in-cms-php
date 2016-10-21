@@ -37,9 +37,12 @@ class Response
     }
 	
 	/* Retour des messages d'erreurs par JSON pour les RQT en AJAX */
-	public function returnJSON( $msg , $result = false )
+	public function returnJSON( $msg , $result = false , $extra = [] )
 	{
-		$this->printJSON( array( "msg" => $msg , "result" => $result ) ) ;
+		$this->printJSON(array_merge([
+		    "msg" => $msg,
+            "result" => $result
+        ], $extra )) ;
 	}
 	
 	/* Parse en JSON */

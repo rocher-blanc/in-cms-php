@@ -391,19 +391,22 @@ class User extends \App\Kernel\Common\User
 
     protected function parseFacebookState()
     {
-        foreach( $_SESSION as $k => $v )
+        if ( $_SESSION )
         {
-            if ( strpos( $k , "FBRLH_" ) !== false )
+            foreach( $_SESSION as $k => $v )
             {
-                $this->CMS()->getApp()->setCookie(
-                    "fb_state",
-                    $_SESSION[$k],
-                    ( time() + COOKIE_EXPIRES ),
-                    $this->settings['path'],
-                    $this->settings['domain'],
-                    $this->settings['secure'],
-                    $this->settings['httponly']
-                );
+                if ( strpos( $k , "FBRLH_" ) !== false )
+                {
+                    $this->CMS()->getApp()->setCookie(
+                        "fb_state",
+                        $_SESSION[$k],
+                        ( time() + COOKIE_EXPIRES ),
+                        $this->settings['path'],
+                        $this->settings['domain'],
+                        $this->settings['secure'],
+                        $this->settings['httponly']
+                    );
+                }
             }
         }
     }

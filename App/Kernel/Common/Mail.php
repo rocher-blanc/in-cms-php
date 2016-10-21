@@ -126,7 +126,7 @@ class Mail
     public function send()
     {
         $ret = $this->obj->send();
-        if ( ! $ret && SMTP_DEBUG && DEBUG ) dump( $this->getError() );
+        if ( ! $ret && SMTP_DEBUG && DEBUG ) \App\Kernel\Debug::dump( $this->getError() );
         return $ret ;
     }
 }
