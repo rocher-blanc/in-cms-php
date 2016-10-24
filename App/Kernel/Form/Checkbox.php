@@ -28,7 +28,7 @@ class Checkbox extends \App\Kernel\Back\Form
 			<span class="input-group-addon">
 				<i class="fa fa-th-list"></i>
 			</span>
-			<select name="' . $name . '" id="id_' . $field->getColumn() . '" data-plugin-multiselect multiple="multiple">
+			<select name="' . $name . '" id="id_' . $field->getColumn() . '" data-plugin-multiselect multiple="multiple" data-live-search="true">
 				' . $select . '
 			</select>
 		</div>' ;
