@@ -55,6 +55,7 @@ $app->group('/parammodule', function () use ($app)
             if ( $app->request->isPost() )
             {
                 $one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
+                $one->module_index = ( $app->request->post('module_index') == NULL ? '0' : 1 ) ;
                 $one->save();
 
                 foreach( $lang as $l )
@@ -111,6 +112,7 @@ $app->group('/parammodule', function () use ($app)
             'lang' => $lang ,
             'post' => $post ,
             'priority' =>  $one->module_priority,
+            'index' =>  $one->module_index,
             'contentLang' => $contentLang
         ]);
     })->name('parammodule_edit')->via('GET', 'POST');

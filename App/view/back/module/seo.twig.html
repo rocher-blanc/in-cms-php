@@ -82,16 +82,22 @@
 						<label class="col-md-3 control-label">Url</label>
 						<div class="col-md-6">
 							{% for l in lang %}
-                            <div style="margin-bottom:10px;" class="input-group input-group-icon">
+								<div style="margin-bottom:10px;" class="input-group input-group-icon">
                                 <span class="input-group-addon">
                                     <span class="icon">
                                         <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                                     </span>
                                 </span>
-								<input type="text" name="seo_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" class="form-control" />
-								<input type="hidden" name="seo_last_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" />
-                            </div>
-                            {% endfor %}
+									<input type="text" name="seo_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" class="form-control" />
+									<input type="hidden" name="seo_last_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" />
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">Indexer</label>
+						<div class="col-md-6">
+							<input value="1" type="checkbox"{{ index == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="index" id="index" />
 						</div>
 					</div>
 				</div>

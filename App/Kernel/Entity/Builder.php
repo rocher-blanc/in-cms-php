@@ -265,6 +265,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function setIndexName( $name )
+    {
+        $this->_index_name = $name ;
+        return $this ;
+    }
+
     protected function setValidationName( $name )
     {
         $this->_validation_name = $name ;
@@ -348,6 +354,11 @@ class Builder extends Model
     }
 
     public function getUrlName()
+    {
+        return $this->_url_name ;
+    }
+
+    public function getIndexName()
     {
         return $this->_url_name ;
     }
@@ -490,6 +501,18 @@ class Builder extends Model
         $this->field()->setData( "isURL" , true ) ;
         $this->setUrl() ;
         $this->addAction("seo") ;
+
+        return $this ;
+    }
+
+    protected function isIndex()
+    {
+        $this->field()->setData( "SQL_VALUE" , 1 ) ;
+        $this->field()->setData( "SQL_TYPE" , "TINYINT" ) ;
+        $this->field()->setData( "SQL_DEFAULT" , 1 ) ;
+        $this->field()->setData( "noUpdate" , true ) ;
+        $this->setIndexName( $this->field()->getName() ) ;
+
         return $this ;
     }
 

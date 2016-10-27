@@ -141,7 +141,12 @@ $app->group('/langue', function () use ($app)
                         $locate = $tabIndex[ $key ] ;
                         $index++;
                     }
-                    $objPHPExcel->getActiveSheet()->SetCellValue( $line . $locate , html_entity_decode( $value ) );
+                    $val = str_replace( '<strong>' , '**' , $value );
+                    $val = str_replace( '</strong>' , '**' , $val );
+                    $val = str_replace( '<em>' , '*' , $val );
+                    $val = str_replace( '</em>' , '*' , $val );
+
+                    $objPHPExcel->getActiveSheet()->SetCellValue( $line . $locate , html_entity_decode( $val ) );
                 }
             }
 

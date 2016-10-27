@@ -322,7 +322,7 @@ class Controller
                 {
                     if ( $row->hasLang() == true )
                     {
-                        $array = array();
+                        $array = [];
                         foreach( $this->Lang()->getAll() as $lang )
                         {
                             if ( is_object( $contentLang[ $lang->id ] ) ) $array[ $lang->url ] = $contentLang[ $lang->id ]->get( $row->getColumn() );
@@ -1233,12 +1233,19 @@ class Controller
         $seo->setElementId( $this->getId() );
         $seo->setModuleId( $this->getEntityId() );
 
-        if ( $this->getApp()->request->isPost() ) $seo->update() ;
+        $one = $this->getRepository()->findOne( $this->getId() );
+
+
+        if ( $this->getApp()->request->isPost() )
+        {
+            $seo->update() ;
+        }
 
         $this->setRender( 'content' , $seo->getAll() ) ;
         $this->setRender( 'hasParagraph' , $this->getEntity()->hasParagraph() ) ;
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
+        $this->setRender( 'index' , $one->Lang()->getAll() ) ;
         $this->render('seo.twig.html') ;
     }
 
