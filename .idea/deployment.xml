@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Syndicat (project level)" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Berri ona" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
     <serverData>
-      <paths name="VPS1 - Ayat">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="VPS1 - Berri ona">
         <serverdata>
           <mappings>
@@ -16,28 +9,28 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Demo">
+      <paths name="VPS1 - ChipsLED">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Documentation">
+      <paths name="VPS1 - Devis">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Euroasian">
+      <paths name="VPS1 - JWEB V3">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Juliette">
+      <paths name="VPS1 - Myautonomie">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -51,7 +44,7 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Syndicat">
+      <paths name="VPS1 - Syndicat (project level)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

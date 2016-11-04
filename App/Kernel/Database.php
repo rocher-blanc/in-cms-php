@@ -25,7 +25,7 @@ class Database
 			\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 		]);
 		
-		if ( DEBUG )
+		if ( DEBUG OR DEBUG_BAR )
         {
             \DB::configure('logging', true);
             \DB::configure('logger', function($bound_query, $query_time) {
