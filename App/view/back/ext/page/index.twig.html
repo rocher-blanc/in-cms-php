@@ -30,20 +30,20 @@
 								</td>
 								<td>
 									{% if row.page_default == 1 %}
-										<a href="javascript:;" class="btn btn-xs btn-success"><i class="fa fa-home"></i> Page par défaut</a>
+										<a href="javascript:;" class="btn btn-sm btn-success"><i class="fa fa-home"></i> Page par défaut</a>
 									{% else %}
-										<a href="{{ siteUrl('ext/page/default/' ~  row.page_id ~ '/' ~ csrf_token ) }}" class="btn btn-xs btn-default"><i class="fa fa-home"></i> Mettre par défaut</a>
+										<a href="{{ siteUrl('ext/page/default/' ~  row.page_id ~ '/' ~ csrf_token ) }}" class="btn btn-sm btn-default"><i class="fa fa-home"></i> Mettre par défaut</a>
 									{% endif %}
 								</td>
 								<td>
 									{% if row.page_active == 0 %}
-										<a class="btn btn-xs btn-warning" href="{{ siteUrl('ext/page/active/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
+										<a class="btn btn-sm btn-warning" href="{{ siteUrl('ext/page/active/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
 									{% else %}
-										<a class="btn btn-xs btn-success" href="{{ siteUrl('ext/page/disactive/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
+										<a class="btn btn-sm btn-success" href="{{ siteUrl('ext/page/disactive/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
 									{% endif %}
 								</td>
 								<td class="text-right">
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/page/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i></a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/page/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 								</td>
 							</tr>
 						{% endfor %}

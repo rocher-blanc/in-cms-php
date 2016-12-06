@@ -349,23 +349,35 @@ class Controller
 
     protected function loadMetaModule()
     {
-        $result = \DB::for_table('module_lang')
-            ->select('module_lang_url')
-            ->select('module_lang_title')
-            ->select('module_lang_description')
-            ->select('module_lang_keyword')
+        $result = \DB::for_table('module')
+            ->select('module.module_index')
+            ->select('module_lang.module_lang_url')
+            ->select('module_lang.module_lang_title')
+            ->select('module_lang.module_lang_description')
+            ->select('module_lang.module_lang_keyword')
+            ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
             ->where(['module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang_module_id' => $this->getEntityId() ])
             ->find_one();
 
         if ( $result )
         {
+            $lastTab = $this->getApp()->view()->getData('meta') ;
+            $robots = $lastTab['robots'] ;
+
+            if ( $result->module_index == 0 && substr( $robots , 0 , 5 ) == 'index' )
+            {
+                $robots = "no" . $robots ;
+            }
+
             $meta = [
                 'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->module_lang_url,
                 'title' => $result->module_lang_title,
                 'description' => $result->module_lang_description,
-                'keyword' => $result->module_lang_keyword
+                'keyword' => $result->module_lang_keyword,
+                'robots' => $robots
             ];
-            $meta = array_merge($this->getApp()->view()->getData('meta'), $meta);
+
+            $meta = array_merge($lastTab, $meta);
             $this->setVar('meta',$meta);
 
             $og = [

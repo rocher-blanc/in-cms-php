@@ -203,6 +203,37 @@ class Router
     }
 
     /* ************************************************** */
+    /* *****************     DOMAIN   ******************* */
+    /* ************************************************** */
+
+    protected function hasMultiDomain()
+    {
+        $ct = \DB::for_table('domain')->count();
+
+        if ( $ct < 2 )  return false ;
+        else            return true ;
+    }
+
+    protected function getDomain()
+    {
+        return $_SERVER['SERVER_NAME'] ;
+    }
+
+    protected function getDomainId()
+    {
+        $rst = \DB::for_table('domain')
+            ->where_equal('domain_name' , $this->getDomain() )
+            ->find_one();
+
+        if ( $rst )
+        {
+            return $rst->domain_id ;
+        }
+
+        return NULL ;
+    }
+
+    /* ************************************************** */
     /* *****************      IS      ******************* */
     /* ************************************************** */
 
@@ -371,8 +402,19 @@ class Router
             ->select('page_controller')
             ->select('page_id')
             ->where_equal('page_active', 1)
-            ->where_equal('page_default', 1)
-            ->find_one();
+            ->where_equal('page_default', 1);
+
+        if ( $this->hasMultiDomain() )
+        {
+            $idDomain = $this->getDomainId() ;
+
+            if ( $idDomain !== NULL )
+            {
+                $page = $page->where_equal('page_domain_id', $idDomain);
+            }
+        }
+
+        $page = $page->find_one();
 
         if ( $page )
         {
@@ -382,14 +424,14 @@ class Router
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
                 // require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
-				$app->get('/(:lang)', function ( $lang = NULL ) use ( $page )
+                $app->get('/(:lang)', function ( $lang = NULL ) use ( $page )
                 {
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 
-					$pageClass = new $ControllerClass;
-					$pageClass->setId( $page->page_id );
-					$pageClass->execute();
-					
+                    $pageClass = new $ControllerClass;
+                    $pageClass->setId( $page->page_id );
+                    $pageClass->execute();
+
                 })->conditions(['lang' => '[a-z]+'])->via('GET', 'POST');
             }
             else

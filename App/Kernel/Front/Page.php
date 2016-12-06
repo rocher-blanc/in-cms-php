@@ -106,21 +106,32 @@ abstract class Page
 
     protected function loadMeta()
     {
-        $result = \DB::for_table('page_lang')
-            ->select('page_lang_url')
-            ->select('page_lang_title')
-            ->select('page_lang_description')
-            ->select('page_lang_keyword')
-            ->where(['page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang_page_id' => $this->getId() ])
+        $result = \DB::for_table('page')
+            ->select('page_lang.page_lang_url')
+            ->select('page_lang.page_lang_title')
+            ->select('page_lang.page_lang_description')
+            ->select('page_lang.page_lang_keyword')
+            ->select('page.page_index')
+            ->left_outer_join('page_lang', [ 'page_lang.page_lang_page_id', '=', 'page.page_id' ])
+            ->where(['page_lang.page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang.page_lang_page_id' => $this->getId() ])
             ->find_one();
 
         if ( $result )
         {
+            $lastTab = $this->CMS()->view()->getData('meta') ;
+            $robots = $lastTab['robots'] ;
+
+            if ( $result->module_index == 0 && substr( $robots , 0 , 5 ) == 'index' )
+            {
+                $robots = "no" . $robots ;
+            }
+
             $meta = [
                 'url' => \App\Kernel\Http::getInstance()->getUrl() . '/' . $result->page_lang_url,
                 'title' => $result->page_lang_title,
                 'description' => $result->page_lang_description,
-                'keyword' => $result->page_lang_keyword
+                'keyword' => $result->page_lang_keyword,
+                'robots' => $robots
             ];
 			
 			$og = [

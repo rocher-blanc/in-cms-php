@@ -28,7 +28,7 @@
 								<th><strong>Locale</strong></th>
                                 <th><strong>Statut</strong></th>
                                 <th><strong>Visible sur le site</strong></th>
-								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+								<th class="text-right" style="width: 200px"><strong>Actions</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -45,28 +45,28 @@
 								</td>
                                 <td>
                                     {% if row.lang_status == 0 %}
-                                        <a class="btn btn-xs btn-warning" href="{{ siteUrl('ext/langue/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
+                                        <a class="btn btn-sm btn-warning" href="{{ siteUrl('ext/langue/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
                                     {% else %}
-                                        <a class="btn btn-xs btn-success" href="{{ siteUrl('ext/langue/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
+                                        <a class="btn btn-sm btn-success" href="{{ siteUrl('ext/langue/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
                                     {% endif %}
-                                    {% if loop.index == 1 %}<a class="btn btn-xs btn-default" href="javascript:;"><i class="fa fa-info-circle"></i> Par défaut</a>{% endif %}
+                                    {% if loop.index == 1 %}<a class="btn btn-sm btn-default" href="javascript:;"><i class="fa fa-info-circle"></i> Par défaut</a>{% endif %}
                                 </td>
                                 <td>
                                     {% if row.lang_status != 0 %}
                                         {% if row.lang_front == 0 %}
-                                            <a class="btn btn-xs btn-warning" href="{{ siteUrl('ext/langue/front/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
+                                            <a class="btn btn-sm btn-warning" href="{{ siteUrl('ext/langue/front/active/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
                                         {% else %}
-                                            <a class="btn btn-xs btn-success" href="{% if loop.index == 1 %}javascript:;{% else %}{{ siteUrl('ext/langue/front/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}{% endif %}"><i class="fa fa-check-circle-o"></i> Oui</a>
+                                            <a class="btn btn-sm btn-success" href="{% if loop.index == 1 %}javascript:;{% else %}{{ siteUrl('ext/langue/front/disactive/' ~  row.lang_id ~ '/' ~ csrf_token) }}{% endif %}"><i class="fa fa-check-circle-o"></i> Oui</a>
                                         {% endif %}
                                     {% endif %}
                                 </td>
 								<td class="text-right">
 									{% if row.lang_status != 0 %}
-										{% if loop.index != 1 %}<a href="{{ siteUrl('ext/langue/order/up/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-up"></i></a>{% endif %}
-										{% if row.lang_status != 1 %}<a href="{{ siteUrl('ext/langue/order/down/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-xs btn-default"><i class="fa fa-arrow-down"></i></a>{% endif %}
+										{% if loop.index != 1 %}<a href="{{ siteUrl('ext/langue/order/up/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-sm btn-default"><i class="fa fa-arrow-up"></i></a>{% endif %}
+										{% if row.lang_status != 1 %}<a href="{{ siteUrl('ext/langue/order/down/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-sm btn-default"><i class="fa fa-arrow-down"></i></a>{% endif %}
 									{% endif %}
 									
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/langue/edit/' ~ row.lang_id) }}"><i class="fa fa-pencil"></i></a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/langue/edit/' ~ row.lang_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 								</td>
 							</tr>
 						{% endfor %}

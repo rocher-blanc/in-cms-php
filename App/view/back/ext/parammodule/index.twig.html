@@ -17,7 +17,7 @@
 						<thead>
 							<tr>
 								<th><strong>Nom</strong></th>
-								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+								<th class="text-right" style="width: 200px"><strong>Actions</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -27,7 +27,7 @@
 									<a href="{{ siteUrl('ext/parammodule/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
 								</td>
 								<td class="text-right">
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/parammodule/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i></a>
+									<a class="btn btn-sù btn-info" href="{{ siteUrl('ext/parammodule/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 								</td>
 							</tr>
 						{% endfor %}

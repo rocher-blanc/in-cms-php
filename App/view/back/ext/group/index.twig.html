@@ -20,7 +20,7 @@
 						<thead>
 							<tr>
 								<th><strong>Nom</strong></th>
-								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+								<th class="text-right" style="width: 200px"><strong>Actions</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -30,8 +30,8 @@
 									<a href="{{ siteUrl('ext/group/edit/' ~  row.user_group_id) }}">{{ row.user_group_name }}</a>
 								</td>
 								<td class="text-right">
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/group/edit/' ~ row.user_group_id) }}"><i class="fa fa-pencil"></i></a>
-									<a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_group_id }}" data-link="{{ siteUrl('ext/group/delete/' ~ row.user_group_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe '{{ row.user_group_name }}' ?"><i class="fa fa-times"></i></a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/group/edit/' ~ row.user_group_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_group_id }}" data-link="{{ siteUrl('ext/group/delete/' ~ row.user_group_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe '{{ row.user_group_name }}' ?"><i class="fa fa-times"></i> Supprimer</a>
 								</td>
 							</tr>
 						{% endfor %}

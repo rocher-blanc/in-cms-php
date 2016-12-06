@@ -1245,7 +1245,7 @@ class Controller
         $this->setRender( 'hasParagraph' , $this->getEntity()->hasParagraph() ) ;
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-        $this->setRender( 'index' , $one->Lang()->getAll() ) ;
+        $this->setRender( 'index' , 0 ) ;
         $this->render('seo.twig.html') ;
     }
 
