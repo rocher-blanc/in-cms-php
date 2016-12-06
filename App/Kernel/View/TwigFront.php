@@ -21,7 +21,23 @@ class TwigFront extends \Twig_Extension
 
     private function dateConfigFile()
     {
-        return filemtime( PROJECT_PATH . '/config/config.php' ) ;
+        $configFileProject       = 'config.php' ;
+        $configFileProjectDomain = 'config.' . $_SERVER['HTTP_HOST'] . '.php' ;
+
+        if ( file_exists( $configFileProject ) )
+        {
+            $file = $configFileProjectDomain;
+        }
+        else if ( file_exists( $configFileProjectDomain ) )
+        {
+            $file = $configFileProject;
+        }
+        else
+        {
+            defined('FILE_CONFIG') || define('FILE_CONFIG',false);
+        }
+
+        return filemtime( PROJECT_PATH . '/config/' . $file ) ;
     }
 
     public function getFunctions()

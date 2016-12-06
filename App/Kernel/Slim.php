@@ -85,13 +85,11 @@ class Slim
 		$this->_slim->view()->getInstance()->addGlobal("session_name", session_name());
         $this->_slim->view()->getInstance()->addGlobal("session_id", session_id());
 
-        if ( DEBUG )
+        if ( DEBUG_BAR )
         {
-            /*
 			$debugbar = new \Slim\Middleware\DebugBar ;
             $debugbar->addCollector(new \App\Kernel\Collector\Database());
             $this->_slim->add( $debugbar ) ;
-			*/
         }
 	}
 	
@@ -147,11 +145,22 @@ class Slim
 	{
 		// Seulement appelée si le mode est "production"
 		$this->_slim->configureMode('production', function () {
+            /*
             $this->_slim->config([
                 'log.enable' => true,
                 'debug' 	 => false,
                 'twig.debug' => false
             ]);
+            */
+            $this->_slim->config([
+                'log.enable' => false,
+                'cache' 	 => false,
+                'debug' 	 => true,
+                'twig.debug' => true
+            ]);
+
+            $this->_slim->log->setEnabled(true);
+            $this->_slim->log->setLevel(\Slim\Log::DEBUG);
 		});
 
 		// Seulement appelée si le mode est "development"
@@ -162,9 +171,9 @@ class Slim
                 'debug' 	 => true,
                 'twig.debug' => true
             ]);
-			
-			$this->_slim->log->setEnabled(true);
-			$this->_slim->log->setLevel(\Slim\Log::DEBUG);
+
+            $this->_slim->log->setEnabled(true);
+            $this->_slim->log->setLevel(\Slim\Log::DEBUG);
 		});
 	}
 	

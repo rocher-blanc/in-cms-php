@@ -55,6 +55,10 @@ if ( file_exists( PROJECT_PATH . '/config/config.common.php' ) )
 
 defined('COUNTRY') || define('COUNTRY','fr');
 
+// DEBUG
+defined('DEBUG_BAR') || define('DEBUG_BAR', false );
+
+
 // SESSION
 defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
 defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
