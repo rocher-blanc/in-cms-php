@@ -15,7 +15,7 @@ class Response
     }
 
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
-    public function flashAndRedirect( $msg , $result = false , $url = '' )
+    public function flashAndRedirect( $msg , $result = false , $url = '' , $admin = true )
     {
         if ( $url == '' )
         {
@@ -25,7 +25,7 @@ class Response
 
         $this->getApp()->flash('__msg', addslashes( json_encode( $msg ) ) );
         $this->getApp()->flash('__result', $result );
-        $this->getApp()->redirect( $this->getApp()->config('admin.url') . '/' . ltrim( $url , '/' ) );
+        $this->getApp()->redirect( ( $admin ? $this->getApp()->config('admin.url') . '/' : '' ) . ltrim( $url , '/' ) );
         die;
     }
 
