@@ -300,10 +300,17 @@ CREATE TABLE `user_group` (
   `user_group_redirect` varchar(250) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `domain` (
+  `domain_id` int(11) NOT NULL,
+  `domain_name` varchar(255)  COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, `user_group_redirect`) VALUES
 (1, 'Administrateurs', '/.+;/', '/admin/'),
 (3, 'Utilisateurs', '/.+;/', '/admin/');
 
+ALTER TABLE `domain`
+  ADD PRIMARY KEY (`domain_id`);
 
 ALTER TABLE `extension`
   ADD PRIMARY KEY (`extension_id`);
@@ -421,6 +428,8 @@ ALTER TABLE `user_front_group`
   MODIFY `user_front_group_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `user_front_profile`
   MODIFY `user_front_profile_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `domain`
+  MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `user_group`
   MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;";
     }
