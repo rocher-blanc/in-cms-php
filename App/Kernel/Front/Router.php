@@ -449,8 +449,19 @@ class Router
             ->left_outer_join('page_lang', array('page.page_id', '=', 'page_lang.page_lang_page_id'))
             ->where(['page_lang.page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang.page_lang_url' => $this->getUrl( $this->getOffset() )])
             ->where_equal('page.page_active', 1)
-            ->where_not_equal('page.page_default', 1)
-            ->find_one();
+            ->where_not_equal('page.page_default', 1);
+
+        if ( $this->hasMultiDomain() )
+        {
+            $idDomain = $this->getDomainId() ;
+
+            if ( $idDomain !== NULL )
+            {
+                $page = $page->where_equal('page_domain_id', $idDomain);
+            }
+        }
+
+        $page = $page->find_one();
 
         if ( $page )
         {

@@ -7,8 +7,35 @@ $app->group('/page', function () use ($app)
 		$contentRows = \DB::for_table('page')
 								->order_by_asc('page_name')
 								->find_many();
-		
-		$app->render('ext/page/index.twig.html', array( "contentRows" => $contentRows ));
+        $content = [];
+        $content[0] = [ 'id' => 0 , 'page' => [] ];
+        $reqDomains = \DB::for_table('domain')
+            ->select('domain_id')
+            ->select('domain_name')
+            ->find_many();
+        if( $reqDomains )
+        {
+            foreach( $reqDomains as $row )
+            {
+                $content[ $row->domain_id ] = [
+                    'id'   => $row->domain_id,
+                    'name' => $row->domain_name,
+                    'page' => []
+                ];
+            }
+        }
+        foreach( $contentRows as $row )
+        {
+            if( !empty($content) && in_array( $row->page_domain_id , array_keys($content) ) )
+            {
+                $content[ $row->page_domain_id ]['page'][] = $row;
+            }
+            else
+            {
+                $content[0]['page'][] = $row;
+            }
+        }
+		$app->render('ext/page/index.twig.html', array( "content" => $content ));
 
 	})->name('page_index');
 
@@ -175,8 +202,7 @@ $app->group('/page', function () use ($app)
 		{
 			$post = array(
 				"page_name" => $app->request->post('page_name'),
-				"page_active" => $app->request->post('page_active'),
-				"page_index" => $app->request->post('page_index')
+				"page_active" => $app->request->post('page_active')
 			) ;
 			
 			if ( !$contentRow )
@@ -210,8 +236,7 @@ $app->group('/page', function () use ($app)
 				$contentRow->page_name 			= $app->request->post('page_name') ;
 				$contentRow->page_priority 		= $app->request->post('page_priority') ;
 				$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-				$contentRow->page_index 		= ( $app->request->post('page_index') == NULL ? 0 : 1 ) ;
-
+				
 				if ( $forceActive == true ) $contentRow->page_active = 1;
 				
 				$contentRow->save() ;

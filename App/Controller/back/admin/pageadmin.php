@@ -4,11 +4,41 @@ $app->group('/pageadmin', function () use ($app)
 {
 	$app->get('/', function () use ($app)
 	{
+	    $content = [];
 		$contentRows = \DB::for_table('page')
 								->order_by_asc('page_name')
 								->find_many();
+
+        $content = [];
+        $content[0] = [ 'id' => 0 , 'page' => [] ];
+        $reqDomains = \DB::for_table('domain')
+            ->select('domain_id')
+            ->select('domain_name')
+            ->find_many();
+        if( $reqDomains )
+        {
+            foreach( $reqDomains as $row )
+            {
+                $content[ $row->domain_id ] = [
+                    'id'   => $row->domain_id,
+                    'name' => $row->domain_name,
+                    'page' => []
+                ];
+            }
+        }
+        foreach( $contentRows as $row )
+        {
+            if( !empty($content) && in_array( $row->page_domain_id , array_keys($content) ) )
+            {
+                $content[ $row->page_domain_id ]['page'][] = $row;
+            }
+            else
+            {
+                $content[0]['page'][] = $row;
+            }
+        }
 		
-		$app->render('admin/pageadmin/index.twig.html', array( "contentRows" => $contentRows ));
+		$app->render('admin/pageadmin/index.twig.html', array( "content" => $content ));
 
 	})->name('page_index');
 
@@ -183,7 +213,24 @@ $app->group('/pageadmin', function () use ($app)
 			"page_name" => $app->request->post('page_name'),
 			"page_controller" => $app->request->post('page_controller'),
 			"page_active" => $app->request->post('page_active')
-		) ;
+		);
+
+        $domains = [];
+        $reqDomains = \DB::for_table('domain')
+            ->select('domain_id')
+            ->select('domain_name')
+            ->find_many();
+        if( $reqDomains )
+        {
+            foreach( $reqDomains as $row )
+            {
+                $domains[] = [
+                    'id'   => $row->domain_id,
+                    'name' => $row->domain_name,
+                    'selected' => false
+                ];
+            }
+        }
 
 		if ( $app->request->isPost() ) {
 			$contentRow = \DB::for_table('page')->create();
@@ -203,6 +250,7 @@ $app->group('/pageadmin', function () use ($app)
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
 				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+                $contentRow->page_domain_id = $app->request->post('page_domain_id');
 				$contentRow->save();
 
 				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
@@ -240,12 +288,13 @@ $app->group('/pageadmin', function () use ($app)
 			}
 		}
 
-		$app->render('admin/pageadmin/edit.twig.html', array(
-			"post" => $post,
-			"id" => -1,
-			"error"		 => ( $error === false ? "0" : "1" ),
-			"tabError"	 => json_encode( $tabError )
-		));
+        $app->render('admin/pageadmin/edit.twig.html', array(
+            "post"       => $post,
+            "id"         => -1,
+            "domains"    => $domains,
+            "error"		 => ( $error === false ? "0" : "1" ),
+            "tabError"	 => json_encode( $tabError ),
+    ));
 
 	})->name('page_add')->via('GET', 'POST');
 
@@ -254,19 +303,42 @@ $app->group('/pageadmin', function () use ($app)
 		$error 	  = false ;
 		$tabError = array() ;
 
+        $domains = [];
+        $reqDomains = \DB::for_table('domain')
+            ->select('domain_id')
+            ->select('domain_name')
+            ->find_many();
+        if( $reqDomains )
+        {
+            foreach( $reqDomains as $row )
+            {
+                $domains[ $row->domain_id ] = [
+                    'id'   => $row->domain_id,
+                    'name' => $row->domain_name,
+                    'selected' => false
+                ];
+            }
+        }
+
 		$contentRow = \DB::for_table('page')
 			->where_equal('page_id' , $id)
 			->find_one();
 
 		$post = array(
 			"page_name" => $contentRow->page_name,
-			"page_active" => $contentRow->page_active
+			"page_active" => $contentRow->page_active,
+            "page_domain_id" => $contentRow->page_domain_id,
 		) ;
+        if( !empty($domains) && in_array( $post['page_domain_id'] , array_keys($domains) ) )
+        {
+            $domains[ $post['page_domain_id'] ]['selected'] = true;
+        }
 
 		if ( $app->request->isPost() ) {
 			$post = array(
 				"page_name" => $app->request->post('page_name'),
-				"page_active" => $app->request->post('page_active')
+				"page_active" => $app->request->post('page_active'),
+				"page_domain_id" => $app->request->post('page_domain_id')
 			) ;
 
 			if ($app->request->post('page_name') == "") {
@@ -277,6 +349,7 @@ $app->group('/pageadmin', function () use ($app)
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
 				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+				$contentRow->page_domain_id = $app->request->post('page_domain_id');
 				$contentRow->save();
 
 				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
@@ -292,8 +365,9 @@ $app->group('/pageadmin', function () use ($app)
 		}
 
 		$app->render('admin/pageadmin/edit.twig.html', array(
-			"post" => $post,
-			"id" => $id,
+			"post"       => $post,
+			"id"         => $id,
+            "domains"    => $domains,
 			"error"		 => ( $error === false ? "0" : "1" ),
 			"tabError"	 => json_encode( $tabError )
 		));
