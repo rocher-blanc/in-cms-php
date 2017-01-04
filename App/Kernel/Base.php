@@ -194,6 +194,7 @@ CREATE TABLE `module_lang` (
 
 CREATE TABLE `page` (
   `page_id` int(11) NOT NULL,
+  `page_domain_id` int(11) NULL DEFAULT NULL,
   `page_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
   `page_default` tinyint(1) NOT NULL DEFAULT '0',
   `page_controller`  varchar(50) COLLATE utf8_general_ci NOT NULL,

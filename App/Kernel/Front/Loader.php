@@ -45,7 +45,6 @@ class Loader
 
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Adwords);
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Ip);
 
         #########################################################
         /* ****************   Extensions   ******************* */

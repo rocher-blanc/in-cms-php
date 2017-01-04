@@ -26,35 +26,58 @@
 							</tr>
 						</thead>
 						<tbody>
-						{% for domain in content if domain.page | length > 0%}
-							{% if domain.id > 0 %}
+						{% if domain == true %}
+							{% for domain in content if domain.page | length > 0 %}
 								<tr class="tr1">
 									<th colspan="4" class="text-center"><strong>{{ domain.name }}</strong></th>
 								</tr>
-							{% endif %}
-							{% for row in domain.page %}
+								{% for row in domain.page %}
+									<tr class="tr1">
+										<td>
+											<a href="{{ siteUrl('admin/pageadmin/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
+										</td>
+										<td>
+											{% if row.page_default == 1 %}
+												<span class="btn btn-sm btn-success"><i class="fa fa-home"></i> Page par défaut</span>
+											{% endif %}
+										</td>
+										<td>
+											{% if row.page_active == 0 %}
+												<span class="btn btn-sm btn-warning"><i class="fa fa-circle-o"></i> Désactivée</span>
+											{% else %}
+												<span class="btn btn-sm btn-success"><i class="fa fa-check-circle-o"></i> Activée</span>
+											{% endif %}
+										</td>
+										<td class="text-right">
+											<a class="btn btn-sm btn-info" href="{{ siteUrl('admin/pageadmin/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% endfor %}
+						{% else %}
+							{% for row in content %}
 								<tr class="tr1">
 									<td>
 										<a href="{{ siteUrl('admin/pageadmin/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
 									</td>
 									<td>
 										{% if row.page_default == 1 %}
-											<span class="btn btn-xs btn-success"><i class="fa fa-home"></i> Page par défaut</span>
+											<span class="btn btn-sm btn-success"><i class="fa fa-home"></i> Page par défaut</span>
 										{% endif %}
 									</td>
 									<td>
 										{% if row.page_active == 0 %}
-											<span class="btn btn-xs btn-warning"><i class="fa fa-circle-o"></i> Désactivée</span>
+											<span class="btn btn-sm btn-warning"><i class="fa fa-circle-o"></i> Désactivée</span>
 										{% else %}
-											<span class="btn btn-xs btn-success"><i class="fa fa-check-circle-o"></i> Activée</span>
+											<span class="btn btn-sm btn-success"><i class="fa fa-check-circle-o"></i> Activée</span>
 										{% endif %}
 									</td>
 									<td class="text-right">
-										<a class="btn btn-xs btn-info" href="{{ siteUrl('admin/pageadmin/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i></a>
+										<a class="btn btn-sm btn-info" href="{{ siteUrl('admin/pageadmin/edit/' ~ row.page_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 									</td>
 								</tr>
 							{% endfor %}
-						{% endfor %}
+						{% endif %}
 						</tbody>
 					</table>
 				{% else %}

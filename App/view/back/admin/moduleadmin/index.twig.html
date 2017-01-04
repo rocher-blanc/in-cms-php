@@ -4,6 +4,16 @@
 {% set this_page = 'Gestion' %}
 
 {% block module %}
+	{% if noInstall|length == 0 and contentRows|length == 0 %}
+		<div class="row">
+			<div class="col-md-12 title-alone">
+				<header class="panel-heading">
+					<h2 class="panel-title"><i class="fa fa-times-circle"></i> Il n'a aucun module de disponible</h2>
+				</header>
+			</div>
+		</div>
+	{% endif %}
+
 	{% if contentRows|length > 0 %}
 		<div class="row">
 			<div class="col-md-12 title-alone">

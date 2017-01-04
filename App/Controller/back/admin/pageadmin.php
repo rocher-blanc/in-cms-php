@@ -4,42 +4,43 @@ $app->group('/pageadmin', function () use ($app)
 {
 	$app->get('/', function () use ($app)
 	{
-	    $content = [];
-		$contentRows = \DB::for_table('page')
-								->order_by_asc('page_name')
-								->find_many();
+        $domain = false ;
 
-        $content = [];
-        $content[0] = [ 'id' => 0 , 'page' => [] ];
         $reqDomains = \DB::for_table('domain')
             ->select('domain_id')
             ->select('domain_name')
             ->find_many();
-        if( $reqDomains )
+
+        if ( $reqDomains )
         {
+            // il y a une gestion de domaines
+            $domain = true ;
+
             foreach( $reqDomains as $row )
             {
                 $content[ $row->domain_id ] = [
                     'id'   => $row->domain_id,
-                    'name' => $row->domain_name,
-                    'page' => []
+                    'name' => $row->domain_name
                 ];
+
+                $content[ $row->domain_id ]['page'] = \DB::for_table('page')
+                    ->where_equal('page_domain_id' , $row->domain_id)
+                    ->order_by_asc('page_name')
+                    ->find_many();
             }
         }
-        foreach( $contentRows as $row )
+        else
         {
-            if( !empty($content) && in_array( $row->page_domain_id , array_keys($content) ) )
-            {
-                $content[ $row->page_domain_id ]['page'][] = $row;
-            }
-            else
-            {
-                $content[0]['page'][] = $row;
-            }
+            // pas de gestion de domaines
+            $content = \DB::for_table('page')
+                ->order_by_asc('page_name')
+                ->find_many();
         }
 		
-		$app->render('admin/pageadmin/index.twig.html', array( "content" => $content ));
-
+		$app->render('admin/pageadmin/index.twig.html', [
+            'domain' => $domain,
+            'content' => $content
+        ]);
 	})->name('page_index');
 
 
@@ -220,6 +221,7 @@ $app->group('/pageadmin', function () use ($app)
             ->select('domain_id')
             ->select('domain_name')
             ->find_many();
+
         if( $reqDomains )
         {
             foreach( $reqDomains as $row )
@@ -250,10 +252,10 @@ $app->group('/pageadmin', function () use ($app)
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
 				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
-                $contentRow->page_domain_id = $app->request->post('page_domain_id');
+                $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : NULL );
 				$contentRow->save();
 
-				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
+				\App\Kernel\Back\Log::getInstance()->info(33, $contentRow->page_name);
 
 				$id = $contentRow->page_id;
 
