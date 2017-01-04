@@ -145,7 +145,7 @@
                             </li>
                         {% endif %}
 						{% if isAdmin == true %}
-                            <li class="parent{% if menu == 'log' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
+                            <li class="parent{% if menu == 'log' or menu == 'domain' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
                                 <a href="#">
                                     <i class="fa fa-code"></i>
                                     <span>Développeur</span>
@@ -154,6 +154,11 @@
                                     <li{% if menu == 'moduleadmin' %} class="active"{% endif %}>
                                         <a href="{{ siteUrl('/admin/moduleadmin') }}">
                                             <i class="fa fa-dropbox"></i> <span>Modules</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'domain' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/domain') }}">
+                                            <i class="fa fa-external-link"></i> <span>Domaines</span>
                                         </a>
                                     </li>
                                     <li{% if menu == 'pageadmin' %} class="active"{% endif %}>
