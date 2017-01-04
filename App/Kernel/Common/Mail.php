@@ -95,6 +95,14 @@ class Mail
         return $this ;
     }
 
+    public function attachment( $file , $name = '' )
+    {
+        if ( $name == '' )  $this->obj->addAttachment( $file );
+        else                $this->obj->addAttachment( $file , $name );
+
+        return $this ;
+    }
+
     public function add( $var )
     {
         $this->obj->addAddress( $var );

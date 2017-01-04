@@ -11,7 +11,7 @@
 				<div class="panel-actions">
 					<a href="{{ siteUrl('ext/user_front/edit') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
 				</div>
-				<h2 class="panel-title">Liste des administrateurs</h2>
+				<h2 class="panel-title">Liste des utilisateurs</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -20,7 +20,7 @@
 						<thead>
 							<tr>
 								<th><strong>Login</strong></th>
-								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+								<th class="text-right" style="width: 220px"><strong>Actions</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -30,12 +30,12 @@
 									<a href="{{ siteUrl('ext/user_front/edit/' ~  row.user_front_id) }}">{{ row.user_front_login }}</a>
 								</td>
 								<td class="text-right">
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/user_front/edit/' ~ row.user_front_id) }}"><i class="fa fa-pencil"></i></a>
-									<a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_id }}" data-link="{{ siteUrl('ext/user_front/delete/' ~ row.user_front_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_front_login }}' ?"><i class="fa fa-times"></i></a>
-								</td>
-							</tr>
-						{% endfor %}
-						</tbody>
+					<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front/edit/' ~ row.user_front_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+					<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_id }}" data-link="{{ siteUrl('ext/user_front/delete/' ~ row.user_front_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_front_login }}' ?"><i class="fa fa-times"></i> Supprimer</a>
+					</td>
+					</tr>
+					{% endfor %}
+					</tbody>
 					</table>
 				{% else %}
 					<span>Aucun administrateur n'est enregistré.</span>

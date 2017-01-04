@@ -33,18 +33,41 @@
 						</div>
 					</div>
 					{% if domains | length > 0 %}
-					<div class="form-group">
-						<label class="col-md-3 control-label">Domaine</label>
-						<div class="col-md-6">
-							<select id="page_domain_id" name="page_domain_id" class="form-control">
-								{% for domain in domains %}
-								<option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
-								{% endfor %}
-							</select>
+						<div class="form-group">
+							<label class="col-md-3 control-label">Domaine</label>
+							<div class="col-md-6">
+								<select id="page_domain_id" name="page_domain_id" class="form-control">
+									{% for domain in domains %}
+										<option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
 						</div>
-					</div>
 					{% else %}
-					<input type="hidden" name="page_domain_id" value="0" />
+						<input type="hidden" name="page_domain_id" value="0" />
+					{% endif %}
+					{% if active_user == true %}
+						<div class="form-group">
+							<label class="col-md-3 control-label">Accès réservé aux utilisateurs connectés</label>
+							<div class="col-md-6">
+								<input value="1" type="checkbox"{{ post.page_access_user == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="page_access_user" id="page_access_user" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3 control-label">Groupes d'utilisateurs autorisés</label>
+							<div class="col-md-6">
+								<div class="input-group btn-group">
+									<span class="input-group-addon">
+										<i class="fa fa-th-list"></i>
+									</span>
+									<select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
+										{% for group in groups %}
+											<option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
 					{% endif %}
 				</div>
 			</div>
@@ -74,9 +97,11 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
 <link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
+<link rel="stylesheet" href="{{ vendor('bootstrap-multiselect/dist/css/bootstrap-multiselect.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
 <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
 <script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
+<script src="{{ vendor('bootstrap-multiselect/dist/js/bootstrap-multiselect.js') }}"></script>
 {% endblock %}

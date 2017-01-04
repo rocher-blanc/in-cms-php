@@ -4,14 +4,9 @@ $app->group('/user_front_group', function () use ($app)
 {
 	$app->get('/', function () use ($app) {
 
-		$contentRows = \DB::for_table('user_front_group') ;
-		
-		if ( $app->environment['user']['group_id'] != 1 ) {
-			$contentRows = $contentRows->where_not_equal('user_front_group_id' , 1 ) ;
-		}
-		
-		$contentRows = $contentRows->order_by_asc('user_front_group_name')
-								   ->find_many();
+		$contentRows = \DB::for_table('user_front_group')
+                            ->order_by_asc('user_front_group_name')
+                            ->find_many();
 		
 		$app->render('ext/user_front_group/index.twig.html', array( "contentRows" => $contentRows ));
 
@@ -89,101 +84,25 @@ $app->group('/user_front_group', function () use ($app)
 
 	})->name('user_front_group_edit')->via('GET', 'POST');
 
-	$app->get('/right', function () use ($app)
-	{
-		if ( $app->request->post( $app->config('token') ) == $_SESSION[ $app->config('token') ] )
-		{
-			$Guard = new \App\Kernel\Back\Acl;
-					
-			if ( $app->request->post('ext') == '' && $app->request->post('module') != '' )
-			{
-				$Guard->setModule( $app->request->post('module') );
-				$extRow = \DB::for_table('module')
-					->select('module_name')
-					->where(array('module_class_name' => $app->request->post('module')))
-					->find_one();
-				$value = $extRow->module_name ;
-			}
-			else if ( $app->request->post('ext') != '' && $app->request->post('module') == '' )
-			{
-				$Guard->setExtension( $app->request->post('ext') );
-				$extRow = \DB::for_table('extension')
-					->select('extension_name')
-					->where(array('extension_technical_name' => $app->request->post('ext')))
-					->find_one();
-				$value = $extRow->extension_name ;
-			}
-			
-			$Guard->setGroupId( $app->request->post('group') );
-			$Guard->load();
-			
-			$groupRow = \DB::for_table('user_group')
-				->select('user_group_name')
-				->where(array( 'user_group_id' => $app->request->post('group') ))
-				->find_one();
-			
-			$valueLog = $groupRow->user_group_name . " - " . $value ;
-			
-			switch( $app->request->post('right') )
-			{
-				case "add" :
-					$Guard->updateAdd();
-				break;
-				case "update" :
-					$Guard->updateUpdate();
-				break;
-				case "delete" :
-					$Guard->updateDelete();
-				break;
-				case "validation" :
-					$Guard->updateValidation();
-				break;
-				case "config" :
-					$Guard->updateConfig();
-				break;
-			}
-		}
-		else
-		{
-			$msg = "Le token de sécurité est invalide";
-			$ret = false;
-		}
-		
-		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
-	})->name('group_right')->via('GET', 'POST');
-
 	$app->delete('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
-		if ( $id == $app->environment['user']['group_id'] )
-		{
-			$msg = "Vous ne pouvez pas supprimer le groupe dans lequel vous êtes actuellement présent!" ;
-		}
-		elseif ( $id == 1 )
-		{
-			$msg = "Impossible de supprimer ce groupe pour des raisons techniques!" ;
-		}
-		else 
-		{
-			$contentRow = \DB::for_table('user_front_group')
-				->where_equal('user_front_group_id' , $id)
-				->where_not_equal('user_front_group_id' , $app->environment['user']['group_id'] )
-				->find_one();
-			
-			if ( $contentRow )
-			{
-				\App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_front_group_name ) ;
-				
-				$msg = "Le groupe a bien été supprimé" ;
-				$ret = true ;
-				$contentRow->delete();
-			}
-			else
-			{
-				$msg = "Une erreur est survenue lors de la suppression" ;
-			}
+        $contentRow = \DB::for_table('user_front_group')
+            ->where_equal('user_front_group_id' , $id)
+            ->find_one();
 
-		}
+        if ( $contentRow )
+        {
+            \App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_front_group_name ) ;
+
+            $msg = "Le groupe a bien été supprimé" ;
+            $ret = true ;
+            $contentRow->delete();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la suppression" ;
+        }
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
 	})->name('user_front_group_delete');

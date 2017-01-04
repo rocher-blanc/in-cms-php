@@ -1,6 +1,6 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Groupe d'administrateurs{% endblock %}
+{% block title_page %}Groupes d'utilisateurs{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
@@ -11,7 +11,7 @@
 				<div class="panel-actions">
 					<a href="{{ siteUrl('ext/user_front_group/edit') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
 				</div>
-				<h2 class="panel-title">Liste des groupes d'administrateurs</h2>
+				<h2 class="panel-title">Liste des groupes d'utilisateurs</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -20,7 +20,7 @@
 						<thead>
 							<tr>
 								<th><strong>Nom</strong></th>
-								<th class="text-right" style="width: 120px"><strong>Actions</strong></th>
+								<th class="text-right" style="width: 220px"><strong>Actions</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -30,8 +30,8 @@
 									<a href="{{ siteUrl('ext/user_front_group/edit/' ~  row.user_front_group_id) }}">{{ row.user_front_group_name }}</a>
 								</td>
 								<td class="text-right">
-									<a class="btn btn-xs btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.user_front_group_id) }}"><i class="fa fa-pencil"></i></a>
-									<a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_group_id }}" data-link="{{ siteUrl('ext/user_front_group/delete/' ~ row.user_front_group_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe '{{ row.user_front_group_name }}' ?"><i class="fa fa-times"></i></a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.user_front_group_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_group_id }}" data-link="{{ siteUrl('ext/user_front_group/delete/' ~ row.user_front_group_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe '{{ row.user_front_group_name }}' ?"><i class="fa fa-times"></i> Supprimer</a>
 								</td>
 							</tr>
 						{% endfor %}

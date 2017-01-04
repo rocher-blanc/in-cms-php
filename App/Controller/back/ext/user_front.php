@@ -17,12 +17,6 @@ $app->group('/user_front', function () use ($app)
 
 	$app->map('/edit(/:id)', function ($id = -1) use ($app)
 	{
-		if ( $id == 1 )
-		{
-			$Guard = new \App\Kernel\Back\Acl;
-			if ( $Guard->isAdmin() == false ) $app->redirect( $app->config('forbidden.url') ) ;
-		}
-		
 		$error    = false ;
 		$tabError = [] ;
 		
@@ -140,35 +134,26 @@ $app->group('/user_front', function () use ($app)
 	$app->delete('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
-		if ( $id == $_SESSION[ $app->config('session') ]['id'] )
-		{
-			$msg = "Vous ne pouvez pas supprimer le compte avec lequel vous êtes actuellement connecté!" ;
-		}
-		else
-		{
-			$contentRow = \DB::for_table('user_front')
-				->where_equal('user_front_id' , $id)
-				->where_not_equal('user_front_id' , $_SESSION[ $app->config('session') ]['id'] )
-				->find_one();
-			
-			if ( $contentRow )
-			{
-			    $contentProfile = \DB::for_table('user_front_profile')
-                    ->where_equal( 'user_front_profile_user_front_id', $contentRow->user_front_id )
-                    ->find_one();
+        $contentRow = \DB::for_table('user_front')
+            ->where_equal('user_front_id' , $id)
+            ->find_one();
 
-                \App\Kernel\Back\Log::getInstance()->warning( 48 , $contentRow->user_front_name ) ;
+        if ( $contentRow )
+        {
+            $contentProfile = \DB::for_table('user_front_profile')
+                ->where_equal( 'user_front_profile_user_front_id', $contentRow->user_front_id )
+                ->find_one();
 
-                $msg = "L'utilisateur a bien été supprimé" ;
-                $ret = true ;
-                $contentRow->delete();
-			}
-			else
-			{
-				$msg = "Une erreur est survenue lors de la suppression" ;
-			}
+            \App\Kernel\Back\Log::getInstance()->warning( 48 , $contentRow->user_front_name ) ;
 
-		}
+            $msg = "L'utilisateur a bien été supprimé" ;
+            $ret = true ;
+            $contentRow->delete();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la suppression" ;
+        }
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
 	})->name('user_delete');

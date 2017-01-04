@@ -251,8 +251,14 @@ $app->group('/pageadmin', function () use ($app)
 
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
-				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+                $contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
                 $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : NULL );
+
+                if ( ACTIVE_USER )
+                {
+                    $contentRow->page_access_user = ($app->request->post('page_access_user') == NULL ? 0 : 1);
+                    $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
+                }
 				$contentRow->save();
 
 				\App\Kernel\Back\Log::getInstance()->info(33, $contentRow->page_name);
@@ -290,10 +296,15 @@ $app->group('/pageadmin', function () use ($app)
 			}
 		}
 
+        $groupRows = \DB::for_table('user_front_group')
+            ->order_by_asc('user_front_group_name')
+            ->find_many();
+
         $app->render('admin/pageadmin/edit.twig.html', array(
             "post"       => $post,
             "id"         => -1,
             "domains"    => $domains,
+            "groups"     => $groupRows,
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError ),
     ));
@@ -326,17 +337,21 @@ $app->group('/pageadmin', function () use ($app)
 			->where_equal('page_id' , $id)
 			->find_one();
 
-		$post = array(
+		$post = [
 			"page_name" => $contentRow->page_name,
 			"page_active" => $contentRow->page_active,
             "page_domain_id" => $contentRow->page_domain_id,
-		) ;
+            "page_access_user" => $contentRow->page_access_user,
+            "page_access_user_group" => unserialize( $contentRow->page_access_user_group )
+        ] ;
+        
         if( !empty($domains) && in_array( $post['page_domain_id'] , array_keys($domains) ) )
         {
             $domains[ $post['page_domain_id'] ]['selected'] = true;
         }
 
-		if ( $app->request->isPost() ) {
+		if ( $app->request->isPost() )
+		{
 			$post = array(
 				"page_name" => $app->request->post('page_name'),
 				"page_active" => $app->request->post('page_active'),
@@ -352,9 +367,16 @@ $app->group('/pageadmin', function () use ($app)
 				$contentRow->page_name = $app->request->post('page_name');
 				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
 				$contentRow->page_domain_id = $app->request->post('page_domain_id');
+
+                if ( ACTIVE_USER )
+                {
+                    $contentRow->page_access_user = ($app->request->post('page_access_user') == NULL ? 0 : 1);
+                    $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
+                }
+
 				$contentRow->save();
 
-				\App\Kernel\Back\Log::getInstance()->info((33), $contentRow->page_name);
+				\App\Kernel\Back\Log::getInstance()->info(29, $contentRow->page_name);
 
 				$id = $contentRow->page_id;
 
@@ -366,10 +388,15 @@ $app->group('/pageadmin', function () use ($app)
 			}
 		}
 
+        $groupRows = \DB::for_table('user_front_group')
+            ->order_by_asc('user_front_group_name')
+            ->find_many();
+
 		$app->render('admin/pageadmin/edit.twig.html', array(
 			"post"       => $post,
 			"id"         => $id,
             "domains"    => $domains,
+            "groups"     => $groupRows,
 			"error"		 => ( $error === false ? "0" : "1" ),
 			"tabError"	 => json_encode( $tabError )
 		));
