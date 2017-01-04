@@ -48,21 +48,6 @@ CREATE TABLE `extension` (
   `extension_user` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `ip` (
-  `ip_id` int(11) NOT NULL,
-  `ip_address` varchar(15) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_host` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_date` datetime DEFAULT NULL,
-  `ip_geoip_country_code` varchar(5) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_geoip_country_name` varchar(75) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_geoip_region` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_geoip_city` varchar(100) COLLATE utf8_general_ci DEFAULT NULL,
-  `ip_geoip_dma_code` int(11) DEFAULT NULL,
-  `ip_geoip_area_code` int(11) DEFAULT NULL,
-  `ip_geoip_latitude` float DEFAULT NULL,
-  `ip_geoip_longitude` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `document` (
   `document_id` int(11) NOT NULL,
   `document_module_id` int(11) DEFAULT NULL,
@@ -379,16 +364,11 @@ ALTER TABLE `user_front_profile`
 ALTER TABLE `user_group`
   ADD PRIMARY KEY (`user_group_id`);
   
-ALTER TABLE `ip`
-  ADD PRIMARY KEY (`ip_id`);
-  
 ALTER TABLE `document`
   ADD PRIMARY KEY (`document_id`);
 
 ALTER TABLE `document`
   MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `ip`
-  MODIFY `ip_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `extension`
   MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `gallery`
