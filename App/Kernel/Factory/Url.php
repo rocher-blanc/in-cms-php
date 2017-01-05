@@ -201,7 +201,7 @@ class Url
             ->where(['page_lang_page_id' => $id, 'page_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
             ->find_one();
 
-        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
+        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
         else			return "#" ;
     }
 
@@ -212,7 +212,7 @@ class Url
             ->where(['module_lang_module_id' => $id, 'module_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
             ->find_one();
 
-        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->module_lang_url ;
+        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->module_lang_url ;
         else			return "#" ;
     }
 }

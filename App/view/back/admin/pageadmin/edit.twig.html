@@ -48,11 +48,31 @@
 					{% endif %}
 					{% if active_user == true %}
 						<div class="form-group">
-							<label class="col-md-3 control-label">Accès réservé aux utilisateurs connectés</label>
+							<label class="col-md-3 control-label">Accès réservé aux utilisateurs</label>
 							<div class="col-md-6">
-								<input value="1" type="checkbox"{{ post.page_access_user == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="page_access_user" id="page_access_user" />
+								<select name="page_access_user" id="page_access_user" class="form-control">
+									<option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
+									<option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
+									<option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
+								</select>
 							</div>
 						</div>
+						{% if id != -1 %}
+						<div class="form-group">
+							<label class="col-md-3 control-label">Redirection vers la page</label>
+							<div class="col-md-6">
+								<select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
+									<option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
+									{% for pageRedir in pageRedirect %}
+										<option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
+									{% endfor %}
+								</select>
+								<span class="help-block">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</span>
+							</div>
+						</div>
+						{% else %}
+							<input type="hidden" name="page_access_user_redirect" value="0" />
+						{% endif %}
 						<div class="form-group">
 							<label class="col-md-3 control-label">Groupes d'utilisateurs autorisés</label>
 							<div class="col-md-6">

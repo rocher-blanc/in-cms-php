@@ -5,6 +5,7 @@ $app->group('/pageadmin', function () use ($app)
 	$app->get('/', function () use ($app)
 	{
         $domain = false ;
+        $tab = [];
 
         $reqDomains = \DB::for_table('domain')
             ->select('domain_id')
@@ -27,6 +28,22 @@ $app->group('/pageadmin', function () use ($app)
                     ->where_equal('page_domain_id' , $row->domain_id)
                     ->order_by_asc('page_name')
                     ->find_many();
+
+                $tab[ $row->domain_id ] = $row->domain_id;
+            }
+
+            $other = \DB::for_table('page')
+                ->where_not_in('page_domain_id' , $tab)
+                ->order_by_asc('page_name')
+                ->find_many();
+
+            if ( $other )
+            {
+                $content[ $row->domain_id ] = [
+                    'id'   => 0,
+                    'name' => "non classé",
+                    'page' => $other
+                ];
             }
         }
         else
@@ -43,168 +60,6 @@ $app->group('/pageadmin', function () use ($app)
         ]);
 	})->name('page_index');
 
-
-
-
-/*
-
-
-	$app->map('/edit(/:id)', function ($id = -1) use ($app)
-	{
-		$tabFolders = unserialize( CONTROLLER_FOLDERS_PATH ) ;
-		$arrayController = [];
-
-		foreach( $tabFolders as $folder )
-		{
-			$scan = glob( $folder . '/*.php' ) ;
-			if ( ! empty( $scan ) )
-			{
-				foreach( $scan as $row )
-				{
-					$controller = str_replace( $folder . '/' , '' , $row ) ;
-					$arrayController[ $controller ] = $controller ;
-				}
-			}
-		}
-
-		if ( empty( $arrayController ) )
-		{
-			$Factory = \App\Kernel\Factory::getInstance() ;
-			$Factory->Response()->flashAndRedirect("Il n'y a actuellement aucun controller de présent dans le projet", false , 'ext/page' ) ;
-		}
-		else
-		{
-			$controllerRow = \DB::for_table('page')
-				->select('page_id')
-				->select('page_controller')
-				->find_many();
-
-			if ( $controllerRow )
-			{
-				foreach( $controllerRow as $row )
-				{
-					if ( $row->page_id != $id ) unset( $arrayController[ $row->page_controller ] ) ;
-				}
-			}
-
-			if ( count( $arrayController ) == 0 )
-			{
-				$Factory = \App\Kernel\Factory::getInstance() ;
-				$Factory->Response()->flashAndRedirect( "Il n'y a plus de controller libre dans le projet" , false , 'admin/pageadmin' ) ;
-			}
-		}
-
-		$lang 	  = \App\Kernel\Lang::getInstance()->getAll() ;
-		$error 	  = false ;
-		$tabError = array() ;
-
-		$contentRow = \DB::for_table('page')
-			->where_equal('page_id' , $id)
-			->find_one();
-
-		if ( $id != -1 && !$contentRow )
-		{
-			$app->redirect( $app->config('admin.url') . '/pageadmin/page');
-		}
-
-		if ( $app->request->isPost() )
-		{
-			$post = array(
-				"page_name" => $app->request->post('page_name'),
-				"page_controller" => $app->request->post('page_controller'),
-				"page_active" => $app->request->post('page_active')
-			) ;
-
-			if ( !$contentRow )
-			{
-				$contentRow = \DB::for_table('page')->create();
-				$add = true ;
-
-				$ct = \DB::for_table('page')->count();
-
-				if ( $ct == 0 )
-				{
-					$contentRow->page_default = 1;
-					$forceActive = true ;
-				}
-			}
-
-			if ( $app->request->post('page_name') == "" )
-			{
-				$error = true ;
-				$tabError['page_name'] = "Veuillez remplir ce champ" ;
-			}
-
-			if ( $app->request->post('page_controller') == "" )
-			{
-				$error = true ;
-				$tabError['page_controller'] = "Veuillez sélectionner un élement" ;
-			}
-
-			if ( $error == false )
-			{
-				$contentRow->page_name 			= $app->request->post('page_name') ;
-				$contentRow->page_controller 	= $app->request->post('page_controller') ;
-				$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-
-				if ( $forceActive == true ) $contentRow->page_active = 1;
-
-				$contentRow->save() ;
-
-				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 33 : 29 ) , $contentRow->page_name ) ;
-
-				$id = $contentRow->page_id;
-
-				if ( $app->request->post('submit') == "stay" ) 	$url = '/admin/pageadmin/edit/' . $id ;
-				else 											$url = '/admin/pageadmin' ;
-
-				$Factory = \App\Kernel\Factory::getInstance() ;
-				$Factory->Response()->flashAndRedirect("La page spéciale a bien été " . ( $add == true ? "ajoutée" : "modifiée" ) , true , $url ) ;
-			}
-		}
-		else
-		{
-			$post = $contentRow ;
-		}
-
-		$postLang = \DB::for_table('page_lang')
-			->where(['page_lang_page_id' => $id])
-			->find_many();
-
-		$contentLang = [] ;
-		if ( $postLang )
-		{
-			foreach( $postLang as $row )
-			{
-				$contentLang[ $row->page_lang_lang_id ]['page_lang_url'] 		 = $row->page_lang_url ;
-				$contentLang[ $row->page_lang_lang_id ]['page_lang_title'] 		 = $row->page_lang_title ;
-				$contentLang[ $row->page_lang_lang_id ]['page_lang_description'] = $row->page_lang_description ;
-				$contentLang[ $row->page_lang_lang_id ]['page_lang_keyword'] 	 = $row->page_lang_keyword ;
-			}
-		}
-
-		$app->render('admin/pageadmin/edit.twig.html', array(
-			"post" => $post,
-			"id" => $id,
-			"arrayController" => $arrayController,
-			"lang" => $lang,
-			"contentLang" => $contentLang,
-			"error"		 => ( $error === false ? "0" : "1" ),
-			"tabError"	 => json_encode( $tabError )
-		));
-	})->name('page_edit')->via('GET', 'POST');
-
-
-
-*/
-
-
-
-
-
-
-	#########################################################################################################
-
 	$app->map('/edit', function () use ($app)
 	{
 		$error 	  = false ;
@@ -215,6 +70,12 @@ $app->group('/pageadmin', function () use ($app)
 			"page_controller" => $app->request->post('page_controller'),
 			"page_active" => $app->request->post('page_active')
 		);
+
+        $pageRedirect = \DB::for_table('page')
+            ->select('page_id')
+            ->select('page_name')
+            ->where_equal('page_domain_id', $contentRow->page_domain_id)
+            ->find_many();
 
         $domains = [];
         $reqDomains = \DB::for_table('domain')
@@ -252,7 +113,7 @@ $app->group('/pageadmin', function () use ($app)
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
                 $contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
-                $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : NULL );
+                $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : 0 );
 
                 if ( ACTIVE_USER )
                 {
@@ -337,11 +198,19 @@ $app->group('/pageadmin', function () use ($app)
 			->where_equal('page_id' , $id)
 			->find_one();
 
+        $pageRedirect = \DB::for_table('page')
+            ->select('page_id')
+            ->select('page_name')
+            ->where_equal('page_domain_id', $contentRow->page_domain_id)
+            ->where_not_equal('page_id', $contentRow->page_id)
+            ->find_many();
+
 		$post = [
 			"page_name" => $contentRow->page_name,
 			"page_active" => $contentRow->page_active,
             "page_domain_id" => $contentRow->page_domain_id,
             "page_access_user" => $contentRow->page_access_user,
+            "page_access_user_redirect" => $contentRow->page_access_user_redirect,
             "page_access_user_group" => unserialize( $contentRow->page_access_user_group )
         ] ;
         
@@ -370,7 +239,8 @@ $app->group('/pageadmin', function () use ($app)
 
                 if ( ACTIVE_USER )
                 {
-                    $contentRow->page_access_user = ($app->request->post('page_access_user') == NULL ? 0 : 1);
+                    $contentRow->page_access_user = $app->request->post('page_access_user');
+                    $contentRow->page_access_user_redirect = $app->request->post('page_access_user_redirect');
                     $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
                 }
 
@@ -393,12 +263,13 @@ $app->group('/pageadmin', function () use ($app)
             ->find_many();
 
 		$app->render('admin/pageadmin/edit.twig.html', array(
-			"post"       => $post,
-			"id"         => $id,
-            "domains"    => $domains,
-            "groups"     => $groupRows,
-			"error"		 => ( $error === false ? "0" : "1" ),
-			"tabError"	 => json_encode( $tabError )
+			"post"         => $post,
+			"id"           => $id,
+            "domains"      => $domains,
+            "pageRedirect" => $pageRedirect,
+            "groups"       => $groupRows,
+			"error"		   => ( $error === false ? "0" : "1" ),
+			"tabError"	   => json_encode( $tabError )
 		));
 
 	})->name('page_edit')->via('GET', 'POST');

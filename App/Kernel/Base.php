@@ -187,7 +187,8 @@ CREATE TABLE `page` (
   `page_priority` float NOT NULL DEFAULT '0.5',
   `page_index` tinyint(1) NOT NULL DEFAULT '0',
   `page_access_user` TINYINT(1) NOT NULL DEFAULT '0',
-  `page_access_user_group` TEXT NULL DEFAULT NULL
+  `page_access_user_group` TEXT NULL DEFAULT NULL,
+  `page_access_user_redirect` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `page_lang` (
