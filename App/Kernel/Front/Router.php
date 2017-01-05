@@ -55,6 +55,11 @@ class Router
         return \App\Kernel\Factory::getInstance() ;
     }
 
+    protected function User()
+    {
+        return \App\Kernel\Front\User::getInstance() ;
+    }
+
     protected function getOffset()
     {
         return $this->_offset ;
@@ -399,7 +404,6 @@ class Router
     protected function displayDefaultPage()
     {
         $page = \DB::for_table('page')
-            ->select('page_controller')
             ->select('page_id')
             ->where_equal('page_active', 1)
             ->where_equal('page_default', 1);
@@ -423,7 +427,6 @@ class Router
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-                // require CONTROLLER_PROJECT_PATH . '/' . $page->page_controller ;
                 $app->get('/(:lang)', function ( $lang = NULL ) use ( $page )
                 {
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
@@ -446,6 +449,9 @@ class Router
         $page = \DB::for_table('page')
             ->select('page.page_id')
             ->select('page.page_controller')
+            ->select('page.page_access_user')
+            ->select('page.page_access_user_group')
+            ->select('page.page_access_user_redirect')
             ->left_outer_join('page_lang', array('page.page_id', '=', 'page_lang.page_lang_page_id'))
             ->where(['page_lang.page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang.page_lang_url' => $this->getUrl( $this->getOffset() )])
             ->where_equal('page.page_active', 1)
@@ -470,14 +476,30 @@ class Router
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-				$app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page )
+				if ( ACTIVE_USER )
+                {
+                    if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == false ) )
+                    {
+                        $this->Factory()->Response()->redirect( $this->Factory()->Url()->page( $page->page_access_user_redirect ) );
+                    }
+                    else if ( $page->page_access_user == 2 && $this->User()->isLogged() == true )
+                    {
+                        // S'il est connecté mais pas dans le bon groupe
+                        $tabGroup = unserialize( $page->page_access_user_group );
+                        if ( ! in_array( $this->User()->getGroup() , $tabGroup ) )
+                        {
+                            $this->Factory()->Response()->redirect('/');
+                        }
+                    }
+                }
+
+                $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page )
                 {
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 					
 					$pageClass = new $ControllerClass;
 					$pageClass->setId( $page->page_id );
 					$pageClass->execute();
-					
                 })->via('GET', 'POST');
             }
             else

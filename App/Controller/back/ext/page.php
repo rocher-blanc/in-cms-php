@@ -13,6 +13,7 @@ $app->group('/page', function () use ($app)
             ->select('domain_id')
             ->select('domain_name')
             ->find_many();
+
         if( $reqDomains )
         {
             foreach( $reqDomains as $row )
@@ -24,6 +25,7 @@ $app->group('/page', function () use ($app)
                 ];
             }
         }
+
         foreach( $contentRows as $row )
         {
             if( !empty($content) && in_array( $row->page_domain_id , array_keys($content) ) )
@@ -35,8 +37,8 @@ $app->group('/page', function () use ($app)
                 $content[0]['page'][] = $row;
             }
         }
-		$app->render('ext/page/index.twig.html', array( "content" => $content ));
 
+		$app->render('ext/page/index.twig.html', array( "content" => $content ));
 	})->name('page_index');
 
 	$app->delete('/delete/:id', function ($id) use ($app)

@@ -108,7 +108,7 @@ class User extends \App\Kernel\Common\User
         return $this->login ;
     }
 
-    protected function getGroup()
+    public function getGroup()
     {
         return $this->group ;
     }

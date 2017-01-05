@@ -124,7 +124,30 @@ $app->group('/pageadmin', function () use ($app)
 
 				\App\Kernel\Back\Log::getInstance()->info(33, $contentRow->page_name);
 
-				$id = $contentRow->page_id;
+				$id     = $contentRow->page_id;
+                $lang 	= \App\Kernel\Lang::getInstance()->getAll() ;
+
+                foreach( $lang as $l )
+                {
+                    $cLang = \DB::for_table('page_lang')->where(['page_lang_page_id' => $id, 'page_lang_lang_id' => $l->id])->find_one();
+
+                    if ( ! $cLang )
+                    {
+                        $cLang = \DB::for_table('page_lang')->create();
+                    }
+
+                    $Factory = \App\Kernel\Factory::getInstance() ;
+
+                    $url = $Factory->Url()->uniq( "page" . $id , $l->id ) ;
+
+                    $cLang->page_lang_page_id 		= $id ;
+                    $cLang->page_lang_lang_id 		= $l->id ;
+                    $cLang->page_lang_url 			= $url ;
+                    $cLang->page_lang_title 		= NULL ;
+                    $cLang->page_lang_description 	= NULL ;
+                    $cLang->page_lang_keyword 		= NULL ;
+                    $cLang->save();
+                }
 
 				if ($app->request->post('submit') == "stay") $url = '/admin/pageadmin/edit/' . $id;
 				else                                         $url = '/admin/pageadmin';
