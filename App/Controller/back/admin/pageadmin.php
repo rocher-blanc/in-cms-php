@@ -39,7 +39,7 @@ $app->group('/pageadmin', function () use ($app)
 
             if ( $other )
             {
-                $content[ $row->domain_id ] = [
+                $content[0] = [
                     'id'   => 0,
                     'name' => "non classé",
                     'page' => $other
@@ -95,22 +95,28 @@ $app->group('/pageadmin', function () use ($app)
             }
         }
 
-		if ( $app->request->isPost() ) {
+		if ( $app->request->isPost() )
+		{
 			$contentRow = \DB::for_table('page')->create();
 
-			$ct = \DB::for_table('page')->count();
+			$ct = \DB::for_table('page')
+                        ->where_equal('page_domain_id' , $app->request->post('page_domain_id'))
+                        ->count();
 
-			if ($ct == 0) {
+			if ($ct == 0)
+			{
 				$contentRow->page_default = 1;
 				$forceActive = true;
 			}
 
-			if ($app->request->post('page_name') == "") {
+			if ($app->request->post('page_name') == "")
+			{
 				$error = true;
 				$tabError['page_name'] = "Veuillez remplir ce champ";
 			}
 
-			if ($error == false) {
+			if ($error == false)
+			{
 				$contentRow->page_name = $app->request->post('page_name');
                 $contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
                 $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : 0 );

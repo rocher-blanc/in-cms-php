@@ -104,7 +104,7 @@ $app->group('/page', function () use ($app)
 	$app->get('/default/:id/:token', function ($id,$token) use ($app)
 	{
 		if ( $token == $_SESSION[ $app->config('token') ] ) {
-			$page = \DB::for_table('page')
+            $page = \DB::for_table('page')
 							->where_equal('page_id' , $id)
 							->find_one();
 			
@@ -115,6 +115,7 @@ $app->group('/page', function () use ($app)
 			
 			$pageDefault = \DB::for_table('page')
 							->where_equal('page_default' , 1)
+							->where_equal('page_domain_id' , $page->page_domain_id)
 							->find_one();
 			if ( $pageDefault )
 			{

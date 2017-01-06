@@ -208,12 +208,12 @@ class Url
         {
             $domain = \DB::for_table('domain')
                 ->select('domain_name')
-                ->where_equal('domaion_id' , $cLang->page_domain_id)
+                ->where_equal('domain_id' , $cLang->page_domain_id)
                 ->find_one();
 
             if ( $domain )
             {
-                $url = $domain->domain_name ;
+                $url = 'http://' . $domain->domain_name . '/' ;
             }
         }
 
