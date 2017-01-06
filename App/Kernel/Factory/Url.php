@@ -192,16 +192,32 @@ class Url
 		return $alias;
 	}
 
-    public function page( $id )
+    public function page( $id , $urlFull = false )
     {
         $cLang = \DB::for_table('page_lang')
             ->select('page_default')
+            ->select('page_domain_id')
             ->select('page_lang_url')
             ->join( 'page', ['page_id', '=', 'page_lang_page_id'] )
             ->where(['page_lang_page_id' => $id, 'page_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
             ->find_one();
 
-        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
+        $url = "" ;
+
+        if ( $cLang->page_domain_id != 0 )
+        {
+            $domain = \DB::for_table('domain')
+                ->select('domain_name')
+                ->where_equal('domaion_id' , $cLang->page_domain_id)
+                ->find_one();
+
+            if ( $domain )
+            {
+                $url = $domain->domain_name ;
+            }
+        }
+
+        if ( $cLang ) 	return ( $urlFull ? $url : '' ) . ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
         else			return "#" ;
     }
 
