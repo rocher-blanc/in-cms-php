@@ -12,6 +12,19 @@ $app->group('/langue', function () use ($app)
 
     })->name('langue_index');
 
+    $app->get('/traduction', function () use ($app) {
+
+        $contentRows = \DB::for_table('lang')
+            ->where_not_equal('lang_status',0)
+            ->order_by_desc('lang_status')
+            ->find_many();
+
+        $app->render('ext/langue/traduction.twig.html', [
+            "contentRows" => $contentRows
+        ]);
+
+    })->name('langue_traduction');
+
     $app->post('/import', function () use ($app) {
         $upload_dir 	= UPLOAD_PATH . '/' ;
         $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;

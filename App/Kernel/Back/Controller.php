@@ -391,8 +391,12 @@ class Controller
             }
         }
 
+        $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
+        $this->setRender( 'cdn_js' , $form->getCdnJS() ) ;
+
         $this->setRender( 'css' , $form->getLibCSS() ) ;
         $this->setRender( 'js' , $form->getLibJS() ) ;
+
         $this->setRender( 'field' , $arrayField ) ;
     }
 

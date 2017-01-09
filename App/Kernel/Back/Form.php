@@ -10,6 +10,8 @@ class Form
 
     protected $_lib_js  = '' ;
     protected $_lib_css = '' ;
+    protected $_cdn_js  = '' ;
+    protected $_cdn_css = '' ;
     protected $_id      = NULL ;
 
     /* ************************************************** */
@@ -42,6 +44,16 @@ class Form
     public function getLibJs()
     {
         return $this->_lib_js ;
+    }
+
+    public function getCdnCss()
+    {
+        return $this->_cdn_css ;
+    }
+
+    public function getCdnJs()
+    {
+        return $this->_cdn_js ;
     }
 
     public function getId()

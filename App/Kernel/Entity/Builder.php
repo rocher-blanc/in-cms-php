@@ -505,6 +505,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isBuilder()
+    {
+        $this->field()->setData( "type" , "builder" ) ;
+        return $this ;
+    }
+
     protected function isIndex()
     {
         $this->field()->setData( "SQL_VALUE" , 1 ) ;

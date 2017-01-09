@@ -79,19 +79,19 @@ class Mail
 
     public function setSubject( $var )
     {
-        $this->obj->Subject = $var ;
+        $this->obj->Subject = html_entity_decode( $var ) ;
         return $this ;
     }
 
     public function from( $mail , $name )
     {
-        $this->obj->setFrom( $mail , $name );
+        $this->obj->setFrom( $mail , html_entity_decode( $name ) );
         return $this ;
     }
 
     public function replyTo( $mail , $name )
     {
-        $this->obj->addReplyTo( $mail , $name );
+        $this->obj->addReplyTo( $mail , html_entity_decode( $name ) );
         return $this ;
     }
 
