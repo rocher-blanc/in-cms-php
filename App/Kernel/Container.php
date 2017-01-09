@@ -56,6 +56,27 @@ class Container
         }
     }
 
+    /* ************************************************** */
+    /* ****************     CLASS     ******************* */
+    /* ************************************************** */
+
+    public function newClass( $namespace )
+    {
+        $customNamespace = str_replace('App\Kernel' , 'Project\CustomClass' , $namespace );
+        $file = str_replace( '\\' , '/' , $customNamespace ) . ".php" ;
+
+        if ( file_exists( $file ) )
+        {
+            return new $customNamespace ;
+        }
+        else
+        {
+            return new $namespace ;
+        }
+
+        return NULL ;
+    }
+
     /* ***************************************************** */
     /* ****************       PARAM      ******************* */
     /* ***************************************************** */
