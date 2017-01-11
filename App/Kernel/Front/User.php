@@ -867,10 +867,19 @@ class User extends \App\Kernel\Common\User
             ->where_equal( 'user_front_id' , ( $id !== NULL ? $id : $_SESSION[ $this->getSessionName() ]['id'] ) )
             ->find_one();
 
-        $this->setId( $user->user_front_id );
-        $this->setLogin( $user->user_front_login );
-        $this->setGroup( $user->user_front_user_front_group_id );
+        if ( $user )
+        {
+            $this->setId( $user->user_front_id );
+            $this->setLogin( $user->user_front_login );
+            $this->setGroup( $user->user_front_user_front_group_id );
 
-        return $user ;
+            return $user ;
+        }
+        else
+        {
+            $this->logout() ;
+
+            return NULL ;
+        }
     }
 }
