@@ -21,7 +21,7 @@
                         <tr>
                             <th><strong>Nom</strong></th>
                             <th style="width: 100px;"><strong>Gérer</strong></th>
-                            <th class="text-right" style="width: 80px"><strong>Actions</strong></th>
+                            <th class="text-right" style="width: 220px"><strong>Actions</strong></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,18 +31,18 @@
                                 <a href="{{ siteUrl('ext/menu/edit/' ~  row.menu_id) }}">{{ row.menu_name }}</a>
                             </td>
                             <td>
-                                <a href="javascript:;" class="btn btn-xs btn-default updateMenu" data-menu="{{ row.menu_id }}" data-title="{{ row.menu_name }}"><i class="fa fa-sitemap"></i> Modifier le menu</a>
+                                <a href="javascript:;" class="btn btn-sm btn-default updateMenu" data-menu="{{ row.menu_id }}" data-title="{{ row.menu_name }}"><i class="fa fa-sitemap"></i> Modifier le menu</a>
                             </td>
                             <td class="text-right">
-                                <a class="btn btn-xs btn-info" href="{{ siteUrl('ext/menu/edit/' ~ row.menu_id) }}"><i class="fa fa-pencil"></i></a>
-                                <a class="btn btn-xs btn-danger modal-delete" href="#deleteModal" data-id="{{ row.menu_id }}" data-link="{{ siteUrl('ext/menu/delete/' ~ row.menu_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le menu '{{ row.menu_name }}' ?"><i class="fa fa-times"></i></a>
+                                <a class="btn btn-sm btn-info" href="{{ siteUrl('ext/menu/edit/' ~ row.menu_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+                                <a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.menu_id }}" data-link="{{ siteUrl('ext/menu/delete/' ~ row.menu_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le menu '{{ row.menu_name }}' ?"><i class="fa fa-times"></i> Supprimer</a>
                             </td>
                         </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                     {% else %}
-                    <span>Aucun menu n'est enregistré.</span>
+                        <span>Aucun menu n'est enregistré.</span>
                     {% endif %}
                 </div>
             </div>

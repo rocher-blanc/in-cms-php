@@ -32,12 +32,17 @@ CREATE TRIGGER `after_delete_menu` AFTER DELETE ON `menu` FOR EACH ROW BEGIN DEL
 CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_group_id = old.user_group_id; END;');
     }
 
-        public function getSql()
+    public function getSql()
     {
         $passGuillaume = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
         $passPH = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
 
         return "
+CREATE TABLE `domain` (
+  `domain_id` int(11) NOT NULL,
+  `domain_name` varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `extension` (
   `extension_id` int(11) NOT NULL,
   `extension_technical_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
@@ -369,6 +374,8 @@ ALTER TABLE `user_group`
 ALTER TABLE `document`
   ADD PRIMARY KEY (`document_id`);
 
+ALTER TABLE `domain`
+  MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `document`
   MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `extension`

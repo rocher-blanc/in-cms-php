@@ -457,15 +457,9 @@ class User extends \App\Kernel\Common\User
 
         if ( USER_ACTIVATION_MAIL )
         {
-            $mail = new Mail;
-            $mail->add( $user->user_front_login )
-                ->setSubject( $this->text('user_mail_subjet_validation') )
-                ->parse('validation', [
-                    'token' => $user->user_front_token,
-                    'login' => $user->user_front_login,
-                ]);
+            $rst = $this->sendValidationMail( $user ) ;
 
-            if ( ! $mail->send() )
+            if ( ! $rst )
             {
                 return $this->returnError( "user_register_send_mail_error" ) ;
             }
@@ -477,6 +471,26 @@ class User extends \App\Kernel\Common\User
         else
         {
             return $this->returnError( "user_register_successful" , true ) ;
+        }
+    }
+
+    protected function sendValidationMail( $user )
+    {
+        $mail = new Mail;
+        $mail->add( $user->user_front_login )
+            ->setSubject( $this->text('user_mail_subjet_validation') )
+            ->parse('validation', [
+                'token' => $user->user_front_token,
+                'login' => $user->user_front_login,
+            ]);
+
+        if ( ! $mail->send() )
+        {
+            return false ;
+        }
+        else
+        {
+            return true ;
         }
     }
 

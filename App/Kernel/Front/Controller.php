@@ -356,7 +356,7 @@ class Controller
             ->select('module_lang.module_lang_description')
             ->select('module_lang.module_lang_keyword')
             ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
-            ->where(['module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang_module_id' => $this->getEntityId() ])
+            ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_module_id' => $this->getEntityId() ])
             ->find_one();
 
         if ( $result )
