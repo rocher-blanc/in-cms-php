@@ -287,7 +287,6 @@ class Kernel
         $folders = [
             "Project/Lang" => false ,
             "Project/view/front" => false ,
-            "Project/Module/Entity/Class" => false ,
             "Project/Module/Repository/Back" => false ,
             "Project/Module/Repository/Front" => false ,
             "Project/Module/Controller/Back" => false ,

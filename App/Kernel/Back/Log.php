@@ -121,6 +121,10 @@ class Log
             48 => "L'utilisateur front \"%i\" vient d'être supprimé",
             49 => "L'utilisateur front \"%i\" vient d'être modifié",
             50 => "L'utilisateur front \"%i\" vient d'être ajouté",
+
+            51 => "Ajout du domaine \"%i\"",
+            52 => "Modification du domaine \"%i\"",
+            53 => "Suppression du domaine \"%i\"",
         );
     }
 

@@ -14,9 +14,9 @@ class Adwords extends \Slim\Middleware
 
     public function observe()
     {
-        if ( isset( $_GET['glcid'] ) )
+        if ( isset( $_GET['gclid'] ) )
         {
-            $_SESSION['glcid'] = $_GET['glcid'] ;
+            $_SESSION['gclid'] = $_GET['gclid'] ;
         }
     }
 }
