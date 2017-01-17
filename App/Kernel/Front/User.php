@@ -309,12 +309,18 @@ class User extends \App\Kernel\Common\User
                 $accessToken = $helper->getAccessToken();
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                 // When Graph returns an error
-                // echo 'Graph returned an error: ' . $e->getMessage();
-                // exit;
+                if ( DEBUG )
+                {
+                    echo 'Graph returned an error: ' . $e->getMessage();
+                    exit;
+                }
             } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                 // When validation fails or other local issues
-                // echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
-                // exit;
+                if ( DEBUG )
+                {
+                    echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
+                    exit;
+                }
             }
 
             if ( isset( $accessToken ) )
@@ -325,12 +331,18 @@ class User extends \App\Kernel\Common\User
                     $userNode = $response->getGraphUser();
                 } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-                    // echo 'Graph returned an error: ' . $e->getMessage();
-                    // exit;
+                    if ( DEBUG )
+                    {
+                        echo 'Graph returned an error: ' . $e->getMessage();
+                        exit;
+                    }
                 } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
-                    // echo 'Facebook 3 SDK returned an error: ' . $e->getMessage();
-                    // exit;
+                    if ( DEBUG )
+                    {
+                        echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
+                        exit;
+                    }
                 }
 
                 if ( is_object( $userNode ) )
@@ -377,7 +389,7 @@ class User extends \App\Kernel\Common\User
             }
             else
             {
-                $url_redirect = \App\Kernel\Http::getInstance()->getUrl() . '/' . $this->Factory()->Url()->page( FB_APP_PAGE ) ;
+                $url_redirect = $this->Factory()->Url()->page( FB_APP_PAGE , true ) ;
                 $loginUrl = $helper->getLoginUrl( $url_redirect , $this->getScopeFacebook() );
                 $this->setFacebookUrl( $loginUrl );
             }
