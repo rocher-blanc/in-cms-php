@@ -206,7 +206,10 @@ class Kernel
                 $this->generateTable();
             }
 
-            if ( $this->_caching_db == true	) $this->getDb()->caching() ;
+            if ( $this->_caching_db == true	)
+            {
+                $this->getDb()->caching() ;
+            }
         }
         catch (\Exception $e)
         {
