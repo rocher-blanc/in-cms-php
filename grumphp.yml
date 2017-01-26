@@ -2,7 +2,7 @@ parameters:
     git_dir: .
     bin_dir: vendor/bin
     tasks:
-      phpunit:
-        config_file: phpunit.xml
-        group: []
-        always_execute: true
+        phpunit:
+            config_file: phpunit.xml
+            group: []
+            always_execute: true
