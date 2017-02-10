@@ -3,8 +3,8 @@
   "description": "JContent has CMS of JWeb Creation",
   "homepage": "https://www.jweb-creation.fr",
   "type": "library",
-  "version": "1.0.13.1",
-  "minimum-stability": "stable",
+  "version": "1.0.13.2",
+  "minimum-stability": "dev",
   "require-dev": {
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master",
