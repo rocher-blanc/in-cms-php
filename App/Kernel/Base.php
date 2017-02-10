@@ -285,7 +285,7 @@ CREATE TABLE `user_front_profile` (
   `user_front_profile_prenom` varchar(100) COLLATE utf8_general_ci NOT NULL,
   `user_front_profile_telephone` varchar(30) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
+ 
 CREATE TABLE `user_group` (
   `user_group_id` int(11) NOT NULL,
   `user_group_name` varchar(150) COLLATE utf8_general_ci DEFAULT NULL,
@@ -302,7 +302,7 @@ ALTER TABLE `domain`
 
 ALTER TABLE `extension`
   ADD PRIMARY KEY (`extension_id`);
-
+ 
 ALTER TABLE `gallery`
   ADD PRIMARY KEY (`gallery_id`);
 
