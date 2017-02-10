@@ -8,7 +8,6 @@
   "require-dev": {
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master",
-    "symfony/var-dumper": "3.0.*",
     "symfony/yaml": "2.*",
     "phpunit/phpunit": "5.5.*",
     "phpro/grumphp": "0.*"
@@ -28,6 +27,7 @@
     "facebook/php-sdk-v4" : "~5.0",
     "phpmailer/phpmailer" : "5.2.13",
     "fxp/composer-asset-plugin": "dev-master",
+    "symfony/var-dumper": "3.0.*",
 
     "bower-asset/bootstrap": "dev-master",
     "bower-asset/bootstrap-multiselect": "0.9.*",
