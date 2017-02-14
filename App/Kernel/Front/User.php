@@ -659,6 +659,7 @@ class User extends \App\Kernel\Common\User
             $user->save();
 
             $this->updateProfile() ;
+            $this->pushData();
 
             return $this->returnError( "user_update_successful" , true ) ;
         }
