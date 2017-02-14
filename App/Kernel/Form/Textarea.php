@@ -7,7 +7,7 @@ class Textarea extends \App\Kernel\Back\Form
 	public function html( $field, $name, $value = NULL )
     {
         $html = '' ;
-        $input = '<textarea class="form-control' . ( $field->getData('editor') == true ? ' cke' : '' ) . '" name="' . $name . '" id="id_' . $field->getColumn() . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . '>' . $value . '</textarea>' ;
+        $input = '<textarea class="form-control' . ( $field->getData('editor') == true ? ' cke' : '' ) . '" name="' . $name . '" id="id_' . $field->getColumn() . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . '>' . htmlspecialchars( $value ) . '</textarea>' ;
 
         if ( $field->getData('editor') == true )
         {

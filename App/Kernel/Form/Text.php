@@ -7,7 +7,7 @@ class Text extends \App\Kernel\Back\Form
 	public function html( $field, $name, $value = NULL )
 	{
         $html = '' ;
-        $input = '<input type="text" value="' . $value . '" class="form-control" name="' . $name . '" id="id_' . $name . '" maxlength="' . $field->getData('maxLength') . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . ' />' ;
+        $input = '<input type="text" value="' . htmlspecialchars( $value ) . '" class="form-control" name="' . $name . '" id="id_' . $name . '" maxlength="' . $field->getData('maxLength') . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . ' />' ;
 
         if ( $field->hasLang() )
         {
