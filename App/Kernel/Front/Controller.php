@@ -624,110 +624,113 @@ class Controller
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {
-            if ( $row->getType() == 'image' )
+            if ( $result->offsetExists( $row->getName() ) == true )
             {
-                if ( $result->get( $row->getColumn() ) == 0 )
+                if ( $row->getType() == 'image' )
                 {
-                    $arrayElement[ $row->getName() ] = [];
+                    if ( $result->get( $row->getColumn() ) == 0 )
+                    {
+                        $arrayElement[ $row->getName() ] = [];
+                    }
+                    else
+                    {
+                        $media = new \App\Kernel\Front\Media;
+                        $media->setImageId( $result->get( $row->getColumn() ) );
+                        $media->getNameById();
+
+                        $tab = [];
+
+                        $tab['source'] = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathImage(false) . '/' . $media->getImageName();
+
+                        if ( $row->hasThumb() )
+                        {
+                            foreach( $row->getThumb() as $thumb )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
+                            }
+                        }
+
+                        if ( $row->hasCrop() )
+                        {
+                            foreach( $row->getCrop() as $crop )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 'c' , $crop[0] , $crop[1] ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['crop'][$crop[0].'x'.$crop[1]] = $mini ;
+                            }
+                        }
+
+                        $arrayElement[ $row->getName() ] = $tab;
+                    }
                 }
-                else
+                else if ( $row->getType() == 'gallery' )
                 {
-                    $media = new \App\Kernel\Front\Media;
-                    $media->setImageId( $result->get( $row->getColumn() ) );
-                    $media->getNameById();
-
-                    $tab = [];
-
-                    $tab['source'] = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathImage(false) . '/' . $media->getImageName();
-
-                    if ( $row->hasThumb() )
-                    {
-                        foreach( $row->getThumb() as $thumb )
-                        {
-                            $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
-                            if ( $mini !== false )
-                            {
-                                $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
-                                $mini = $this->getApp()->request()->getUrl() . $img ;
-                            }
-
-                            $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
-                        }
-                    }
-
-                    if ( $row->hasCrop() )
-                    {
-                        foreach( $row->getCrop() as $crop )
-                        {
-                            $mini = $media->getMini( $media->getImageName() , 'c' , $crop[0] , $crop[1] ) ;
-                            if ( $mini !== false )
-                            {
-                                $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
-                                $mini = $this->getApp()->request()->getUrl() . $img ;
-                            }
-
-                            $tab['crop'][$crop[0].'x'.$crop[1]] = $mini ;
-                        }
-                    }
+                    $Gal = new \App\Kernel\Front\Gallery;
+                    $Gal->setElementId( $this->getId() );
+                    $Gal->setModuleId( $this->getEntityId() );
+                    $Gal->setModuleName( $this->getEntityName() );
+                    $Gal->setField( $row->getName() );
+                    $Gal->setFolder( $this->getEntity()->getFolder() );
+                    $tab = $Gal->getAllByField();
 
                     $arrayElement[ $row->getName() ] = $tab;
                 }
-            }
-            else if ( $row->getType() == 'gallery' )
-            {
-                $Gal = new \App\Kernel\Front\Gallery;
-                $Gal->setElementId( $this->getId() );
-                $Gal->setModuleId( $this->getEntityId() );
-                $Gal->setModuleName( $this->getEntityName() );
-                $Gal->setField( $row->getName() );
-                $Gal->setFolder( $this->getEntity()->getFolder() );
-                $tab = $Gal->getAllByField();
-
-                $arrayElement[ $row->getName() ] = $tab;
-            }
-            else if ( $row->getType() == 'document' )
-            {
-                if ( $result->get( $row->getColumn() ) == 0 )
+                else if ( $row->getType() == 'document' )
                 {
-                    $arrayElement[ $row->getName() ] = [];
+                    if ( $result->get( $row->getColumn() ) == 0 )
+                    {
+                        $arrayElement[ $row->getName() ] = [];
+                    }
+                    else
+                    {
+                        $Doc = new \App\Kernel\Front\Document;
+                        $Doc->setDocumentId( $result->get( $row->getColumn() ) );
+                        $Doc->getNameById();
+
+                        $tab = [];
+
+                        $tab['url']  = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
+                        $tab['icon'] = $Doc->getIcon( $Doc->getDocumentName() );
+
+                        $arrayElement[ $row->getName() ] = $tab;
+                    }
+                }
+                else if ( $row->getType() == 'checkbox' )
+                {
+                    $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+                }
+                else if ( $row->getType() == 'select' )
+                {
+                    $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) ) ;
+                }
+                else if ( $row->getType() == 'date' )
+                {
+                    $arrayElement[ $row->getName() ]['source'] = $result->get( $row->getColumn() );
+
+                    if ( $row->hasFormat() )
+                    {
+                        foreach( $row->getFormat() as $name => $format )
+                        {
+                            $arrayElement[ $row->getName() ][ $name ] = strftime( $format , strtotime( $result->get( $row->getColumn() ) ) ) ;
+                        }
+                    }
                 }
                 else
                 {
-                    $Doc = new \App\Kernel\Front\Document;
-                    $Doc->setDocumentId( $result->get( $row->getColumn() ) );
-                    $Doc->getNameById();
-
-                    $tab = [];
-
-                    $tab['url']  = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
-                    $tab['icon'] = $Doc->getIcon( $Doc->getDocumentName() );
-
-                    $arrayElement[ $row->getName() ] = $tab;
+                    $arrayElement[ $row->getName() ] = $result->get( $row->getColumn() );
                 }
-            }
-            else if ( $row->getType() == 'checkbox' )
-            {
-                $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
-            }
-            else if ( $row->getType() == 'select' )
-            {
-                $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) ) ;
-            }
-            else if ( $row->getType() == 'date' )
-            {
-                $arrayElement[ $row->getName() ]['source'] = $result->get( $row->getColumn() );
-
-                if ( $row->hasFormat() )
-                {
-                    foreach( $row->getFormat() as $name => $format )
-                    {
-                        $arrayElement[ $row->getName() ][ $name ] = strftime( $format , strtotime( $result->get( $row->getColumn() ) ) ) ;
-                    }
-                }
-            }
-            else
-            {
-                $arrayElement[ $row->getName() ] = $result->get( $row->getColumn() );
             }
 
             if ( $row->isUrl() == true )
