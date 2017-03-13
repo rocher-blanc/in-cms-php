@@ -213,7 +213,10 @@ class Url
 
             if ( $domain )
             {
-                $url = 'http://' . $domain->domain_name . '/' ;
+                $protocol = 'http' ;
+                if ( $_SERVER['HTTPS'] == 'on' ) $protocol = 'https' ;
+
+                $url = $protocol . '://' . $domain->domain_name . '/' ;
             }
         }
 
