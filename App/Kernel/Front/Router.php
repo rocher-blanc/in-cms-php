@@ -314,7 +314,7 @@ class Router
     /* *****************    MODULE    ******************* */
     /* ************************************************** */
 
-    protected function loadController( $class , $element = false , $mp = false )
+    protected function loadController( $class , $id_module , $element = false , $mp = false )
     {
         $urlTab = $this->getUrl() ;
         $replaceString = '' ;
@@ -322,6 +322,15 @@ class Router
         if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
         if ( ! $mp ) $replaceString.= $this->getUrl( ( $this->Lang()->count() > 1 ? 1 : 0 ) ) ;
         $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
+
+        if ( ! $element )
+        {
+            $this->urlModule( $id_module ) ;
+        }
+        else
+        {
+            $this->urlElementModule( $mp , $url , $id_module );
+        }
 
         $app = $this->getApp() ;
         $app->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
@@ -368,12 +377,13 @@ class Router
         {
             $result = \DB::for_table('module')
                 ->select('module.module_class_name')
+                ->select('module.module_id')
                 ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
                 ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
                 ->find_one();
         }
   
-        $this->loadController( $result->module_class_name , true , $mp ) ;
+        $this->loadController( $result->module_class_name , $result->module_id , true , $mp ) ;
     }
 
     protected function displayModule()
@@ -398,7 +408,7 @@ class Router
             $element = ( $ct == $this->getOffset() ? false : true ) ;
         }
 
-        $this->loadController( $result->module_class_name , $element ) ;
+        $this->loadController( $result->module_class_name , $result->module_id , $element ) ;
     }
 
     protected function displayDefaultPage()
@@ -555,8 +565,16 @@ class Router
         $this->Lang()->setFront();
     }
 
-    protected function urlElementModule( $mp , $id , $id_module )
+    protected function urlElementModule( $mp , $url , $id_module )
     {
+        $result = \DB::for_table('seo')
+            ->select('seo.seo_element_id')
+            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'seo.seo_url' => $url, 'seo.seo_module_id' => $id_module])
+            ->find_one();
+
+        if ( $result )  $id = $result->seo_element_id ;
+        else            return false ;
+
         if ( $mp )
         {
             $Seo = new \App\Kernel\Front\Seo;

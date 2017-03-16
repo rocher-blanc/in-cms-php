@@ -50,8 +50,6 @@ class Lang
 
         if ( $url == $this->getDefault()->url && $id_lang == $this->getDefault()->id )  $this->_url[ $id_lang ].= '' ;
         else                                                                            $this->_url[ $id_lang ].= ( $preffix == true ? $this->get( $id_lang )->url . "/" : '' ) . $url ;
-
-        \App\Kernel\Debug::save( $this->_url[ $id_lang ] , $id_lang );
     }
 
     public function setActive( $obj )
