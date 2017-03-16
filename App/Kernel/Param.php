@@ -75,8 +75,3 @@ class Param
         if ( $rst ) $rst->delete();
     }
 }
-
-
-
-
-

@@ -624,7 +624,7 @@ class Controller
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {
-            if ( $result->offsetExists( $row->getName() ) == true )
+            if ( $result->offsetExists( $this->getEntity()->get( $row->getName() )->getColumn() ) == true )
             {
                 if ( $row->getType() == 'image' )
                 {
