@@ -40,8 +40,6 @@ class Checkbox extends \App\Kernel\Back\Form
     {
         if ( $value === NULL ) $value = [];
 
-        dump( $value );
-
         return '
         <div class="checkbox-parent">
             <div class="input-group">
