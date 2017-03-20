@@ -38,50 +38,43 @@ class Checkbox extends \App\Kernel\Back\Form
 
     private function getMultiselectParent( $field, $name, $value = NULL )
     {
-
         if ( $value === NULL ) $value = [];
 
-        $select = '' ;
-        foreach( $field->getData('option') as $key => $opt )
-        {
-            //$select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n" ;
-            if (count($opt->subpages) > 0 )
-            {
-                $select .= '<option class="label-info" value="' . $opt->id . '"' . ( in_array( $opt->id , $value ) ? " selected" : '' ) . '>1er - '. $opt->titre . '</option>' . "\n" ;
-                foreach ($opt->subpages as $subpage => $opt)
-                {
-                    $select .= '<option class="warning" value="' . $opt->id . '"' . ( in_array( $opt->id , $value ) ? " selected" : '' ) . '>2e - '. $opt->titre . '</option>' . "\n" ;
-                    if (count($opt->subpages) > 0 )
-                    {
-                        foreach ($opt->subpages as $subpage => $opt)
-                        {
-                            $select .= '<option class="success" value="' . $opt->id . '"' . ( in_array( $opt->id , $value ) ? " selected": '' ) . '>3e - '. $opt->titre . '</option>' . "\n" ;
-                            if (count($opt->subpages) > 0 )
-                            {
-                                foreach ($opt->subpages as $subpage => $opt) // Catégorie la plus basse
-                                {
-                                    $select .= '<option class="danger" value="' . $opt->id . '"' . ( in_array( $opt->id , $value ) ? " selected" : '' ) . '>4e - '. $opt->titre . '</option>' . "\n" ;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                $select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n" ;
-            }
-        }
+        dump( $value );
 
         return '
-        <div class="input-group btn-group">
-            <span class="input-group-addon">
-                    <i class="fa fa-th-list"></i>
-            </span>
-            <select name="' . $name . '" id="id_' . $field->getColumn() . '" data-plugin-multiselect multiple="multiple" data-live-search="true">
-                ' . $select . '
-            </select>
+        <div class="checkbox-parent">
+            <div class="input-group">
+                ' . $this->chieldParent( $field->getData('option') , $field->getData('target') , $value , "" , $name ) . '
+            </div>
         </div>' ;
+    }
+
+    private function chieldParent( $chield , $target , $value , $hierarchy , $name )
+    {
+        $checkbox = '';
+        $index  = 1;
+        foreach( $chield as $row )
+        {
+            if ( $row->noview != true )
+            {
+                for( $i = 0; $i < $row->level; $i++ )
+                {
+                    $checkbox .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ;
+                }
+                $checkbox .= '<input type="checkbox" name="' . $name . '[]" value="' . $row->id . '"' . ( in_array( $row->id , $value ) ? ' checked' : '' ) . ' />' ;
+                $checkbox .= '&nbsp;<span style="font-weight: bold;">' . $hierarchy . $index .'.</span> ' ;
+                $checkbox .= $row->$target . '<br />' ;
+
+                if ( !empty( $row->subpages ) )
+                {
+                    $checkbox .= $this->chieldParent( $row->subpages , $target , $value , $hierarchy . $index . "." , $name ) ;
+                }
+            }
+            $index++;
+        }
+
+        return $checkbox ;
     }
 
 }
