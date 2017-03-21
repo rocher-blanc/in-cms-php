@@ -51,6 +51,8 @@ class Redis
 	
 	public function get( $key )
 	{
+        if ( ! REDIS ) return false ;
+
         if ( is_array( $key ) )
         {
             $tab = [];
@@ -74,6 +76,8 @@ class Redis
 
     public function set( $key , $value )
     {
+        if ( ! REDIS ) return false ;
+
         return $this->getRedis()->set( $this->getPrefix() . "-" . $key , $value );
     }
 
@@ -83,6 +87,8 @@ class Redis
 
     public function delete( $key )
     {
+        if ( ! REDIS ) return false ;
+
         if ( is_array( $key ) )
         {
             $tab = [];
@@ -106,6 +112,8 @@ class Redis
 
     public function exist( $key )
     {
+        if ( ! REDIS ) return false ;
+
         return $this->getRedis()->exist( $_SERVER['HTTP_HOST'] . "-" . $key );
     }
 }

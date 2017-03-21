@@ -17,6 +17,15 @@ class Param
     public function __construct() {}
 
     /* ************************************************** */
+    /* ****************     TOOLS     ******************* */
+    /* ************************************************** */
+
+    public function redis()
+    {
+        return \App\Kernel\Redis::getInstance() ;
+    }
+
+    /* ************************************************** */
     /* ****************     SETTER    ******************* */
     /* ************************************************** */
 
@@ -33,6 +42,8 @@ class Param
         $content->set('param_value',$value);
         $content->save();
 
+        $this->redis()->set( 'param-' . $key , $value );
+
         $this->_var[ $key ] = $value;
     }
 
@@ -46,6 +57,10 @@ class Param
         {
             return $this->_var[ $key ];
         }
+        else if ( $this->redis()->exist( 'param-' . $key ) != false )
+        {
+            return $this->redis()->get( 'param-' . $key );
+        }
         else
         {
             $content = \DB::for_table('param')
@@ -56,6 +71,7 @@ class Param
             if ( $content )
             {
                 $this->_var[ $key ] = $content->param_value ;
+                $this->redis()->set( 'param-' . $key , $content->param_value );
                 return $content->param_value;
             }
             else
@@ -73,5 +89,7 @@ class Param
     {
         $rst = \DB::for_table('param')->where_equal('param_key',$key)->find_one();
         if ( $rst ) $rst->delete();
+
+        $this->redis()->get( 'param-' . $key );
     }
 }
