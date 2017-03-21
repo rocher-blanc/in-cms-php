@@ -78,6 +78,4 @@ class Response
         if ( DEBUG ) throw new \App\Kernel\Exception( $message ) ;
         else         die("Une erreur est survenue lors du chargement de la page") ;
     }
-	
-	
 }
