@@ -32,17 +32,17 @@ class Response
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
     public function redirect( $url = '' )
     {
-        $this->getApp()->redirect( $url );
+        $this->getApp()->redirect( $url == '' ? '/' : $url );
         die;
     }
 	
 	/* Retour des messages d'erreurs par JSON pour les RQT en AJAX */
 	public function returnJSON( $msg , $result = false , $extra = [] )
 	{
-		$this->printJSON(array_merge([
+		$this->printJSON( array_merge([
 		    "msg" => $msg,
             "result" => $result
-        ], $extra )) ;
+        ], $extra ) ) ;
 	}
 	
 	/* Parse en JSON */

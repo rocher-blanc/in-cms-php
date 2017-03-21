@@ -488,6 +488,9 @@ class Router
             {
 				if ( ACTIVE_USER )
                 {
+                    // On observe les users manuellement car cela est fait bien plus tard normalement dans le middleware (necessite une route slim non présente actuellement)
+                    $this->User()->observe();
+
                     if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == false ) )
                     {
                         $this->Factory()->Response()->redirect( $this->Factory()->Url()->page( $page->page_access_user_redirect ) );
@@ -498,7 +501,7 @@ class Router
                         $tabGroup = unserialize( $page->page_access_user_group );
                         if ( ! in_array( $this->User()->getGroup() , $tabGroup ) )
                         {
-                            $this->Factory()->Response()->redirect('/');
+                            $this->Factory()->Response()->redirect();
                         }
                     }
                 }
