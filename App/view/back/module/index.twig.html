@@ -6,7 +6,7 @@
 <input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
 <div class="row" data-order="{{ hasOrder }}">
 	<div class="col-md-12">
-		<section class="panel">
+		<section class="panel table">
 			<header class="panel-heading">
 				{% if right.add == true %}
 				<div class="panel-actions">
@@ -28,10 +28,13 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
 <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
+<link rel="stylesheet" href="{{ vendor('bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
 	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
 	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+	<script src="{{ vendor('bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+	<script src="{{ vendor('bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min.js') }}"></script>
 	{% if hasOrder and right.edit == true %}<script src="{{ vendor('TableDnD/dist/jquery.tablednd.min.js') }}"></script>{% endif %}
 {% endblock %}

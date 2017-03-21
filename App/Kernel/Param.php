@@ -57,10 +57,10 @@ class Param
         {
             return $this->_var[ $key ];
         }
-        else if ( $this->redis()->exist( 'param-' . $key ) != false )
+        /*else if ( $this->redis()->exist( 'param-' . $key ) != false )
         {
             return $this->redis()->get( 'param-' . $key );
-        }
+        }*/
         else
         {
             $content = \DB::for_table('param')

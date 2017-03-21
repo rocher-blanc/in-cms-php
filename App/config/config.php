@@ -54,10 +54,15 @@ if ( file_exists( PROJECT_PATH . '/config/config.common.php' ) )
 }
 
 defined('COUNTRY') || define('COUNTRY','fr');
+defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 
 // DEBUG
 defined('DEBUG_BAR') || define('DEBUG_BAR', false );
 
+// REDIS
+defined('REDIS') || define('REDIS', false );
+defined('REDIS_SERVER') || define('REDIS_SERVER', '' );
+defined('REDIS_PORT') || define('REDIS_PORT', '' );
 
 // SESSION
 defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );

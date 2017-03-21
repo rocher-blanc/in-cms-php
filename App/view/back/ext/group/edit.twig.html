@@ -16,119 +16,125 @@
 	<input type="hidden" name="{{csrf_key}}" id="{{csrf_key}}" value="{{csrf_token}}" />
 	<div class="row">
 		<div class="col-md-12">
-			<header class="panel-heading">
-				<h2 class="panel-title">{{ title_block_page }}</h2>
-			</header>
-			<div class="tab-content">
-				<div class="tab-pane active panel-body">
-					<div class="form-group">
-						<label class="col-md-3 control-label">Nom</label>
-						<div class="col-md-6">
-							<input type="text" id="user_group_name" name="user_group_name" class="form-control" value="{{ post.user_group_name }}" />
+			<section class="panel table ext">
+				<header class="panel-heading">
+					<h2 class="panel-title">{{ title_block_page }}</h2>
+				</header>
+				<div class="tab-content">
+					<div class="tab-pane active panel-body">
+						<div class="form-group">
+							<label class="col-md-3 control-label">Nom</label>
+							<div class="col-md-6">
+								<input type="text" id="user_group_name" name="user_group_name" class="form-control" value="{{ post.user_group_name }}" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-2">
-							<a id="btn_back" href="{{ siteUrl('ext/group') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
-						</div>
+						<div class="row">
+							<div class="col-md-2">
+								<a id="btn_back" href="{{ siteUrl('ext/group') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+							</div>
 
-						<div class="col-md-5 col-md-offset-5 text-right">
-							<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
-							<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+							<div class="col-md-5 col-md-offset-5 text-right">
+								<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
+								<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+							</div>
 						</div>
 					</div>
-				</div> 
-			</div>
+				</div>
+			</section>
 		</div>
 	</div>
 </form>
 {% if id != -1 %}
 	<div class="row">
 		<div class="col-md-4">
-			<header class="panel-heading">
-				<h2 class="panel-title">Utilisateurs du groupe</h2>
-				<p class="panel-subtitle">Il y a actuellement {{ users|length }} administrateur{{ users|length > 1 ? 's' : '' }} dans le groupe</p>
-			</header>
-			<div class="tab-content">
-				<div class="tab-pane active panel-body list-users">
-					{% if users|length > 0 %}
-						{% for user in users %}
-							<a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}" class="user" title="{{ user.user_name }}"><i class="fa fa-user"></i>{{ user.user_name }}</a>
-						{% endfor %}
-					{% else %}
-						<div class="text-center">Aucun administrateur n'est présent dans ce groupe</div>
-					{% endif %}
-				</div> 
-			</div>
+			<section class="panel table ext">
+				<header class="panel-heading">
+					<h2 class="panel-title">Utilisateurs du groupe</h2>
+					<p class="panel-subtitle">Il y a actuellement {{ users|length }} administrateur{{ users|length > 1 ? 's' : '' }} dans le groupe</p>
+				</header>
+				<div class="tab-content">
+					<div class="tab-pane active panel-body list-users">
+						{% if users|length > 0 %}
+							{% for user in users %}
+								<a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}" class="user" title="{{ user.user_name }}"><i class="fa fa-user"></i>{{ user.user_name }}</a>
+							{% endfor %}
+						{% else %}
+							<div class="text-center">Aucun administrateur n'est présent dans ce groupe</div>
+						{% endif %}
+					</div>
+				</div>
+			</section>
 		</div>
 		<div class="col-md-8">
-			<header class="panel-heading">
-				<h2 class="panel-title">Permissions du groupe</h2>
-			</header>
-			<div class="tab-content">
-				<div class="tab-pane active panel-body">
-					{% if id == 1 %}
-						<div class="text-center">Ce groupe a tous les droits par défaut.</div>
-					{% else %}
-						<div class="row">
-							<div class="col-md-12">
-								<div class="col-md-3 tabs">
-									<ul>
-										<li class="active">
-											<a href="javascript:;" data-tabs="module">Modules</a>
-										</li>
-										<li>
-											<a href="javascript:;" data-tabs="extension">Extensions</a>
-										</li>
-									</ul>
-								</div>
-								<div class="col-md-9 content-tabs">
-									<div id="tab-extension">
-										<table class="table table-hover">
-											<tr>
-												<th style="width: 25%;"></th>
-												<th style="width: 25%;" class="text-center">Ajout</th>
-												<th style="width: 25%;" class="text-center">Modification</th>
-												<th style="width: 25%;" class="text-center">Suppression</th>
-											</tr>
-											{% for ext in extension %}
-												<tr>
-													<td style="vertical-align: middle;">{{ ext.extension_name }}</td>
-													<td class="text-center">{% if ext.perm_add == 1 %}<a class="right {{ ext.add ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="add" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.add ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if ext.perm_update == 1 %}<a class="right {{ ext.update ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="update" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.update ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if ext.perm_delete == 1 %}<a class="right {{ ext.delete ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="delete" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.delete ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-												</tr>
-											{% endfor %}
-										</table>
+			<section class="panel table ext">
+				<header class="panel-heading">
+					<h2 class="panel-title">Permissions du groupe</h2>
+				</header>
+				<div class="tab-content">
+					<div class="tab-pane active panel-body">
+						{% if id == 1 %}
+							<div class="text-center">Ce groupe a tous les droits par défaut.</div>
+						{% else %}
+							<div class="row">
+								<div class="col-md-12">
+									<div class="col-md-3 tabs">
+										<ul>
+											<li class="active">
+												<a href="javascript:;" data-tabs="module">Modules</a>
+											</li>
+											<li>
+												<a href="javascript:;" data-tabs="extension">Extensions</a>
+											</li>
+										</ul>
 									</div>
-									<div id="tab-module">
-										<table class="table table-hover">
-											<tr>
-												<th style="width: 25%;"></th>
-												<th style="width: 15%;" class="text-center">Ajout</th>
-												<th style="width: 15%;" class="text-center">Modification</th>
-												<th style="width: 15%;" class="text-center">Suppression</th>
-												<th style="width: 15%;" class="text-center">Validation</th>
-												<th style="width: 15%;" class="text-center">Configuration</th>
-											</tr>
-											{% for mod in module %}
+									<div class="col-md-9 content-tabs">
+										<div id="tab-extension">
+											<table class="table table-hover">
 												<tr>
-													<td style="vertical-align: middle;">{{ mod.module_name }}</td>
-													<td class="text-center">{% if mod.perm_add == 1 %}<a class="right {{ mod.add ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="add" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.add ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if mod.perm_update == 1 %}<a class="right {{ mod.update ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="update" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.update ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if mod.perm_delete == 1 %}<a class="right {{ mod.delete ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="delete" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.delete ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if mod.perm_validation == 1 %}<a class="right {{ mod.validation ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="validation" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.validation ? 'check' : 'times' }}"></i></a>{% endif %}</td>
-													<td class="text-center">{% if mod.perm_config == 1 %}<a class="right {{ mod.config ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="config" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.config ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+													<th style="width: 25%;"></th>
+													<th style="width: 25%;" class="text-center">Ajout</th>
+													<th style="width: 25%;" class="text-center">Modification</th>
+													<th style="width: 25%;" class="text-center">Suppression</th>
 												</tr>
-											{% endfor %}
-										</table>
+												{% for ext in extension %}
+													<tr>
+														<td style="vertical-align: middle;">{{ ext.extension_name }}</td>
+														<td class="text-center">{% if ext.perm_add == 1 %}<a class="right {{ ext.add ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="add" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.add ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if ext.perm_update == 1 %}<a class="right {{ ext.update ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="update" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.update ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if ext.perm_delete == 1 %}<a class="right {{ ext.delete ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ ext.extension_technical_name }}" data-right="delete" data-type="ext" href="javascript:;"><i class="fa fa-{{ ext.delete ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+													</tr>
+												{% endfor %}
+											</table>
+										</div>
+										<div id="tab-module">
+											<table class="table table-hover">
+												<tr>
+													<th style="width: 25%;"></th>
+													<th style="width: 15%;" class="text-center">Ajout</th>
+													<th style="width: 15%;" class="text-center">Modification</th>
+													<th style="width: 15%;" class="text-center">Suppression</th>
+													<th style="width: 15%;" class="text-center">Validation</th>
+													<th style="width: 15%;" class="text-center">Configuration</th>
+												</tr>
+												{% for mod in module %}
+													<tr>
+														<td style="vertical-align: middle;">{{ mod.module_name }}</td>
+														<td class="text-center">{% if mod.perm_add == 1 %}<a class="right {{ mod.add ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="add" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.add ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if mod.perm_update == 1 %}<a class="right {{ mod.update ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="update" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.update ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if mod.perm_delete == 1 %}<a class="right {{ mod.delete ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="delete" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.delete ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if mod.perm_validation == 1 %}<a class="right {{ mod.validation ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="validation" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.validation ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+														<td class="text-center">{% if mod.perm_config == 1 %}<a class="right {{ mod.config ? 'yes' : 'no' }}" data-group="{{ id }}" data-modext="{{ mod.module_class_name }}" data-right="config" data-type="module" href="javascript:;"><i class="fa fa-{{ mod.config ? 'check' : 'times' }}"></i></a>{% endif %}</td>
+													</tr>
+												{% endfor %}
+											</table>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					{% endif %}
-				</div> 
-			</div>
+						{% endif %}
+					</div>
+				</div>
+			</section>
 		</div>
 	</div>
 {% endif %}

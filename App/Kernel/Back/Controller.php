@@ -183,6 +183,7 @@ class Controller
     protected function initRender()
     {
         $this->_renderArray = [] ;
+        $this->_renderArray = [] ;
     }
 
     public function init()
@@ -217,6 +218,10 @@ class Controller
                 $method = $this->getMethodName() ;
                 $this->$method();
             }
+        }
+        else
+        {
+            $this->Factory()->Response()->error("Impopssible de charger l'entity '" . $this->getEntityName() . "'") ;
         }
     }
 

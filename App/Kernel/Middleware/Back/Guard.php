@@ -44,31 +44,39 @@ class Guard extends \Slim\Middleware
 					}
 					else
 					{
-						if ( $urlTab[2] == 'enable' or $urlTab[2] == 'disable' )
-						{
-							// Validation
-							if ( $Guard->checkValidation() == false ) $this->Factory()->Response()->redirectForbidden() ;
-						}
-						else if ( $urlTab[2] == 'add' )
-						{
-							// Ajout
-							if ( $Guard->checkAdd() == false ) $this->Factory()->Response()->redirectForbidden() ;
-						}
-						else if ( $urlTab[2] == 'config' )
-						{
-							// Config
-							if ( $Guard->checkConfig() == false ) $this->Factory()->Response()->redirectForbidden() ;
-						}
-						else if ( $urlTab[2] == 'delete' )
-						{
-							// Suppression
-							if ( $Guard->checkDelete() == false ) $this->Factory()->Response()->redirectForbidden() ;
-						}
-						else
-						{
-							// Modification
-							if ( $Guard->checkUpdate() == false ) $this->Factory()->Response()->redirectForbidden() ;
-						}
+						if ( array_key_exists( 2 , $urlTab ) )
+                        {
+                            if ( $urlTab[2] == 'enable' or $urlTab[2] == 'disable' )
+                            {
+                                // Validation
+                                if ( $Guard->checkValidation() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                            }
+                            else if ( $urlTab[2] == 'add' )
+                            {
+                                // Ajout
+                                if ( $Guard->checkAdd() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                            }
+                            else if ( $urlTab[2] == 'config' )
+                            {
+                                // Config
+                                if ( $Guard->checkConfig() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                            }
+                            else if ( $urlTab[2] == 'delete' )
+                            {
+                                // Suppression
+                                if ( $Guard->checkDelete() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                            }
+                            else
+                            {
+                                // Modification
+                                if ( $Guard->checkUpdate() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                            }
+                        }
+                        else
+                        {
+                            // Modification
+                            if ( $Guard->checkUpdate() == false ) $this->Factory()->Response()->redirectForbidden() ;
+                        }
 					}
 				}
 				else if ( $urlTab[0] == 'admin' && $Guard->isAdmin() == false )

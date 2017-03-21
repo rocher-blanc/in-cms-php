@@ -128,7 +128,7 @@ class Lang
             $langObj 		    = new \stdClass();
             $langObj->id	    = $r->lang_id;
             $langObj->url 	    = $r->lang_url;
-            $langObj->full_url  = $this->_url[ intval( $r->lang_id ) ] ;
+            $langObj->full_url  = array_key_exists( intval( $r->lang_id ) , $this->_url ) ? $this->_url[ intval( $r->lang_id ) ] : '' ;
             $langObj->name 	    = $r->lang_display;
             $langObj->locale 	= $r->lang_locale;
             $langObj->flag 	    = $r->lang_flag;

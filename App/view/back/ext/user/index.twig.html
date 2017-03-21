@@ -6,7 +6,7 @@
 {% block module %}
 <div class="row">
 	<div class="col-md-12">
-		<section class="panel">
+		<section class="panel table">
 			<header class="panel-heading">
 				<div class="panel-actions">
 					<a href="{{ siteUrl('ext/user/edit') }}" class="btn btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
@@ -16,13 +16,13 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if contentRows|length > 0 %}
-					<table class="table table-striped table-hover mb-none">
+					<table class="table table-striped table-gestion table-search table-hover mb-none">
 						<thead>
 							<tr>
-								<th><strong>Login</strong></th>
-								<th><strong>Nom</strong></th>
-								<th><strong>Prénom</strong></th>
-								<th class="text-right" style="width: 200px"><strong>Actions</strong></th>
+								<th>Login</th>
+								<th>Nom</th>
+								<th>Prénom</th>
+								<th class="text-right" style="width: 200px"></th>
 							</tr>
 						</thead>
 						<tbody>

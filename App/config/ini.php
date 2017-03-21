@@ -8,6 +8,7 @@ ini_set("session.dd", SESSION_LIFETIME );
 
 if ( DEBUG )
 {
+    // ini_set('error_reporting', error_reporting());
     ini_set('error_reporting', error_reporting() & ~E_NOTICE & ~E_DEPRECATED);
     ini_set('display_errors', 'on');
 }
