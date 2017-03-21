@@ -35,7 +35,6 @@ class Language
 
     public function load()
     {
-        dump( $this->Lang() );
         $this->CMS()->view()->appendData([
             'lang' => [
                 'default' => $this->Lang()->getDefault(),
