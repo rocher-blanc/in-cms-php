@@ -49,20 +49,20 @@
 </form>
     <div class="row">
 	<div class="col-md-12">
-		<section class="panel">
+		<section class="panel table">
 			<header class="panel-heading">
 				<h2 class="panel-title">Journal d'événements</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if logRows|length > 0 %}
-					<table class="table table-striped table-hover mb-none">
+					<table class="table table-striped table-gestion table-search table-ext table-hover mb-none">
 						<thead>
 							<tr>
-								<th style="width: 170px;"><strong>Date</strong></th>
-								<th style="width: 110px;"><strong>Type</strong></th>
-								<th><strong>Utilisateur</strong></th>
-								<th><strong>Message</strong></th>
+								<th style="width: 170px;">Date</th>
+								<th style="width: 110px;">Type</th>
+								<th>Utilisateur</th>
+								<th>Message</th>
 							</tr>
 						</thead>
 						<tbody>

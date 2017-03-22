@@ -15,96 +15,94 @@
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 	<div class="row">
 		<div class="col-md-12">
-			<header class="panel-heading">
-				<h2 class="panel-title">{{ title_block_page }}</h2>
-			</header>
-			<div class="tab-content">
-				<div class="tab-pane active panel-body">
-					<div class="form-group">
-						<label class="col-md-3 control-label">Activé</label>
-						<div class="col-md-6">
-							<input value="1" type="checkbox"{{ post.page_active == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="page_active" id="page_active" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Nom (interne)</label>
-						<div class="col-md-6">
-							<input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
-						</div>
-					</div>
-					{% if domains | length > 0 %}
+			<section class="panel table ext">
+				<header class="panel-heading">
+					<h2 class="panel-title">{{ title_block_page }}</h2>
+				</header>
+				<div class="tab-content">
+					<div class="tab-pane active panel-body">
 						<div class="form-group">
-							<label class="col-md-3 control-label">Domaine</label>
+							<label class="col-md-3 control-label">Activé</label>
 							<div class="col-md-6">
-								<select id="page_domain_id" name="page_domain_id" class="form-control">
-									{% for domain in domains %}
-										<option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
-									{% endfor %}
-								</select>
+								<input value="1" type="checkbox"{{ post.page_active == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="page_active" id="page_active" />
 							</div>
 						</div>
-					{% else %}
-						<input type="hidden" name="page_domain_id" value="0" />
-					{% endif %}
-					{% if active_user == true %}
 						<div class="form-group">
-							<label class="col-md-3 control-label">Accès réservé aux utilisateurs</label>
+							<label class="col-md-3 control-label">Nom (interne)</label>
 							<div class="col-md-6">
-								<select name="page_access_user" id="page_access_user" class="form-control">
-									<option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
-									<option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
-									<option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
-								</select>
+								<input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
 							</div>
 						</div>
-						{% if id != -1 %}
-						<div class="form-group">
-							<label class="col-md-3 control-label">Redirection vers la page</label>
-							<div class="col-md-6">
-								<select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
-									<option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
-									{% for pageRedir in pageRedirect %}
-										<option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
-									{% endfor %}
-								</select>
-								<span class="help-block">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</span>
-							</div>
-						</div>
-						{% else %}
-							<input type="hidden" name="page_access_user_redirect" value="0" />
-						{% endif %}
-						<div class="form-group">
-							<label class="col-md-3 control-label">Groupes d'utilisateurs autorisés</label>
-							<div class="col-md-6">
-								<div class="input-group btn-group">
-									<span class="input-group-addon">
-										<i class="fa fa-th-list"></i>
-									</span>
-									<select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
-										{% for group in groups %}
-											<option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
+						{% if domains | length > 0 %}
+							<div class="form-group">
+								<label class="col-md-3 control-label">Domaine</label>
+								<div class="col-md-6">
+									<select id="page_domain_id" name="page_domain_id" class="form-control">
+										{% for domain in domains %}
+											<option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
 										{% endfor %}
 									</select>
 								</div>
 							</div>
-						</div>
-					{% endif %}
-				</div>
-			</div>
-			
-			<div class="tab-content">
-				<div class="tab-pane active panel-body panel-body-border">
+						{% else %}
+							<input type="hidden" name="page_domain_id" value="0" />
+						{% endif %}
+						{% if active_user == true %}
+							<div class="form-group">
+								<label class="col-md-3 control-label">Accès réservé aux utilisateurs</label>
+								<div class="col-md-6">
+									<select name="page_access_user" id="page_access_user" class="form-control">
+										<option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
+										<option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
+										<option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
+									</select>
+								</div>
+							</div>
+							{% if id != -1 %}
+							<div class="form-group">
+								<label class="col-md-3 control-label">Redirection vers la page</label>
+								<div class="col-md-6">
+									<select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
+										<option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
+										{% for pageRedir in pageRedirect %}
+											<option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
+										{% endfor %}
+									</select>
+									<span class="help-block">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</span>
+								</div>
+							</div>
+							{% else %}
+								<input type="hidden" name="page_access_user_redirect" value="0" />
+							{% endif %}
+							<div class="form-group">
+								<label class="col-md-3 control-label">Groupes d'utilisateurs autorisés</label>
+								<div class="col-md-6">
+									<div class="input-group btn-group">
+										<span class="input-group-addon">
+											<i class="fa fa-th-list"></i>
+										</span>
+										<select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
+											{% for group in groups %}
+												<option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+
 					<div class="row">
 						<div class="col-md-2">
-							<a id="btn_back" href="{{ siteUrl('admin/pageadmin') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+							<a id="btn_back" href="{{ siteUrl('admin/pageadmin') }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
 						</div>
 						<div class="col-md-5 col-md-offset-5 text-right">
-							<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
-							<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+							<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
+							<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
 						</div>
 					</div>
 				</div> 
 			</div>
+			</section>
 		</div>
 	</div>
 </form>
