@@ -723,9 +723,25 @@ class Controller
     {
         $rightArray     = [] ;
         $thArray 	    = [] ;
-        $searchArray 	= [] ;
         $tdArray 	    = [] ;
         $typeArray      = [] ;
+
+        $order = ( $this->getApp()->request->get('order') != '' ? $this->getApp()->request->get('order') : NULL ) ;
+        $by    = ( $this->getApp()->request->get('by') != '' ? $this->getApp()->request->get('by') : NULL ) ;
+
+        if ( $order === NULL && $by === NULL )
+        {
+            if ( $this->getEntity()->hasOrder() )
+            {
+                $order = $this->getEntity()->getOrderName() ;
+                $by    = 'asc' ;
+            }
+            else
+            {
+                $order = $this->getEntity()->getIdName() ;
+                $by    = 'desc' ;
+            }
+        }
 
         $Guard = new \App\Kernel\Back\Acl;
         $Guard->setModule( $this->getEntityName() );
@@ -739,32 +755,32 @@ class Controller
 
         if ( !empty( $this->getEntity()->getField() ) )
         {
-            $content = $this->getRepository()->getAllTableIndex() ;
+            // TH
+            foreach( $this->getEntity()->getField() as $field )
+            {
+                if ( $field->getData('index') == true )
+                {
+                    $thArray[ $field->getName() ] = [
+                        'name' => $field->getName(),
+                        'title' => $field->getTitle(),
+                        'value' => $this->getApp()->request->post( $field->getName() ),
+                        'value_start' => $this->getApp()->request->post( $field->getName() . "_start" ),
+                        'value_end' => $this->getApp()->request->post( $field->getName() . "_end" ),
+                        'type' => $field->getType()
+                    ];
+
+                    if ( $field->getType() == "select" && $field->isAssociated() == true )
+                    {
+                        $option = $this->getValueAssociated( $field , 'array' );
+                        $this->getEntity()->get( $field->getName() )->setData('option',$option);
+                    }
+                }
+            }
+
+            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray ) ;
 
             if ( $content )
             {
-                // TH
-                foreach( $this->getEntity()->getField() as $field )
-                {
-                    if ( $field->getData('index') == true )
-                    {
-                        $thArray[ $field->getName() ] = $field->getTitle() ;
-
-                        if ( $field->getType() == "select" && $field->isAssociated() == true )
-                        {
-                            $option = $this->getValueAssociated( $field , 'array' );
-                            $this->getEntity()->get( $field->getName() )->setData('option',$option);
-                        }
-
-                        if ( $field->isSearch() == true )
-                        {
-                            $searchArray[ $field->getName() ] = [
-                                'type' => $field->getType(),
-                            ];
-                        }
-                    }
-                }
-
                 // TD
                 $i = 0;
                 foreach( $content as $row )
@@ -824,17 +840,18 @@ class Controller
 
         if ( $this->getEntity()->hasParent() )
         {
-
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
         }
 
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
-        $this->setRender( 'search' , $searchArray ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
+        $this->setRender( 'order' , $order ) ;
+        $this->setRender( 'by' , $by ) ;
         $this->setRender( 'type' , $typeArray ) ;
+        $this->setRender( 'search' , $this->getApp()->request->post('search') == 1 ? 1 : 0 ) ;
     }
 
     protected function getTreeTableParent( $rows, $parent_id = -1 )

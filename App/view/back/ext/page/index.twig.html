@@ -16,6 +16,7 @@
 					<table class="table table-striped table-gestion table-ext table-hover mb-none table-search">
 						<thead>
 							<tr>
+								<th>#ID</th>
 								<th>Nom</th>
 								<th>Défaut</th>
 								<th>Statut</th>
@@ -31,6 +32,9 @@
 							{% endif %}
 							{% for row in domain.page %}
 								<tr class="tr1">
+									<td>
+										#{{ row.page_id }}
+									</td>
 									<td>
 										<a href="{{ siteUrl('ext/page/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
 									</td>

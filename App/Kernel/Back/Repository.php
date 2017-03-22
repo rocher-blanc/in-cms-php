@@ -61,7 +61,7 @@ class Repository extends \App\Kernel\Common\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function getAllTableIndex()
+    public function getAllTableIndex( $order , $by , $fields )
     {
         $content = \DB::for_module( $this->getName() );
 
@@ -77,13 +77,42 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where_equal($tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getDefault()->id );
         }
 
-        if ( $this->getEntity()->hasOrder() )
+        foreach( $fields as $field )
         {
-            $content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+            if ( $field['type'] == 'text' )
+            {
+                if ( !empty( $field['value'] ) )
+                {
+                    $content = $content->where_like( $this->getEntity()->get( $field['name'] )->fieldSql() , '%' . $field['value'] . '%' ) ;
+                }
+            }
+            else if ( $field['type'] == 'date' or $field['type'] == 'number' )
+            {
+
+            }
+        }
+
+        if ( $order === NULL && $by === NULL or ( $by != 'desc' && $by != 'asc' ) )
+        {
+            if ( $this->getEntity()->hasOrder() )
+            {
+                $content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+            }
+            else
+            {
+                $content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
+            }
         }
         else
         {
-            $content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
+            if ( $by == 'desc' )
+            {
+                $content = $content->order_by_desc( $this->getEntity()->get( $order )->getColumn() ) ;
+            }
+            else
+            {
+                $content = $content->order_by_asc( $this->getEntity()->get( $order )->getColumn() ) ;
+            }
         }
 
         return $content->find_many();

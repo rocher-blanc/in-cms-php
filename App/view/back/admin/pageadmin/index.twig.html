@@ -19,6 +19,7 @@
 					<table class="table table-striped table-gestion table-search table-ext table-hover mb-none">
 						<thead>
 							<tr>
+								<th>#ID</th>
 								<th>Nom</th>
 								<th>Défaut</th>
 								<th>Statut</th>
@@ -33,6 +34,9 @@
 								</tr>
 								{% for row in domain.page %}
 									<tr class="tr1">
+										<td>
+											#{{ row.page_id }}
+										</td>
 										<td>
 											<a href="{{ siteUrl('admin/pageadmin/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
 										</td>
