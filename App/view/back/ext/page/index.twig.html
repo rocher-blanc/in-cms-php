@@ -13,7 +13,7 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if content|length > 0 %}
-					<table class="table table-striped table-gestion table-hover mb-none table-search">
+					<table class="table table-striped table-gestion table-ext table-hover mb-none table-search">
 						<thead>
 							<tr>
 								<th>Nom</th>
@@ -57,7 +57,7 @@
 						</tbody>
 					</table>
 				{% else %}
-					<span>Aucune page n'est enregistrée.</span>
+					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucune page n'est enregistrée.</div>
 				{% endif %}
 				</div>
 			</div>

@@ -9,9 +9,9 @@
 		<section class="panel table">
 			<header class="panel-heading">
                 <div class="panel-actions">
-                    <a href="{{ siteUrl('/ext/langue/traduction') }}" class="btn btn-primary"><i class="fa fa-book"></i> Traduire</a>
-                    <a href="{{ siteUrl('/ext/langue/export') }}" target="_blank" class="btn btn-success"><i class="fa fa-upload"></i> Exporter les traductions</a>
-                    <span class="btn btn-danger fileinput-button" id="btn-upload">
+                    <a href="{{ siteUrl('/ext/langue/traduction') }}" class="btn btn-sm btn-primary"><i class="fa fa-book"></i> Traduire</a>
+                    <a href="{{ siteUrl('/ext/langue/export') }}" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-upload"></i> Exporter les traductions</a>
+                    <span class="btn btn-sm btn-danger fileinput-button" id="btn-upload">
                         <i class="fa fa-download"></i> Importer les traductions
                         <input type="file" name="files" data-plugin-upload data-url="{{ siteUrl('/ext/langue/import') }}">
                     </span>
@@ -21,7 +21,7 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if contentRows|length > 0 %}
-					<table class="table table-striped table-hover mb-none table-gestion table-search">
+					<table class="table table-striped table-hover table-ext mb-none table-gestion table-search">
 						<thead>
 							<tr>
 								<th>Nom</th>
@@ -74,7 +74,7 @@
 						</tbody>
 					</table>
 				{% else %}
-					<span>Aucune langue n'est enregistrée.</span>
+					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucune langue n'est enregistrée.</div>
 				{% endif %}
 				</div>
 			</div>
