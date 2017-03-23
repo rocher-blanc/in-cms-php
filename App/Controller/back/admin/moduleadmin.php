@@ -143,27 +143,31 @@ $app->group('/moduleadmin', function () use ($app)
                             {
                                 foreach( $content as $row )
                                 {
-                                    $Media = new \App\Kernel\Back\Media;
-                                    $Media->setModuleId( $contentRow->module_id ) ;
-                                    $Media->setImageId( $row->get('value') );
-                                    $Media->setFolder( $entity->getFolder() ) ;
-                                    $Media->getNameById() ;
-
-                                    if ( $field->hasThumb() )
+                                    if ( $row->get('value') != 0 )
                                     {
-                                        foreach( $field->getThumb() as $thumb )
+                                        $Media = new \App\Kernel\Back\Media;
+                                        $Media->setModuleId( $contentRow->module_id ) ;
+                                        $Media->setImageId( $row->get('value') );
+                                        $Media->setFolder( $entity->getFolder() ) ;
+                                        $Media->getNameById() ;
+                                        $Media->genThumb( 100 , 100 ) ;
+
+                                        if ( $field->hasThumb() )
                                         {
-                                            // width, height
-                                            $Media->genThumb( $thumb[0] , $thumb[1] ) ;
+                                            foreach( $field->getThumb() as $thumb )
+                                            {
+                                                // width, height
+                                                $Media->genThumb( $thumb[0] , $thumb[1] ) ;
+                                            }
                                         }
-                                    }
 
-                                    if ( $field->hasCrop() )
-                                    {
-                                        foreach( $field->getCrop() as $crop )
+                                        if ( $field->hasCrop() )
                                         {
-                                            // width, height
-                                            $Media->genThumb( $crop[0] , $crop[1] , true ) ;
+                                            foreach( $field->getCrop() as $crop )
+                                            {
+                                                // width, height
+                                                $Media->genThumb( $crop[0] , $crop[1] , true ) ;
+                                            }
                                         }
                                     }
                                 }

@@ -763,9 +763,11 @@ class Controller
                     $thArray[ $field->getName() ] = [
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
-                        'value' => $this->getApp()->request->post( $field->getName() ),
-                        'value_start' => $this->getApp()->request->post( $field->getName() . "_start" ),
-                        'value_end' => $this->getApp()->request->post( $field->getName() . "_end" ),
+                        'value' => $this->getApp()->request->get( $field->getName() ),
+                        'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
+                        'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
+                        'value_convert_start' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_start" ) ) : NULL ),
+                        'value_convert_end' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_end" ) ) : NULL ),
                         'type' => $field->getType()
                     ];
 
@@ -851,7 +853,7 @@ class Controller
         $this->setRender( 'order' , $order ) ;
         $this->setRender( 'by' , $by ) ;
         $this->setRender( 'type' , $typeArray ) ;
-        $this->setRender( 'search' , $this->getApp()->request->post('search') == 1 ? 1 : 0 ) ;
+        $this->setRender( 'search' , $this->getApp()->request->get('search') == 1 ? 1 : 0 ) ;
     }
 
     protected function getTreeTableParent( $rows, $parent_id = -1 )

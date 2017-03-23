@@ -79,16 +79,26 @@ class Repository extends \App\Kernel\Common\Repository
 
         foreach( $fields as $field )
         {
-            if ( $field['type'] == 'text' )
+            if ( $field['type'] == 'text' && !empty( $field['value'] ) )
             {
-                if ( !empty( $field['value'] ) )
-                {
-                    $content = $content->where_like( $this->getEntity()->get( $field['name'] )->fieldSql() , '%' . $field['value'] . '%' ) ;
-                }
+                $content = $content->where_like( $this->getEntity()->get( $field['name'] )->fieldSql() , '%' . $field['value'] . '%' ) ;
             }
-            else if ( $field['type'] == 'date' or $field['type'] == 'number' )
+            else if ( $field['type'] == 'date' && $field['value_convert_start'] !== NULL && $field['value_convert_end'] !== NULL )
             {
+                $content = $content->where_date_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_start'] )
+                    ->where_date_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_end'] );
+            }
+            else if ( $field['type'] == 'number' )
+            {
+                if ( ! empty( $field['value_start'] ) )
+                {
+                    $content = $content->where_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_start'] );
+                }
 
+                if ( ! empty( $field['value_end'] ) )
+                {
+                    $content = $content->where_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_start'] );
+                }
             }
         }
 

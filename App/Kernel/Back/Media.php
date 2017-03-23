@@ -254,7 +254,7 @@ class Media extends \App\Kernel\Common\Media
 			$miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
 			$file = $path . $subfolder . "/" . $miniName ;
 			
-			if ( ! file_exists( $file ) )
+			if ( ! file_exists( $file ) && file_exists( $img ) )
 			{
 				$tmpImg = new \abeautifulsite\SimpleImage( $img );
                 $tmpImg->best_fit( $width , $height );

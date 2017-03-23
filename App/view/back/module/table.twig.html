@@ -9,8 +9,8 @@
 					{% for thvalue in th %}
 						<th>
 							<span>{{ thvalue.title }}</span>
-							<a data-filter data-by="{{ thvalue.name }}" data-order="desc" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="fa fa-chevron-down"></i></a>
-							<a data-filter data-by="{{ thvalue.name }}" data-order="asc" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="fa fa-chevron-up"></i></a>
+							<a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="fa fa-chevron-down"></i></a>
+							<a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="fa fa-chevron-up"></i></a>
 						</th>
 					{% endfor %}
 					<th class="text-center" style="width: 300px;"></th>
@@ -22,25 +22,26 @@
 					{% for thvalue in th %}
 						<td>
 							{% if loop.first %}
-									<input type="hidden" value="{{ order }}" name="order" id="orderSearch" />
-									<input type="hidden" value="{{ by }}" name="by" id="bySearch" />
-									<input type="hidden" value="1" name="search" />
-									<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+								<input type="hidden" value="{{ order }}" name="order" id="orderSearch" />
+								<input type="hidden" value="{{ by }}" name="by" id="bySearch" />
+								<input type="hidden" value="1" name="search" />
 							{% endif %}
 							{% if thvalue.type == 'text' %}
 								<input type="text" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
 							{% elseif thvalue.type == 'date' %}
-								<div class="input-group">
-									<span class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</span>
-									<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
-								</div>
-								<div class="input-group scdline">
-									<span class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</span>
-									<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+								<div class="date-range" id="range-{{ thvalue.name }}">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+										<input type="text" class="form-control date" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+									</div>
+									<div class="input-group scdline">
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+										<input type="text" class="form-control date" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+									</div>
 								</div>
 							{% elseif thvalue.type == 'number' %}
 								<div class="input-group">
@@ -49,6 +50,10 @@
 								<div class="input-group scdline">
 									<input type="number" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
 								</div>
+							{% elseif thvalue.type == 'select' %}
+								<select name="{{ thvalue.name }}" class="form-control" data-plugin-selectTwo>
+
+								</select>
 							{% endif %}
 						</td>
 					{% endfor %}
@@ -80,7 +85,6 @@
 			<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun résultat</div>
 		{% endif %}
 	</form>
-
 {% else %}
 	<div class="nocontent"><i class="fa fa-info-circle"></i> Il n'y a aucun contenu d'enregistré actuellement</div>
 {% endif %}
