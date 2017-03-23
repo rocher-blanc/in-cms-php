@@ -1,83 +1,86 @@
 {% if td|length > 0 or search == 1 %}
-	<table class="table table-striped mb-none table-hover table-gestion{% if hasOrder and right.edit == true %} table-dnd{% endif %} table-search" id="table-{{ mod.name }}">
-		<thead>
-			<tr>
-				{% if hasOrder and right.edit == true %}
-					<th style="width: 50px;"></th>
-				{% endif %}
-				{% for thvalue in th %}
-					<th>
-						<span>{{ thvalue.title }}</span>
-						<a href="{{ siteUrl('/module/' ~ mod.name ~ '?order=' ~ thvalue.name ~ '&by=desc') }}" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="fa fa-chevron-down"></i></a>
-						<a href="{{ siteUrl('/module/' ~ mod.name ~ '?order=' ~ thvalue.name ~ '&by=asc') }}" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="fa fa-chevron-up"></i></a>
-					</th>
-				{% endfor %}
-				<th class="text-center" style="width: 300px;"></th>
-			</tr>
-			<tr>
-				{% if hasOrder and right.edit == true %}
-					<td style="width: 50px;"></td>
-				{% endif %}
-				{% for thvalue in th %}
-					<td>
-						{% if loop.first %}
-							<form action="{{ siteUrl('/module/' ~ mod.name ~ '?order=' ~ order ~ '&by=' ~ by ) }}" method="post">
-								<input type="hidden" value="1" name="search" />
-								<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
-						{% endif %}
-						{% if thvalue.type == 'text' %}
-							<input type="text" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
-						{% elseif thvalue.type == 'date' %}
-							<div class="input-group">
-								<span class="input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</span>
-								<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
-							</div>
-							<div class="input-group scdline">
-								<span class="input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</span>
-								<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
-							</div>
-						{% elseif thvalue.type == 'number' %}
-							<div class="input-group">
-								<input type="number" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
-							</div>
-							<div class="input-group scdline">
-								<input type="number" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
-							</div>
-						{% endif %}
+	<form action="{{ siteUrl('/module/' ~ mod.name ) }}" method="get" id="formSeach">
+		<table class="table table-striped mb-none table-hover table-gestion{% if hasOrder and right.edit == true %} table-dnd{% endif %} table-search" id="table-{{ mod.name }}">
+			<thead>
+				<tr>
+					{% if hasOrder and right.edit == true %}
+						<th style="width: 50px;"></th>
+					{% endif %}
+					{% for thvalue in th %}
+						<th>
+							<span>{{ thvalue.title }}</span>
+							<a data-filter data-by="{{ thvalue.name }}" data-order="desc" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="fa fa-chevron-down"></i></a>
+							<a data-filter data-by="{{ thvalue.name }}" data-order="asc" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="fa fa-chevron-up"></i></a>
+						</th>
+					{% endfor %}
+					<th class="text-center" style="width: 300px;"></th>
+				</tr>
+				<tr>
+					{% if hasOrder and right.edit == true %}
+						<td style="width: 50px;"></td>
+					{% endif %}
+					{% for thvalue in th %}
+						<td>
+							{% if loop.first %}
+									<input type="hidden" value="{{ order }}" name="order" id="orderSearch" />
+									<input type="hidden" value="{{ by }}" name="by" id="bySearch" />
+									<input type="hidden" value="1" name="search" />
+									<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+							{% endif %}
+							{% if thvalue.type == 'text' %}
+								<input type="text" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
+							{% elseif thvalue.type == 'date' %}
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</span>
+									<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+								</div>
+								<div class="input-group scdline">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</span>
+									<input type="text" data-plugin-datepicker class="form-control date" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+								</div>
+							{% elseif thvalue.type == 'number' %}
+								<div class="input-group">
+									<input type="number" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+								</div>
+								<div class="input-group scdline">
+									<input type="number" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+								</div>
+							{% endif %}
+						</td>
+					{% endfor %}
+					<td class="text-right">
+						<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-search"></i> Rechercher</button><br />
+						{% if search == 1 %}<a class="btn btn-sm btn-default scdline" href="{{ siteUrl('/module/' ~ mod.name ) }}"><i class="fa fa-trash"></i> Réinitialiser</a>{% endif %}
 					</td>
-				{% endfor %}
-				<td class="text-right">
-					<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-search"></i> Rechercher</button><br />
-					<a class="btn btn-sm btn-default scdline" href="{{ siteUrl('/module/' ~ mod.name ) }}"><i class="fa fa-trash"></i> Réinitialiser</a>
-					</form>
-				</td>
-			</tr>
-		</thead>
-		<tbody>
-		{% for content in td %}
-			<tr class="tr1" data-parent-id="none" id="{{ content.id }}">
-				{% if hasOrder and right.edit == true %}
-					<td>{% if order == 'order' and search == 0 %}<a href="javascript:;" class="btn btn-sm btn-default orderTable" data-tr="{{ content.id }}"><i class="fa fa-arrows"></i></a>{% endif %}</td>
-				{% endif %}
-				{% for index,row in content.td %}
-					<td>{{ row }}</td>
-				{% endfor %}
-				<td class="text-right">
-					{% if hasValidation and right.validation == true %}<a id="moduleValidation{{ content.id }}" class="btn btn-sm btn-{{ content.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ content.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ content.validation }}"><i class="fa fa-thumbs-{{ content.validation == 1 ? 'up' : 'down' }}"></i> {{ content.validation == 1 ? 'Activé' : 'Désactivé' }}</a>{% endif %}
-					{% if right.edit == true %}<a class="btn btn-sm btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  content.id ) }}"><i class="fa fa-pencil"></i> Editer</a>{% endif %}
-					{% if right.delete == true %}<a class="btn btn-sm btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i> Supprimer</a>{% endif %}
-				</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
-	{% if td|length == 0 %}
-		<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun résultat</div>
-	{% endif %}
+				</tr>
+			</thead>
+			<tbody>
+			{% for content in td %}
+				<tr class="tr1" data-parent-id="none" id="{{ content.id }}">
+					{% if hasOrder and right.edit == true %}
+						<td>{% if order == 'order' and search == 0 %}<a href="javascript:;" class="btn btn-sm btn-default orderTable" data-tr="{{ content.id }}"><i class="fa fa-arrows"></i></a>{% endif %}</td>
+					{% endif %}
+					{% for index,row in content.td %}
+						<td>{{ row }}</td>
+					{% endfor %}
+					<td class="text-right">
+						{% if hasValidation and right.validation == true %}<a id="moduleValidation{{ content.id }}" class="btn btn-sm btn-{{ content.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ content.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ content.validation }}"><i class="fa fa-thumbs-{{ content.validation == 1 ? 'up' : 'down' }}"></i> {{ content.validation == 1 ? 'Activé' : 'Désactivé' }}</a>{% endif %}
+						{% if right.edit == true %}<a class="btn btn-sm btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  content.id ) }}"><i class="fa fa-pencil"></i> Editer</a>{% endif %}
+						{% if right.delete == true %}<a class="btn btn-sm btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i> Supprimer</a>{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% if td|length == 0 %}
+			<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun résultat</div>
+		{% endif %}
+	</form>
+
 {% else %}
 	<div class="nocontent"><i class="fa fa-info-circle"></i> Il n'y a aucun contenu d'enregistré actuellement</div>
 {% endif %}

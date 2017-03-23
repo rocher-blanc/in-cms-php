@@ -458,7 +458,6 @@ class Router
     {
         $page = \DB::for_table('page')
             ->select('page.page_id')
-            ->select('page.page_controller')
             ->select('page.page_access_user')
             ->select('page.page_access_user_group')
             ->select('page.page_access_user_redirect')
