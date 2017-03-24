@@ -27,7 +27,7 @@
 	{% for row in contentRows %}
 		<div class="row">
 			<div class="col-md-12">
-				<section class="panel">
+				<section class="panel mod">
 					<div class="panel-body mod">
 						<table class="table mb-none list-module">
 							<tbody>
@@ -82,7 +82,7 @@
 	{% for rep in noInstall %}
 		<div class="row">
 			<div class="col-md-12">
-				<section class="panel">
+				<section class="panel mod">
 					<div class="panel-body mod">
 						<table class="table mb-none list-module noinstall">
 							<tbody>
@@ -94,7 +94,7 @@
 										{{ rep }}
 									</td>
 									<td class="text-right">
-										<a class="btn btn-md btn-success" href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}"><i class="fa fa-plus"></i> Installer</a>
+										<a class="btn btn-sm btn-success" href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}"><i class="fa fa-plus"></i> Installer</a>
 									</td>
 								</tr>
 							</tbody>

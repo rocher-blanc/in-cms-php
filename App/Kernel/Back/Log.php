@@ -125,6 +125,14 @@ class Log
             51 => "Ajout du domaine \"%i\"",
             52 => "Modification du domaine \"%i\"",
             53 => "Suppression du domaine \"%i\"",
+
+            /* MODULES */
+            100 => "Ajout d'un nouvel élément \"%i\"",
+            101 => "Modification d'un élément \"%i\"",
+            102 => "Suppression d'un élément \"%i\"",
+            103 => "Activation d'un élément \"%i\"",
+            104 => "Désactivation d'un élément \"%i\"",
+            105 => "Modification de l'ordre des éléments \"%i\"",
         );
     }
 

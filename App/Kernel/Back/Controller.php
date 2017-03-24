@@ -706,6 +706,7 @@ class Controller
             }
 
             $content->delete();
+            \App\Kernel\Back\Log::getInstance()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
 
             $this->Factory()->Response()->returnJSON("delete_success", true ) ;
         }
@@ -768,7 +769,8 @@ class Controller
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
                         'value_convert_start' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_start" ) ) : NULL ),
                         'value_convert_end' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_end" ) ) : NULL ),
-                        'type' => $field->getType()
+                        'type' => $field->getType(),
+                        'options' => ( $field->isAssociated() == true ? $this->getValueAssociated( $field , "array" , true ) : NULL )
                     ];
 
                     if ( $field->getType() == "select" && $field->isAssociated() == true )
@@ -1045,6 +1047,7 @@ class Controller
             if ( $add ) $msg = $this->m("add_success") ;
             else		$msg = $this->m("edit_success") ;
 
+            \App\Kernel\Back\Log::getInstance()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
             $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
         }
     }
@@ -1096,6 +1099,8 @@ class Controller
                 }
             }
 
+            \App\Kernel\Back\Log::getInstance()->info( 105 , $this->getEntityName() ) ;
+
             return true;
         }
         else
@@ -1119,6 +1124,8 @@ class Controller
         $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
         $content->set( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , $value ) ;
         $content->save();
+
+        \App\Kernel\Back\Log::getInstance()->info( ( $value == 0 ? 104 : 103 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
 
         return true ;
     }

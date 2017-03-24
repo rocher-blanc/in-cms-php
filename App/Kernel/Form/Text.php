@@ -12,7 +12,7 @@ class Text extends \App\Kernel\Back\Form
         if ( $field->hasLang() )
         {
             $html = '
-            <div style="margin-bottom:10px;" class="input-group input-group-icon">
+            <div class="input-group input-group-icon">
                 <span class="input-group-addon">
                     <span class="icon">
                         <i class="flag-icon flag-icon-' . $field->getData('flag') . '"></i>

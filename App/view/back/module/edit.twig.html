@@ -8,24 +8,6 @@
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <input type="hidden" name="id_element" value="{{id}}" />
 	{% include tabs ? 'module/edit.tabs.twig.html' : 'module/edit.normal.twig.html' with {'field':field, 'action':action} %}
-	<div class="row" style="margin-top: 20px;">
-
-        <div class="col-md-12">
-            <div class="tab-content">
-                <div class="tab-pane active panel-body panel-body-border">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <a id="btn_back" href="{{ siteUrl('/module/' ~ mod.name ) }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
-                        </div>
-                        <div class="col-md-5 col-md-offset-5 text-right">
-                            <button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
-                            <button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-	</div>
 </form>
 {% endblock %}
 

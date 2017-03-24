@@ -52,7 +52,10 @@
 								</div>
 							{% elseif thvalue.type == 'select' %}
 								<select name="{{ thvalue.name }}" class="form-control" data-plugin-selectTwo>
-
+									<option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- Aucune sélection -----</option>
+									{% for key,value in thvalue.options %}
+										<option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
+									{% endfor %}
 								</select>
 							{% endif %}
 						</td>

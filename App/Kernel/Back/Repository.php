@@ -88,6 +88,10 @@ class Repository extends \App\Kernel\Common\Repository
                 $content = $content->where_date_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_start'] )
                     ->where_date_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_end'] );
             }
+            else if ( $field['type'] == 'select' && !empty( $field['value'] ) )
+            {
+                $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );
+            }
             else if ( $field['type'] == 'number' )
             {
                 if ( ! empty( $field['value_start'] ) )
