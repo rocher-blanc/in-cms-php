@@ -56,7 +56,7 @@ class Log
 
     private function getCode()
     {
-        return array(
+        return [
             1 => "Erreur d'authentification avec le login \"%i\"",
             2 => "Authentification réussie",
 
@@ -133,7 +133,7 @@ class Log
             103 => "Activation d'un élément \"%i\"",
             104 => "Désactivation d'un élément \"%i\"",
             105 => "Modification de l'ordre des éléments \"%i\"",
-        );
+        ];
     }
 
     private function getType()

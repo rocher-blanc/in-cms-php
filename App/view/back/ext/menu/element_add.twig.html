@@ -2,7 +2,7 @@
     <div class="title">
         Ajout d'un élement
 		<span class="pull-right">
-			<a href="javascript:;" class="close-popup btn btn-xs btn-danger"><i class="fa fa-times"></i> Fermer</a>
+			<a href="javascript:;" class="close-popup btn btn-xs btn-default"><i class="fa fa-times"></i> Fermer</a>
 		</span>
     </div>
     <div class="content">
@@ -125,7 +125,9 @@
     </div>
 </div>
 
-<a class="btn btn-success btn-popup" id="valid" href="javascript:;"{{ e.menu_element_type != '' ? '' : ' style="display:none;"' }}>Valider</a>
+<div class="text-center">
+    <a class="btn btn-success" id="valid" href="javascript:;"{{ e.menu_element_type != '' ? '' : ' style="display:none;"' }}><i class="fa fa-save"></i> Enregistrer</a>
+</div>
 </form>
 </div>
 </div>
