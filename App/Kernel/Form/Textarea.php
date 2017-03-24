@@ -12,8 +12,8 @@ class Textarea extends \App\Kernel\Back\Form
         if ( $field->getData('editor') == true )
         {
             $this->_lib_js  = [
-                'ckeditor/ckeditor.js',
-                'ckeditor/adapters/jquery.js'
+                'cmsmedias/js/ckeditor/ckeditor.js',
+                'cmsmedias/js/ckeditor.js'
             ];
         }
 
