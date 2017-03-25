@@ -39,7 +39,7 @@
 								</td>
 								<td class="text-right">
 									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user/edit/' ~ row.user_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_id }}" data-link="{{ siteUrl('ext/user/delete/' ~ row.user_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_name }}' ?"><i class="fa fa-times"></i> Supprimer</a>
+									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_id }}" data-link="{{ siteUrl('ext/user/delete/' ~ row.user_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>
 							</tr>
 						{% endfor %}

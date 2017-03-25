@@ -78,7 +78,7 @@
 					<td class="text-right">
 						{% if hasValidation and right.validation == true %}<a id="moduleValidation{{ content.id }}" class="btn btn-sm btn-{{ content.validation == 1 ? 'success' : 'warning' }} publish" href="javascript:void(0)" data-id="{{ content.id }}" data-module="{{ mod.name }}" data-token="{{csrf_token}}" data-validation="{{ content.validation }}"><i class="fa fa-thumbs-{{ content.validation == 1 ? 'up' : 'down' }}"></i> {{ content.validation == 1 ? 'Activé' : 'Désactivé' }}</a>{% endif %}
 						{% if right.edit == true %}<a class="btn btn-sm btn-info" href="{{ siteUrl('/module/' ~ mod.name ~ '/edit/' ~  content.id ) }}"><i class="fa fa-pencil"></i> Editer</a>{% endif %}
-						{% if right.delete == true %}<a class="btn btn-sm btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-times"></i> Supprimer</a>{% endif %}
+						{% if right.delete == true %}<a class="btn btn-sm btn-danger modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ siteUrl('module/' ~ mod.name ~ '/delete/' ~ content.id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="fa fa-trash"></i> Supprimer</a>{% endif %}
 					</td>
 				</tr>
 			{% endfor %}

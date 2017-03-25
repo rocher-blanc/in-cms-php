@@ -31,7 +31,7 @@
 								</td>
 								<td class="text-right">
 									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front/edit/' ~ row.user_front_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_id }}" data-link="{{ siteUrl('ext/user_front/delete/' ~ row.user_front_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_front_login }}' ?"><i class="fa fa-times"></i> Supprimer</a>
+									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.user_front_id }}" data-link="{{ siteUrl('ext/user_front/delete/' ~ row.user_front_id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'utlisateur '{{ row.user_front_login }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>
 							</tr>
 					{% endfor %}

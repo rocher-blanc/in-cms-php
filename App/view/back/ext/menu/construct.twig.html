@@ -36,7 +36,7 @@
             </td>
             <td class="text-right">
                 <a class="btn btn-xs btn-info popupMenu" href="{{ siteUrl('ext/menu/updateelement/' ~ contentRow.id ) }}"><i class="fa fa-pencil"></i></a>
-                <a class="btn btn-xs btn-danger modal-element-menu-delete" href="#deleteElementModal" data-id="{{ contentRow.id }}" data-link="{{ siteUrl('ext/menu/element/delete/' ~ contentRow.id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'élément '{{ contentRow.label }}' ainsi que tous les sous-éléments ?"><i class="fa fa-times"></i></a>
+                <a class="btn btn-xs btn-danger modal-element-menu-delete" href="#deleteElementModal" data-id="{{ contentRow.id }}" data-link="{{ siteUrl('ext/menu/element/delete/' ~ contentRow.id) }}" data-text="Êtes-vous sûr de vouloir supprimer l'élément '{{ contentRow.label }}' ainsi que tous les sous-éléments ?"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
         {% if contentRow.subpages|length > 0 %}

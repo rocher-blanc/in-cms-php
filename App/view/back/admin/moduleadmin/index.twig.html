@@ -58,7 +58,7 @@
 										{% endif %}
 
 										<a class="btn btn-sm btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-										<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-times"></i> Désinstaller</a>
+										<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-trash"></i> Désinstaller</a>
 									</td>
 								</tr>
 							</tbody>
