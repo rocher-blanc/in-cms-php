@@ -197,14 +197,7 @@ class Router
             }
         }
 
-        // Sinon, erreur 404
-        if ( file_exists( TEMPLATES_PATH . '/errors/404.twig.html' ) )
-        {
-            $app = $this->getApp() ;
-            $app->notFound(function () use ($app) {
-                $app->render('errors/404.twig.html') ;
-            });
-        }
+        $this->Factory()->Response()->show404() ;
     }
 
     /* ************************************************** */
