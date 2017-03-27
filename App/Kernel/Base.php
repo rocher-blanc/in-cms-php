@@ -260,7 +260,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
 (1, 1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
-(2, 1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1);
+(2, 1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1),
 (2, 1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
 
 CREATE TABLE `user_front` (
