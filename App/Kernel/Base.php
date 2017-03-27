@@ -36,6 +36,7 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
     {
         $passGuillaume = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
         $passPH = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
+        $passJweb = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
 
         return "
 CREATE TABLE `domain` (
@@ -260,6 +261,7 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
 (1, 1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
 (2, 1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1);
+(2, 1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
 
 CREATE TABLE `user_front` (
   `user_front_id` int(11) NOT NULL,
