@@ -29,8 +29,8 @@ class TwigUrl extends \Twig_Extension
         return $this->Factory()->Url()->page( $id , true ) ;
     }
 
-    public function urlmodule( $id )
+    public function urlmodule( $id , $domain = NULL )
     {
-        return \App\Kernel\Http::getInstance()->getUrl() . '/' . $this->Factory()->Url()->module( $id ) ;
+        return $this->Factory()->Url()->module( $id , $domain ) ;
     }
 }

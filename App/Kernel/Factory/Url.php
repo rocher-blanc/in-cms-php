@@ -224,14 +224,48 @@ class Url
         else			return "#" ;
     }
 
-    public function module( $id )
+    public function module( $id , $domain = NULL )
     {
         $cLang = \DB::for_table('module_lang')
             ->select('module_lang_url')
             ->where(['module_lang_module_id' => $id, 'module_lang_lang_id' => \App\Kernel\Lang::getInstance()->getActive()->id])
             ->find_one();
 
-        if ( $cLang ) 	return ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->module_lang_url ;
-        else			return "#" ;
+        if ( $cLang ) 	$url = ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . $cLang->module_lang_url ;
+        else			$url = "#" ;
+
+        if ( $domain !== NULL )
+        {
+            $resultDomain = $this->domain( $domain ) ;
+
+            if ( $resultDomain !== false )
+            {
+                $url = $resultDomain . "/" . $url ;
+            }
+        }
+        else
+        {
+            $url = \App\Kernel\Http::getInstance()->getUrl() . '/' . $url ;
+        }
+
+        return $url ;
+    }
+
+    public function domain( $id )
+    {
+        $rst = \DB::for_table('domain')
+            ->select('domain_id')
+            ->select('domain_name')
+            ->where_equal('domain_id' , $id )
+            ->find_one();
+
+        if ( $rst )
+        {
+            return $rst->domain_name ;
+        }
+        else
+        {
+            return false ;
+        }
     }
 }

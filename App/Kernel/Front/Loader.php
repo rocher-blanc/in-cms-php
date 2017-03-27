@@ -22,7 +22,6 @@ class Loader
             'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
         ]);
         $this->kernel->load();
-
         $this->kernel->activeDbCaching() ;
 
         #########################################################
