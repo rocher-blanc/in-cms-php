@@ -52,15 +52,38 @@ class Response
 		echo json_encode( $array ) ;
 		die;
 	}
+
+	private function saveUrlDestination()
+    {
+        $url = $this->Factory()->Url()->getFullUrl() ;
+        if ( $url != $this->getApp()->config('forbidden.url') ) $_SESSION['url_destination'] = $url ;
+        // if ( ! isset( $_SESSION['url_destination'] ) ) $_SESSION['url_destination'] = $this->Factory()->Url()->getFullUrl() ;
+    }
+
+    public function redirectUrlDestination()
+    {
+        if ( ! isset( $_SESSION['url_destination'] ) )
+        {
+            $this->redirectHome() ;
+        }
+        else
+        {
+            $saveUrl = $_SESSION['url_destination'] ;
+            unset( $_SESSION['url_destination'] );
+            $this->getApp()->redirect( $saveUrl ) ;
+        }
+    }
+
+    public function redirectForbidden()
+    {
+        $this->saveUrlDestination() ;
+        $this->getApp()->redirect( $this->getApp()->config('forbidden.url') ) ;
+    }
 	
-	public function redirectForbidden()
+	public function redirectLogin( $save = true )
 	{
-		$this->getApp()->redirect( $this->getApp()->config('forbidden.url') ) ;
-	}
-	
-	public function redirectLogin()
-	{
-		$this->getApp()->redirect( $this->getApp()->config('login.url') ) ;
+        if ( $save ) $this->saveUrlDestination() ;
+        $this->getApp()->redirect( $this->getApp()->config('login.url') ) ;
 	}
 
     public function redirectHome()

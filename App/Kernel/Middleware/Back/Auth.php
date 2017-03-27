@@ -25,7 +25,7 @@ class Auth extends \Slim\Middleware
 		{
 			if ( ! $this->isOnLoginPage() )
 			{
-				$this->Factory()->Response()->redirectLogin() ;
+                $this->Factory()->Response()->redirectLogin() ;
 			}
 			else if ( $this->isOnLoginPage() )
 			{
@@ -33,7 +33,7 @@ class Auth extends \Slim\Middleware
 				{
 					if ( $this->checkAuth() )
 					{
-						$this->Factory()->Response()->redirectHome() ;
+						$this->Factory()->Response()->redirectUrlDestination() ;
 					}
 				}
 			}
@@ -43,7 +43,7 @@ class Auth extends \Slim\Middleware
 			if ( $this->isOnLogoutPage() or $this->isBadIp() )
 			{
 				$this->logout() ;
-				$this->Factory()->Response()->redirectLogin() ;
+				$this->Factory()->Response()->redirectLogin( false ) ;
 			}
 			else if ( $this->isOnLoginPage() )
 			{
@@ -181,25 +181,24 @@ class Auth extends \Slim\Middleware
             $this->Factory()->Response()->redirectLogin() ;
         }
 		
-		$this->app->environment['user'] = array(
+		$this->app->environment['user'] = [
 			'id' 		 => $user->user_id,
 			'name' 	 	 => $user->user_name,
 			'lname' 	 => $user->user_lname,
 			'fname' 	 => $user->user_fname,
 			'group_name' => $user->user_group_name,
 			'group_id' 	 => $user->user_group_id
-		);
+        ];
 		
-		$this->app->view()->appendData(array(
-				'user' => $this->app->environment['user']
-			)
-		);
+		$this->app->view()->appendData([
+            'user' => $this->app->environment['user']
+        ]);
     }
 
     private function logout()
 	{
 		session_destroy();
-		$_SESSION[ $this->app->config('session') ] = array();
+		$_SESSION[ $this->app->config('session') ] = [];
 		
 		return !$this->isLogged();
     }
