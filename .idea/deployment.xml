@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Gomes" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Demo" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
     <serverData>
       <paths name="VPS1 - ADSLBackup">
         <serverdata>
@@ -26,7 +26,7 @@
       <paths name="VPS1 - Demo">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/vendor/jweb/cms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

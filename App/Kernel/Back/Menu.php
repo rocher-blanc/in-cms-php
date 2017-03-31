@@ -99,7 +99,7 @@ class Menu
             'menu'              => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
 			'menuTree'          => $rowsArray,
 			'active_user'       => ACTIVE_USER,
-			'active_emailing'   => ACTIVE_EMAILING,
+			'active_newsletter' => NEWSLETTER_ACTIVE,
 			'color'             => COLOR,
 			'techno'            => TECHNO
         ]);
