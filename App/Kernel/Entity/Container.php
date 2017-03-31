@@ -37,11 +37,6 @@ class Container
         $this->entity = $entity;
     }
 
-    public function setClass( $class )
-    {
-        $this->class = $class;
-    }
-
     public function setRepository( $repository )
     {
         $this->repository = $repository;
@@ -70,17 +65,6 @@ class Container
         }
 
         return $this->entity ;
-    }
-
-    public function getClass()
-    {
-        if ( $this->class === NULL )
-        {
-            $className = "\Project\Module\Entity\Class\\" . $this->getName() ;
-            $this->setClass( new $className );
-        }
-
-        return $this->class ;
     }
 
     public function getRepository( $admin = false )
