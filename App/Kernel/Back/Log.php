@@ -133,6 +133,13 @@ class Log
             103 => "Activation d'un élément \"%i\"",
             104 => "Désactivation d'un élément \"%i\"",
             105 => "Modification de l'ordre des éléments \"%i\"",
+
+            /* NEWSLETTER */
+            /* GROUPES D4ABONNES */
+            200 => "Ajout d'un nouveau groupe d'abonné \"%i\"",
+            201 => "Modification d'un groupe d'abonné \"%i\"",
+            202 => "Suppression d'un groupe d'abonné \"%i\"",
+
         ];
     }
 

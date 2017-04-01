@@ -62,16 +62,6 @@ CREATE TABLE `document` (
   `document_type` varchar(100) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `extension` (`extension_id`, `extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
-(1, 'user', 'Utilisateurs', 1, 1, 1, 0),
-(2, 'group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
-(3, 'langue', 'Langues', 0, 1, 0, 0),
-(5, 'menu', 'Menu', 1, 1, 1, 0),
-(6, 'page', 'Pages spéciales', 1, 1, 1, 0),
-(7, 'parammodule', 'Modules', 0, 1, 0, 0),
-(8, 'user_front', 'Utilisateurs', 1, 1, 1, 1),
-(9, 'user_front_group', 'Groupes d\'utilisateurs', 1, 1, 1, 1);
-
 CREATE TABLE `gallery` (
   `gallery_id` int(11) NOT NULL,
   `gallery_module_id` int(11) DEFAULT NULL,
@@ -93,20 +83,6 @@ CREATE TABLE `lang` (
   `lang_status` int(11) DEFAULT NULL,
   `lang_front` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES
-(1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1),
-(2, 'English', 'Anglais', 'en', 'gb', 'en', 0, 0),
-(3, 'Italiano', 'Italien', 'it', 'it', 'it', 0, 0),
-(4, 'Español', 'Espagnol', 'es', 'es', 'es', 0, 0),
-(5, 'Deutch', 'Allemand', 'de', 'de', 'de', 0, 0),
-(6, 'русский', 'Russe', 'ru', 'ru', 'ru', 0, 0),
-(7, '华人', 'Chinois', 'cn', 'cn', 'cn', 0, 0),
-(8, 'Português', 'Portugais', 'pt', 'pt', 'pt', 0, 0),
-(9, 'Nederlander', 'Néerlandais', 'nl', 'nl', 'nl', 0, 0),
-(10, '日本人', 'Japonnais', 'jp', 'jp', 'jp', 0, 0),
-(11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0),
-(12, 'عربي', 'Arabe', 'ar', 'ar', 'ar', 0, 0);
 
 CREATE TABLE `log` (
   `log_id` int(11) NOT NULL,
@@ -150,6 +126,11 @@ CREATE TABLE `menu_element_lang` (
   `menu_element_lang_lang_id` int(11) NOT NULL,
   `menu_element_lang_menu_element_id` int(11) NOT NULL,
   `menu_element_lang_label`  varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `newsletter_group_sub` (
+  `newsletter_group_sub_id` int(11) NOT NULL,
+  `newsletter_group_sub_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `module` (
@@ -212,22 +193,6 @@ CREATE TABLE `param` (
   `param_value` text 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `param` (`param_id`, `param_key`, `param_value`) VALUES
-(1, 'seo_author', 'JWeb Création'),
-(18, 'security_lock_ip', '0'),
-(5, 'seo_geo_region', NULL),
-(6, 'seo_geo_placename', NULL),
-(7, 'seo_geo_position', NULL),
-(8, 'seo_geo_icbm', NULL),
-(9, 'seo_google_webmaster_tools', NULL),
-(10, 'seo_bing_webmaster_tools', NULL),
-(11, 'seo_google_analytics', NULL),
-(12, 'seo_robots', '0'),
-(13, 'seo_divers_header', NULL),
-(14, 'seo_divers_footer', NULL),
-(15, 'server_cdn', NULL),
-(19, 'security_list_ip', NULL);
-
 CREATE TABLE `permission` (
   `permission_id` int(11) NOT NULL,
   `permission_group_id` int(11) NOT NULL,
@@ -257,11 +222,6 @@ CREATE TABLE `user` (
   `user_type` int(11) DEFAULT NULL,
   `user_published` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `user` (`user_id`, `user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
-(1, 1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
-(2, 1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1),
-(2, 1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
 
 CREATE TABLE `user_front` (
   `user_front_id` int(11) NOT NULL,
@@ -295,10 +255,6 @@ CREATE TABLE `user_group` (
   `user_group_redirect` varchar(250) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, `user_group_redirect`) VALUES
-(1, 'Administrateurs', '/.+;/', '/admin/'),
-(3, 'Utilisateurs', '/.+;/', '/admin/');
-
 ALTER TABLE `domain`
   ADD PRIMARY KEY (`domain_id`);
 
@@ -325,6 +281,9 @@ ALTER TABLE `menu_element`
 
 ALTER TABLE `menu_element_lang`
   ADD PRIMARY KEY (`menu_element_lang_id`);
+  
+ALTER TABLE `newsletter_group_sub`
+  ADD PRIMARY KEY (`newsletter_group_sub_id`);
 
 ALTER TABLE `module`
   ADD PRIMARY KEY (`module_id`);
@@ -397,6 +356,8 @@ ALTER TABLE `module_group`
   MODIFY `module_group_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `module_lang`
   MODIFY `module_lang_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `newsletter_group_sub`
+  MODIFY `newsletter_group_sub_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `page`
   MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `page_lang`
@@ -418,6 +379,55 @@ ALTER TABLE `user_front_profile`
 ALTER TABLE `domain`
   MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `user_group`
-  MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;";
+  MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
+('user', 'Utilisateurs', 1, 1, 1, 0),
+('group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
+('langue', 'Langues', 0, 1, 0, 0),
+('menu', 'Menu', 1, 1, 1, 0),
+('page', 'Pages spéciales', 1, 1, 1, 0),
+('parammodule', 'Modules', 0, 1, 0, 0),
+('user_front', 'Utilisateurs', 1, 1, 1, 1),
+('user_front_group', 'Groupes d\'utilisateurs', 1, 1, 1, 1);
+
+INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES
+(1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1),
+(2, 'English', 'Anglais', 'en', 'gb', 'en', 0, 0),
+(3, 'Italiano', 'Italien', 'it', 'it', 'it', 0, 0),
+(4, 'Español', 'Espagnol', 'es', 'es', 'es', 0, 0),
+(5, 'Deutch', 'Allemand', 'de', 'de', 'de', 0, 0),
+(6, 'русский', 'Russe', 'ru', 'ru', 'ru', 0, 0),
+(7, '华人', 'Chinois', 'cn', 'cn', 'cn', 0, 0),
+(8, 'Português', 'Portugais', 'pt', 'pt', 'pt', 0, 0),
+(9, 'Nederlander', 'Néerlandais', 'nl', 'nl', 'nl', 0, 0),
+(10, '日本人', 'Japonnais', 'jp', 'jp', 'jp', 0, 0),
+(11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0),
+(12, 'عربي', 'Arabe', 'ar', 'ar', 'ar', 0, 0);
+  
+INSERT INTO `param` (`param_key`, `param_value`) VALUES
+('seo_author', 'JWeb Création'),
+('security_lock_ip', '0'),
+('seo_geo_region', NULL),
+('seo_geo_placename', NULL),
+('seo_geo_position', NULL),
+('seo_geo_icbm', NULL),
+('seo_google_webmaster_tools', NULL),
+('seo_bing_webmaster_tools', NULL),
+('seo_google_analytics', NULL),
+('seo_robots', '0'),
+('seo_divers_header', NULL),
+('seo_divers_footer', NULL),
+('server_cdn', NULL),
+('security_list_ip', NULL);
+
+INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
+(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
+(1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1),
+(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
+
+INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, `user_group_redirect`) VALUES
+(1, 'Administrateurs', '/.+;/', '/admin/'),
+(2, 'Utilisateurs', '/.+;/', '/admin/');";
     }
 }
