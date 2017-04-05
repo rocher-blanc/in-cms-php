@@ -238,8 +238,8 @@ class Webservice
 
     protected function printArray( $array )
     {
-        http_response_code(200);
-        echo json_encode($array);
+        http_response_code( 200 );
+        echo json_encode( $array );
     }
 
     protected function error( $msg , $code )
