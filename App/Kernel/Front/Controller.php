@@ -563,15 +563,20 @@ class Controller
 
     protected function getallAction()
     {
-        $result = $this->getRepository()->lastUpdated();
-
-        if ( $result )
+        if ( ! DEBUG )
         {
-            $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-            $this->getApp()->lastModified( intval( $date->format('U') ) );
+            $result = $this->getRepository()->lastUpdated();
+            if ( $result )
+            {
+                $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
+                $this->getApp()->lastModified( intval( $date->format('U') ) );
+            }
+        }
 
-            $all = $this->getRepository()->findAll();
+        $all = $this->getRepository()->findAll();
 
+        if ( $all )
+        {
             $elmts = [] ;
             foreach( $all as $row )
             {

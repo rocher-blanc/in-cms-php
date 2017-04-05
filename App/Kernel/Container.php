@@ -63,7 +63,7 @@ class Container
     public function newClass( $namespace )
     {
         $customNamespace = str_replace('App\Kernel' , 'Project\CustomClass' , $namespace );
-        $file = str_replace( '\\' , '/' , $customNamespace ) . ".php" ;
+        $file = _PATH_ . '/' . str_replace( '\\' , '/' , $customNamespace ) . ".php" ;
 
         if ( file_exists( $file ) )
         {
@@ -73,8 +73,6 @@ class Container
         {
             return new $namespace ;
         }
-
-        return NULL ;
     }
 
     /* ***************************************************** */

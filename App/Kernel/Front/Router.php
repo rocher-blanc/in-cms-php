@@ -60,6 +60,11 @@ class Router
         return \App\Kernel\Front\User::getInstance() ;
     }
 
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
+
     protected function getOffset()
     {
         return $this->_offset ;
@@ -169,6 +174,12 @@ class Router
                     $this->updateRoute() ;
                     $this->displayDefaultPage() ;
                 }
+                else if ( $this->isWebservice() )
+                {
+                    // c'est un webservice
+                    $this->updateRoute() ;
+                    $this->displayWebservice() ;
+                }
                 else if ( $this->isModule() )
                 {
                     $this->updateRoute() ;
@@ -258,8 +269,11 @@ class Router
 
     protected function isWebservice()
     {
-        if ( $this->getUrl(0) == 'api' ) return true ;
-        else                             return false ;
+        if ( $this->Lang()->count() > 1 )   $offset = 1;
+        else                                $offset = 0;
+
+        if ( $this->getUrl( $offset ) == 'api' ) return true ;
+        else                                     return false ;
     }
 
     protected function isPage()
@@ -341,19 +355,8 @@ class Router
 
     protected function displayWebservice()
     {
-        $result = \DB::for_table('module')
-            ->select('module_class_name')
-            ->where(['module_class_name' => $this->getUrl(1), 'module_active' => 1])
-            ->find_one();
-
-        if ( $result )
-        {
-
-        }
-        else
-        {
-
-        }
+        $Webservice = $this->Container()->newClass("App\Kernel\Front\Webservice");
+        $Webservice->display();
     }
 
     protected function displayModuleElement( $mp = true )

@@ -51,6 +51,48 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->getKit()->find_many();
     }
 
+    public function findApi( $filter = [] , $order = '' , $limit = '' , $offset = '' )
+    {
+        if ( $order != '' )
+        {
+            $rst = $this->getKit( false );
+
+            if ( substr( $order , 0 , 1 ) == '-' )
+            {
+                $field = substr( $order , 1 ) ;
+                $rst = $rst->order_by_desc( $this->getEntity()->get( $field )->fieldSql() ) ;
+            }
+            else
+            {
+                $rst = $rst->order_by_asc( $this->getEntity()->get( $order )->fieldSql() ) ;
+            }
+        }
+        else
+        {
+            $rst = $this->getKit();
+        }
+
+        if ( $limit != '' )
+        {
+            $rst = $rst->limit( $limit );
+        }
+
+        if ( $offset != '' )
+        {
+            $rst = $rst->offset( $offset );
+        }
+
+        if ( $filter )
+        {
+            foreach( $filter as $key => $value )
+            {
+                $rst = $rst->where_equal( $this->getEntity()->get( $key )->fieldSql() , $value ) ;
+            }
+        }
+
+        return $rst->find_many();
+    }
+
     public function getKit( $order = true )
     {
         $all = \DB::for_module( $this->getName() );
