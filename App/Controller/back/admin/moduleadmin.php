@@ -68,6 +68,17 @@ $app->group('/moduleadmin', function () use ($app)
             $contentRow->module_active 		= 1 ;
             $contentRow->save() ;
 
+            // On génère le webservice
+            $php = '' ;
+            $php.= "<"."?"."php\n\n" ;
+            $php.= "namespace Project\Module\Webservice;\n\n" ;
+            $php.= "class " . $name . " extends \App\Kernel\Front\WebserviceModule\n" ;
+            $php.= "{\n" ;
+            $php.= "\t\n" ;
+            $php.= "}" ;
+            if ( ! file_exists( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" , $php );
+
+
             $tab = ["Back","Front"];
 
             // On génére le repository

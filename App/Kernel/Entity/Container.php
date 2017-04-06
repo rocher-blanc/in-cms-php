@@ -12,6 +12,7 @@ class Container
     private $class      = NULL ;
     private $entity     = NULL ;
     private $controller = NULL ;
+    private $webservice = NULL ;
     private $name       = NULL ;
 
     /* ************************************************** */
@@ -40,6 +41,11 @@ class Container
     public function setRepository( $repository )
     {
         $this->repository = $repository;
+    }
+
+    public function setWebservice( $webservice )
+    {
+        $this->webservice = $webservice;
     }
 
     public function setController( $controller )
@@ -74,10 +80,21 @@ class Container
             $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
 
             $this->setRepository( new $name( $this->getName() ) );
-            // $this->setRepository( \App\Kernel\Container::getInstance()->get('em')->getRepository( "\Project\Module\Entity\Class\\" . $this->getName() ) );
         }
 
         return $this->repository ;
+    }
+
+    public function getWebservice()
+    {
+        if ( $this->webservice === NULL )
+        {
+            $name = "\Project\Module\Webservice\\" . $this->getName() ;
+
+            $this->setWebservice( new $name( $this->getName() ) );
+        }
+
+        return $this->webservice ;
     }
 
     public function getController( $admin = false , $opt = [] )

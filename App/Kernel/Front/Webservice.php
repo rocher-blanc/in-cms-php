@@ -17,7 +17,7 @@ class Webservice
     public function __construct()
     {
         $this->loadUrl() ;
-        $this->App()->response->headers->set('Content-Type', 'application/json');
+        header('Content-Type: application/json');
     }
 
     /* ************************************************** */
@@ -87,6 +87,16 @@ class Webservice
         }
     }
 
+    protected function isCustomElement()
+    {
+        $output = preg_replace( '/[^0-9]/', '', $this->getUrl(2) );
+        if ( $this->getUrl(2) !== NULL && $output == '' )
+        {
+            $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
+            if ( $ws->isDeclare( $_SERVER['REQUEST_METHOD'] , $this->getUrl(2) )
+        }
+    }
+
     /* ************************************************** */
     /* *******************   TOOLS   ******************** */
     /* ************************************************** */
@@ -135,6 +145,10 @@ class Webservice
                 {
                     $this->displayElementModule();
                 }
+                else if ( $this->isCustomElement() )
+                {
+                    $this->displayCustomElementModule();
+                }
                 else
                 {
                     $this->displayModule();
@@ -149,44 +163,20 @@ class Webservice
 
     protected function displayModule()
     {
-        $module = $this->Container()->module( $this->getUrl(1) )->getController() ;
+        $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
         $filter = $this->deleteParams( $_GET ) ;
         $sort  = $this->checkSort( $_GET['sort'] ) ;
         $limit  = $this->checkLimit( $_GET['limit'] ) ;
         $offset = $this->checkOffset( $_GET['offset'] ) ;
 
-        $all = $module->getRepository()->findApi( $filter , $sort , $limit , $offset );
-
-        if ( $all )
-        {
-            $elmts = [];
-            foreach( $all as $row )
-            {
-                $elmts[] = $module->parseValue( $row );
-            }
-
-            $this->printArray( $elmts ) ;
-        }
-        else
-        {
-            $this->printArray( [] );
-        }
+        return $ws->displayGetAll( $filter , $sort , $limit , $offset );
     }
 
     protected function displayElementModule()
     {
-        $module = $this->Container()->module( $this->getUrl(1) )->getController() ;
+        $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
 
-        $one = $module->getRepository()->findOne( $this->getUrl(2) );
-
-        if ( $one )
-        {
-            $this->printArray( $module->parseValue( $one ) ) ;
-        }
-        else
-        {
-            $this->printArray( [] );
-        }
+        return $ws->displayGetOne( $this->getUrl(2) ) ;
     }
 
     /* ************************************************** */
@@ -235,13 +225,6 @@ class Webservice
     /* ************************************************** */
     /* ******************    ERRORS    ****************** */
     /* ************************************************** */
-
-    protected function printArray( $array )
-    {
-        http_response_code( 200 );
-        echo json_encode( $array );
-        die;
-    }
 
     protected function error( $msg , $code )
     {

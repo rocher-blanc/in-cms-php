@@ -22,14 +22,14 @@ class Install
         $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
         $path   = str_replace( $vendor , "" , $path );
 
-        define('_PATH_', $path );
-        define('PROJECT_PATH', _PATH_ . '/Project');
-        define("VENDOR_PATH", _PATH_ . "/vendor");
+        defined('_PATH_') || define('_PATH_', $path );
+        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
+        defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
-        define('WEB_PATH', _PATH_ . '/web');
-        define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
-        define('ASSET_PATH', WEB_PATH . '/assets');
-        define('BOWER_PATH', ASSET_PATH . '/vendor');
+        defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
+        defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
+        defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
+        defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
 
         require VENDOR_PATH . '/autoload.php';
         require KERNEL_PATH . '/DB.php';
@@ -209,6 +209,7 @@ class Install
             "Project/Controller/Back",
             "Project/Controller/Front",
             "Project/Module",
+            "Project/Module/Webservice",
             "Project/Module/Repository",
             "Project/Module/Repository/Back",
             "Project/Module/Repository/Front",
