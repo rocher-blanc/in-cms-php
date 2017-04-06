@@ -184,8 +184,9 @@ class Webservice
     protected function displayModule()
     {
         $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
+
         $filter = $this->deleteParams( $_GET ) ;
-        $sort  = $this->checkSort( $_GET['sort'] ) ;
+        $sort   = $this->checkSort( $_GET['sort'] ) ;
         $limit  = $this->checkLimit( $_GET['limit'] ) ;
         $offset = $this->checkOffset( $_GET['offset'] ) ;
 
@@ -227,6 +228,11 @@ class Webservice
     /* ************************************************** */
     /* *****************   SECURITY   ******************* */
     /* ************************************************** */
+
+    protected function isNumber( $var )
+    {
+        return ( preg_replace( '/[^0-9]/', '', $var ) != '' ? true : false );
+    }
 
     protected function checkSort( $var )
     {
