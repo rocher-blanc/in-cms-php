@@ -10,7 +10,6 @@ class WebserviceModule
 
     protected $name = NULL ;
     protected $route = [] ;
-    protected $router = [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -76,7 +75,6 @@ class WebserviceModule
                         return true ;
                     }
                 }
-
                 return false ;
             }
 
@@ -107,7 +105,6 @@ class WebserviceModule
     protected function add( $method , $route , $callback )
     {
         $this->route[ strtoupper( $method ) ][ $route ] = $callback ;
-        $this->router[ strtoupper( $method ) ][ $route ] = $route ;
     }
 
     protected function get( $route , $callback )
@@ -211,29 +208,17 @@ class WebserviceModule
         {
             foreach( $this->matches as $key => $row )
             {
-                $this->test[ $this->params[ $key ] ] = $this->matches[ $key ] ;
-                dump( $this->params[ $key ] . " /// " . $this->matches[ $key ]  );
+                $this->args[ $this->params[ $key ] ] = $this->matches[ $key ] ;
             }
         }
-
-        dump("tttttttttttttttttttt");
-        dump( $this->matches );
-        dump( $this->test );
-        dump( $this->params );
-        dump("rrrrrrrrrrrrrrrrrrrrr");
 
         return true;
     }
 
     private function paramMatch( $match )
     {
-        dump('match');
-        dump( $match);
-        if ( isset( $this->params[ $match[1] ] ) )
-        {
-            return '(' . $this->params[ $match[1] ] . ')';
-        }
-        dump( $match[1] . " --- " . $match[2] . " --- " . $match[0] . " --- " . $this->matches[ $match[1] ] );
+        $this->params[] = $match[1] ;
+
         return '([^/]+)';
     }
 
