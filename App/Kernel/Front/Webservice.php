@@ -17,7 +17,7 @@ class Webservice
     public function __construct()
     {
         $this->loadUrl() ;
-        header('Content-Type: application/json');
+        // header('Content-Type: application/json');
     }
 
     /* ************************************************** */

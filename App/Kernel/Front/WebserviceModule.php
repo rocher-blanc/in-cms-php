@@ -10,6 +10,7 @@ class WebserviceModule
 
     protected $name = NULL ;
     protected $route = [] ;
+    protected $router = [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -66,6 +67,19 @@ class WebserviceModule
 
         if ( array_key_exists( $method , $this->route ) )
         {
+            if ( ! empty( $this->route ) )
+            {
+                foreach( $this->route[ $method ] as $subRoute => $callback )
+                {
+                    if ( $this->match( $subRoute , $route , $method ) == true )
+                    {
+                        return true ;
+                    }
+                }
+
+                return false ;
+            }
+
             if ( array_key_exists( $route , $this->route[ $method ] ) )
             {
                 return true ;
@@ -90,9 +104,30 @@ class WebserviceModule
 
     }
 
-    protected function register( $method , $route , $callback )
+    protected function add( $method , $route , $callback )
     {
         $this->route[ strtoupper( $method ) ][ $route ] = $callback ;
+        $this->router[ strtoupper( $method ) ][ $route ] = $route ;
+    }
+
+    protected function get( $route , $callback )
+    {
+        $this->add( 'GET' , $route , $callback ) ;
+    }
+
+    protected function post( $route , $callback )
+    {
+        $this->add( 'POST' , $route , $callback ) ;
+    }
+
+    protected function put( $route , $callback )
+    {
+        $this->add( 'PUT' , $route , $callback ) ;
+    }
+
+    protected function delete( $route , $callback )
+    {
+        $this->add( 'DELETE' , $route , $callback ) ;
     }
 
     /* ************************************************** */
@@ -135,16 +170,71 @@ class WebserviceModule
 
     public function displayCustom( $route , $method )
     {
-        $function = $this->getCallback( $route , $method ) ;
+        foreach( $this->route[ $method ] as $subRoute => $callback )
+        {
+            if ( $this->match( $subRoute , $route , $method ) == true )
+            {
+                $function = $this->getCallback( $subRoute , $method ) ;
 
-        if ( method_exists( $this , $function ) == true )
-        {
-            $this->printArray( $this->$function() ) ;
+                if ( method_exists( $this , $function ) == true )
+                {
+                    $this->printArray( $this->$function() ) ;
+                }
+                else
+                {
+                    $this->printArray();
+                }
+            }
         }
-        else
+    }
+
+    /* ************************************************** */
+    /* ******************    MACTH    ******************* */
+    /* ************************************************** */
+
+    public function match( $url , $route , $method )
+    {
+        $this->params = [];
+        $route = trim( $route, '/' );
+        $path  = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $url);
+        $regex = "#^$path$#i";
+
+        if ( ! preg_match( $regex , $route , $matches ) )
         {
-            $this->printArray();
+            return false;
         }
+
+        array_shift( $matches );
+        $this->matches = $matches;
+
+        if ( $this->matches )
+        {
+            foreach( $this->matches as $key => $row )
+            {
+                $this->test[ $this->params[ $key ] ] = $this->matches[ $key ] ;
+                dump( $this->params[ $key ] . " /// " . $this->matches[ $key ]  );
+            }
+        }
+
+        dump("tttttttttttttttttttt");
+        dump( $this->matches );
+        dump( $this->test );
+        dump( $this->params );
+        dump("rrrrrrrrrrrrrrrrrrrrr");
+
+        return true;
+    }
+
+    private function paramMatch( $match )
+    {
+        dump('match');
+        dump( $match);
+        if ( isset( $this->params[ $match[1] ] ) )
+        {
+            return '(' . $this->params[ $match[1] ] . ')';
+        }
+        dump( $match[1] . " --- " . $match[2] . " --- " . $match[0] . " --- " . $this->matches[ $match[1] ] );
+        return '([^/]+)';
     }
 
     /* ************************************************** */
