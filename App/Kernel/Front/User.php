@@ -160,7 +160,7 @@ class User extends \App\Kernel\Common\User
 
     protected function getIp()
     {
-        return $this->CMS()->request()->getIp() ;
+        return $_SERVER['REMOTE_ADDR'] ;
     }
 
     protected function returnError( $key , $result = false )

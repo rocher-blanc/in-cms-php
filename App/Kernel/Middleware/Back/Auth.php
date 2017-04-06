@@ -133,7 +133,7 @@ class Auth extends \Slim\Middleware
 
     private function getIp()
 	{
-		return $this->app->request()->getIp() ;
+		return $_SERVER['REMOTE_ADDR'] ;
     }
 
     private function isBadIp()

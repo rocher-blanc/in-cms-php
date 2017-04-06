@@ -92,8 +92,24 @@ class Webservice
         $output = preg_replace( '/[^0-9]/', '', $this->getUrl(2) );
         if ( $this->getUrl(2) !== NULL && $output == '' )
         {
-            $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
-            if ( $ws->isDeclare( $_SERVER['REQUEST_METHOD'] , $this->getUrl(2) )
+            $num = 3;
+            if ( $this->Lang()->count() > 1 ) $num++; // on coupe le langage
+
+            $ws  = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
+            $url = implode( '/' , $this->Factory()->Url()->cutUrl( $num ) );
+
+            if ( $ws->isDeclare( $_SERVER['REQUEST_METHOD'] , $url ) )
+            {
+                return true ;
+            }
+            else
+            {
+                return false ;
+            }
+        }
+        else
+        {
+            return false ;
         }
     }
 
@@ -149,9 +165,13 @@ class Webservice
                 {
                     $this->displayCustomElementModule();
                 }
-                else
+                else if ( $this->getUrl(2) === NULL )
                 {
                     $this->displayModule();
+                }
+                else
+                {
+                    return $this->error( "Ressource doesn't exist" , 404 ) ;
                 }
             }
         }
@@ -177,6 +197,17 @@ class Webservice
         $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
 
         return $ws->displayGetOne( $this->getUrl(2) ) ;
+    }
+
+    protected function displayCustomElementModule()
+    {
+        $ws = $this->Container()->module( $this->getUrl(1) )->getWebservice() ;
+
+        $num = 3;
+        if ( $this->Lang()->count() > 1 ) $num++; // on coupe le langage
+        $url = implode( '/' , $this->Factory()->Url()->cutUrl( $num ) );
+
+        return $ws->displayCustom( $url , $_SERVER['REQUEST_METHOD'] ) ;
     }
 
     /* ************************************************** */

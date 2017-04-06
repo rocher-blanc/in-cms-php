@@ -9,6 +9,7 @@ class WebserviceModule
     /* ************************************************** */
 
     protected $name = NULL ;
+    protected $route = [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -17,6 +18,7 @@ class WebserviceModule
     public function __construct( $name )
     {
         $this->name = $name ;
+        $this->load() ;
     }
 
     /* ************************************************** */
@@ -46,7 +48,51 @@ class WebserviceModule
 
     protected function getRepository()
     {
-        return $this->getController()->getRespository() ;
+        return $this->getController()->getRepository() ;
+    }
+
+    protected function getCallback( $route , $method )
+    {
+        return "WS" . $this->route[ $method ][ $route ] ;
+    }
+
+    /* ************************************************** */
+    /* ******************    ISER     ******************* */
+    /* ************************************************** */
+
+    public function isDeclare( $method , $route )
+    {
+        $method = strtoupper( $method );
+
+        if ( array_key_exists( $method , $this->route ) )
+        {
+            if ( array_key_exists( $route , $this->route[ $method ] ) )
+            {
+                return true ;
+            }
+            else
+            {
+                return false ;
+            }
+        }
+        else
+        {
+            return false ;
+        }
+    }
+
+    /* ************************************************** */
+    /* ******************   DECLARE   ******************* */
+    /* ************************************************** */
+
+    protected function load()
+    {
+
+    }
+
+    protected function register( $method , $route , $callback )
+    {
+        $this->route[ strtoupper( $method ) ][ $route ] = $callback ;
     }
 
     /* ************************************************** */
@@ -80,6 +126,20 @@ class WebserviceModule
         if ( $one )
         {
             $this->printArray( $this->getController()->parseValue( $one ) ) ;
+        }
+        else
+        {
+            $this->printArray();
+        }
+    }
+
+    public function displayCustom( $route , $method )
+    {
+        $function = $this->getCallback( $route , $method ) ;
+
+        if ( method_exists( $this , $function ) == true )
+        {
+            $this->printArray( $this->$function() ) ;
         }
         else
         {
