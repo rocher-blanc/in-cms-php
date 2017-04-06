@@ -218,7 +218,6 @@ class WebserviceModule
     private function paramMatch( $match )
     {
         $this->params[] = $match[1] ;
-
         return '([^/]+)';
     }
 
