@@ -206,7 +206,7 @@ class DB extends ORM
         {
             if ( $field->getData('SQL_DEFAULT') !== NULL )
             {
-                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") " . ( $field->getData('notEmpty') ? "NOT " : "" ) . " NULL DEFAULT '" . $field->getData('SQL_DEFAULT') . "'"  ;
+                return "`" . $field->getColumn() . "` " . $field->getData('SQL_TYPE') . "(" . $field->getData('SQL_VALUE') . ") NOT NULL DEFAULT '" . $field->getData('SQL_DEFAULT') . "'"  ;
             }
             else
             {
