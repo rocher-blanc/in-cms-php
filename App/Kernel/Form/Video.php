@@ -22,7 +22,7 @@ class Video extends \App\Kernel\Back\Form
         <div class="input-group input-group-icon">
             <span class="input-group-addon">
                 <span class="icon">
-                    <i class="fa fa-link"></i>
+                    <i class="fa fa-video-camera"></i>
                 </span>
             </span>
             <input type="text" value="' . $value . '" data-video placeholder="http://youtu.be/xxxxxxx" class="form-control" name="' . $name . '" id="id_' . $name . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . ' />
