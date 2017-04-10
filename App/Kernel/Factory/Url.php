@@ -219,6 +219,10 @@ class Url
                 $url = $protocol . '://' . $domain->domain_name . '/' ;
             }
         }
+        else
+        {
+            $url = \App\Kernel\Http::getInstance()->getUrl() . "/" ;
+        }
 
         if ( $cLang ) 	return ( $urlFull ? $url : '' ) . ( \App\Kernel\Lang::getInstance()->count() > 1 ? "/" . \App\Kernel\Lang::getInstance()->getActive()->url . "/" : '' ) . ( $cLang->page_default == 1 ? '' : $cLang->page_lang_url ) ;
         else			return "#" ;
