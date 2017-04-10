@@ -16,11 +16,11 @@
                 <div class="tab-content">
                     <div class="tab-pane active panel-body">
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Activé le filtre IP pour l'administration</label>
+                            <label class="col-md-3 control-label">Activer le filtre IP pour l'administration</label>
                             <div class="col-md-6">
                                 <input value="1" type="checkbox"{{ lock_ip == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="security_lock_ip" id="security_lock_ip" />
                                 <span class="help-block">
-                                    Quand cette option est activée, seul les personnes ayant leur adresse IP dans la liste ci-dessous auront accès à l'administration.
+                                    Quand cette option est activée, seules les personnes ayant leur adresse IP dans la liste ci-dessous auront accès à l'administration.
                                 </span>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="alert alert-danger col-md-12">
-                                <i class="fa fa-exclamation-triangle "></i> Il est impossible d'activé cette option si votre IP ne figure pas dans le liste des adresses autorisées. Votre adresse IP est <strong>{{ ip }}</strong>
+                                <i class="fa fa-exclamation-triangle "></i> Il est impossible d'activer cette option si votre IP ne figure pas dans le liste des adresses autorisées. Votre adresse IP est <strong>{{ ip }}</strong>
                             </div>
                         </div>
                         <div class="row">

@@ -511,6 +511,14 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isVideo()
+    {
+        $this->field()->setData( "SQL_VALUE" , 255 ) ;
+        $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
+        $this->field()->setData( "type" , "video" ) ;
+        return $this ;
+    }
+
     protected function isIndex()
     {
         $this->field()->setData( "SQL_VALUE" , 1 ) ;
@@ -723,12 +731,6 @@ class Builder extends Model
         $this->field()->setLang() ;
         if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getName() ) ;
         $this->setMultilang() ;
-        return $this ;
-    }
-
-    protected function search()
-    {
-        $this->field()->setData( "search" , true ) ;
         return $this ;
     }
 
