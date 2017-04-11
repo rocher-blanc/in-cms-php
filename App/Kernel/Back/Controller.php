@@ -1136,12 +1136,14 @@ class Controller
 
     protected function render( $template )
     {
-        $this->getApp()->render( 'module/' . $template , $this->getRender() );
+        $View = $this->Container()->newClass('App\Kernel\View');
+        $View->render( 'module/' . $template , $this->getRender() );
     }
 
     protected function fetch( $template )
     {
-        return $this->getApp()->view()->fetch( 'module/' . $template , $this->getRender() );
+        $View = $this->Container()->newClass('App\Kernel\View');
+        return $View->fetch( 'module/' . $template , $this->getRender() );
     }
 
     /* ************************************************** */

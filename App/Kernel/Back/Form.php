@@ -13,6 +13,7 @@ class Form
     protected $_cdn_js  = '' ;
     protected $_cdn_css = '' ;
     protected $_id      = NULL ;
+    protected $view     = NULL ;
 
     /* ************************************************** */
     /* ******************   TOOLS   ********************* */
@@ -21,6 +22,21 @@ class Form
     protected function Factory()
     {
         return \App\Kernel\Factory::getInstance() ;
+    }
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
+
+    protected function View()
+    {
+        if ( $this->view === NULL )
+        {
+            $this->view = $this->Container()->newClass('App\Kernel\View') ;
+        }
+
+        return $this->view ;
     }
 
     /* ************************************************** */

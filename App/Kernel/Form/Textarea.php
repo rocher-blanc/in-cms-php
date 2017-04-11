@@ -6,9 +6,6 @@ class Textarea extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
     {
-        $html = '' ;
-        $input = '<textarea class="form-control' . ( $field->getData('editor') == true ? ' cke' : '' ) . '" name="' . $name . '" id="id_' . $field->getColumn() . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . '>' . htmlspecialchars( $value ) . '</textarea>' ;
-
         if ( $field->getData('editor') == true )
         {
             $this->_lib_js  = [
@@ -17,23 +14,14 @@ class Textarea extends \App\Kernel\Back\Form
             ];
         }
 
-        if ( $field->hasLang() )
-        {
-            $html = '
-            <div style="margin-bottom:10px;" class="input-group input-group-icon">
-                <span class="input-group-addon">
-                    <span class="icon">
-                        <i class="flag-icon flag-icon-' . $field->getData('flag') . '"></i>
-                    </span>
-                </span>
-                ' . $input . '
-            </div>' ;
-        }
-        else
-        {
-            $html = $input;
-        }
-
-        return $html ;
+        return $this->View()->fetch( 'form/textarea.twig.html' , [
+            'name' => $name,
+            'value' => $value,
+            'editor' => $field->getData('editor'),
+            'column' => $field->getColumn(),
+            'hasFlag' => $field->hasLang(),
+            'flag' => $field->getData('flag'),
+            'required' => $field->isRequired()
+        ]);
     }
 }
