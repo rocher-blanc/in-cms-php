@@ -31,6 +31,15 @@ class Gallery extends \App\Kernel\Back\Form
         $Gal->setFolder( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getEntity()->getFolder() );
         $rst = $Gal->getAllByField();
 
+        return $this->View()->fetch( 'form/gallery.twig.html' , [
+            'rst' => $rst,
+            'name' => $name,
+            'value' => $value,
+            'field_name' => $field->getName(),
+            'hasCrop' => $field->hasCrop(),
+            'module' => $field->getData('module')
+        ]);
+
         $html = '
         <input type="hidden" value="' . $value . '" name="' . $name . '" id="id_element_dropzone" />
         <input type="hidden" value="' . $field->getName() . '" name="field_dropzone" id="field_dropzone" />
