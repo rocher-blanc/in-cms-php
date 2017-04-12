@@ -16,7 +16,7 @@ abstract class LanguageModel
 
     public function get( $key )
     {
-        if ( array_key_exists( $key , $this->getVar() ) )   return $this->a[ $key ];
+        if ( array_key_exists( $key , $this->getVar() ) )   return html_entity_decode( $this->a[ $key ] );
         else if ( DEBUG === true )                          return '##' . $key . '##' ;
         else                                                return '' ;
     }
