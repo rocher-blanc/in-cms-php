@@ -5,8 +5,8 @@
             <i class="flag-icon flag-icon-{{ flag }}"></i>
         </span>
     </span>
-{% endif %}
-    <textarea class="form-control{{ editor ? ' cke' : '' }}" name="{{ name }}" id="id_{{ column }}"{{ required ? ' required="1"' : '' }}>{{ value }}</textarea>
-{% if hasFlag %}
+    {% endif %}
+    <input type="text" value="{{ value }}" class="form-control" name="{{ name }}" id="id_{{ name }}" maxlength="{{ maxlength }}"{{ required ? ' required="1"' : '' }} />
+    {% if hasFlag %}
 </div>
 {% endif %}

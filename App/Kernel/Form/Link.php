@@ -6,19 +6,11 @@ class Link extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
-        $html = '' ;
-        $input = '<input type="text" value="' . $value . '" placeholder="http://" class="form-control" name="' . $name . '" id="id_' . $name . '" maxlength="' . $field->getData('maxLength') . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . ' />' ;
-
-        $html = '
-        <div class="input-group input-group-icon">
-            <span class="input-group-addon">
-                <span class="icon">
-                    <i class="fa fa-link"></i>
-                </span>
-            </span>
-            ' . $input . '
-        </div>' ;
-
-        return $html ;
+        return $this->View()->fetch( 'form/link.twig.html' , [
+            'name' => $name,
+            'value' => $value,
+            'maxlength' => $field->getData('maxLength'),
+            'required' => $field->isRequired()
+        ]);
 	}
 }

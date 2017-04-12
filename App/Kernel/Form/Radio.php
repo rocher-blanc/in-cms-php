@@ -14,9 +14,10 @@ class Radio extends \App\Kernel\Back\Form
 	{
 		$this->_lib_js  = 'switchery/dist/switchery.min.js';
 		$this->_lib_css = 'switchery/dist/switchery.min.css';
-		
-		return '
-		<input type="hidden" name="' . $name . '" value="0" />
-		<input type="checkbox" value="1"' . ( $value == 1 ? ' checked="checked"' : '' ) . ' data-plugin-ios-switch name="' . $name . '" id="id_' . $name . '">' ;
-	}
+
+        return $this->View()->fetch( 'form/radio_boolean.twig.html' , [
+            'name' => $name,
+            'value' => $value
+        ]);
+    }
 }

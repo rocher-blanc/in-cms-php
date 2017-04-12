@@ -6,6 +6,14 @@ class Number extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
+        return $this->View()->fetch( 'form/text.twig.html' , [
+            'name' => $name,
+            'value' => htmlspecialchars( $value ),
+            'step' => $field->getData('step'),
+            'hasFlag' => $field->hasLang(),
+            'flag' => $field->getData('flag'),
+            'required' => $field->isRequired()
+        ]);
         $html = '' ;
         $input = '<input type="number" step="' . $field->getData('step') . '" value="' . $value . '" class="form-control" name="' . $name . '" id="id_' . $name . '"' . ( $field->isRequired() ? ' required="1"' : '' ) . ' />' ;
 

@@ -6,7 +6,7 @@
         </span>
     </span>
 {% endif %}
-    <textarea class="form-control{{ editor ? ' cke' : '' }}" name="{{ name }}" id="id_{{ column }}"{{ required ? ' required="1"' : '' }}>{{ value }}</textarea>
+    <input type="number" step="{{ step }}" value="{{ value }}" class="form-control" name="{{ name }}" id="id_{{ name }}" {{ required ? ' required="1"' : '' }} />
 {% if hasFlag %}
 </div>
 {% endif %}
