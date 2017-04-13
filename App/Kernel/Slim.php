@@ -73,6 +73,7 @@ class Slim
 	
 	public function initMiddleware()
 	{
+        $this->_slim->add(new \App\Kernel\Middleware\PrettyExceptions);
         $this->_slim->add(new \App\Kernel\Middleware\SessionCrypt([
             'expires' => '60 minutes',
             'path' => '/',
@@ -145,13 +146,6 @@ class Slim
 	{
 		// Seulement appelée si le mode est "production"
 		$this->_slim->configureMode('production', function () {
-            /*
-            $this->_slim->config([
-                'log.enable' => true,
-                'debug' 	 => false,
-                'twig.debug' => false
-            ]);
-            */
             $this->_slim->config([
                 'log.enable' => false,
                 'cache' 	 => false,
