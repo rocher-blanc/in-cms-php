@@ -26,7 +26,7 @@
 								<input type="hidden" value="{{ by }}" name="by" id="bySearch" />
 								<input type="hidden" value="1" name="search" />
 							{% endif %}
-							{% if thvalue.type == 'text' %}
+							{% if thvalue.type == 'text' or thvalue.type == 'hidden' %}
 								<input type="text" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
 							{% elseif thvalue.type == 'date' %}
 								<div class="date-range" id="range-{{ thvalue.name }}">
