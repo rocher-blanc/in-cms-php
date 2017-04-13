@@ -14,25 +14,29 @@
                     <h2 class="panel-title">{{ this_page }}</h2>
                 </header>
                 <div class="panel-body">
-                    {% for c in field %}
-                    <div class="form-group{% if c.error != '' %} has-error{% endif %}">
-                        {% if c.type == 'builder' %}
-                            <div class="col-md-12">
-                                {{ c.Form_HTML }}
-                                {% if c.comment != '' %}<span class="help-block">{{ c.comment }}</span>{% endif %}
-                            </div>
-                        {% else %}
-                            <label class="col-md-3 control-label">{{ c.title }}{% if c.required != '' %} <span style="color: red;">*</span>{% endif %}</label>
-                            <div class="col-md-{{ c.type == 'image' ? '9' : '6' }}">
-                                {{ c.Form_HTML }}
-                                {% if c.comment != '' %}<span class="help-block">{{ c.comment }}</span>{% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
+
+                    {% for c in field if c.type != 'hidden' %}
+                        <div class="form-group{% if c.error != '' %} has-error{% endif %}">
+                            {% if c.type == 'builder' %}
+                                <div class="col-md-12">
+                                    {{ c.Form_HTML }}
+                                    {% if c.comment != '' %}<span class="help-block">{{ c.comment }}</span>{% endif %}
+                                </div>
+                            {% else %}
+                                <label class="col-md-3 control-label">{{ c.title }}{% if c.required != '' %} <span style="color: red;">*</span>{% endif %}</label>
+                                <div class="col-md-{{ c.type == 'image' ? '9' : '6' }}">
+                                    {{ c.Form_HTML }}
+                                    {% if c.comment != '' %}<span class="help-block">{{ c.comment }}</span>{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
                     {% endfor %}
 
                     <div class="row">
                         <div class="col-md-2">
+                            {% for c in field if c.type == 'hidden' %}
+                                {{ c.Form_HTML }}
+                            {% endfor %}
                             <a id="btn_back" href="{{ siteUrl('/module/' ~ mod.name ) }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
                         </div>
                         <div class="col-md-5 col-md-offset-5 text-right">

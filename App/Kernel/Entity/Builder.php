@@ -575,6 +575,15 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isHidden( $type , $size , $defaut )
+    {
+        $this->field()->setData( "SQL_VALUE" , $size ) ;
+        $this->field()->setData( "SQL_TYPE" , $type ) ;
+        $this->field()->setData( "SQL_DEFAULT" , $defaut ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
+        return $this ;
+    }
+
     protected function isDate( $hour = false )
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
