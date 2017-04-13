@@ -61,24 +61,28 @@ class PrettyExceptions extends \Slim\Middleware
 
     private function getSlackNotification( $e )
     {
-        $data_string = '{
-        "username": "JWeb-Bot",
-        "icon_emoji": ":jweb:",
-        "channel": "#errors",
-        "attachments": [
-        {
-            "color": "#ffab40",
-            "author_name": "JContent",
-            "title": "Erreur sur un projet client - ' . $_SERVER['SERVER_NAME'] . '",
-            "title_link": "http://' . $_SERVER['SERVER_NAME'] . '/' . $_SERVER['REDIRECT_URL'] . '",
-            "text": "Type: ' . addslashes( get_class($e) ) . '\n
-Code: ' . addslashes( $e->getCode() ) . '\n
-Message: ' . addslashes( $e->getMessage() ) . '\n
-File: ' . addslashes( $e->getFile() ) . '\n
-Line: ' . addslashes( $e->getLine() ) . '"
-                }
-    ]
-}';
+        $msg = new \stdClass;
+        $msg->color = "#ffab40" ;
+        $msg->author_name = "JWeb" ;
+        $msg->title = "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] ;
+        $msg->title_link = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $_SERVER['REDIRECT_URL'] ;
+        $msg->text = "Type: " . get_class($e) . "\n";
+        $msg->text.= "Code: " . $e->getCode() . "\n";
+        $msg->text.= "Message: " . $e->getMessage() . "\n";
+        $msg->text.= "File: " . $e->getFile() . "\n";
+        $msg->text.= "Line: " . $e->getLine() ;
+
+
+        $std = new \stdClass;
+        $std->username = "JWeb-Bot" ;
+        $std->icon_emoji = ":jweb:" ;
+        $std->channel = "#errors" ;
+        $std->attachments = [
+            $msg
+        ];
+
+        $data_string = json_encode( $std );
+        dump( $data_string );
 
         $ch = curl_init('https://hooks.slack.com/services/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');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -90,6 +94,7 @@ Line: ' . addslashes( $e->getLine() ) . '"
         );
 
         $result = curl_exec($ch);
+        curl_close($ch);
         dump( $result );
     }
 }

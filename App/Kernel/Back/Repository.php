@@ -20,7 +20,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function findOne( $id )
     {
-        return \DB::for_module( $this->getName() . "xx")->where_id_is( $id )->find_one();
+        return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
     }
 
     public function findOneLang( $id , $idlang )
