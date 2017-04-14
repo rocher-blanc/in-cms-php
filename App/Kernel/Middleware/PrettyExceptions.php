@@ -94,7 +94,6 @@ class PrettyExceptions extends \Slim\Middleware
         ];
 
         $data_string = json_encode( $std );
-        dump( $data_string );
 
         $ch = curl_init('https://hooks.slack.com/services/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');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -107,6 +106,5 @@ class PrettyExceptions extends \Slim\Middleware
 
         $result = curl_exec($ch);
         curl_close($ch);
-        dump( $result );
     }
 }
