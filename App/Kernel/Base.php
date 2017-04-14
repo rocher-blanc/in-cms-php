@@ -160,8 +160,7 @@ CREATE TABLE `module_lang` (
   `module_lang_module_id` int(11) NOT NULL,
   `module_lang_url`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
   `module_lang_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `module_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `module_lang_keyword`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `module_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `page` (
@@ -183,8 +182,7 @@ CREATE TABLE `page_lang` (
   `page_lang_page_id` int(11) NOT NULL,
   `page_lang_url`  varchar(255) COLLATE utf8_general_ci NOT NULL,
   `page_lang_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `page_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `page_lang_keyword`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `page_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `param` (
@@ -208,8 +206,7 @@ CREATE TABLE `seo` (
   `seo_lang_id` int(11) NOT NULL,
   `seo_url`  varchar(255) COLLATE utf8_general_ci NOT NULL,
   `seo_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `seo_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `seo_keyword`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `seo_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user` (

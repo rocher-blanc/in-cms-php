@@ -86,7 +86,6 @@ $app->group('/parammodule', function () use ($app)
                     $langRows->module_lang_url          = $url ;
                     $langRows->module_lang_title        = $app->request->post('module_lang_title_' . $l->url ) ;
                     $langRows->module_lang_description  = $app->request->post('module_lang_description_' . $l->url ) ;
-                    $langRows->module_lang_keyword      = $app->request->post('module_lang_keyword_' . $l->url ) ;
                     $langRows->save();
                 }
             }
@@ -102,7 +101,6 @@ $app->group('/parammodule', function () use ($app)
                 $contentLang[ $l->id ]['module_lang_url']           = $langRows->module_lang_url ;
                 $contentLang[ $l->id ]['module_lang_title']         = $langRows->module_lang_title ;
                 $contentLang[ $l->id ]['module_lang_description']   = $langRows->module_lang_description ;
-                $contentLang[ $l->id ]['module_lang_keyword']       = $langRows->module_lang_keyword ;
             }
 
         }

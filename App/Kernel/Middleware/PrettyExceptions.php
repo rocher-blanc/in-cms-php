@@ -6,7 +6,7 @@ class PrettyExceptions extends \Slim\Middleware
 {
     protected $settings;
 
-    public function __construct($settings = array())
+    public function __construct( $settings = [] )
     {
         $this->settings = $settings;
     }
@@ -18,15 +18,17 @@ class PrettyExceptions extends \Slim\Middleware
         } catch (\Exception $e) {
             $log = $this->app->getLog(); // Force Slim to append log to env if not already
             $env = $this->app->environment();
+
             $env['slim.log'] = $log;
             $env['slim.log']->error($e);
+
             $this->app->contentType('text/html');
             $this->app->response()->status(500);
             $this->app->response()->body($this->renderBody($env, $e));
         }
     }
 
-    protected function renderBody(&$env, $exception)
+    protected function renderBody( &$env , $exception )
     {
         $title = 'JContent Application Error';
         $code = $exception->getCode();
@@ -34,23 +36,34 @@ class PrettyExceptions extends \Slim\Middleware
         $file = $exception->getFile();
         $line = $exception->getLine();
         $trace = str_replace(array('#', "\n"), array('<div>#', '</div>'), $exception->getTraceAsString());
+
         $html = sprintf('<h1>%s</h1>', $title);
         $html .= '<p>The application could not run because of the following error:</p>';
         $html .= '<h2>Details</h2>';
         $html .= sprintf('<div><strong>Type:</strong> %s</div>', get_class($exception));
-        if ($code) {
+
+        if ($code)
+        {
             $html .= sprintf('<div><strong>Code:</strong> %s</div>', $code);
         }
-        if ($message) {
+
+        if ($message)
+        {
             $html .= sprintf('<div><strong>Message:</strong> %s</div>', $message);
         }
-        if ($file) {
+
+        if ($file)
+        {
             $html .= sprintf('<div><strong>File:</strong> %s</div>', $file);
         }
-        if ($line) {
+
+        if ($line)
+        {
             $html .= sprintf('<div><strong>Line:</strong> %s</div>', $line);
         }
-        if ($trace) {
+
+        if ($trace)
+        {
             $html .= '<h2>Trace</h2>';
             $html .= sprintf('<pre>%s</pre>', $trace);
         }
@@ -71,7 +84,6 @@ class PrettyExceptions extends \Slim\Middleware
         $msg->text.= "Message: " . $e->getMessage() . "\n";
         $msg->text.= "File: " . $e->getFile() . "\n";
         $msg->text.= "Line: " . $e->getLine() ;
-
 
         $std = new \stdClass;
         $std->username = "JWeb-Bot" ;

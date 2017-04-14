@@ -16,8 +16,7 @@ class Seo
 	private $_url = '' ;
 	private $_title = '' ;
 	private $_description = '' ;
-	private $_keyword = '' ;
-	
+
 	/* ************************************************** */
 	/* ****************   CONSTRUCT   ******************* */
 	/* ************************************************** */
@@ -69,11 +68,6 @@ class Seo
 		$this->_description = $var ;
 	}
 	
-	public function setKeyword( $var )
-	{
-		$this->_keyword = $var ;
-	}
-	
 	/* ************************************************** */
 	/* ****************     GETTER    ******************* */
 	/* ************************************************** */
@@ -113,11 +107,6 @@ class Seo
         return ( empty( $this->_title ) ? NULL : $this->_title ) ;
 	}
 	
-	public function getKeyword()
-	{
-		return ( empty( $this->_keyword ) ? NULL : $this->_keyword ) ;
-	}
-	
 	public function getDescription()
 	{
 		return ( empty( $this->_description ) ? NULL : $this->_description ) ;
@@ -152,7 +141,6 @@ class Seo
 		if ( ( $update == true && $this->getUrl() != '' ) or $update == false ) $row->set( 'seo_url' , $this->getUrl() ) ;
 		if ( ( $update == true && $this->getTitle() != '' ) or $update == false ) $row->set( 'seo_title' , $this->getTitle() ) ;
 		$row->set( 'seo_description' , $this->getDescription() ) ;
-		$row->set( 'seo_keyword' , $this->getKeyword() ) ;
 		$row->save();
 	}
 
@@ -224,7 +212,6 @@ class Seo
 			$array[ $lang->url ]['title'] 		= $content->seo_title ;
 			$array[ $lang->url ]['url'] 		= $content->seo_url ;
 			$array[ $lang->url ]['description'] = $content->seo_description ;
-			$array[ $lang->url ]['keyword'] 	= $content->seo_keyword ;
 		}
 		
 		return $array ;
@@ -238,7 +225,6 @@ class Seo
 			$this->setUrl( $this->getApp()->request->post('seo_url_' . $lang->url ) );
 			$this->setLastUrl( $this->getApp()->request->post('seo_last_url_' . $lang->url ) );
 			$this->setDescription( $this->getApp()->request->post('seo_description_' . $lang->url ) );
-			$this->setKeyword( $this->getApp()->request->post('seo_keyword_' . $lang->url ) );
 			$this->setLangId( $lang->id );
 			$this->save( true );
 		}

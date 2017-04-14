@@ -1276,6 +1276,12 @@ class Controller
         if ( $this->getApp()->request->isPost() )
         {
             $seo->update() ;
+
+            if ( $this->getApp()->request->post('submit') == "stay" ) 	$url = 'module/' . $this->getEntityName() . '/seo/' . $this->getId() ;
+            else 														$url = 'module/' . $this->getEntityName() ;
+
+            $this->Factory()->Response()->flashAndRedirect( $this->m("edit_success") , true , $url ) ;
+
         }
 
         $this->setRender( 'content' , $seo->getAll() ) ;

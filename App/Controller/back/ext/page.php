@@ -269,7 +269,6 @@ $app->group('/page', function () use ($app)
 					$cLang->page_lang_url 			= $url ;
 					$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_title_' . $l->url ) ) ;
 					$cLang->page_lang_description 	= ( $app->request->post('page_lang_description_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_description_' . $l->url ) ) ;
-					$cLang->page_lang_keyword 		= ( $app->request->post('page_lang_keyword_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_keyword_' . $l->url ) ) ;
 					$cLang->save();
 				}
 				
@@ -296,7 +295,6 @@ $app->group('/page', function () use ($app)
 				$contentLang[ $row->page_lang_lang_id ]['page_lang_url'] 		 = $row->page_lang_url ;
 				$contentLang[ $row->page_lang_lang_id ]['page_lang_title'] 		 = $row->page_lang_title ;
 				$contentLang[ $row->page_lang_lang_id ]['page_lang_description'] = $row->page_lang_description ;
-				$contentLang[ $row->page_lang_lang_id ]['page_lang_keyword'] 	 = $row->page_lang_keyword ;
 			}
 		}
 		
@@ -304,7 +302,6 @@ $app->group('/page', function () use ($app)
 			"post" => $post,
             'priority' =>  $contentRow->page_priority,
 			"id" => $id,
-			"arrayController" => $arrayController,
 			"lang" => $lang,
 			"contentLang" => $contentLang,
 			"error"		 => ( $error === false ? "0" : "1" ),

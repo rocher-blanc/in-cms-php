@@ -68,21 +68,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Méta keyword</label>
-                            <div class="col-md-6">
-                                {% for l in lang %}
-                                <div style="margin-bottom:10px;" class="input-group input-group-icon">
-                                        <span class="input-group-addon">
-                                            <span class="icon">
-                                                <i class="flag-icon flag-icon-{{ l.flag }}"></i>
-                                            </span>
-                                        </span>
-                                    <input type="text" id="module_lang_keyword_{{ l.url }}" name="module_lang_keyword_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_keyword'] }}" />
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="col-md-3 control-label">Sitemap - Priority</label>
                             <div class="col-md-6">
                                 <input type="text" id="module_priority" name="module_priority" class="form-control" value="{{ priority }}" />
