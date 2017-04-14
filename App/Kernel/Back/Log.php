@@ -112,7 +112,7 @@ class Log
             42 => "Activation de la langue sur le site \"%i\"",
             43 => "Désactivation de la langue sur le site \"%i\"",
 
-            44 => "Modification du thème de l'administration",
+            44 => "Modification du système de maintenance",
 
             45 => "Le module \"%i\" a été vidé",
             46 => "Le module \"%i\" a été patché",

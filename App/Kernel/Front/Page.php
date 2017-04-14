@@ -121,7 +121,7 @@ abstract class Page
             $lastTab = $this->CMS()->view()->getData('meta') ;
             $robots = $lastTab['robots'] ;
 
-            if ( $result->module_index == 0 && substr( $robots , 0 , 5 ) == 'index' )
+            if ( $result->page_index == 0 && substr( $robots , 0 , 5 ) == 'index' )
             {
                 $robots = "no" . $robots ;
             }

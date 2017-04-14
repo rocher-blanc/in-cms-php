@@ -62,6 +62,9 @@
 							{% for row in content %}
 								<tr class="tr1">
 									<td>
+										#{{ row.page_id }}
+									</td>
+									<td>
 										<a href="{{ siteUrl('admin/pageadmin/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
 									</td>
 									<td>

@@ -41,6 +41,16 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-4">Maintenance :</div>
+                            <div class="col-md-8">
+                                {% if maintenance == 1 %}
+                                    <span class="bg-danger"><i class="fa fa-exclamation-triangle"></i> Activé</span>
+                                {% else %}
+                                    <span class="bg-success">Désactivé</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">Dernière mise à jour :</div>
                             <div class="col-md-8">{{ date_update|date("d/m/Y") }}</div>
                         </div>
@@ -110,9 +120,6 @@
                                                     {% if row.page_lang_description == '' %}
                                                         <span class="label label-warning"><i class="fa fa-exclamation"></i> META DESCRIPTION</span>
                                                     {% endif %}
-                                                    {% if row.page_lang_keyword == '' %}
-                                                        <span class="label label-info"><i class="fa fa-info"></i> META KEYWORD</span>
-                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -126,51 +133,9 @@
             {% endif %}
             {% if seo.module|length > 0 %}
                 <div class="col-md-4">
-                    <header class="panel-heading">
-                        <h2 class="panel-title"><i class="fa fa-dropbox"></i> Modules</h2>
-                    </header>
-                    <div class="tab-content">
-                        <div class="tab-pane active panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover mb-none">
-                                    <thead>
-                                    <tr>
-                                        <th><strong>Nom</strong></th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for row in seo.module %}
-                                        <tr class="tr1">
-                                            <td>
-                                                <a href="{{ siteUrl('ext/parammodule/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
-                                            </td>
-                                            <td class="defaut">
-                                                {% if row.module_lang_title == '' %}
-                                                    <span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> META TITLE</span>
-                                                {% endif %}
-                                                {% if row.module_lang_description == '' %}
-                                                    <span class="label label-warning"><i class="fa fa-exclamation"></i> META DESCRIPTION</span>
-                                                {% endif %}
-                                                {% if row.module_lang_keyword == '' %}
-                                                    <span class="label label-info"><i class="fa fa-info"></i> META KEYWORD</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if seo.elt_module|length > 0 %}
-                {% for module in seo.elt_module %}
-                    <div class="col-md-4">
+                    <section class="panel table">
                         <header class="panel-heading">
-                            <h2 class="panel-title"><i class="fa fa-{{ module.icon }}"></i> {{ module.name }}</h2>
+                            <h2 class="panel-title"><i class="fa fa-dropbox"></i> Modules</h2>
                         </header>
                         <div class="tab-content">
                             <div class="tab-pane active panel-body">
@@ -178,25 +143,22 @@
                                     <table class="table table-striped table-hover mb-none">
                                         <thead>
                                         <tr>
-                                            <th><strong>{{ module.title }}</strong></th>
-                                            <th><strong>Défaut</strong></th>
+                                            <th><strong>Nom</strong></th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for row in module.tab %}
+                                        {% for row in seo.module %}
                                             <tr class="tr1">
                                                 <td>
-                                                    <a href="{{ siteUrl('module/' ~ module.class ~ '/seo/' ~  row.id) }}">{{ row.value }}</a>
+                                                    <a href="{{ siteUrl('ext/parammodule/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
                                                 </td>
                                                 <td class="defaut">
-                                                    {% if row.seo_title == '' %}
+                                                    {% if row.module_lang_title == '' %}
                                                         <span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> META TITLE</span>
                                                     {% endif %}
-                                                    {% if row.seo_description == '' %}
+                                                    {% if row.module_lang_description == '' %}
                                                         <span class="label label-warning"><i class="fa fa-exclamation"></i> META DESCRIPTION</span>
-                                                    {% endif %}
-                                                    {% if row.seo_keyword == '' %}
-                                                        <span class="label label-info"><i class="fa fa-info"></i> META KEYWORD</span>
                                                     {% endif %}
                                                 </td>
                                             </tr>
@@ -206,6 +168,49 @@
                                 </div>
                             </div>
                         </div>
+                    </section>
+                </div>
+            {% endif %}
+
+            {% if seo.elt_module|length > 0 %}
+                {% for module in seo.elt_module %}
+                    <div class="col-md-4">
+                        <section class="panel table">
+                            <header class="panel-heading">
+                                <h2 class="panel-title"><i class="fa fa-{{ module.icon }}"></i> {{ module.name }}</h2>
+                            </header>
+                            <div class="tab-content">
+                                <div class="tab-pane active panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover mb-none">
+                                            <thead>
+                                            <tr>
+                                                <th><strong>{{ module.title }}</strong></th>
+                                                <th><strong>Défaut</strong></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for row in module.tab %}
+                                                <tr class="tr1">
+                                                    <td>
+                                                        <a href="{{ siteUrl('module/' ~ module.class ~ '/seo/' ~  row.id) }}">{{ row.value }}</a>
+                                                    </td>
+                                                    <td class="defaut">
+                                                        {% if row.seo_title == '' %}
+                                                            <span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> META TITLE</span>
+                                                        {% endif %}
+                                                        {% if row.seo_description == '' %}
+                                                            <span class="label label-warning"><i class="fa fa-exclamation"></i> META DESCRIPTION</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 {% endfor %}
             {% endif %}

@@ -165,7 +165,7 @@
                             </li>
                         {% endif %}
 						{% if isAdmin == true %}
-                            <li class="parent{% if menu == 'log' or menu == 'domain' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
+                            <li class="parent{% if menu == 'maintenance' or menu == 'log' or menu == 'domain' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
                                 <a href="#">
                                     <i class="fa fa-code"></i>
                                     <span>Développeur</span>
@@ -199,6 +199,11 @@
                                     <li{% if menu == 'log' %} class="active"{% endif %}>
                                         <a href="{{ siteUrl('/admin/log') }}">
                                             <i class="fa fa-history"></i> <span>Journal d'événements</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'maintenance' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/maintenance') }}">
+                                            <i class="fa fa-wrench"></i> <span>Maintenance</span>
                                         </a>
                                     </li>
                                     <li{% if menu == 'security' %} class="active"{% endif %}>

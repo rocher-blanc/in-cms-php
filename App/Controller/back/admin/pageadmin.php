@@ -71,12 +71,6 @@ $app->group('/pageadmin', function () use ($app)
 			"page_active" => $app->request->post('page_active')
 		);
 
-        $pageRedirect = \DB::for_table('page')
-            ->select('page_id')
-            ->select('page_name')
-            ->where_equal('page_domain_id', $contentRow->page_domain_id)
-            ->find_many();
-
         $domains = [];
         $reqDomains = \DB::for_table('domain')
             ->select('domain_id')
@@ -152,7 +146,6 @@ $app->group('/pageadmin', function () use ($app)
                     $cLang->page_lang_url 			= $url ;
                     $cLang->page_lang_title 		= NULL ;
                     $cLang->page_lang_description 	= NULL ;
-                    $cLang->page_lang_keyword 		= NULL ;
                     $cLang->save();
                 }
 

@@ -16,7 +16,7 @@ $app->get('/', function () use ( $app ) {
         ->left_outer_join( 'page_lang' , [ 'page.page_id' , '=', 'page_lang.page_lang_page_id' ] )
         ->where_equal('page.page_active', 1)
         ->where_in('page_lang.page_lang_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
-        ->where_raw("((page_lang.page_lang_title IS NULL OR page_lang.page_lang_description IS NULL OR page_lang.page_lang_keyword IS NULL) OR (page_lang.page_lang_title = '' OR page_lang.page_lang_description = '' OR page_lang.page_lang_keyword = ''))",[])
+        ->where_raw("((page_lang.page_lang_title IS NULL OR page_lang.page_lang_description IS NULL) OR (page_lang.page_lang_title = '' OR page_lang.page_lang_description = ''))",[])
         ->group_by('page.page_id')
         ->find_many();
 
@@ -60,7 +60,7 @@ $app->get('/', function () use ( $app ) {
             ->left_outer_join( 'module_lang' , [ 'module.module_id' , '=', 'module_lang.module_lang_module_id' ] )
             ->where_in('module.module_id', $tab)
             ->where_in('module_lang.module_lang_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
-            ->where_raw("((module_lang.module_lang_title IS NULL OR module_lang.module_lang_description IS NULL OR module_lang.module_lang_keyword IS NULL) OR (module_lang.module_lang_title = '' OR module_lang.module_lang_description = '' OR module_lang.module_lang_keyword = ''))",[])
+            ->where_raw("((module_lang.module_lang_title IS NULL OR module_lang.module_lang_description IS NULL) OR (module_lang.module_lang_title = '' OR module_lang.module_lang_description = ''))",[])
             ->group_by('module.module_id')
             ->find_many();
     }
@@ -72,6 +72,7 @@ $app->get('/', function () use ( $app ) {
     $app->render('index/index.twig.html' , [
         "version" => $json->version,
         "debug" => DEBUG,
+        "maintenance" => \App\Kernel\Container::getInstance()->param()->get('maintenance_active'),
         "seo" => [
             "page" => $seo_page,
             "module" => $seo_module,

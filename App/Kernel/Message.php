@@ -74,8 +74,8 @@ class Message
             /* PERFORMACE */
             "performance_success" => "Le serveur CDN a bien été mis à jour",
 
-            /* THEME */
-            "theme_success" => "Le thème de l'administration a bien été mis à jour",
+            /* MAINTENANCE */
+            "maintenance_success" => "La configuration du site a bien été mis à jour",
 
             /* SECURITE */
             "security_success" => "La sécurité de l'administration a bien été mis à jour",
