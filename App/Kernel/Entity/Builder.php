@@ -658,6 +658,7 @@ class Builder extends Model
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
         $this->field()->setData( "noUpdate" , true ) ;
+        $this->field()->setData( "noOffset" , true ) ;
 
         $this->setGallery() ;
         $this->setGalleryField( $this->field()->getColumn() ) ;
@@ -689,6 +690,7 @@ class Builder extends Model
     protected function isCheckbox()
     {
         $this->field()->setData( "type" , "checkbox" ) ;
+        $this->field()->setData( "noOffset" , true ) ;
         return $this ;
     }
 

@@ -189,6 +189,12 @@ class Field
         else									                                            return false ;
     }
 
+    public function hasOffeset()
+    {
+        if ( $this->getData('noOffset') === NULL ) 	return true ;
+        else									    return false ;
+    }
+
     /* ************************************************** */
     /* ****************     GETTER    ******************* */
     /* ************************************************** */

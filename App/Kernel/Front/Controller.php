@@ -629,7 +629,7 @@ class Controller
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {
-            if ( $result->offsetExists( $this->getEntity()->get( $row->getName() )->getColumn() ) == true or $row->getType() == 'checkbox' )
+            if ( $result->offsetExists( $this->getEntity()->get( $row->getName() )->getColumn() ) == true or $row->hasOffeset() == false )
             {
                 if ( $row->getType() == 'image' )
                 {
