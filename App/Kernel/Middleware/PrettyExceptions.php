@@ -78,7 +78,7 @@ class PrettyExceptions extends \Slim\Middleware
         $msg->color = "#ffab40" ;
         $msg->author_name = "JWeb" ;
         $msg->title = "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] ;
-        $msg->title_link = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $_SERVER['REDIRECT_URL'] ;
+        $msg->title_link = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] ;
         $msg->text = "Type: " . get_class($e) . "\n";
         $msg->text.= "Code: " . $e->getCode() . "\n";
         $msg->text.= "Message: " . $e->getMessage() . "\n";
