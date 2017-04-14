@@ -87,6 +87,50 @@ class Router
     }
 
     /* ************************************************** */
+    /* *****************    HTTPS    ******************** */
+    /* ************************************************** */
+
+    protected function hasHttps()
+    {
+        if ( $_SERVER['HTTPS'] == 'on' )
+        {
+            return true ;
+        }
+        else
+        {
+            if ( $this->Container()->param()->get('seo_ssl') == 1 ) return false ;
+            else                                                    return true ;
+        }
+    }
+
+    protected function forceHttps()
+    {
+        $this->Factory()->Response()->redirect('https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , 301 ) ;
+    }
+
+    /* ************************************************** */
+    /* *****************     WWW     ******************** */
+    /* ************************************************** */
+
+    protected function hasWww()
+    {
+        if ( strpos( $_SERVER['SERVER_NAME'] , 'www.' ) !== false )
+        {
+            return true ;
+        }
+        else
+        {
+            if ( $this->Container()->param()->get('seo_www') == 1 ) return false ;
+            else                                                    return true ;
+        }
+    }
+
+    protected function forceWww()
+    {
+        $this->Factory()->Response()->redirect( 'http' . ( $this->hasHttps() ? '' : 's' ) . '://www.' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , 301 ) ;
+    }
+
+    /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
 
@@ -107,6 +151,16 @@ class Router
 
     public function load()
     {
+        if ( ! $this->hasWww() )
+        {
+            $this->forceWww() ;
+        }
+
+        if ( ! $this->hasHttps() )
+        {
+            $this->forceHttps() ;
+        }
+
         $this->cutUrl() ;
 
         $urlTab = $this->getUrl() ;

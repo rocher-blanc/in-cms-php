@@ -10,7 +10,9 @@ $app->group('/metadata', function () use ($app)
 			if ( $result )
 			{
 				if ( ! array_key_exists( "seo_robots" , $result ) ) $result["seo_robots"] = 0;
-				
+				if ( ! array_key_exists( "seo_ssl" , $result ) ) $result["seo_ssl"] = 0;
+				if ( ! array_key_exists( "seo_www" , $result ) ) $result["seo_www"] = 0;
+
 				foreach( $result as $key => $value )
 				{
 					if ( substr( $key , 0 , 4 ) == "seo_" )
@@ -55,9 +57,7 @@ $app->group('/metadata', function () use ($app)
 			}
 		}
 		
-		$app->render('ext/metadata/edit.twig.html' , array(
-														"post" => $tab,
-		));
+		$app->render('ext/metadata/edit.twig.html' ,[ "post" => $tab ]);
 
 	})->name('metadata_edit')->via('GET', 'POST');
 });

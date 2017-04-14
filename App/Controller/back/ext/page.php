@@ -239,7 +239,8 @@ $app->group('/page', function () use ($app)
 				$contentRow->page_name 			= $app->request->post('page_name') ;
 				$contentRow->page_priority 		= $app->request->post('page_priority') ;
 				$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-				
+				$contentRow->page_index 		= ( $app->request->post('page_index') == NULL ? 0 : 1 ) ;
+
 				if ( $forceActive == true ) $contentRow->page_active = 1;
 				
 				$contentRow->save() ;

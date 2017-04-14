@@ -100,8 +100,8 @@ class PrettyExceptions extends \Slim\Middleware
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string))
         );
 
         $result = curl_exec($ch);

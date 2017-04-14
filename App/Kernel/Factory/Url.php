@@ -158,7 +158,7 @@ class Url
     public function cutUrl( $offset = 1 )
     {
         $params = explode( "/" , $this->getApp()->request()->getPath() ) ;
-        $url    = array() ;
+        $url    = [] ;
         if ( $params )
         {
             $i = 0;

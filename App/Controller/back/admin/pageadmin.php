@@ -119,6 +119,7 @@ $app->group('/pageadmin', function () use ($app)
 			{
 				$contentRow->page_name = $app->request->post('page_name');
                 $contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+                $contentRow->page_index = 1;
                 $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : 0 );
 
                 if ( ACTIVE_USER )
