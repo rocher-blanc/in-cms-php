@@ -1,4 +1,4 @@
-<input type="hidden" value="{{ name }}" name="{{ name }}" id="id_element_dropzone" />
+<input type="hidden" value="{{ value }}" name="{{ name }}" id="id_element_dropzone" />
 <input type="hidden" value="{{ field_name }}" name="field_dropzone" id="field_dropzone" />
 <div id="gallery_{{ field_name }}" class="blockGallery" data-crop="{{ hasCrop ? '1' : '0' }}" data-value="{{ value }}" data-url="{{ siteUrl('/module/' ~ module ~ '/jgallery_order') }}" data-field="{{ field_name }}">
     <a class="btn btn-info btnAdd" data-jgallery data-field="{{ field_name }}" data-fieldid="id_{{ name }}" href="{{ siteUrl('/module/' ~ module ~ '/jgallery') }}">
