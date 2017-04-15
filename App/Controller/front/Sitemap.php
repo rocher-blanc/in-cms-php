@@ -13,6 +13,7 @@ $app->get('/sitemap.xml', function () use ( $app )
     }
 
     $content = \DB::for_table('module')
+        ->select('module.module_id')
         ->select('module.module_class_name')
         ->select('module.module_default')
         ->select('module.module_priority')
@@ -87,7 +88,7 @@ $app->get('/sitemap.xml', function () use ( $app )
                         {
                             foreach( $result['fieldImage'] as $field )
                             {
-                                $image = $row->get( $field ) ;
+                                $image = $row->get( $field->getColumn() ) ;
 
                                 if ( !empty( $image ) )
                                 {
@@ -99,6 +100,46 @@ $app->get('/sitemap.xml', function () use ( $app )
                                     echo "\t\t" . '<image:image>' . "\n";
                                     echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
                                     echo "\t\t" . '</image:image>' . "\n";
+                                }
+                            }
+                        }
+
+                        if ( !empty( $result['fieldGallery'] ) )
+                        {
+                            foreach( $result['fieldGallery'] as $gallery )
+                            {
+                                $Gal = new \App\Kernel\Front\Gallery;
+                                $Gal->setElementId( $row->id );
+                                $Gal->setModuleId( $module->module_id );
+                                $Gal->setModuleName( $module->module_class_name );
+                                $Gal->setField( $gallery->getName() );
+                                $Gal->setFolder( $Controller->getEntity()->getFolder() );
+                                $tab = $Gal->getAllByField();
+
+
+                                if ( !empty( $tab ) )
+                                {
+                                    foreach( $tab as $img )
+                                    {
+                                        if ( count( $img ) == 3 )
+                                        {
+                                            unset( $img['100x100'] );
+                                            unset( $img['source'] );
+
+                                            foreach( $img as $url )
+                                            {
+                                                $urlImage = $url ;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            $urlImage = $img['source'] ;
+                                        }
+
+                                        echo "\t\t" . '<image:image>' . "\n";
+                                        echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
+                                        echo "\t\t" . '</image:image>' . "\n";
+                                    }
                                 }
                             }
                         }

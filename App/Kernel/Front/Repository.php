@@ -51,6 +51,35 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->getKit()->find_many();
     }
 
+    public function findSiteMap( $field , $id )
+    {
+        $table 	= \DB::getTableName( $this->getName() ) ;
+        $idName = \DB::getIdName( $this->getName() ) ;
+        $return = \DB::for_module( $this->getName() )
+            ->select( $table . '.' . $idName , "id" )
+            ->select( $this->getEntity()->get('date_updated')->fieldSql() , 'date_updated' )
+            ->select('seo.seo_url')
+            ->select('seo.seo_lang_id')
+            ->left_outer_join('seo', [ $table . '.' . $idName, '=', 'seo.seo_element_id' ])
+            ->where(['seo.seo_module_id' => $id])
+            ->where_in('seo_lang_id', \App\Kernel\Lang::getInstance()->getTabLang() );
+
+        if ( $this->getEntity()->hasValidation() )
+        {
+            $return = $return->where_equal( $table . '.' . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
+        }
+
+        if ( ! empty( $field ) )
+        {
+            foreach( $field as $row )
+            {
+                $return = $return->select( $row->fieldSql() );
+            }
+        }
+
+        return $return->find_many();
+    }
+
     public function findApi( $filter = [] , $order = '' , $limit = '' , $offset = '' )
     {
         if ( $order != '' )

@@ -464,44 +464,24 @@ class Controller
         {
             if ( $this->getRepository()->count() > 0 )
             {
-                $langArray = [];
-
-                foreach( $this->Lang()->getAll() as $lang )
-                {
-                    $langArray[] = $lang->id ;
-                }
-
-                $table 	= \DB::getTableName( $this->getEntityName() ) ;
-                $idName = \DB::getIdName( $this->getEntityName() ) ;
-                $return = \DB::for_module( $this->getEntityName() )
-                    ->select( $table . '.' . $this->getEntity()->get('date_updated')->getColumn() , 'date_updated' )
-                    ->select('seo.seo_url')
-                    ->select('seo.seo_lang_id')
-                    ->left_outer_join('seo', [ $table . '.' . $idName, '=', 'seo.seo_element_id' ])
-                    ->where(['seo.seo_module_id' => $this->getEntityId()])
-                    ->where_in('seo_lang_id', $langArray );
-
-                if ( $this->getEntity()->hasValidation() )
-                {
-                    $return = $return->where_equal( $table . '.' . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
-                }
-
                 $fieldImage = [] ;
                 foreach( $this->getEntity()->getField() as $row )
                 {
                     if ( $row->getType() == 'image' )
                     {
-                        $fieldImage[] = $row->getColumn();
-                        $return = $return->select( $table . '.' . $row->getColumn() );
+                        $fieldImage[] = $row;
+                    }
+                    else if ( $row->getType() == 'gallery' )
+                    {
+                        $fieldGallery[] = $row;
                     }
                 }
 
-                $content = $return->find_many();
-
                 return [
-                    'content' => $content,
+                    'content' => $this->getRepository()->findSiteMap( $fieldImage , $this->getEntityId() ),
                     'pathImage' => $this->getEntity()->getPathImage(false),
-                    'fieldImage' => $fieldImage
+                    'fieldImage' => $fieldImage,
+                    'fieldGallery' => $fieldGallery
                 ];
             }
         }
