@@ -9,7 +9,6 @@ defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/vie
 defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Back');
 defined('ASSETS_IMG_PATH') || define('ASSETS_IMG_PATH', WEB_PATH . '/' . \App\Kernel\Install::getAdminFolder() . '/assets/img');
-defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Back');
 defined('SAVE_PATH') || define('SAVE_PATH', _PATH_ . '/cache/save');
 defined('TRAD_PATH') || define('TRAD_PATH', SAVE_PATH . '/traduction');
@@ -21,4 +20,3 @@ defined('ADMIN') || define('ADMIN',true);
 
 /* Thème du back office pour JContent */
 defined('COLOR') || define('COLOR','#008fc1');
-defined('TECHNO') || define('TECHNO','JContent');

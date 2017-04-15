@@ -26,6 +26,7 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->find_many();
 
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<?xml-stylesheet type="text/xsl" href="' . \App\Kernel\Http::getInstance()->vendor( VENDOR_CMS . '/xsl/stylesheet.xsl' ) . '"?>' ;
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n\t" . 'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"> ' . "\n";
 
     if ( $content )

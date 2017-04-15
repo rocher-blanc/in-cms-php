@@ -57,6 +57,10 @@ if ( file_exists( PROJECT_PATH . '/config/config.common.php' ) )
 defined('COUNTRY') || define('COUNTRY','fr');
 defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 
+//
+defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
+defined('TECHNO') || define('TECHNO','JContent');
+
 // DEBUG
 defined('DEBUG_BAR') || define('DEBUG_BAR', false );
 
