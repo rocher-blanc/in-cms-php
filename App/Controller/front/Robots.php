@@ -16,6 +16,6 @@ $app->get('/robots.txt', function () use ( $app ) {
         echo 'Allow: /*.js' . "\n" ;
         echo 'Allow: /*.css' . "\n" ;
 
-        echo 'Sitemap: ' . \Slim\Slim::getInstance()->request()->getUrl() . '/sitemap.xml' ;
+        echo 'Sitemap: ' . \App\Kernel\Http::getInstance()->getUrl() . '/sitemap.xml' ;
     }
 })->name('robots_txt');

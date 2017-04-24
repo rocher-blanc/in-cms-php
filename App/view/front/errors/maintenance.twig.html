@@ -1,0 +1,35 @@
+{{ vendor([
+    'bootstrap/dist/css/bootstrap.min.css',
+    'cmsmedias/libs/jquery.1.9.1.min.js',
+    'bootstrap/dist/js/bootstrap.min.js',
+    'cmsmedias/css/maintenance.css',
+    'cmsmedias/libs/rotator.js',
+    'cmsmedias/js/maintenance.js'
+]) }}<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Site en cours de maintenance</title>
+        <meta name="language" content="fr" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
+        {{ css( false ) }}
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    </head>
+    <body>
+
+    <header>
+        <div class="intro">
+            <div id="rotate">
+                <h2 class="rotate">Site en<br><span>Maintenance</span></h2>
+                <h2 class="rotate">Nous <span>améliorons</span> votre<br>expérience de <span>navigation</span></h2>
+            </div>
+
+            <p>Site prochainement</p>
+            <p><span></span><i class="ionicons ion-alert-circled"></i><span></span></p>
+            <p>en ligne</p>
+        </div>
+    </header>
+
+    {{ javascript( false ) }}
+    </body>
+</html>

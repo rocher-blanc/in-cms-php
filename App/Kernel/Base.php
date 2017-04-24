@@ -133,6 +133,13 @@ CREATE TABLE `newsletter_group_sub` (
   `newsletter_group_sub_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `newsletter_sub` (
+  `newsletter_sub_id` int(11) NOT NULL,
+  `newsletter_sub_email` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `newsletter_sub_newsletter_group_sub_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `module` (
   `module_id` int(11) NOT NULL,
   `module_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
@@ -281,6 +288,9 @@ ALTER TABLE `menu_element_lang`
   
 ALTER TABLE `newsletter_group_sub`
   ADD PRIMARY KEY (`newsletter_group_sub_id`);
+  
+ALTER TABLE `newsletter_sub`
+  ADD PRIMARY KEY (`newsletter_sub_id`);
 
 ALTER TABLE `module`
   ADD PRIMARY KEY (`module_id`);
@@ -355,6 +365,8 @@ ALTER TABLE `module_lang`
   MODIFY `module_lang_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `newsletter_group_sub`
   MODIFY `newsletter_group_sub_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `newsletter_sub`
+  MODIFY `newsletter_sub_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `page`
   MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `page_lang`

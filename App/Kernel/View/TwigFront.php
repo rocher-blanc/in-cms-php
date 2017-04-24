@@ -72,9 +72,12 @@ class TwigFront extends \Twig_Extension
         return \App\Kernel\Http::getInstance()->getCdn() . '/assets/' . $url ;
     }
 
-    public function css()
+    public function css( $project = true )
     {
-        $this->getCSSProject();
+        if ( $project == true )
+        {
+            $this->getCSSProject();
+        }
         $content = '' ;
 
         if ( ! empty( $this->css ) )
@@ -91,9 +94,13 @@ class TwigFront extends \Twig_Extension
         return $content ;
     }
 
-    public function javascript()
+    public function javascript( $project = true )
     {
-        $this->getJSProject();
+        if ( $project == true )
+        {
+            $this->getJSProject();
+        }
+
         $content = '' ;
 
         if ( ! empty( $this->js ) )

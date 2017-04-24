@@ -61,7 +61,7 @@ class CMS
 
     public function getIp()
     {
-        return $this->request()->getIp() ;
+        return $_SERVER['REMOTE_ADDR'] ;
     }
 
     /* ************************************************** */
@@ -70,7 +70,7 @@ class CMS
 
     public function view()
     {
-        return $this->getApp()->view() ;
+        return new View;
     }
 
     public function fetch( $tpl , $arg = [] )
@@ -80,6 +80,6 @@ class CMS
 
     public function render( $tpl , $arg = [] )
     {
-        return $this->getApp()->render( $tpl , $arg ) ;
+        return $this->view()->render( $tpl , $arg ) ;
     }
 }

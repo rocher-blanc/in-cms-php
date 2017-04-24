@@ -86,6 +86,20 @@ class Kernel
     }
 
     /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance();
+    }
+
+    protected function Param()
+    {
+        return $this->Container()->param();
+    }
+
+    /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
 
@@ -228,6 +242,18 @@ class Kernel
         $this->_caching_db = true ;
     }
 
+    /* ********************************************************* */
+    /* ****************     MAINTENANCE      ******************* */
+    /* ********************************************************* */
+
+    private function initMaintenance()
+    {
+        if ( $this->Param()->get('maintenance_active') == "1" )
+        {
+            $this->viewTemplateError('maintenance') ;
+        }
+    }
+
     /* ************************************************** */
     /* ****************     LANG      ******************* */
     /* ************************************************** */
@@ -264,6 +290,7 @@ class Kernel
     public function run()
     {
         $this->connectToDatabase() ;
+        $this->initMaintenance() ;
         $this->initLang() ;
         $this->initDate() ;
         $this->initSlim() ;
