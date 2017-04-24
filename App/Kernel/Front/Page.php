@@ -110,7 +110,6 @@ abstract class Page
             ->select('page_lang.page_lang_url')
             ->select('page_lang.page_lang_title')
             ->select('page_lang.page_lang_description')
-            ->select('page_lang.page_lang_keyword')
             ->select('page.page_index')
             ->left_outer_join('page_lang', [ 'page_lang.page_lang_page_id', '=', 'page.page_id' ])
             ->where(['page_lang.page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang.page_lang_page_id' => $this->getId() ])
@@ -130,7 +129,6 @@ abstract class Page
                 'url' => \App\Kernel\Http::getInstance()->getUrl() . '/' . $result->page_lang_url,
                 'title' => $result->page_lang_title,
                 'description' => $result->page_lang_description,
-                'keyword' => $result->page_lang_keyword,
                 'robots' => $robots
             ];
 			
