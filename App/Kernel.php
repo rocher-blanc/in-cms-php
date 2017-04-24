@@ -248,7 +248,7 @@ class Kernel
 
     private function initMaintenance()
     {
-        if ( $this->Param()->get('maintenance_active') == "1" )
+        if ( $this->Param()->get('maintenance_active') == "1" && $this->config('config') == 'front' )
         {
             $this->viewTemplateError('maintenance') ;
         }
