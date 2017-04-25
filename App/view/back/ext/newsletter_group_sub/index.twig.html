@@ -21,7 +21,7 @@
 							<tr>
 								<th>Nom</th>
 								<th>Nombres d'abonnés</th>
-								<th class="text-right" style="width: 220px"></th>
+								<th class="text-right" style="width: 320px"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -34,6 +34,13 @@
 									0
 								</td>
 								<td class="text-right">
+									<div class="btn-group">
+										<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cogs"></i> Actions <span class="caret"></span></button>
+										<ul class="dropdown-menu" role="menu">
+											<li><a href="#">Voir les abonnés</a></li>
+											<li><a href="#">Exporter les abonnés</a></li>
+										</ul>
+									</div>
 									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.newsletter_group_sub_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_group_sub_id }}" data-link="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe d'abonnés '{{ row.newsletter_group_sub_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>

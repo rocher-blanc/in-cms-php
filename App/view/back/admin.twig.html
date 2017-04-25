@@ -134,17 +134,12 @@
                             </li>
                         {% endif %}
                         {% if active_newsletter == true %}
-                            <li class="parent{% if menu == 'newsletter_sub' or menu == 'newsletter_group_sub' or menu == 'newsletter_campaign' or menu == 'newsletter_sender' %} expanded active{% endif %}">
+                            <li class="parent{% if menu == 'newsletter_group_sub' or menu == 'newsletter_campaign' or menu == 'newsletter_sender' %} expanded active{% endif %}">
                                 <a href="#">
                                     <i class="fa fa-paper-plane"></i>
                                     <span>Newsletter</span>
                                 </a>
                                 <ul class="nav children">
-                                    <li{% if menu == 'newsletter_sub' %} class="active"{% endif %}>
-                                        <a href="{{ siteUrl('/ext/newsletter_sub') }}">
-                                            <i class="fa fa-vcard"></i> <span>Abonnés</span>
-                                        </a>
-                                    </li>
                                     <li{% if menu == 'newsletter_group_sub' %} class="active"{% endif %}>
                                         <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
                                             <i class="fa fa-address-book-o"></i> <span>Groupes d'abonnés</span>
