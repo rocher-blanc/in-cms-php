@@ -126,6 +126,9 @@ class Log
             52 => "Modification du domaine \"%i\"",
             53 => "Suppression du domaine \"%i\"",
 
+            54 => "Ajout dans l'index d'une page spéciale \"%i\"",
+            55 => "Suppression de l'index d'une page spéciale \"%i\"",
+
             /* MODULES */
             100 => "Ajout d'un nouvel élément \"%i\"",
             101 => "Modification d'un élément \"%i\"",

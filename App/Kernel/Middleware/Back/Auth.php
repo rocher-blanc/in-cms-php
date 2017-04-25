@@ -88,7 +88,6 @@ class Auth extends \Slim\Middleware
                 $this->Factory()->Response()->show404() ;
             }
         }
-
     }
 
     private function isLogged()

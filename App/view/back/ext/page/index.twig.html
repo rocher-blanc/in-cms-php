@@ -19,6 +19,7 @@
 								<th>#ID</th>
 								<th>Nom</th>
 								<th>Défaut</th>
+								<th>Index</th>
 								<th>Statut</th>
 								<th class="text-right" style="width: 120px"></th>
 							</tr>
@@ -43,6 +44,13 @@
 											<a href="javascript:;" class="btn btn-sm btn-success"><i class="fa fa-home"></i> Page par défaut</a>
 										{% else %}
 											<a href="{{ siteUrl('ext/page/default/' ~  row.page_id ~ '/' ~ csrf_token ) }}" class="btn btn-sm btn-default"><i class="fa fa-home"></i> Mettre par défaut</a>
+										{% endif %}
+									</td>
+									<td>
+										{% if row.page_index == 0 %}
+											<a class="btn btn-sm btn-warning" href="{{ siteUrl('ext/page/index/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
+										{% else %}
+											<a class="btn btn-sm btn-success" href="{{ siteUrl('ext/page/noindex/' ~  row.page_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Oui</a>
 										{% endif %}
 									</td>
 									<td>

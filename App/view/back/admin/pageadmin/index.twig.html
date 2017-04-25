@@ -22,6 +22,7 @@
 								<th>#ID</th>
 								<th>Nom</th>
 								<th>Défaut</th>
+								<th>Index</th>
 								<th>Statut</th>
 								<th class="text-right" style="width: 120px"></th>
 							</tr>
@@ -43,6 +44,13 @@
 										<td>
 											{% if row.page_default == 1 %}
 												<span class="btn btn-sm btn-success disabled"><i class="fa fa-home"></i> Page par défaut</span>
+											{% endif %}
+										</td>
+										<td>
+											{% if row.page_index == 0 %}
+												<span class="btn btn-sm btn-warning disabled"><i class="fa fa-circle-o"></i> Non</span>
+											{% else %}
+												<span class="btn btn-sm btn-success disabled"><i class="fa fa-check-circle-o"></i> Oui</span>
 											{% endif %}
 										</td>
 										<td>
@@ -70,6 +78,13 @@
 									<td>
 										{% if row.page_default == 1 %}
 											<span class="btn btn-sm btn-success disabled"><i class="fa fa-home"></i> Page par défaut</span>
+										{% endif %}
+									</td>
+									<td>
+										{% if row.page_index == 0 %}
+											<span class="btn btn-sm btn-warning disabled"><i class="fa fa-circle-o"></i> Non</span>
+										{% else %}
+											<span class="btn btn-sm btn-success disabled"><i class="fa fa-check-circle-o"></i> Oui</span>
 										{% endif %}
 									</td>
 									<td>

@@ -70,36 +70,96 @@ $app->group('/page', function () use ($app)
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->returnJSON( $msg , $ret ) ;
 	})->name('page_delete');
-	
-	$app->get('/active/:id/:token', function ($id,$token) use ($app)
-	{
-		if ( $token == $_SESSION[ $app->config('token') ] ) {
-			$page = \DB::for_table('page')
-							->where_equal('page_id' , $id)
-							->find_one();
-			
-			if ( $page->page_active == 0 ) {
-				$page->page_active = 1;
-				$page->save();
-				
-				\App\Kernel\Back\Log::getInstance()->warning( 30 , $page->page_name ) ;
-						
-				$msg = "La page a bien été activé";
-				$ret = true;
-			}
-			else {
-				$msg = "Impossible, la page est déja activée";
-				$ret = false;
-			}
-		}
-		else {
-			$msg = "Le token de sécurité est invalide";
-			$ret = false;
-		}
-		
-		$Factory = \App\Kernel\Factory::getInstance() ;
-		$Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-	})->name('page_active');
+
+    $app->get('/active/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $page = \DB::for_table('page')
+                ->where_equal('page_id' , $id)
+                ->find_one();
+
+            if ( $page->page_active == 0 ) {
+                $page->page_active = 1;
+                $page->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 30 , $page->page_name ) ;
+
+                $msg = "La page a bien été activé";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, la page est déja activée";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
+    })->name('page_active');
+
+    $app->get('/index/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $page = \DB::for_table('page')
+                ->where_equal('page_id' , $id)
+                ->find_one();
+
+            if ( $page->page_index == 0 ) {
+                $page->page_index = 1;
+                $page->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 54 , $page->page_name ) ;
+
+                $msg = "La page est maintenant indexée";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, la page est déja indexée";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
+    })->name('page_index');
+
+    $app->get('/noindex/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $page = \DB::for_table('page')
+                ->where_equal('page_id' , $id)
+                ->find_one();
+
+            if ( $page->page_index == 1 ) {
+                $page->page_index = 0;
+                $page->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 55 , $page->page_name ) ;
+
+                $msg = "La page est maintenant désindexée";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, la page est déja désindexée";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
+    })->name('page_index');
 	
 	$app->get('/default/:id/:token', function ($id,$token) use ($app)
 	{
