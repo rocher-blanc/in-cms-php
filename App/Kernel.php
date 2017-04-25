@@ -250,7 +250,29 @@ class Kernel
     {
         if ( $this->Param()->get('maintenance_active') == "1" && $this->config('config') == 'front' )
         {
-            $this->viewTemplateError('maintenance') ;
+            $auth = false ;
+            $maintenance_ip = \DB::for_table('param')
+                ->where_equal('param_key', 'maintenance_ip')
+                ->find_one();
+
+            $list = $maintenance_ip->param_value ;
+            $exp  = explode("\n" , $list );
+
+            if ( $exp )
+            {
+                foreach( $exp as $ip )
+                {
+                    if ( $ip == $_SERVER['REMOTE_ADDR'] )
+                    {
+                        $auth = true ;
+                    }
+                }
+            }
+
+            if ( $auth == false )
+            {
+                $this->viewTemplateError('maintenance') ;
+            }
         }
     }
 
