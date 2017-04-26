@@ -55,7 +55,7 @@ class View
     }
 
     /* ************************************************** */
-    /* ****************     TOOLS     ******************* */
+    /* ****************   SINGLETONE   ****************** */
     /* ************************************************** */
 
     public static function getInstance()
@@ -73,12 +73,19 @@ class View
         $this->folder[] = $folder ;
     }
 
+    public function setData( $key , $var )
+    {
+        return $this->getApp()->view()->setData( $key , $var );
+    }
 
     /* ************************************************** */
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
 
-
+    public function getData( $key )
+    {
+        return $this->getApp()->view()->getData( $key );
+    }
 
     /* ************************************************** */
     /* ****************    FUNCTIONS   ****************** */
@@ -97,15 +104,5 @@ class View
     public function appendData( $array )
     {
         return $this->getApp()->view()->appendData( $array );
-    }
-
-    public function getData( $key )
-    {
-        return $this->getApp()->view()->getData( $key );
-    }
-
-    public function setData( $key , $var )
-    {
-        return $this->getApp()->view()->setData( $key , $var );
     }
 }
