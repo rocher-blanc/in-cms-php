@@ -427,7 +427,11 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('seo_robots', '0'),
 ('seo_divers_header', NULL),
 ('seo_divers_footer', NULL),
+('seo_www', 0),
+('seo_ssl', 0),
 ('server_cdn', NULL),
+('maintenance_ip', 0),
+('maintenance_active', NULL),
 ('security_list_ip', NULL);
 
 INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
