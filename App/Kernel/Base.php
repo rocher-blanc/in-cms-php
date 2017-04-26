@@ -430,8 +430,8 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('seo_www', 0),
 ('seo_ssl', 0),
 ('server_cdn', NULL),
-('maintenance_ip', 0),
-('maintenance_active', NULL),
+('maintenance_ip', NULL),
+('maintenance_active', 0),
 ('security_list_ip', NULL);
 
 INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
