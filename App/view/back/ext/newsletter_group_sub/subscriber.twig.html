@@ -1,7 +1,7 @@
 {% extends 'module.twig.html' %}
 
 {% block title_page %}Groupes d'abonnés{% endblock %}
-{% set this_page = 'Gestion' %}
+{% set this_page = 'Abonnés' %}
 
 {% block module %}
 <div class="row">
@@ -9,9 +9,9 @@
 		<section class="panel table">
 			<header class="panel-heading">
 				<div class="panel-actions">
-					<a href="{{ siteUrl('ext/newsletter_group_sub/edit') }}" class="btn btn-sm btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
+					<a href="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ id ~ '/import') }}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> Importer des emails</a>
 				</div>
-				<h2 class="panel-title">Liste des groupes d'abonnés à la newsletter</h2>
+				<h2 class="panel-title">Liste des abonnés du groupe "{{ name }}"</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -37,11 +37,11 @@
 									<div class="btn-group">
 										<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cogs"></i> Actions <span class="caret"></span></button>
 										<ul class="dropdown-menu" role="menu">
-											<li><a href="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ row.newsletter_group_sub_id) }}">Voir les abonnés</a></li>
+											<li><a href="#">Voir les abonnés</a></li>
 											<li><a href="#">Exporter les abonnés</a></li>
 										</ul>
 									</div>
-									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/newsletter_group_sub/edit/' ~ row.newsletter_group_sub_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.newsletter_group_sub_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_group_sub_id }}" data-link="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe d'abonnés '{{ row.newsletter_group_sub_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>
 							</tr>

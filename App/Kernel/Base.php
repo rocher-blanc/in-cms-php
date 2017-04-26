@@ -137,6 +137,7 @@ CREATE TABLE `newsletter_group_sub` (
 CREATE TABLE `newsletter_sub` (
   `newsletter_sub_id` int(11) NOT NULL,
   `newsletter_sub_email` varchar(255) COLLATE utf8_general_ci NOT NULL,
+  `newsletter_sub_state` tinyint(1) DEFAULT NULL,
   `newsletter_sub_newsletter_group_sub_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

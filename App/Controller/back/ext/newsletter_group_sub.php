@@ -14,6 +14,88 @@ $app->group('/newsletter_group_sub', function () use ($app)
 
     })->name('newsletter_group_sub_index');
 
+    $app->get('/subscriber/:id', function ($group_id) use ($app) {
+
+        $contentRows = \DB::for_table('newsletter_sub')
+            ->where_equal('newsletter_sub_newsletter_group_sub_id',$group_id)
+            ->order_by_asc('newsletter_sub_email')
+            ->find_many();
+
+        $contentRow = \DB::for_table('newsletter_group_sub')
+            ->where(['newsletter_group_sub_id' => $group_id])
+            ->find_one();
+
+        $app->render('ext/newsletter_group_sub/subscriber.twig.html', [
+            "id" => $group_id,
+            "name" => $contentRow->newsletter_group_sub_name,
+            "contentRows" => $contentRows
+        ]);
+
+    })->name('newsletter_group_sub_subscriber');
+
+    $app->get('/subscriber/:id/import', function ($group_id) use ($app) {
+
+        $contentRow = \DB::for_table('newsletter_group_sub')
+            ->where(['newsletter_group_sub_id' => $group_id])
+            ->find_one();
+
+        if ( $app->request->isPost() ) {
+            if ( $app->request->post('emails') == "" ) {
+                $error = true ;
+                $tabError['newsletter_group_sub_name'] = "Veuillez remplir ce champ" ;
+            }
+
+            if ( $error == false ) {
+                $exp  = explode("\n" , $app->request->post('emails') );
+
+                if ( $exp )
+                {
+                    foreach( $exp as $email )
+                    {
+                        if ( filter_var( $email , FILTER_VALIDATE_EMAIL ) )
+                        {
+                            $ct = \DB::for_table('newsletter_sub')
+                                ->where_equal('newsletter_sub_email' , $email )
+                                ->where_equal('newsletter_sub_newsletter_group_sub_id' , $group_id )
+                                ->count();
+
+                            if ( $ct == 0 )
+                            {
+                                $row = \DB::for_table('newsletter_sub')->create():
+                                $row->newsletter_sub_email = $email ;
+                                $row->newsletter_sub_newsletter_group_sub_id = $group_id ;
+                            }
+                        }
+                    }
+                }
+
+                if ( !$contentRow ) {
+                    $contentRow = DB::for_table('newsletter_group_sub')->create();
+                    $add = true ;
+                }
+
+                $contentRow->newsletter_group_sub_name = $app->request->post('newsletter_group_sub_name');
+                $contentRow->save();
+
+                \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 200 : 201 ) , $contentRow->newsletter_group_sub_name ) ;
+
+                $id = $contentRow->newsletter_group_sub_id ;
+
+                $app->flash('__msg',addslashes( json_encode( "Le groupe d'abonnés a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
+                $app->flash('__result',true);
+
+                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/edit/' . $id );
+                else 											$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub' );
+            }
+        }
+
+        $app->render('ext/newsletter_group_sub/subscriber_import.twig.html', [
+            "id" => $group_id,
+            "name" => $contentRow->newsletter_group_sub_name
+        ]);
+
+    })->name('newsletter_group_sub_import')->via('GET', 'POST');
+
     $app->map('/edit(/:id)', function ($id = -1) use ($app)
     {
         $error    = false ;
