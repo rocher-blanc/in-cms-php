@@ -29,7 +29,7 @@
 						</thead>
 						<tbody>
 						{% for row in contentRows %}
-							<tr class="tr1">
+							<tr class="tr1" data-mail="{{ row.newsletter_sub_email }}">
 								<td>
 									{{ row.newsletter_sub_email }}
 								</td>

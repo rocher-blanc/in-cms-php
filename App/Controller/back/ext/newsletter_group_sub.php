@@ -4,12 +4,25 @@ $app->group('/newsletter_group_sub', function () use ($app)
 {
     $app->get('/', function () use ($app) {
 
+        $tab = [];
         $contentRows = \DB::for_table('newsletter_group_sub')
             ->order_by_asc('newsletter_group_sub_name')
             ->find_many();
 
+        if ( $contentRows )
+        {
+            foreach( $contentRows as $row )
+            {
+                $std = new \stdClass;
+                $std->newsletter_group_sub_id = $row->newsletter_group_sub_id;
+                $std->newsletter_group_sub_name = $row->newsletter_group_sub_name;
+                $std->count = \DB::for_table('newsletter_sub')->where_equal('newsletter_sub_newsletter_group_sub_id',$row->newsletter_group_sub_id)->count();
+                $tab[] = $std ;
+            }
+        }
+
         $app->render('ext/newsletter_group_sub/index.twig.html', [
-            "contentRows" => $contentRows
+            "contentRows" => $tab
         ]);
 
     })->name('newsletter_group_sub_index');

@@ -1,17 +1,25 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Groupes d'abonnés{% endblock %}
+{% block title_page %}Campagnes{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
+<div class="row">
+	<div class="col-md-4">
+		<div class="box bg-success">
+			<h4 class="uk-text-contrast">Active Services</h4>
+			<h1 class="uk-margin-small-top uk-text-contrast">2</h1>
+		</div>
+	</div>
+</div>
 <div class="row">
 	<div class="col-md-12">
 		<section class="panel table">
 			<header class="panel-heading">
 				<div class="panel-actions">
-					<a href="{{ siteUrl('ext/newsletter_group_sub/edit') }}" class="btn btn-sm btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
+					<a href="{{ siteUrl('ext/newsletter_campaign/edit') }}" class="btn btn-sm btn-success"><i class="fa fa-plus-square"></i> Ajouter</a>
 				</div>
-				<h2 class="panel-title">Liste des groupes d'abonnés à la newsletter</h2>
+				<h2 class="panel-title">Liste des campagnes de newsletter</h2>
 			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -49,7 +57,7 @@
 						</tbody>
 					</table>
 				{% else %}
-					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun groupe d'abonnés n'est enregistré.</div>
+					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucune campagne n'est enregistré.</div>
 				{% endif %}
 				</div>
 			</div>
@@ -61,6 +69,7 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
 <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
+<link rel="stylesheet" href="{{ vendor('cmsmedias/css/box.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
