@@ -51,7 +51,7 @@ class Image extends \App\Kernel\Back\Form
 		$thumb = $this->getBlocThumb( $field , $value ) ;
 		
 		$html = '
-		<div id="bloc_media_id_' . $name . '">
+		<div id="bloc_media_id_' . $name . '" class="clear">
 		<input type="hidden" name="' . $name . '" id="id_' . $name . '" value="' . ( $this->validValue( $mini ) == true ? $value : '' ) . '" />
 		<div class="scrollhimage">
 	<div class="img-source">
