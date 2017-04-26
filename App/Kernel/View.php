@@ -103,4 +103,9 @@ class View
     {
         return $this->getApp()->view()->getData( $key );
     }
+
+    public function setData( $key , $var )
+    {
+        return $this->getApp()->view()->setData( $key , $var );
+    }
 }
