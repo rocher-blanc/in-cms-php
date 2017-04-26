@@ -42,7 +42,7 @@ $app->group('/newsletter_group_sub', function () use ($app)
         if ( $app->request->isPost() ) {
             if ( $app->request->post('emails') == "" ) {
                 $error = true ;
-                $tabError['newsletter_group_sub_name'] = "Veuillez remplir ce champ" ;
+                $tabError['emails'] = "Veuillez remplir ce champ" ;
             }
 
             if ( $error == false ) {
@@ -52,6 +52,7 @@ $app->group('/newsletter_group_sub', function () use ($app)
                 {
                     foreach( $exp as $email )
                     {
+                        $email = str_replace( "\r" , "" , $email );
                         if ( filter_var( $email , FILTER_VALIDATE_EMAIL ) )
                         {
                             $ct = \DB::for_table('newsletter_sub')
@@ -61,40 +62,59 @@ $app->group('/newsletter_group_sub', function () use ($app)
 
                             if ( $ct == 0 )
                             {
-                                $row = \DB::for_table('newsletter_sub')->create():
+                                $row = \DB::for_table('newsletter_sub')->create();
                                 $row->newsletter_sub_email = $email ;
                                 $row->newsletter_sub_newsletter_group_sub_id = $group_id ;
+                                $row->save();
                             }
                         }
                     }
                 }
 
-                if ( !$contentRow ) {
-                    $contentRow = DB::for_table('newsletter_group_sub')->create();
-                    $add = true ;
-                }
+                \App\Kernel\Back\Log::getInstance()->info( 203 , $contentRow->newsletter_group_sub_name ) ;
 
-                $contentRow->newsletter_group_sub_name = $app->request->post('newsletter_group_sub_name');
-                $contentRow->save();
-
-                \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 200 : 201 ) , $contentRow->newsletter_group_sub_name ) ;
-
-                $id = $contentRow->newsletter_group_sub_id ;
-
-                $app->flash('__msg',addslashes( json_encode( "Le groupe d'abonnés a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
+                $app->flash('__msg',addslashes( json_encode( "Les emails ont bien été ajouté" ) ) );
                 $app->flash('__result',true);
 
-                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/edit/' . $id );
-                else 											$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub' );
+                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/subscriber/' . $group_id . "/import" );
+                else 											$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/subscriber/' . $group_id );
             }
         }
 
         $app->render('ext/newsletter_group_sub/subscriber_import.twig.html', [
             "id" => $group_id,
-            "name" => $contentRow->newsletter_group_sub_name
+            "name" => $contentRow->newsletter_group_sub_name,
+            "error"		 => ( $error === false ? "0" : "1" ),
+            "tabError"	 => json_encode( $tabError )
         ]);
 
     })->name('newsletter_group_sub_import')->via('GET', 'POST');
+
+    $app->delete('/subscriber/delete/:id', function ($id) use ($app)
+    {
+        $ret = false ;
+        $contentRow = \DB::for_table('newsletter_sub')
+            ->where_equal('newsletter_sub_id' , $id)
+            ->find_one();
+
+        if ( $contentRow )
+        {
+            \App\Kernel\Back\Log::getInstance()->warning( 204 , $contentRow->newsletter_sub_email ) ;
+
+            $msg = "L'abonné a bien été supprimé" ;
+            $ret = true ;
+            $contentRow->delete();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la suppression" ;
+        }
+
+        echo json_encode([
+            "msg" => $msg,
+            "result" => $ret
+        ]) ;
+    })->name('newsletter_subscriber_delete');
 
     $app->map('/edit(/:id)', function ($id = -1) use ($app)
     {

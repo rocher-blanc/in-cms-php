@@ -142,6 +142,8 @@ class Log
             200 => "Ajout d'un nouveau groupe d'abonné \"%i\"",
             201 => "Modification d'un groupe d'abonné \"%i\"",
             202 => "Suppression d'un groupe d'abonné \"%i\"",
+            203 => "Ajout d'abonnés dans un groupe \"%i\"",
+            204 => "Suppression d'un abonné dans un groupe \"%i\"",
 
         ];
     }

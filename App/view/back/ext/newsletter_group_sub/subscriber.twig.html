@@ -16,40 +16,32 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if contentRows|length > 0 %}
-					<table class="table table-striped table-search table-gestion table-ext table-hover mb-none">
+					<table class="table table-striped table-gestion table-ext table-hover mb-none table-search">
 						<thead>
 							<tr>
 								<th>Nom</th>
-								<th>Nombres d'abonnés</th>
 								<th class="text-right" style="width: 320px"></th>
+							</tr>
+							<tr>
+								<td><input id="search" placeholder="Rechercher ..." type="search"></td>
+								<td></td>
 							</tr>
 						</thead>
 						<tbody>
 						{% for row in contentRows %}
 							<tr class="tr1">
 								<td>
-									<a href="{{ siteUrl('ext/newsletter_group_sub/edit/' ~  row.newsletter_group_sub_id) }}">{{ row.newsletter_group_sub_name }}</a>
-								</td>
-								<td>
-									0
+									{{ row.newsletter_sub_email }}
 								</td>
 								<td class="text-right">
-									<div class="btn-group">
-										<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cogs"></i> Actions <span class="caret"></span></button>
-										<ul class="dropdown-menu" role="menu">
-											<li><a href="#">Voir les abonnés</a></li>
-											<li><a href="#">Exporter les abonnés</a></li>
-										</ul>
-									</div>
-									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.newsletter_group_sub_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_group_sub_id }}" data-link="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe d'abonnés '{{ row.newsletter_group_sub_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
+									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_sub_id }}" data-link="{{ siteUrl('ext/newsletter_group_sub/subscriber/delete/' ~ row.newsletter_sub_id) }}" data-text="Êtes-vous sûr de vouloir supprimer cet abonné '{{ row.newsletter_sub_email }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>
 							</tr>
 						{% endfor %}
 						</tbody>
 					</table>
 				{% else %}
-					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun groupe d'abonnés n'est enregistré.</div>
+					<div class="nocontent"><i class="fa fa-info-circle"></i> Aucun abonné n'est enregistré dans ce groupe.</div>
 				{% endif %}
 				</div>
 			</div>
@@ -66,4 +58,27 @@
 {% block javascripts %}
 	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
 	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+	<script>
+		$('#search').keyup(function(event) { searchAction(); });
+		$('#search').change(function(event) { searchAction(); });
+
+		function searchAction() {
+			var input = $('#search');
+			var table = $('tbody');
+
+			var req = $(input).val().toLowerCase();
+
+			if( req.length <= 0 ) {
+				$(table).find("tr").show();
+			}
+			else {
+				$(table).find("tr").hide();
+
+				$(table).find("tr").each( function(index, el) {
+					var mail = $(el).attr('data-mail').indexOf( req ) > -1 ? true : false;
+					if( mail ) $(el).show();
+				});
+			}
+		}
+	</script>
 {% endblock %}
