@@ -17,7 +17,7 @@
     "mrclay/minify": "2.2.1",
     "phpoffice/phpexcel": "1.8.1",
     "google/recaptcha": "~1.1",
-    "facebook/php-sdk-v4" : "~5.0",
+    "facebook/graph-sdk" : "~5.0",
     "phpmailer/phpmailer" : "5.2.13",
     "fxp/composer-asset-plugin": "dev-master",
     "guzzlehttp/guzzle": "^6.1",
