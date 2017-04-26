@@ -62,7 +62,6 @@ class Meta
                 'language'       => $this->Lang()->getActive()->url,
 				'identifier-url' => \App\Kernel\Http::getInstance()->getUrl() . '/',
                 'description'    => "",
-                'keywords'       => "",
                 'author'         => $tab['seo_author'],
                 'robots'         => ( $tab['seo_robots'] == '0' ? 'noindex,nofollow' : 'index,follow' ),
                 'robots_value'   => $tab['seo_robots'],
