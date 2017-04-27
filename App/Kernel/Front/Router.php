@@ -541,7 +541,6 @@ class Router
 
                 $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page , $User , $Response , $Url )
                 {
-                    dump('dddddd');
                     if ( ACTIVE_USER )
                     {
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
