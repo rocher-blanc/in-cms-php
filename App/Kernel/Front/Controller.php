@@ -354,7 +354,6 @@ class Controller
             ->select('module_lang.module_lang_url')
             ->select('module_lang.module_lang_title')
             ->select('module_lang.module_lang_description')
-            ->select('module_lang.module_lang_keyword')
             ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
             ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_module_id' => $this->getEntityId() ])
             ->find_one();
@@ -373,7 +372,6 @@ class Controller
                 'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->module_lang_url,
                 'title' => $result->module_lang_title,
                 'description' => $result->module_lang_description,
-                'keyword' => $result->module_lang_keyword,
                 'robots' => $robots
             ];
 
