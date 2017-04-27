@@ -56,9 +56,9 @@
                             </td>
                             <td>
                                 {% if row.module_group_active == 0 %}
-                                <a class="btn btn-sm btn-warning" href="{{ siteUrl('admin/groupmodule/active/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
+                                    <a class="btn btn-sm btn-warning" href="{{ siteUrl('admin/groupmodule/active/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Désactivée</a>
                                 {% else %}
-                                <a class="btn btn-sm btn-success" href="{{ siteUrl('admin/groupmodule/disactive/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
+                                    <a class="btn btn-sm btn-success" href="{{ siteUrl('admin/groupmodule/disactive/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Activée</a>
                                 {% endif %}
                             </td>
                             <td class="text-right">
@@ -95,7 +95,7 @@
                         </tbody>
                     </table>
                     {% else %}
-                    <span>Aucun groupe de modules n'est enregistré.</span>
+                        <div class="nocontent"><i class="fa fa-info-circle"></i> Aucun groupe de modules n'est enregistré.</div>
                     {% endif %}
                 </div>
             </div>
