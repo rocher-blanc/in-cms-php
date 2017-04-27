@@ -535,28 +535,30 @@ class Router
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-				if ( ACTIVE_USER )
-                {
-                    // On observe les users manuellement car cela est fait bien plus tard normalement dans le middleware (necessite une route slim non présente actuellement)
-                    $this->User()->observe();
+                $User       = $this->User();
+                $Response   = $this->Factory()->Response();
+                $Url        = $this->Factory()->Url();
 
-                    if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $this->User()->isLogged() == false ) )
+                $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page , $User , $Response , $Url )
+                {
+                    dump('dddddd');
+                    if ( ACTIVE_USER )
                     {
-                        $this->Factory()->Response()->redirect( $this->Factory()->Url()->page( $page->page_access_user_redirect ) );
-                    }
-                    else if ( $page->page_access_user == 2 && $this->User()->isLogged() == true )
-                    {
-                        // S'il est connecté mais pas dans le bon groupe
-                        $tabGroup = unserialize( $page->page_access_user_group );
-                        if ( ! in_array( $this->User()->getGroup() , $tabGroup ) )
+                        if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {
-                            $this->Factory()->Response()->redirect();
+                            $Response->redirect( $Url->page( $page->page_access_user_redirect ) );
+                        }
+                        else if ( $page->page_access_user == 2 && $User->isLogged() == true )
+                        {
+                            // S'il est connecté mais pas dans le bon groupe
+                            $tabGroup = unserialize( $page->page_access_user_group );
+                            if ( ! in_array( $User->getGroup() , $tabGroup ) )
+                            {
+                                $Response->redirect();
+                            }
                         }
                     }
-                }
 
-                $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $page )
-                {
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 					
 					$pageClass = new $ControllerClass;
