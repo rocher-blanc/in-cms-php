@@ -34,7 +34,7 @@
 									{{ row.newsletter_sender_email }}
 								</td>
 								<td class="text-right">
-									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/user_front_group/edit/' ~ row.newsletter_sender_id) }}"><i class="fa fa-pencil"></i> Editer</a>
+									<a class="btn btn-sm btn-info" href="{{ siteUrl('ext/newsletter_sender/edit/' ~ row.newsletter_sender_id) }}"><i class="fa fa-pencil"></i> Editer</a>
 									<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_sender_id }}" data-link="{{ siteUrl('ext/newsletter_sender/delete/' ~ row.newsletter_sender_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe d'abonnés '{{ row.newsletter_sender_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
 								</td>
 							</tr>
