@@ -545,7 +545,7 @@ class Router
                     {
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {
-                            $Response->redirect( $Url->page( $page->page_access_user_redirect ) );
+                            $Response->redirect( $Url->page( $page->page_access_user_redirect , true ) );
                         }
                         else if ( $page->page_access_user == 2 && $User->isLogged() == true )
                         {
