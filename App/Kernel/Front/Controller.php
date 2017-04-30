@@ -321,7 +321,6 @@ class Controller
             ->select('seo_url')
             ->select('seo_title')
             ->select('seo_description')
-            ->select('seo_keyword')
             ->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_element_id' => $this->getId() ])
             ->find_one();
 
@@ -330,8 +329,7 @@ class Controller
             $meta = [
                 'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->seo_url,
                 'title' => $result->seo_title,
-                'description' => $result->seo_description,
-                'keyword' => $result->seo_keyword
+                'description' => $result->seo_description
             ];
             $meta = array_merge($this->getApp()->view()->getData('meta'), $meta);
             $this->setVar('meta',$meta);
