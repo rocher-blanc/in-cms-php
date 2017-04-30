@@ -29,9 +29,9 @@
 								</td>
 								<td>
 									{% if row.module_index == 0 %}
-										<a class="btn btn-sm btn-warning" href="{{ siteUrl('ext/parammodule/index/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
+										<a class="btn btn-sm btn-warning disaled" href="{{ siteUrl('ext/parammodule/index/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Non</a>
 									{% else %}
-										<a class="btn btn-sm btn-success" href="{{ siteUrl('ext/parammodule/noindex/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Oui</a>
+										<a class="btn btn-sm btn-success disaled" href="{{ siteUrl('ext/parammodule/noindex/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Oui</a>
 									{% endif %}
 								</td>
 								<td class="text-right">
