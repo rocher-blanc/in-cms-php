@@ -32,7 +32,7 @@ class TwigHelper extends \Twig_Extension
     /*
      * Accessible dans les controllers des pages
      */
-    public function helperPage( $page , $method )
+    public function helperPage( $page , $method , $arg )
     {
         $helper = new \App\Kernel\Front\Helper;
         $helper->setPage( $page ) ;
