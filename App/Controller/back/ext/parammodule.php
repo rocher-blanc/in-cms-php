@@ -33,6 +33,66 @@ $app->group('/parammodule', function () use ($app)
 
     })->name('parammodule_index');
 
+    $app->get('/index/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $module = \DB::for_table('module')
+                ->where_equal('module_id' , $id)
+                ->find_one();
+
+            if ( $module->module_index == 0 ) {
+                $module->module_index = 1;
+                $module->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 56 , $module->module_name ) ;
+
+                $msg = "Le module est maintenant indexé";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, le module est déja indexé";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
+    });
+
+    $app->get('/noindex/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $module = \DB::for_table('module')
+                ->where_equal('module_id' , $id)
+                ->find_one();
+
+            if ( $module->module_index == 1 ) {
+                $module->module_index = 0;
+                $module->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 57 , $module->module_name ) ;
+
+                $msg = "Le module est maintenant désindexé";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, le module est déja désindexé";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
+    });
+
     $app->map('/edit/:id', function ($id) use ($app)
     {
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
