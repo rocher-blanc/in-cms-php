@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Middleware;
 
+use App\Kernel\Utils;
+
 class PrettyExceptions extends \Slim\Middleware
 {
     protected $settings;
@@ -74,37 +76,17 @@ class PrettyExceptions extends \Slim\Middleware
 
     private function getSlackNotification( $e )
     {
-        $msg = new \stdClass;
-        $msg->color = "#ffab40" ;
-        $msg->author_name = "JWeb" ;
-        $msg->title = "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] ;
-        $msg->title_link = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] ;
-        $msg->text = "Type: " . get_class($e) . "\n";
-        $msg->text.= "Code: " . $e->getCode() . "\n";
-        $msg->text.= "Message: " . $e->getMessage() . "\n";
-        $msg->text.= "File: " . $e->getFile() . "\n";
-        $msg->text.= "Line: " . $e->getLine() ;
+        $text = "Type: " . get_class($e) . "\n";
+        $text.= "Code: " . $e->getCode() . "\n";
+        $text.= "Message: " . $e->getMessage() . "\n";
+        $text.= "File: " . $e->getFile() . "\n";
+        $text.= "Line: " . $e->getLine() ;
 
-        $std = new \stdClass;
-        $std->username = "JWeb-Bot" ;
-        $std->icon_emoji = ":jweb:" ;
-        $std->channel = "#errors" ;
-        $std->attachments = [
-            $msg
-        ];
-
-        $data_string = json_encode( $std );
-
-        $ch = curl_init('https://hooks.slack.com/services/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');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($data_string))
-        );
-
-        $result = curl_exec($ch);
-        curl_close($ch);
+        $Slack = new Slack;
+        $Slack->setText( $text );
+        $Slack->setTitle( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] );
+        $Slack->setTitleLink( 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] );
+        $Slack->setChannel("errors");
+        $Slack->notification();
     }
 }

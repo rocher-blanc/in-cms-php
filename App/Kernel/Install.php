@@ -47,6 +47,8 @@ class Install
         self::minify() ;
         self::patchVendor() ;
         self::patchDb() ;
+
+        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , "Installation/Mise à jour du CMS avec succés" );
     }
 
     protected static function patchDb()
