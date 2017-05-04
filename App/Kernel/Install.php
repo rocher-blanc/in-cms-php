@@ -48,7 +48,14 @@ class Install
         self::patchVendor() ;
         self::patchDb() ;
 
-        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , "Installation/Mise à jour du CMS avec succés" );
+        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , "Installation/Mise à jour du CMS avec succés\nProjet : " . self::getFolderProject() );
+    }
+
+    protected static function getFolderProject()
+    {
+        $folders = explode('/' , _PATH_ );
+
+        return $folders[2] ;
     }
 
     protected static function patchDb()
