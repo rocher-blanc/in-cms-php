@@ -39,6 +39,8 @@ class Install
 
     public static function postInstall()
     {
+        $install = self::isInstallation() ;
+
         self::checkFolder() ;
         self::checkConfigSass() ;
         self::checkHtaccess() ;
@@ -48,14 +50,18 @@ class Install
         self::patchVendor() ;
         self::patchDb() ;
 
-        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , "Installation/Mise à jour du CMS avec succés\nProjet : " . self::getFolderProject() );
+        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , ( $install ? "Installation" : "Mise à jour" ) . " du CMS avec succés\nProjet : " . self::getFolderProject() );
     }
 
     protected static function getFolderProject()
     {
         $folders = explode('/' , _PATH_ );
-
         return $folders[2] ;
+    }
+
+    protected static function isInstallation()
+    {
+        return ( is_dir( _PATH_ . "/Project" ) ? false : true ) ;
     }
 
     protected static function patchDb()
