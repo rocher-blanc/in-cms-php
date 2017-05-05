@@ -22,22 +22,22 @@ class Slack
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
-    protected function setText( $var )
+    public function setText( $var )
     {
         $this->text = $var ;
     }
 
-    protected function setTitle( $var )
+    public function setTitle( $var )
     {
         $this->title = $var ;
     }
 
-    protected function setTitleLink( $var )
+    public function setTitleLink( $var )
     {
         $this->title_link = $var ;
     }
 
-    protected function setChannel( $var )
+    public function setChannel( $var )
     {
         $this->channel = $var;
     }

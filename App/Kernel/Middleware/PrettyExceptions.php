@@ -2,8 +2,6 @@
 
 namespace App\Kernel\Middleware;
 
-use App\Kernel\Utils;
-
 class PrettyExceptions extends \Slim\Middleware
 {
     protected $settings;
@@ -82,7 +80,7 @@ class PrettyExceptions extends \Slim\Middleware
         $text.= "File: " . $e->getFile() . "\n";
         $text.= "Line: " . $e->getLine() ;
 
-        $Slack = new Slack;
+        $Slack = new \App\Kernel\Utils\Slack;
         $Slack->setText( $text );
         $Slack->setTitle( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] );
         $Slack->setTitleLink( 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] );
