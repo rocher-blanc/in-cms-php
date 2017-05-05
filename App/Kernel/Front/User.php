@@ -865,10 +865,19 @@ class User extends \App\Kernel\Common\User
         else            return false ;
     }
 
-    public function getById()
+    protected function getById()
     {
         return \DB::for_table('user_front')
             ->where_equal('user_front_id', $this->getId() )
+            ->find_one();
+    }
+
+    public function getOne( $id )
+    {
+        return \DB::for_table('user_front')
+            ->select('user_front_id')
+            ->select('user_front_login')
+            ->where_equal('user_front_id', $id )
             ->find_one();
     }
 
