@@ -28,7 +28,7 @@
 						{% for domain in content if domain.page | length > 0%}
 							{% if domain.id > 0 %}
 							<tr class="tr1">
-								<th colspan="4" class="text-center"><strong>{{ domain.name }}</strong></th>
+								<th colspan="6" class="text-center"><strong>{{ domain.name }}</strong></th>
 							</tr>
 							{% endif %}
 							{% for row in domain.page %}
