@@ -376,7 +376,7 @@ class DB extends ORM
             ->where_equal( $tableLang . '.' . $langIdLangName , $idlang ) ;
     }
 
-    protected function _add_date_condition($type, $column_name, $separator, $value) {
+    protected function _add_date_condition_function($type, $column_name, $separator, $value, $function) {
         $multiple = is_array($column_name) ? $column_name : array($column_name => $value);
         $result = $this;
 
@@ -390,22 +390,46 @@ class DB extends ORM
 
                 $key = "{$table}.{$key}";
             }
-            $key = 'DATE(' . $result->_quote_identifier($key) . ')' ;
+            $key = $function . '(' . $result->_quote_identifier($key) . ')' ;
             $result = $result->_add_condition($type, "{$key} {$separator} ?", $val);
         }
         return $result;
     }
 
     public function where_date($column_name, $value=null) {
-        return $this->_add_date_condition('where', $column_name, '=', $value);
+        return $this->_add_date_condition_function('where', $column_name, '=', $value, 'DATE');
     }
 
     public function where_date_lte($column_name, $value=null) {
-        return $this->_add_date_condition('where', $column_name, '<=', $value);
+        return $this->_add_date_condition_function('where', $column_name, '<=', $value, 'DATE');
     }
 
     public function where_date_gte($column_name, $value=null) {
-        return $this->_add_date_condition('where', $column_name, '>=', $value);
+        return $this->_add_date_condition_function('where', $column_name, '>=', $value, 'DATE');
+    }
+
+    public function where_month($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '=', $value, 'MONTH');
+    }
+
+    public function where_month_lte($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '<=', $value, 'MONTH');
+    }
+
+    public function where_month_gte($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '>=', $value, 'MONTH');
+    }
+
+    public function where_year($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '=', $value, 'YEAR');
+    }
+
+    public function where_year_lte($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '<=', $value, 'YEAR');
+    }
+
+    public function where_year_gte($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '>=', $value, 'YEAR');
     }
 
     public function order_by_rand() {
