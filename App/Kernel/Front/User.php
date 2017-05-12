@@ -681,6 +681,7 @@ class User extends \App\Kernel\Common\User
     ######################################                VALIDATION                 ##################################################
     ###################################################################################################################################
 
+
     public function validation()
     {
         if ( ! $this->isLogged() )
@@ -698,9 +699,20 @@ class User extends \App\Kernel\Common\User
 
                 if ( $user )
                 {
+                    if ( $this->connectWithValidation() )
+                    {
+                        $date = new \DateTime();
+                        $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
+                    }
+
                     $user->user_front_token  = $this->getNewToken();
                     $user->user_front_active = 1;
                     $user->save();
+
+                    if ( $this->connectWithValidation() )
+                    {
+                        $this->save( $user ) ;
+                    }
 
                     return $this->returnError( "user_validation_successful" , true ) ;
                 }
@@ -710,6 +722,11 @@ class User extends \App\Kernel\Common\User
                 }
             }
         }
+    }
+
+    protected function connectWithValidation()
+    {
+        return false ;
     }
 
     ###################################################################################################################################
