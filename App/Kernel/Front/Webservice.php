@@ -55,7 +55,7 @@ class Webservice
 
     protected function getKeyToken()
     {
-        return 'token_api' ;
+        return strtoupper( 'token' ) ;
     }
 
     /* ************************************************** */
