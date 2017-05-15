@@ -320,18 +320,34 @@ class Controller
             ->select('seo_url')
             ->select('seo_title')
             ->select('seo_description')
+            ->select('seo_index')
             ->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_element_id' => $this->getId() ])
+            ->find_one();
+
+        $module = \DB::for_table('module')
+            ->select('module_index_elmt')
+            ->where(['module_id' => $this->getEntityId() ])
             ->find_one();
 
         if ( $result )
         {
+            $lastTab = $this->getApp()->view()->getData('meta') ;
+            $robots = $lastTab['robots'] ;
+
+            if ( ( $result->module_index_elmt == 0 or $result->seo_index == 0 ) && substr( $robots , 0 , 5 ) == 'index' )
+            {
+                $robots = "no" . $robots ;
+            }
+
             $meta = [
                 'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->seo_url,
                 'title' => $result->seo_title,
-                'description' => $result->seo_description
+                'description' => $result->seo_description,
+                'robots' => $robots
             ];
-            $meta = array_merge($this->getApp()->view()->getData('meta'), $meta);
-            $this->setVar('meta',$meta);
+
+            $meta = array_merge( $lastTab , $meta );
+            $this->setVar( 'meta' , $meta );
 
             $og = [
                 'type' => "article",
