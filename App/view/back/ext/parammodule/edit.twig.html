@@ -74,9 +74,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Indexer le module</label>
+                            <label class="col-md-3 control-label">Indexer le listing du module</label>
                             <div class="col-md-6">
                                 <input value="1" type="checkbox"{{ index == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="module_index" id="module_index" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Indexer les éléments du module</label>
+                            <div class="col-md-6">
+                                <input value="1" type="checkbox"{{ index_elmt == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="module_index_elmt" id="module_index_elmt" />
                             </div>
                         </div>
 

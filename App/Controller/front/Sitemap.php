@@ -21,7 +21,6 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->select('module_lang.module_lang_lang_id')
         ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
         ->where_equal('module.module_active',1)
-        ->where_equal('module.module_index',1)
 		->where_in('module_lang.module_lang_lang_id', $langObj->getTabLang() )
         ->find_many();
 
@@ -33,118 +32,127 @@ $app->get('/sitemap.xml', function () use ( $app )
     {
         foreach( $content as $module )
         {
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
-            else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;
-
-            $Controller = new $ControllerClass;
-            $Controller->setEntityName( $module->module_class_name );
-            $Controller->loadEntity();
-            $Controller->init() ;
-
-            $result = $Controller->getSiteMap() ;
-
-            $url = $app->request()->getUrl() ;
-
-            if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
-
-            if ( $module->module_default == 0 )
+            if ( $module->module_index == 1 or $module->module_index_elmt == 1 )
             {
-                $url.= '/' . $module->module_lang_url . '/' ;
-                if ( file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
+                if ( $module->module_index == 1 )
                 {
-                    echo "\t" . '<url>' . "\n" ;
-                    echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
-                    echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
-                    echo "\t" . '</url>' . "\n" ;
-                }
-            }
-            else
-            {
-                $url.= '/' ;
-            }
+                    $url = $app->request()->getUrl() ;
 
-            if ( $result )
-            {
-                foreach( $result['content'] as $row )
-                {
-                    if ( $module->module_lang_lang_id == $row->seo_lang_id )
+                    if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
+
+                    if ( $module->module_default == 0 )
                     {
-                        $date_updated = new \DateTime( $row->date_updated ) ;
-                        $date_last_updated = new \DateTime( $row->date_last_updated ) ;
-                        $interval = $date_last_updated->diff($date_updated);
-                        $delta = intval( $interval->format('%a') );
-
-                        if ( $delta <= 1 )          $fred = 'daily' ;
-                        else if ( $delta <= 7 )     $fred = 'weekly' ;
-                        else if ( $delta <= 30 )    $fred = 'monthly' ;
-                        else                        $fred = 'yearly' ;
-
-                        echo "\t" . '<url>' . "\n" ;
-                            echo "\t\t" . '<loc>' . $url . $row->seo_url . '</loc>' . "\n";
-                            echo "\t\t" . '<lastmod>' . $date_updated->format('Y-m-d') . '</lastmod>' . "\n";
-                            echo "\t\t" . '<changefreq>' . $fred . '</changefreq>' . "\n";
+                        $url.= '/' . $module->module_lang_url . '/' ;
+                        if ( file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
+                        {
+                            echo "\t" . '<url>' . "\n" ;
+                            echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
                             echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
-
-                        if ( !empty( $result['fieldImage'] ) )
-                        {
-                            foreach( $result['fieldImage'] as $field )
-                            {
-                                $image = $row->get( $field->getColumn() ) ;
-
-                                if ( !empty( $image ) )
-                                {
-                                    $media = new \App\Kernel\Front\Media;
-                                    $media->setImageId( $image );
-                                    $media->getNameById();
-
-                                    $urlImage = \App\Kernel\Http::getInstance()->getCdn() . $result['pathImage'] . '/' . $media->getImageName();
-                                    echo "\t\t" . '<image:image>' . "\n";
-                                    echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
-                                    echo "\t\t" . '</image:image>' . "\n";
-                                }
-                            }
+                            echo "\t" . '</url>' . "\n" ;
                         }
+                    }
+                    else
+                    {
+                        $url.= '/' ;
+                    }
+                }
 
-                        if ( !empty( $result['fieldGallery'] ) )
+                if ( $module->module_index_elmt == 1 )
+                {
+                    if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
+                    else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;
+
+                    $Controller = new $ControllerClass;
+                    $Controller->setEntityName( $module->module_class_name );
+                    $Controller->loadEntity();
+                    $Controller->init() ;
+
+                    $result = $Controller->getSiteMap() ;
+
+                    if ( $result )
+                    {
+                        foreach( $result['content'] as $row )
                         {
-                            foreach( $result['fieldGallery'] as $gallery )
+                            if ( $module->module_lang_lang_id == $row->seo_lang_id )
                             {
-                                $Gal = new \App\Kernel\Front\Gallery;
-                                $Gal->setElementId( $row->id );
-                                $Gal->setModuleId( $module->module_id );
-                                $Gal->setModuleName( $module->module_class_name );
-                                $Gal->setField( $gallery->getName() );
-                                $Gal->setFolder( $Controller->getEntity()->getFolder() );
-                                $tab = $Gal->getAllByField();
+                                $date_updated = new \DateTime( $row->date_updated ) ;
+                                $date_last_updated = new \DateTime( $row->date_last_updated ) ;
+                                $interval = $date_last_updated->diff($date_updated);
+                                $delta = intval( $interval->format('%a') );
 
+                                if ( $delta <= 1 )          $fred = 'daily' ;
+                                else if ( $delta <= 7 )     $fred = 'weekly' ;
+                                else if ( $delta <= 30 )    $fred = 'monthly' ;
+                                else                        $fred = 'yearly' ;
 
-                                if ( !empty( $tab ) )
+                                echo "\t" . '<url>' . "\n" ;
+                                echo "\t\t" . '<loc>' . $url . $row->seo_url . '</loc>' . "\n";
+                                echo "\t\t" . '<lastmod>' . $date_updated->format('Y-m-d') . '</lastmod>' . "\n";
+                                echo "\t\t" . '<changefreq>' . $fred . '</changefreq>' . "\n";
+                                echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+
+                                if ( !empty( $result['fieldImage'] ) )
                                 {
-                                    foreach( $tab as $img )
+                                    foreach( $result['fieldImage'] as $field )
                                     {
-                                        if ( count( $img ) == 3 )
-                                        {
-                                            unset( $img['100x100'] );
-                                            unset( $img['source'] );
+                                        $image = $row->get( $field->getColumn() ) ;
 
-                                            foreach( $img as $url )
-                                            {
-                                                $urlImage = $url ;
-                                            }
-                                        }
-                                        else
+                                        if ( !empty( $image ) )
                                         {
-                                            $urlImage = $img['source'] ;
-                                        }
+                                            $media = new \App\Kernel\Front\Media;
+                                            $media->setImageId( $image );
+                                            $media->getNameById();
 
-                                        echo "\t\t" . '<image:image>' . "\n";
-                                        echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
-                                        echo "\t\t" . '</image:image>' . "\n";
+                                            $urlImage = \App\Kernel\Http::getInstance()->getCdn() . $result['pathImage'] . '/' . $media->getImageName();
+                                            echo "\t\t" . '<image:image>' . "\n";
+                                            echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
+                                            echo "\t\t" . '</image:image>' . "\n";
+                                        }
                                     }
                                 }
+
+                                if ( !empty( $result['fieldGallery'] ) )
+                                {
+                                    foreach( $result['fieldGallery'] as $gallery )
+                                    {
+                                        $Gal = new \App\Kernel\Front\Gallery;
+                                        $Gal->setElementId( $row->id );
+                                        $Gal->setModuleId( $module->module_id );
+                                        $Gal->setModuleName( $module->module_class_name );
+                                        $Gal->setField( $gallery->getName() );
+                                        $Gal->setFolder( $Controller->getEntity()->getFolder() );
+                                        $tab = $Gal->getAllByField();
+
+
+                                        if ( !empty( $tab ) )
+                                        {
+                                            foreach( $tab as $img )
+                                            {
+                                                if ( count( $img ) == 3 )
+                                                {
+                                                    unset( $img['100x100'] );
+                                                    unset( $img['source'] );
+
+                                                    foreach( $img as $url )
+                                                    {
+                                                        $urlImage = $url ;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    $urlImage = $img['source'] ;
+                                                }
+
+                                                echo "\t\t" . '<image:image>' . "\n";
+                                                echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
+                                                echo "\t\t" . '</image:image>' . "\n";
+                                            }
+                                        }
+                                    }
+                                }
+                                echo "\t" . '</url>' . "\n" ;
                             }
                         }
-                        echo "\t" . '</url>' . "\n" ;
                     }
                 }
             }

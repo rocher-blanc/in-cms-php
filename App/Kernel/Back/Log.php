@@ -129,8 +129,10 @@ class Log
             54 => "Ajout dans l'index d'une page spéciale \"%i\"",
             55 => "Suppression de l'index d'une page spéciale \"%i\"",
 
-            56 => "Ajout dans l'index du module \"%i\"",
-            57 => "Suppression de l'index du module \"%i\"",
+            56 => "Ajout (listing) dans l'index du module \"%i\"",
+            57 => "Suppression (listing) de l'index du module \"%i\"",
+            58 => "Ajout (éléments) dans l'index du module \"%i\"",
+            59 => "Suppression (éléments) de l'index du module \"%i\"",
 
             /* MODULES */
             100 => "Ajout d'un nouvel élément \"%i\"",

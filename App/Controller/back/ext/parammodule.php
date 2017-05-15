@@ -93,6 +93,66 @@ $app->group('/parammodule', function () use ($app)
         $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
     });
 
+    $app->get('/indexelmt/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $module = \DB::for_table('module')
+                ->where_equal('module_id' , $id)
+                ->find_one();
+
+            if ( $module->module_index_elmt == 0 ) {
+                $module->module_index_elmt = 1;
+                $module->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 58 , $module->module_name ) ;
+
+                $msg = "Le module (éléments) est maintenant indexé";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, le module (éléments) est déja indexé";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
+    });
+
+    $app->get('/noindexelmt/:id/:token', function ($id,$token) use ($app)
+    {
+        if ( $token == $_SESSION[ $app->config('token') ] ) {
+            $module = \DB::for_table('module')
+                ->where_equal('module_id' , $id)
+                ->find_one();
+
+            if ( $module->module_index_elmt == 1 ) {
+                $module->module_index_elmt = 0;
+                $module->save();
+
+                \App\Kernel\Back\Log::getInstance()->warning( 59 , $module->module_name ) ;
+
+                $msg = "Le module (éléments) est maintenant désindexé";
+                $ret = true;
+            }
+            else {
+                $msg = "Impossible, le module (éléments) est déja désindexé";
+                $ret = false;
+            }
+        }
+        else {
+            $msg = "Le token de sécurité est invalide";
+            $ret = false;
+        }
+
+        $Factory = \App\Kernel\Factory::getInstance() ;
+        $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
+    });
+
     $app->map('/edit/:id', function ($id) use ($app)
     {
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
@@ -116,6 +176,7 @@ $app->group('/parammodule', function () use ($app)
             {
                 $one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
                 $one->module_index = ( $app->request->post('module_index') == NULL ? '0' : 1 ) ;
+                $one->module_index_elmt = ( $app->request->post('module_index_elmt') == NULL ? '0' : 1 ) ;
                 $one->save();
 
                 foreach( $lang as $l )
@@ -171,6 +232,7 @@ $app->group('/parammodule', function () use ($app)
             'post' => $post ,
             'priority' =>  $one->module_priority,
             'index' =>  $one->module_index,
+            'index_elmt' =>  $one->module_index_elmt,
             'contentLang' => $contentLang
         ]);
     })->name('parammodule_edit')->via('GET', 'POST');
