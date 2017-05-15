@@ -62,7 +62,7 @@ class Seo
 		$this->_title = $var ;
 		$this->setUrl( $var ) ;
 	}
-	
+
 	public function setDescription( $var )
 	{
 		$this->_description = $var ;
