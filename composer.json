@@ -49,7 +49,6 @@
     "bower-asset/masonry": "4.1.*",
     "bower-asset/flexslider": "2.6.1",
     "bower-asset/dropzone": "4.3.0",
-    "bower-asset/materialize": "dev-master",
     "bower-asset/cmsmedias": "dev-master"
   },
   "authors": [
