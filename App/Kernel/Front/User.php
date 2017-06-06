@@ -482,6 +482,14 @@ class User extends \App\Kernel\Common\User
         }
         else
         {
+            if ( ACTIVE_USER_CONNECT_AFTER_REGISTER )
+            {
+                $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
+                $user->save();
+
+                $this->save( $user ) ;
+            }
+
             return $this->returnError( "user_register_successful" , true ) ;
         }
     }

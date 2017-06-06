@@ -8,7 +8,7 @@ class User extends \Slim\Middleware
 
     public function call()
     {
-        if ( ACTIVE_USER ) $this->app->hook('slim.before', array($this, 'observe'));
+        if ( ACTIVE_USER ) $this->app->hook('slim.before', [$this, 'observe']);
         $this->next->call();
     }
 
