@@ -61,7 +61,8 @@ class Repository extends \App\Kernel\Common\Repository
             ->select('seo.seo_url')
             ->select('seo.seo_lang_id')
             ->left_outer_join('seo', [ $table . '.' . $idName, '=', 'seo.seo_element_id' ])
-            ->where(['seo.seo_module_id' => $id])
+            ->where_equal('seo.seo_module_id' , $id)
+            ->where_equal('seo.seo_index' , 1)
             ->where_in('seo_lang_id', \App\Kernel\Lang::getInstance()->getTabLang() );
 
         if ( $this->getEntity()->hasValidation() )

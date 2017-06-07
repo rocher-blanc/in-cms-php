@@ -17,6 +17,8 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->select('module.module_class_name')
         ->select('module.module_default')
         ->select('module.module_priority')
+        ->select('module.module_index')
+        ->select('module.module_index_elmt')
         ->select('module_lang.module_lang_url')
         ->select('module_lang.module_lang_lang_id')
         ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
@@ -32,24 +34,20 @@ $app->get('/sitemap.xml', function () use ( $app )
     {
         foreach( $content as $module )
         {
-            if ( $module->module_index == 1 or $module->module_index_elmt == 1 )
+            if ( ( $module->module_index == 1 or $module->module_index_elmt == 1 ) && $module->module_lang_url != '' )
             {
-                if ( $module->module_index == 1 )
+                $url = $app->request()->getUrl() ;
+                if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
+                $url.= '/' . $module->module_lang_url . '/' ;
+
+                if ( $module->module_index == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
                 {
-                    $url = $app->request()->getUrl() ;
-
-                    if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
-
                     if ( $module->module_default == 0 )
                     {
-                        $url.= '/' . $module->module_lang_url . '/' ;
-                        if ( file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
-                        {
-                            echo "\t" . '<url>' . "\n" ;
-                            echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
-                            echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
-                            echo "\t" . '</url>' . "\n" ;
-                        }
+                        echo "\t" . '<url>' . "\n" ;
+                        echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
+                        echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+                        echo "\t" . '</url>' . "\n" ;
                     }
                     else
                     {
@@ -57,7 +55,7 @@ $app->get('/sitemap.xml', function () use ( $app )
                     }
                 }
 
-                if ( $module->module_index_elmt == 1 )
+                if ( $module->module_index_elmt == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getone.twig.html' ) )
                 {
                     if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
                     else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;

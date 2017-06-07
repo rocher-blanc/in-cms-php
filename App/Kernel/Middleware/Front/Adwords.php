@@ -8,7 +8,7 @@ class Adwords extends \Slim\Middleware
 
     public function call()
     {
-        $this->app->hook('slim.before', array($this, 'observe'));
+        $this->app->hook('slim.before', [$this, 'observe']);
         $this->next->call();
     }
 
