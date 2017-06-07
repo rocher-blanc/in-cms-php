@@ -16,24 +16,11 @@ class Builder extends \App\Kernel\Back\Form
         ];
 
         $this->_lib_css = [
-            'cmsmedias/libs/materialize.jcontent.min.css',
             'cmsmedias/css/jbuilder.css'
         ];
 
-        $this->_cdn_css = [
-            'http://fonts.googleapis.com/icon?family=Material+Icons'
-        ];
-
-        $html = '
-<div class="jbuilder">
-    <div class="builder">
-        <div class="actions">
-            <a class="btn-floating waves-effect waves-light blue addItem" data-grid="grid-stack"><i class="material-icons">add</i></a>
-        </div>
-        <div class="grid-stack"></div>
-    </div>
-</div>' ;
-
-        return $html;
+        return $this->View()->fetch( 'form/builder.twig.html' , [
+            'value' => $this->value
+        ]);
     }
 }
