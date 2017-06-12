@@ -161,7 +161,7 @@ class Form
         {
             foreach( $this->_lib_js as $row )
             {
-                if ( !empty( $row ) ) $html.= '<script src="' . $this->site( $row ) . ( DEBUG ? '?' . time() : '' ) . '"></script>' . "\n" ;
+                if ( !empty( $row ) ) $html.= '<script type="text/javascript" src="' . $this->site( $row ) . ( DEBUG ? '?' . time() : '' ) . '"></script>' . "\n" ;
             }
         }
         return $html ;

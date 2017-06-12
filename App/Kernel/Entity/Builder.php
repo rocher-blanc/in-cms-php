@@ -505,9 +505,10 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isBuilder()
+    protected function isBuilder( $width = '' )
     {
         $this->field()->setData( "type" , "builder" ) ;
+        $this->field()->setData( "widthMax" , $width ) ;
         return $this ;
     }
 

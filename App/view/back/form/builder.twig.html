@@ -1,8 +1,39 @@
-<div class="jbuilder">
+<div class="jbuilder"{{ widthMax != '' ? ' style="width: ' ~ widthMax ~ 'px; margin: 0 auto;"' : '' }}>
     <div class="builder">
         <div class="actions">
-            <a class="addItem" href="#" data-grid="grid-stack">+++</a>
+            <a class="addItem btn btn-default" href="#" data-grid="grid-stack"><i class="fa fa-plus"></i></a>
         </div>
         <div class="grid-stack"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="texteditor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <textarea id="editor1" name="editor1"></textarea>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-6"><button type="button" class="btn btn-danger text_cancel" data-dismiss="modal"><i class="fa fa-times"></i></button></div>
+                <div class="col-md-6"><button type="button" class="btn btn-success text_valid"><i class="fa fa-check"></i></button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="videoditor" class="modal">
+    <div class="modal-content">
+        <div class="video-content">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <i class="fa fa-youtube-square"></i>
+                    <div class="input-field inline">
+                        <input id="url_video" type="text">
+                        <label for="url_video" class="">https://youtu.be/...</label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

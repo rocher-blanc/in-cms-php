@@ -142,7 +142,7 @@ class Image extends \App\Kernel\Back\Form
 						
 						$html.= '" data-height="'. $crop[1] .'" data-width="'. $crop[0] .'" data-field="' . $field->getName() . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/crop/' . $value ) . '">
 							<i class="fa fa-crop"></i>
-							<span>Modifier</span>
+							<span>Recadrer</span>
 						</a>
 					</div>' ;
 			}
