@@ -214,7 +214,8 @@ CREATE TABLE `seo` (
   `seo_lang_id` int(11) NOT NULL,
   `seo_url`  varchar(255) COLLATE utf8_general_ci NOT NULL,
   `seo_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `seo_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
+  `seo_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+  `seo_index` tinyint(1) NOT NULL  DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user` (

@@ -15,6 +15,7 @@ class Seo
 	private $_last_url = '' ;
 	private $_url = '' ;
 	private $_title = '' ;
+	private $_index = 1 ;
 	private $_description = '' ;
 
 	/* ************************************************** */
@@ -56,12 +57,17 @@ class Seo
 	{
 		$this->_last_url = $var ;
 	}
-	
-	public function setTitle( $var )
-	{
-		$this->_title = $var ;
-		$this->setUrl( $var ) ;
-	}
+
+    public function setTitle( $var )
+    {
+        $this->_title = $var ;
+        $this->setUrl( $var ) ;
+    }
+
+    public function setIndex( $var )
+    {
+        $this->_index = $var ;
+    }
 
 	public function setDescription( $var )
 	{
@@ -101,11 +107,16 @@ class Seo
 	{
 		return $this->_last_url ;
 	}
-	
-	public function getTitle()
-	{
+
+    public function getIndex()
+    {
+        return $this->_index ;
+    }
+
+    public function getTitle()
+    {
         return ( empty( $this->_title ) ? NULL : $this->_title ) ;
-	}
+    }
 	
 	public function getDescription()
 	{
@@ -141,6 +152,7 @@ class Seo
 		if ( ( $update == true && $this->getUrl() != '' ) or $update == false ) $row->set( 'seo_url' , $this->getUrl() ) ;
 		if ( ( $update == true && $this->getTitle() != '' ) or $update == false ) $row->set( 'seo_title' , $this->getTitle() ) ;
 		$row->set( 'seo_description' , $this->getDescription() ) ;
+		$row->set( 'seo_index' , $this->getIndex() ) ;
 		$row->save();
 	}
 
@@ -225,6 +237,7 @@ class Seo
 			$this->setUrl( $this->getApp()->request->post('seo_url_' . $lang->url ) );
 			$this->setLastUrl( $this->getApp()->request->post('seo_last_url_' . $lang->url ) );
 			$this->setDescription( $this->getApp()->request->post('seo_description_' . $lang->url ) );
+			$this->setIndex( ( $this->getApp()->request->post('index') == NULL ? 0 : 1 ) );
 			$this->setLangId( $lang->id );
 			$this->save( true );
 		}
