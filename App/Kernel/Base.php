@@ -151,7 +151,8 @@ CREATE TABLE `module` (
   `module_order` int(11) DEFAULT NULL,
   `module_default` tinyint(1) NOT NULL DEFAULT '0',
   `module_priority` float NOT NULL DEFAULT '0.5',
-  `module_index` tinyint(1) NOT NULL DEFAULT '0'
+  `module_index` tinyint(1) NOT NULL DEFAULT '0',
+  `module_index_elmt` tinyint(1) NOT NULL DEFAULT '0' 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `module_group` (
