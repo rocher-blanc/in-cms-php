@@ -10,12 +10,13 @@ class User extends \App\Kernel\Common\User
 
     protected static $instance = NULL ;
 
-    protected $id    = NULL;
-    protected $tmpId = NULL;
-    protected $login = NULL;
-    protected $group = NULL;
+    protected $id           = NULL;
+    protected $tmpId        = NULL;
+    protected $login        = NULL;
+    protected $date_join    = NULL;
+    protected $group        = NULL;
     protected $facebook_url = NULL;
-    protected $_var  = [];
+    protected $_var         = [];
 
     /* ************************************************** */
     /* ****************     ISER      ******************* */
@@ -56,6 +57,12 @@ class User extends \App\Kernel\Common\User
     {
         $this->setVar( 'login' , $var );
         $this->login = $var ;
+    }
+
+    protected function setDateJoin( $var )
+    {
+        $this->setVar( 'date_join' , $var );
+        $this->date_join = $var ;
     }
 
     protected function setGroup( $var )
@@ -106,6 +113,11 @@ class User extends \App\Kernel\Common\User
     public function getLogin()
     {
         return $this->login ;
+    }
+
+    public function getDateJoin()
+    {
+        return $this->date_join ;
     }
 
     public function getGroup()
@@ -918,6 +930,7 @@ class User extends \App\Kernel\Common\User
         {
             $this->setId( $user->user_front_id );
             $this->setLogin( $user->user_front_login );
+            $this->setDateJoin( $user->user_front_date_created );
             $this->setGroup( $user->user_front_user_front_group_id );
 
             return $user ;
