@@ -110,7 +110,7 @@ class Kernel
 
     public function getMiddleware()
     {
-        return $this->_middleware ;
+        return array_reverse( $this->_middleware ) ;
     }
 
     public function getParserExtensions()
