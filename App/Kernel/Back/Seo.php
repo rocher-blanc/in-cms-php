@@ -224,6 +224,8 @@ class Seo
 			$array[ $lang->url ]['title'] 		= $content->seo_title ;
 			$array[ $lang->url ]['url'] 		= $content->seo_url ;
 			$array[ $lang->url ]['description'] = $content->seo_description ;
+
+            $this->setIndex( $content->seo_index ) ;
 		}
 		
 		return $array ;

@@ -1277,18 +1277,20 @@ class Controller
         {
             $seo->update() ;
 
+            /*
+
             if ( $this->getApp()->request->post('submit') == "stay" ) 	$url = 'module/' . $this->getEntityName() . '/seo/' . $this->getId() ;
             else 														$url = 'module/' . $this->getEntityName() ;
 
             $this->Factory()->Response()->flashAndRedirect( $this->m("edit_success") , true , $url ) ;
-
+*/
         }
 
         $this->setRender( 'content' , $seo->getAll() ) ;
         $this->setRender( 'hasParagraph' , $this->getEntity()->hasParagraph() ) ;
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-        $this->setRender( 'index' , 0 ) ;
+        $this->setRender( 'index' , $seo->getIndex() ) ;
         $this->render('seo.twig.html') ;
     }
 
