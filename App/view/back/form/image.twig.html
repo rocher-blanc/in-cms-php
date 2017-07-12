@@ -1,0 +1,45 @@
+<div id="bloc_media_id_{{ name }}" class="clear">
+    <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
+    <div class="scrollhimage">
+        <div class="img-source">
+            <div class="blocImage" id="source_{{ field_name }}">
+                {% if hasValue %}
+                    <img src="{{ image }}" class="img-responsive" />
+                {% endif %}
+            </div>
+            <div class="type">Source</div>
+            <a class="btn btn-info fileinput-button openMedia" data-field="{{ field_name }}" data-fieldid="id_{{ name }}" data-minwidth="{{ minWidth }}" data-minheight="{{ minHeight }}" href="{{ hrefLink }}">
+                <i class="fa fa-plus"></i>
+                <span>Sélectionner</span>
+            </a>
+        </div>
+        {% if thumb|length %}
+            {% for row in crop %}
+                <div class="img-thumb">
+                    <div class="blocImage" id="t_{{ field_name }}_{{ row.width }}x{{ row.height }}">
+                        {% if hasValue %}
+                            <img src="{{ row.image }}" class="img-responsive" />
+                        {% endif %}
+                    </div>
+                    <div class="type">Taille: {{ row.width }}x{{ row.height }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if crop|length %}
+            {% for row in crop %}
+                <div class="img-crop">
+                    <div class="blocImage" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}">
+                        {% if hasValue %}
+                            <img src="{{ row.image }}" class="img-responsive" />
+                        {% endif %}
+                    </div>
+                    <div class="type">Taille: {{ row.width }}x{{ row.height }}</div>
+                    <a class="btn btn-info fileinput-button openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
+                        <i class="fa fa-crop"></i>
+                        <span>Recadrer</span>
+                    </a>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

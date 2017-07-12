@@ -45,41 +45,28 @@ class Image extends \App\Kernel\Back\Form
 			$this->_media->setImageId( $value );
 			$this->_media->getNameById();
 		}
+
 		$mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 't' , 100 , 100 ) ;
-		
-		$crop  = $this->getBlocCrop( $field , $value ) ;
-		$thumb = $this->getBlocThumb( $field , $value ) ;
-		
-		$html = '
-		<div id="bloc_media_id_' . $name . '" class="clear">
-		<input type="hidden" name="' . $name . '" id="id_' . $name . '" value="' . ( $this->validValue( $mini ) == true ? $value : '' ) . '" />
-		<div class="scrollhimage">
-	<div class="img-source">
-		<div class="blocImage" id="source_' . $field->getName() . '">' ;
-			if ( $this->hasValue() )
-			{
-				$html.= '<img src="' ;
-				
-				if ( file_exists( WEB_PATH . $mini ) )	$html.= $this->Factory()->Url()->get( $mini , true ) ;
-				else									$html.= \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg');
-				
-				$html.= '" class="img-responsive" />' ;
-			}	
-		$html.= '</div>
-		<div class="type">Source</div>
-		<a class="btn btn-info fileinput-button openMedia" data-field="' . $field->getName() . '" data-fieldid="id_' . $name . '" data-minwidth="' . $this->min_width . '" data-minheight="' . $this->min_height . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/media' ) . '">
-			<i class="fa fa-plus"></i>
-			<span>Sélectionner</span>
-		</a>
-	</div>' . $crop . $thumb . '</div></div>' ;
-	
-		return $html;
+
+        return $this->View()->fetch( 'form/image.twig.html' , [
+            'name' => $name,
+            'crop' => $this->getBlocCrop( $field , $value ),
+            'thumb' => $this->getBlocThumb( $field , $value ),
+            'hasValue' => $this->hasValue(),
+            'minWidth' => $this->min_width,
+            'minHeight' => $this->min_height,
+            'hrefLink' => $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/media' ),
+            'image' => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg') ),
+            'value' => ( $this->validValue( $mini ) == true ? $value : '' ),
+            'field_name' => $field->getName()
+        ]);
 	}
 	
 	private function getBlocThumb( $field , $value )
 	{
-		$html = '' ;
-		if ( $field->hasThumb() )
+        $tab = [] ;
+
+        if ( $field->hasThumb() )
 		{
 			foreach( $field->getThumb() as $thumb )
 			{
@@ -87,31 +74,23 @@ class Image extends \App\Kernel\Back\Form
 				if ( $thumb[1] > $this->min_height ) $this->min_height  = $thumb[1] ;
 	
 				$mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
-				$html.= '
-					<div class="img-thumb">
-						<div class="blocImage" id="t_' . $field->getName() . '_' . $thumb[0] . 'x' . $thumb[1] . '">' ;
-				if ( $this->hasValue() )
-				{
-					$html.= '<img src="' ;
-					
-					if ( file_exists( WEB_PATH . $mini ) )	$html.= $this->Factory()->Url()->get( $mini , true ) ;
-					else									$html.= $this->Factory()->Url()->get('assets/themes/default/img/image-not-found.jpg') ;
-					
-					$html.= '" class="img-responsive" />' ;
-				}
-				$html.= '</div>
-						<div class="type">Taille: ' . $thumb[0] . 'x' . $thumb[1] . '</div>
-					</div>' ;
+
+                $tab[] = [
+                    "image" => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : $this->Factory()->Url()->get('assets/themes/default/img/image-not-found.jpg') ),
+                    "width" => $thumb[0],
+                    "height" => $thumb[1]
+                ];
 			}
 		}
 		
-		return $html ;
+		return $tab ;
 	}
 	
 	private function getBlocCrop( $field , $value )
 	{
-		$html = '' ;
-		if ( $field->hasCrop() )
+        $tab = [] ;
+
+        if ( $field->hasCrop() )
 		{
 			foreach( $field->getCrop() as $crop )
 			{
@@ -119,35 +98,24 @@ class Image extends \App\Kernel\Back\Form
 				if ( $crop[1] > $this->min_height ) $this->min_height  = $crop[1] ;
 	
 				$mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 'c' , $crop[0] , $crop[1] ) ;
-				$html.= '
-					<div class="img-crop">
-						<div class="blocImage" id="c_' . $field->getName() . '_' . $crop[0] . 'x' . $crop[1] . '">' ;
-				if ( $this->hasValue() )
-				{
-					$html.= '<img src="' ;
-					
-					if ( file_exists( WEB_PATH . $mini ) )	$html.= $this->Factory()->Url()->get( $mini , true ) ;
-					else									$html.= $this->Factory()->Url()->get('assets/themes/default/img/image-not-found.jpg') ;
-					
-					$html.= '" class="img-responsive" />' ;
-				}
-				$html.= '</div>
-						<div class="type">Taille: ' . $crop[0] . 'x' . $crop[1] . '</div>
-						<a class="btn btn-info fileinput-button openCrop' ;
-						
-						if ( ( $this->hasValue() == true && file_exists( WEB_PATH . $mini ) == false ) or $this->hasValue() == false )
-						{
-							$html .= ' disabled' ;
-						}
-						
-						$html.= '" data-height="'. $crop[1] .'" data-width="'. $crop[0] .'" data-field="' . $field->getName() . '" href="' . $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/crop/' . $value ) . '">
-							<i class="fa fa-crop"></i>
-							<span>Recadrer</span>
-						</a>
-					</div>' ;
+
+                $disabled = false ;
+
+                if ( ( $this->hasValue() == true && file_exists( WEB_PATH . $mini ) == false ) or $this->hasValue() == false )
+                {
+                    $disabled = true ;
+                }
+
+                $tab[] = [
+                    "image" => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : $this->Factory()->Url()->get('assets/themes/default/img/image-not-found.jpg') ),
+                    "disabled" => $disabled,
+                    "href" => $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/crop/' . $value ),
+                    "width" => $crop[0],
+                    "height" => $crop[1]
+                ];
 			}
 		}
-		
-		return $html ;
+
+        return $tab ;
 	}
 }
