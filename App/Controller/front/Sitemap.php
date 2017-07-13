@@ -131,9 +131,9 @@ $app->get('/sitemap.xml', function () use ( $app )
                                                     unset( $img['100x100'] );
                                                     unset( $img['source'] );
 
-                                                    foreach( $img as $url )
+                                                    foreach( $img as $url_img )
                                                     {
-                                                        $urlImage = $url ;
+                                                        $urlImage = $url_img ;
                                                     }
                                                 }
                                                 else
