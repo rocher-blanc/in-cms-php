@@ -23,7 +23,7 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->select('module_lang.module_lang_lang_id')
         ->left_outer_join('module_lang', [ 'module_lang.module_lang_module_id', '=', 'module.module_id' ])
         ->where_equal('module.module_active',1)
-		->where_in('module_lang.module_lang_lang_id', $langObj->getTabLang() )
+        ->where_in('module_lang.module_lang_lang_id', $langObj->getTabLang() )
         ->find_many();
 
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -167,9 +167,9 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->left_outer_join('page_lang', [ 'page_lang.page_lang_page_id', '=', 'page.page_id' ])
         ->where_equal('page.page_active',1)
         ->where_equal('page.page_index',1)
-		->where_in('page_lang.page_lang_lang_id', $langObj->getTabLang() )
+        ->where_in('page_lang.page_lang_lang_id', $langObj->getTabLang() )
         ->find_many();
-	
+
     if ( $pages )
     {
         foreach( $pages as $page )
