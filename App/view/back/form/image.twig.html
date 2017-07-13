@@ -43,3 +43,15 @@
         {% endif %}
     </div>
 </div>
+<div class="alt">
+    {% for lang in langs %}
+    <div class="input-group input-group-icon">
+        <span class="input-group-addon">
+            <span class="icon">
+                <i class="flag-icon flag-icon-{{ lang.flag }}"></i>
+            </span>
+        </span>
+        <input type="text" value="{{ lang.value }}" class="form-control" name="alt_{{ name }}" id="id_alt_{{ name }}" />
+    </div>
+    {% endfor %}
+</div>
