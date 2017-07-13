@@ -624,7 +624,14 @@ class Controller
             {
                 foreach( $this->getEntity()->getField() as $name => $row )
                 {
-                    if ( $row->getType() == 'checkbox' )
+                    if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
+                    {
+                        $Alt = new \App\Kernel\Back\Alt;
+                        $Alt->setElementId( $this->getId() );
+                        $Alt->setModuleId( $this->getEntityId() );
+                        $Alt->delete();
+                    }
+                    else if ( $row->getType() == 'checkbox' )
                     {
                         \DB::for_module_assoc( $this->getEntityName() , $name )
                             ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
