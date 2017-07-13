@@ -38,21 +38,22 @@ $app->get('/sitemap.xml', function () use ( $app )
             {
                 $url = $app->request()->getUrl() ;
                 if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
-                $url.= '/' . $module->module_lang_url . '/' ;
 
                 if ( $module->module_index == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
                 {
-                    if ( $module->module_default == 0 )
-                    {
-                        echo "\t" . '<url>' . "\n" ;
-                        echo "\t\t" . '<loc>' . substr( $url , 0 , -1 ) . '</loc>' . "\n";
-                        echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
-                        echo "\t" . '</url>' . "\n" ;
-                    }
-                    else
-                    {
-                        $url.= '/' ;
-                    }
+                    echo "\t" . '<url>' . "\n" ;
+                    echo "\t\t" . '<loc>' . $url . '/' . $module->module_lang_url . '</loc>' . "\n";
+                    echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+                    echo "\t" . '</url>' . "\n" ;
+                }
+
+                if ( $module->module_default == 0 )
+                {
+                    $url .= '/' . $module->module_lang_url . '/';
+                }
+                else
+                {
+                    $url.= '/' ;
                 }
 
                 if ( $module->module_index_elmt == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getone.twig.html' ) )
