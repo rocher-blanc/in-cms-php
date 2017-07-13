@@ -101,6 +101,18 @@ CREATE TABLE `media` (
   `media_type`  varchar(100) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `media_alt` (
+  `media_alt_id` int(11) NOT NULL,
+  `media_alt_module_id` int(11) NOT NULL,
+  `media_alt_element_id` int(11) NOT NULL,
+  `media_alt_lang_id` int(11) NOT NULL,
+  `media_alt_field_name` varchar(50) COLLATE utf8_general_ci NOT NULL,
+  `media_alt_value` varchar(500) COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `media_alt` ADD PRIMARY KEY (`media_alt_id`);
+ALTER TABLE `media_alt` MODIFY `media_alt_id` int(11) NOT NULL AUTO_INCREMENT;
+
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL,
   `menu_name` varchar(150) COLLATE utf8_general_ci NOT NULL

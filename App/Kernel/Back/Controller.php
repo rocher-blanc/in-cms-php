@@ -303,6 +303,8 @@ class Controller
     {
         $form = $this->Factory()->Form() ;
         $form->initLib();
+        $form->setModuleId( $this->getEntityId() );
+        $form->setElementId( $this->getId() );
 
         if ( $value == true )
         {
@@ -991,7 +993,20 @@ class Controller
 
                 foreach( $this->getEntity()->getField() as $nameField => $field )
                 {
-                    if ( $field->getType() == "checkbox" )
+                    if ( $field->getType() == "image" && $field->getData('hasAltText') == true )
+                    {
+                        foreach( $this->Lang()->getAll() as $lang )
+                        {
+                            $Alt = new \App\Kernel\Back\Alt;
+                            $Alt->setElementId( $this->getId() );
+                            $Alt->setModuleId( $this->getEntityId() );
+                            $Alt->setFieldName( $field->getName() );
+                            $Alt->setLangId( $lang->id );
+                            $Alt->setValue( $this->getApp()->request->post('alt_' . $field->getColumn() . '_' . $lang->flag ) );
+                            $Alt->update();
+                        }
+                    }
+                    else if ( $field->getType() == "checkbox" )
                     {
                         $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
                     }

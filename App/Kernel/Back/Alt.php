@@ -5,243 +5,56 @@ namespace App\Kernel\Back;
 class Alt extends \App\Kernel\Common\Alt
 {
 	/* ************************************************** */
-	/* ****************   VARIABLES   ******************* */
-	/* ************************************************** */
-	
-	private $_seo_id ;
-	private $_module_id ;
-	private $_element_id ;
-	private $_lang_id ;
-	private $_last_url = '' ;
-	private $_url = '' ;
-	private $_title = '' ;
-	private $_index = 1 ;
-	private $_description = '' ;
-
-	/* ************************************************** */
-	/* ****************   CONSTRUCT   ******************* */
-	/* ************************************************** */
-	
-	public function __construct() {}
-	
-	/* ************************************************** */
-	/* ****************    SETTER     ******************* */
-	/* ************************************************** */ 
-	
-	public function setId( $var )
-	{
-		$this->_seo_id = $var ;
-	}
-	
-	public function setModuleId( $var )
-	{
-		$this->_module_id = $var ;
-	}
-	
-	public function setElementId( $var )
-	{
-		$this->_element_id = $var ;
-	}
-	
-	public function setLangId( $var )
-	{
-		$this->_lang_id = $var ;
-	}
-
-	public function setUrl( $var )
-	{
-		$this->_url = $this->Factory()->Url()->encode( $var );
-	}
-
-	public function setLastUrl( $var )
-	{
-		$this->_last_url = $var ;
-	}
-
-    public function setTitle( $var )
-    {
-        $this->_title = $var ;
-        $this->setUrl( $var ) ;
-    }
-
-    public function setIndex( $var )
-    {
-        $this->_index = $var ;
-    }
-
-	public function setDescription( $var )
-	{
-		$this->_description = $var ;
-	}
-	
-	/* ************************************************** */
-	/* ****************     GETTER    ******************* */
-	/* ************************************************** */
-	
-	public function getId()
-	{
-		return $this->_seo_id ;
-	}
-	
-	public function getModuleId()
-	{
-		return $this->_module_id ;
-	}
-	
-	public function getElementId()
-	{
-		return $this->_element_id ;
-	}
-	
-	public function getLangId()
-	{
-		return $this->_lang_id ;
-	}
-
-	public function getUrl()
-	{
-		return $this->_url ;
-	}
-
-	public function getLastUrl()
-	{
-		return $this->_last_url ;
-	}
-
-    public function getIndex()
-    {
-        return $this->_index ;
-    }
-
-    public function getTitle()
-    {
-        return ( empty( $this->_title ) ? NULL : $this->_title ) ;
-    }
-	
-	public function getDescription()
-	{
-		return ( empty( $this->_description ) ? NULL : $this->_description ) ;
-	}
-	
-	private function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
-	}
-	
-	private function Lang()
-	{
-		return \App\Kernel\Lang::getInstance() ;
-	}
-	
-	protected function getApp()
-	{
-		return \Slim\Slim::getInstance() ;
-	}
-	
-	/* ************************************************** */
 	/* ****************   FUNCTIONS   ******************* */
 	/* ************************************************** */
 	
-	public function save( $update = false )
-	{
-		if ( ! $this->exist() ) $row = $this->create() ;
-		else					$row = $this->getContent() ;
-
-        $this->uniq() ;
-		
-		if ( ( $update == true && $this->getUrl() != '' ) or $update == false ) $row->set( 'seo_url' , $this->getUrl() ) ;
-		if ( ( $update == true && $this->getTitle() != '' ) or $update == false ) $row->set( 'seo_title' , $this->getTitle() ) ;
-		$row->set( 'seo_description' , $this->getDescription() ) ;
-		$row->set( 'seo_index' , $this->getIndex() ) ;
-		$row->save();
-	}
-
-    private function exist()
+	public function getOne()
     {
-        $ct = \DB::for_table('seo')
-            ->where([ 'seo_element_id' => $this->getElementId() , 'seo_module_id' => $this->getModuleId(), 'seo_lang_id' => $this->getLangId() ])
-            ->count();
+        $tab = [];
 
-        if ( $ct == 0 ) return false ;
-        else			return true ;
+        $rst = \DB::for_table('media_alt')
+            ->where_equal('media_alt_module_id' , $this->getModuleId() )
+            ->where_equal('media_alt_element_id' , $this->getElementId() )
+            ->where_equal('media_alt_field_name' , $this->getFieldName() )
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $tab[ $row->media_alt_lang_id ] = $row->media_alt_value ;
+            }
+        }
+
+        return $tab ;
     }
 
-    private function uniq()
+    public function update()
     {
-		if ( $this->getUrl() == $this->getLastUrl() ) return true ;
+        $rst = \DB::for_table('media_alt')
+            ->where_equal('media_alt_module_id' , $this->getModuleId() )
+            ->where_equal('media_alt_element_id' , $this->getElementId() )
+            ->where_equal('media_alt_field_name' , $this->getFieldName() )
+            ->where_equal('media_alt_lang_id' , $this->getLangId() )
+            ->find_one();
 
-        $this->_url = $this->Factory()->Url()->uniq( $this->getUrl() , $this->getLangId() ) ;
-        return true ;
+        if ( ! $rst )
+        {
+            $rst = \DB::for_table('media_alt')->create();
+            $rst->set('media_alt_module_id' , $this->getModuleId() );
+            $rst->set('media_alt_element_id' , $this->getElementId() );
+            $rst->set('media_alt_field_name' , $this->getFieldName() );
+            $rst->set('media_alt_lang_id' , $this->getLangId() );
+        }
+        $rst->set('media_alt_value' , $this->getValue() );
+        $rst->save();
     }
-	
-	private function loadId()
-	{
-		$row = \DB::for_table('seo')
-			->select('seo_id')
-			->where([ 'seo_element_id' => $this->getElementId() ,'seo_lang_id' => $this->getLangId() , 'seo_module_id' => $this->getModuleId() ])
-			->find_one();
-		
-		$this->setId( $row->get('seo_id') ) ;
-	}
-	
-	private function create()
-	{
-		$row = \DB::for_table('seo')->create();
-		$row->set( 'seo_element_id' , $this->getElementId() ) ;
-        $row->set( 'seo_module_id' , $this->getModuleId() ) ;
-        $row->set( 'seo_lang_id' , $this->getLangId() ) ;
-		$row->save() ;
-		
-		$this->setId( $row->get('seo_id') ) ;
 
-        return $row ;
-	}
-	
-	private function getContent()
-	{
-		return \DB::for_table('seo')
-			->where([ 'seo_module_id' => $this->getModuleId() , 'seo_lang_id' => $this->getLangId() , 'seo_element_id' => $this->getElementId() ])
-			->find_one();
-	}
-	
-	public function delete()
-	{
-		\DB::for_table('seo')
-			->where([ 'seo_element_id' => $this->getElementId() , 'seo_module_id' => $this->getModuleId() ])
-			->delete_many();
-	}
-	
-	public function getAll()
-	{
-		$array = [] ;
-		
-		foreach( $this->Lang()->getAll() as $lang )
-		{
-            $content = \DB::for_table('seo')
-                ->where([ 'seo_module_id' => $this->getModuleId() , 'seo_lang_id' => $lang->id , 'seo_element_id' => $this->getElementId() ])
-                ->find_one();
-			
-			$array[ $lang->url ]['title'] 		= $content->seo_title ;
-			$array[ $lang->url ]['url'] 		= $content->seo_url ;
-			$array[ $lang->url ]['description'] = $content->seo_description ;
-
-            $this->setIndex( $content->seo_index ) ;
-		}
-		
-		return $array ;
-	}
-	
-	public function update()
-	{
-		foreach( $this->Lang()->getAll() as $lang )
-		{
-			$this->setTitle( $this->getApp()->request->post('seo_title_' . $lang->url ) );
-			$this->setUrl( $this->getApp()->request->post('seo_url_' . $lang->url ) );
-			$this->setLastUrl( $this->getApp()->request->post('seo_last_url_' . $lang->url ) );
-			$this->setDescription( $this->getApp()->request->post('seo_description_' . $lang->url ) );
-			$this->setIndex( ( $this->getApp()->request->post('index') == NULL ? 0 : 1 ) );
-			$this->setLangId( $lang->id );
-			$this->save( true );
-		}
-	}
+    public function delete()
+    {
+        $rst = \DB::for_table('media_alt')
+            ->where_equal('media_alt_module_id' , $this->getModuleId() )
+            ->where_equal('media_alt_element_id' , $this->getElementId() )
+            ->delete_many();
+    }
 }

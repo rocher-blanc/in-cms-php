@@ -639,6 +639,7 @@ class Builder extends Model
         $this->field()->setData( "type" , "image" ) ;
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
+        $this->field()->setData( "hasAltText" , true ) ;
 
         $this->setImage() ;
         $this->setImageField( $this->field()->getData("columnName") ) ;
@@ -686,6 +687,12 @@ class Builder extends Model
         $this->addAction("crop") ;
         $this->addAction("cropimage") ;
         return $this;
+    }
+
+    protected function noAltText()
+    {
+        $this->field()->setData( "hasAltText" , false ) ;
+        return $this ;
     }
 
     protected function isCheckbox()

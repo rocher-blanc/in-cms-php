@@ -8,12 +8,14 @@ class Form
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $_lib_js  = '' ;
-    protected $_lib_css = '' ;
-    protected $_cdn_js  = '' ;
-    protected $_cdn_css = '' ;
-    protected $_id      = NULL ;
-    protected $view     = NULL ;
+    protected $_lib_js    = '' ;
+    protected $_lib_css   = '' ;
+    protected $_cdn_js    = '' ;
+    protected $_cdn_css   = '' ;
+    protected $_id        = NULL ;
+    protected $view       = NULL ;
+    protected $module_id  = NULL ;
+    protected $element_id = NULL ;
 
     /* ************************************************** */
     /* ******************   TOOLS   ********************* */
@@ -40,7 +42,7 @@ class Form
     }
 
     /* ************************************************** */
-    /* ******************   GETTER   ******************** */
+    /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
     public function setId( $var )
@@ -48,9 +50,29 @@ class Form
         $this->_id = $var;
     }
 
+    public function setModuleId( $id )
+    {
+        $this->module_id = $id ;
+    }
+
+    public function setElementId( $id )
+    {
+        $this->element_id = $id ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    public function getModuleId()
+    {
+        return $this->module_id ;
+    }
+
+    public function getElementId()
+    {
+        return $this->element_id ;
+    }
 
     public function getLibCss()
     {

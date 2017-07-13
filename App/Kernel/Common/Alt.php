@@ -12,12 +12,22 @@ class Alt
     protected $element_id = NULL ;
     protected $lang_id    = NULL ;
     protected $field_name = NULL ;
+    protected $value      = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
     public function __construct() {}
+
+    /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
+    protected function Lang()
+    {
+        return \App\Kernel\Lang::getInstance() ;
+    }
 
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
@@ -41,6 +51,11 @@ class Alt
     public function setFieldName( $var )
     {
         $this->field_name = $var ;
+    }
+
+    public function setValue( $var )
+    {
+        $this->value = $var ;
     }
 
     /* ************************************************** */
@@ -67,9 +82,8 @@ class Alt
         return $this->field_name ;
     }
 
-    /* ************************************************** */
-    /* *****************   FUNCTION   ******************* */
-    /* ************************************************** */
-
-
+    public function getValue()
+    {
+        return $this->value ;
+    }
 }

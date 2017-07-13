@@ -636,6 +636,18 @@ class Controller
 
                         $tab = [];
 
+                        if ( $row->getData('hasAltText') == true )
+                        {
+                            $Alt = new \App\Kernel\Front\Alt;
+                            $Alt->setElementId( $this->getId() );
+                            $Alt->setModuleId( $this->getEntityId() );
+                            $Alt->setFieldName( $row->getName() );
+                            $Alt->setLangId( $this->Lang()->getActive()->id );
+                            $Alt->getOne();
+
+                            $tab['alt'] = $Alt->getValue();
+                        }
+
                         $tab['source'] = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathImage(false) . '/' . $media->getImageName();
 
                         if ( $row->hasThumb() )

@@ -4,6 +4,17 @@ namespace App\Kernel\Factory;
 
 class Form
 {
+    /* ************************************************** */
+    /* ****************   VARIABLES   ******************* */
+    /* ************************************************** */
+
+    protected $module_id  = NULL ;
+    protected $element_id = NULL ;
+
+    /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
 	private function Lang()
 	{
 		return \App\Kernel\Lang::getInstance() ;
@@ -13,73 +24,20 @@ class Form
 	{
 		return \Slim\Slim::getInstance() ;
 	}
-	
-	public function genHTML( $field )
-	{
-		$html = "" ;
-		
-		if ( $field->getType() !== NULL )
-		{
-			if ( $field->hasLang() == true )
-			{
-				foreach( $this->Lang()->getAll() as $lang )
-				{
-					$html.= $this->genField( $field , $lang->url , $lang->flag ) ;
-				}
-			}
-			else
-			{
-				$html.= $this->genField( $field ) ;
-			}
-		
-			if ( $field->getError() !== NULL )
-			{
-				$html.= '<label for="id_' . $field->getColumn() . '" class="error">' . $field->getError() . '</label>' ;
-			}
-		}
-		
-		return $html ;
-	}
-	
-	private function genField( $field , $lang = null , $flag = null )
-	{
-        if ( $lang !== null )   $name = $field->getColumn() . "_" . $lang ;
-		else                    $name = $field->getColumn() ;
 
-        if ( $flag !== null ) $field->setData('flag' , $flag );
-		
-		if ( $field->getValue() !== NULL )
-		{
-			if ( $lang !== null ) $value = $field->getValue( $lang ) ;
-			else				  $value = $field->getValue() ;
-		}
-		else
-		{
-			$value = $field->getDefault() ;
-		}
-		
-		$className = ucfirst( $field->getType() ) ;
+    /* ************************************************** */
+    /* ******************   SETTER   ******************** */
+    /* ************************************************** */
 
-		if ( file_exists( FORM_PATH . '/' . $className . '.php' ) )
-		{
-			$className = "\App\Kernel\Form\\" . $className ;
-			$obj = new $className ;
-			
-			$html = $obj->html( $field , $name , $value );
+    public function setModuleId( $id )
+    {
+        $this->module_id = $id ;
+    }
 
-            $this->setLibCSS( $obj->getLibCSS() );
-            $this->setLibJS( $obj->getLibJS() );
-
-            $this->setCdnCSS( $obj->getCdnCSS() );
-            $this->setCdnJS( $obj->getCdnJS() );
-			
-			return $html ;
-		}
-		else
-		{
-			throw new \App\Kernel\Exception("No PHP class for field type: " . $field->getType() . ' (field: ' . $field->getName() . ') ');
-		}
-	}
+    public function setElementId( $id )
+    {
+        $this->element_id = $id ;
+    }
 
     private function setLibJS( $var )
     {
@@ -141,6 +99,20 @@ class Form
         }
     }
 
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
+
+    public function getModuleId()
+    {
+        return $this->module_id ;
+    }
+
+    public function getElementId()
+    {
+        return $this->element_id ;
+    }
+
     public function getLibCSS()
     {
         $html = '' ;
@@ -192,7 +164,80 @@ class Form
         }
         return $html ;
     }
+
+    /* ************************************************** */
+    /* ****************   FUNCTIONS   ******************* */
+    /* ************************************************** */
+
+	public function genHTML( $field )
+	{
+		$html = "" ;
+		
+		if ( $field->getType() !== NULL )
+		{
+			if ( $field->hasLang() == true )
+			{
+				foreach( $this->Lang()->getAll() as $lang )
+				{
+					$html.= $this->genField( $field , $lang->url , $lang->flag ) ;
+				}
+			}
+			else
+			{
+				$html.= $this->genField( $field ) ;
+			}
+		
+			if ( $field->getError() !== NULL )
+			{
+				$html.= '<label for="id_' . $field->getColumn() . '" class="error">' . $field->getError() . '</label>' ;
+			}
+		}
+		
+		return $html ;
+	}
 	
+	private function genField( $field , $lang = null , $flag = null )
+	{
+        if ( $lang !== null )   $name = $field->getColumn() . "_" . $lang ;
+		else                    $name = $field->getColumn() ;
+
+        if ( $flag !== null ) $field->setData('flag' , $flag );
+		
+		if ( $field->getValue() !== NULL )
+		{
+			if ( $lang !== null ) $value = $field->getValue( $lang ) ;
+			else				  $value = $field->getValue() ;
+		}
+		else
+		{
+			$value = $field->getDefault() ;
+		}
+		
+		$className = ucfirst( $field->getType() ) ;
+
+		if ( file_exists( FORM_PATH . '/' . $className . '.php' ) )
+		{
+			$className = "\App\Kernel\Form\\" . $className ;
+			$obj = new $className ;
+			$obj->setModuleId( $this->getModuleId() );
+			$obj->setElementId( $this->getElementId() );
+
+			$html = $obj->html( $field , $name , $value );
+
+            $this->setLibCSS( $obj->getLibCSS() );
+            $this->setLibJS( $obj->getLibJS() );
+
+            $this->setCdnCSS( $obj->getCdnCSS() );
+            $this->setCdnJS( $obj->getCdnJS() );
+			
+			return $html ;
+		}
+		else
+		{
+			throw new \App\Kernel\Exception("No PHP class for field type: " . $field->getType() . ' (field: ' . $field->getName() . ') ');
+		}
+	}
+
 	public function initLib()
 	{
         $this->_lib_js  = '' ;

@@ -48,8 +48,21 @@ class Image extends \App\Kernel\Back\Form
 
 		$mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 't' , 100 , 100 ) ;
 
+        $alt_img = [];
+        if ( $field->getData('hasAltText') == true )
+        {
+            $Alt = new \App\Kernel\Back\Alt;
+            $Alt->setElementId( $this->getElementId() );
+            $Alt->setModuleId( $this->getModuleId() );
+            $Alt->setFieldName( $field->getName() );
+            $alt_img = $Alt->getOne();
+        }
+
         return $this->View()->fetch( 'form/image.twig.html' , [
             'name' => $name,
+            'has_alt_img' => $field->getData('hasAltText'),
+            'alt_img' => $alt_img,
+            'lang' => \App\Kernel\Lang::getInstance()->getAll(),
             'crop' => $this->getBlocCrop( $field , $value ),
             'thumb' => $this->getBlocThumb( $field , $value ),
             'hasValue' => $this->hasValue(),
