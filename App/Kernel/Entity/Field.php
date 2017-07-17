@@ -374,6 +374,14 @@ class Field
                 }
             }
 
+            if ( $this->getType() == 'link' )
+            {
+                if ( $this->getValue() != '' )
+                {
+                    $this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
+                }
+            }
+
             if ( $this->isParent() == true && $this->getValue() == '' )
             {
                 $this->setValue( NULL ) ;

@@ -615,6 +615,15 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isLink()
+    {
+        $this->field()->setData( "SQL_VALUE" , 255 ) ;
+        $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
+        $this->field()->setData( "type" , "link" ) ;
+        $this->field()->setData( "maxLength" , 255 ) ;
+        return $this ;
+    }
+
     protected function isVarchar( $t = 255 )
     {
         $this->field()->setData( "SQL_VALUE" , $t ) ;
