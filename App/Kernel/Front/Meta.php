@@ -52,10 +52,12 @@ class Meta
 
         $this->CMS()->view()->appendData([
             'site' => [
-                'url'       => $this->Factory()->Url()->getFullUrl(),
-                'referer'   => $_SERVER['HTTP_REFERER'],
-                'get'       => $_GET,
-                'post'      => $_POST
+                'url'               => $this->Factory()->Url()->getFullUrl(),
+                'referer'           => $_SERVER['HTTP_REFERER'],
+                'referer_external'  => $_SESSION['referer'],
+                'adwords'           => $_SESSION['adwords'],
+                'get'               => $_GET,
+                'post'              => $_POST
             ],
             'meta' => [
                 'title'          => "",

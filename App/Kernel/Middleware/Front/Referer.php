@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Middleware\Front;
 
-class Adwords extends \Slim\Middleware
+class Referer extends \Slim\Middleware
 {
     public function __construct() {}
 
@@ -14,9 +14,12 @@ class Adwords extends \Slim\Middleware
 
     public function observe()
     {
-        if ( isset( $_GET['gclid'] ) )
+        if ( isset( $_SERVER['HTTP_REFERER'] ) )
         {
-            $_SESSION['adwords']['gclid'] = $_GET['gclid'] ;
+            if ( strpos( $_SERVER['HTTP_REFERER'] , $_SERVER['HTTP_HOST'] ) === false )
+            {
+                $_SESSION['referer'] = $_SERVER['HTTP_REFERER'] ;
+            }
         }
     }
 }
