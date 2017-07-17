@@ -14,7 +14,7 @@
                     </a>
                 </div>
                 {% if thumb|length %}
-                    {% for row in crop %}
+                    {% for row in thumb %}
                         <div class="img-thumb">
                             <div class="blocImage" id="t_{{ field_name }}_{{ row.width }}x{{ row.height }}">
                                 {% if hasValue %}
