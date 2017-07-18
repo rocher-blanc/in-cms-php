@@ -966,7 +966,7 @@ class Controller
                         {
                             $content->set( $row->getColumn() , $row->getDefault() ) ;
                         }
-                        else if ( $row->getType() != "checkbox" && $row->canUpdate() == true )
+                        else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
                         {
                             $content->set( $row->getColumn() , $row->getValue() ) ;
                         }
@@ -1070,7 +1070,7 @@ class Controller
             else		$msg = $this->m("edit_success") ;
 
             \App\Kernel\Back\Log::getInstance()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
-            $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
+           $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
         }
     }
 
