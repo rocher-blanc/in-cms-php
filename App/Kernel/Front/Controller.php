@@ -616,7 +616,7 @@ class Controller
         }
 
         //if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
-        
+
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {
@@ -639,7 +639,7 @@ class Controller
                         if ( $row->getData('hasAltText') == true )
                         {
                             $Alt = new \App\Kernel\Front\Alt;
-                            $Alt->setElementId( $this->getId() );
+                            $Alt->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
                             $Alt->setModuleId( $this->getEntityId() );
                             $Alt->setFieldName( $row->getName() );
                             $Alt->setLangId( $this->Lang()->getActive()->id );
