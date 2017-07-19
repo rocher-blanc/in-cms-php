@@ -3,7 +3,11 @@
         <ul>
             {% for row in contentArray %}
                 <li class="menu_li_{{ row.id }}{% if row.active == true %} current_page{% endif %}{% if row.subpages|length > 0 %} sub{% endif %}">
-                    <a class="menu_a_{{ row.id }}" href="{{ siteUrl( row.url ) }}" title="{{ row.label }}"{{ row.blank == 1 ? ' target="_blank"' : '' }}>{{ row.label }}</a>
+                    <a itemprop="url" class="menu_a_{{ row.id }}" href="{{ siteUrl( row.url ) }}" title="{{ row.label }}"{{ row.blank == 1 ? ' target="_blank"' : '' }}>
+                        <span itemprop="name">
+                            {{ row.label }}
+                        </span>
+                    </a>
                     {% if row.subpages|length > 0 %}
                         {{ _self.display_tree( row.subpages ) }}
                     {% endif %}

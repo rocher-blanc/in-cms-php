@@ -78,7 +78,7 @@ class Router
     public function getUrl( $key = NULL )
     {
         if ( $key === NULL ) return $this->_url ;
-        else                 return $this->_url[ $key ] ;
+        else                 return ( array_key_exists( $key , $this->_url ) ? $this->_url[ $key ] : NULL ) ;
     }
 
     public function getFullUrl()
@@ -211,8 +211,17 @@ class Router
                 else if ( $this->isModule() )
                 {
                     // C'est un module (getAll ou getOne)
-                    $this->updateRoute() ;
-                    $this->displayModule() ;
+                    $isElementModule = $this->isElementModule() ;
+                    if ( $isElementModule === true )
+                    {
+                        $this->updateRoute() ;
+                        $this->displayModuleElement( false ) ;
+                    }
+                    else if ( $isElementModule == -1 )
+                    {
+                        $this->updateRoute() ;
+                        $this->displayModule() ;
+                    }
                 }
             }
             else
@@ -236,8 +245,17 @@ class Router
                 }
                 else if ( $this->isModule() )
                 {
-                    $this->updateRoute() ;
-                    $this->displayModule() ;
+                    $isElementModule = $this->isElementModule() ;
+                    if ( $isElementModule === true )
+                    {
+                        $this->updateRoute() ;
+                        $this->displayModuleElement( false ) ;
+                    }
+                    else if ( $isElementModule == -1 )
+                    {
+                        $this->updateRoute() ;
+                        $this->displayModule() ;
+                    }
                 }
                 else if ( $this->isPage() )
                 {
@@ -358,6 +376,23 @@ class Router
         else            return false ;
     }
 
+    protected function isElementModule()
+    {
+        if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
+
+        $url = $this->getUrl( $this->getOffset() + 1 );
+
+        if ( $url === NULL ) return -1;
+
+        $ct = \DB::for_table('module')
+            ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
+            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() + 1 )])
+            ->count();
+
+        if ( $ct == 1 ) return true ;
+        else            return false ;
+    }
+
     protected function isModuleElementDefault()
     {
         if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
@@ -428,8 +463,9 @@ class Router
             $result = \DB::for_table('module')
                 ->select('module.module_class_name')
                 ->select('module.module_id')
-                ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
-                ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
+                ->left_outer_join('module_lang', array('module.module_id', '=', 'module_lang.module_lang_module_id'))
+                ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_url' => $this->getUrl( $this->getOffset() )])
+                ->where_equal('module.module_active', 1)
                 ->find_one();
         }
   

@@ -616,7 +616,7 @@ class Controller
         }
 
         //if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
-
+        
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {

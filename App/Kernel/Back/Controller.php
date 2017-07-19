@@ -1070,7 +1070,7 @@ class Controller
             else		$msg = $this->m("edit_success") ;
 
             \App\Kernel\Back\Log::getInstance()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
-           $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
+            $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
         }
     }
 
