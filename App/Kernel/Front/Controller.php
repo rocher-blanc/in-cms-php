@@ -334,7 +334,7 @@ class Controller
             $lastTab = $this->getApp()->view()->getData('meta') ;
             $robots = $lastTab['robots'] ;
 
-            if ( ( $result->module_index_elmt == 0 or $result->seo_index == 0 ) && substr( $robots , 0 , 5 ) == 'index' )
+            if ( ( $module->module_index_elmt == 0 or $result->seo_index == 0 ) && substr( $robots , 0 , 5 ) == 'index' )
             {
                 $robots = "no" . $robots ;
             }
