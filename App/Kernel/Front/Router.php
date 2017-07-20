@@ -337,14 +337,13 @@ class Router
 
     protected function isElementModule()
     {
-        $this->_offset++;
-        $url = $this->getUrl( $this->getOffset() );
+        $url = $this->getUrl( $this->getOffset() + 1 );
 
         if ( $url === NULL ) return -1;
 
         $ct = \DB::for_table('module')
             ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
-            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
+            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() + 1 )])
             ->count();
 
         if ( $ct == 1 ) return true ;
