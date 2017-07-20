@@ -233,10 +233,10 @@ class Router
         {
             // on insere les controllers speciales
             $controllers = glob( CONTROLLERS_PATH . '/*.php');
-            if ($controllers && count($controllers) > 0)
+            if ( $controllers && count( $controllers ) > 0 )
             {
                 $app = $this->getApp();
-                foreach ($controllers as $controller)
+                foreach( $controllers as $controller )
                 {
                     require $controller;
                 }
