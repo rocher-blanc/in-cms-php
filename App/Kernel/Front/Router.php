@@ -176,10 +176,8 @@ class Router
         {
             $ct = count( $urlTab ) ;
 
-            if ( ( $ct == 1 && $this->Lang()->count() == 1 ) or ( $ct == 2 && $this->Lang()->count() > 1 ) )
+            if ( $this->Lang()->count() > 1 )
             {
-                if ( $ct == 2 ) $this->_offset = 1;
-
                 if ( $this->isLanguage() && $ct == 1 )
                 {
                     if ( $this->getUrl(0) == $this->Lang()->getDefault()->url )
@@ -190,78 +188,43 @@ class Router
                     $this->updateRoute() ;
                     $this->displayDefaultPage() ;
                 }
-                else if ( $this->isWebservice() )
+                else
                 {
-                    // c'est un webservice
-                    $this->updateRoute() ;
-                    $this->displayWebservice() ;
-                }
-                else if ( $this->isPage() )
-                {
-                    // c'est une page special
-                    $this->updateRoute() ;
-                    $this->displayPage() ;
-                }
-                else if ( $this->isModuleElementDefault() )
-                {
-                    // C'est un element du module par defaut
-                    $this->updateRoute() ;
-                    $this->displayModuleElement() ;
-                }
-                else if ( $this->isModule() )
-                {
-                    // C'est un module (getAll ou getOne)
-                    $isElementModule = $this->isElementModule() ;
-                    if ( $isElementModule === true )
-                    {
-                        $this->updateRoute() ;
-                        $this->displayModuleElement( false ) ;
-                    }
-                    else if ( $isElementModule == -1 )
-                    {
-                        $this->updateRoute() ;
-                        $this->displayModule() ;
-                    }
+                    $this->_offset = 1;
                 }
             }
-            else
-            {
-                if ( $this->Lang()->count() > 1 ) $this->_offset = 1;
-                if ( $this->isLanguage() && $ct == 1 )
-                {
-                    if ( $this->getUrl(0) == $this->Lang()->getDefault()->url )
-                    {
-                        $this->getApp()->redirect('/');
-                    }
 
-                    $this->updateRoute() ;
-                    $this->displayDefaultPage() ;
-                }
-                else if ( $this->isWebservice() )
+            if ( $this->isWebservice() )
+            {
+                // c'est un webservice
+                $this->updateRoute() ;
+                $this->displayWebservice() ;
+            }
+            else if ( $this->isPage() )
+            {
+                // c'est une page special
+                $this->updateRoute() ;
+                $this->displayPage() ;
+            }
+            else if ( $this->isModuleElementDefault() )
+            {
+                // C'est un element du module par defaut
+                $this->updateRoute() ;
+                $this->displayModuleElement() ;
+            }
+            else if ( $this->isModule() )
+            {
+                // C'est un module (getAll ou getOne)
+                $isElementModule = $this->isElementModule() ;
+                if ( $isElementModule === true )
                 {
-                    // c'est un webservice
                     $this->updateRoute() ;
-                    $this->displayWebservice() ;
+                    $this->displayModuleElement( false ) ;
                 }
-                else if ( $this->isModule() )
+                else if ( $isElementModule == -1 )
                 {
-                    $isElementModule = $this->isElementModule() ;
-                    if ( $isElementModule === true )
-                    {
-                        $this->updateRoute() ;
-                        $this->displayModuleElement( false ) ;
-                    }
-                    else if ( $isElementModule == -1 )
-                    {
-                        $this->updateRoute() ;
-                        $this->displayModule() ;
-                    }
-                }
-                else if ( $this->isPage() )
-                {
-                    // c'est une page special
                     $this->updateRoute() ;
-                    $this->displayPage() ;
+                    $this->displayModule() ;
                 }
             }
         }
@@ -350,8 +313,6 @@ class Router
 
     protected function isPage()
     {
-        if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
-
         $ct = \DB::for_table('page')
             ->left_outer_join('page_lang', array('page.page_id', '=', 'page_lang.page_lang_page_id'))
             ->where(['page_lang.page_lang_lang_id' => $this->Lang()->getActive()->id, 'page_lang.page_lang_url' => $this->getUrl( $this->getOffset() )])
@@ -364,8 +325,6 @@ class Router
 
     protected function isModule()
     {
-        if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
-
         $ct = \DB::for_table('module')
             ->left_outer_join('module_lang', array('module.module_id', '=', 'module_lang.module_lang_module_id'))
             ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_url' => $this->getUrl( $this->getOffset() )])
@@ -378,15 +337,14 @@ class Router
 
     protected function isElementModule()
     {
-        if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
-
-        $url = $this->getUrl( $this->getOffset() + 1 );
+        $this->_offset++;
+        $url = $this->getUrl( $this->getOffset() );
 
         if ( $url === NULL ) return -1;
 
         $ct = \DB::for_table('module')
             ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
-            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() + 1 )])
+            ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 0, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
             ->count();
 
         if ( $ct == 1 ) return true ;
@@ -395,8 +353,6 @@ class Router
 
     protected function isModuleElementDefault()
     {
-        if ( $this->Lang()->count() > 1 ) $this->isLanguage() ;
-
         $ct = \DB::for_table('module')
             ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
             ->where(['seo.seo_lang_id' => $this->Lang()->getActive()->id, 'module.module_default' => 1, 'module.module_active' => 1, 'seo.seo_url' => $this->getUrl( $this->getOffset() )])
@@ -468,7 +424,7 @@ class Router
                 ->where_equal('module.module_active', 1)
                 ->find_one();
         }
-  
+
         $this->loadController( $result->module_class_name , $result->module_id , true , $mp ) ;
     }
 
@@ -595,10 +551,10 @@ class Router
                     }
 
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
-					
-					$pageClass = new $ControllerClass;
-					$pageClass->setId( $page->page_id );
-					$pageClass->execute();
+
+                    $pageClass = new $ControllerClass;
+                    $pageClass->setId( $page->page_id );
+                    $pageClass->execute();
                 })->via('GET', 'POST');
             }
             else
