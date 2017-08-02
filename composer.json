@@ -25,9 +25,6 @@
     "symfony/var-dumper": "3.0.*",
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master",
-    "symfony/yaml": "2.*",
-    "phpunit/phpunit": "5.5.*",
-    "phpro/grumphp": "0.*",
 
     "bower-asset/bootstrap": "dev-master",
     "bower-asset/bootstrap-multiselect": "0.9.*",

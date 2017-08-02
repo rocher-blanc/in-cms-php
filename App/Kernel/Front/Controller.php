@@ -686,7 +686,7 @@ class Controller
                 else if ( $row->getType() == 'gallery' )
                 {
                     $Gal = new \App\Kernel\Front\Gallery;
-                    $Gal->setElementId( $this->getId() );
+                    $Gal->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
                     $Gal->setModuleId( $this->getEntityId() );
                     $Gal->setModuleName( $this->getEntityName() );
                     $Gal->setField( $row->getName() );
