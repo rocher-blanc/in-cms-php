@@ -19,8 +19,8 @@ class TwigUrl extends \Twig_Extension
     public function getFunctions()
     {
        return array(
-            new \Twig_SimpleFunction('urlpage', array($this, 'urlpage')),
-            new \Twig_SimpleFunction('urlmodule', array($this, 'urlmodule')),
+            new \Twig_SimpleFunction('urlpage', [$this, 'urlpage']),
+            new \Twig_SimpleFunction('urlmodule', [$this, 'urlmodule']),
         );
     }
 
