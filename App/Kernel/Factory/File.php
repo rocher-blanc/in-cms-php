@@ -17,9 +17,7 @@ class File
     {
         if ( file_exists( $nameFile ) )
         {
-            $fp 	 = fopen( $nameFile , 'r' ) ;
-            $content = fread( $fp , filesize( $nameFile ) ) ;
-            fclose( $fp ) ;
+            $content = file_get_contents( $nameFile ) ;
         }
         else
         {

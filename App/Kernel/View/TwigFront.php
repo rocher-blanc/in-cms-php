@@ -244,7 +244,7 @@ class TwigFront extends \Twig_Extension
 				foreach( $css as $file )
 				{
 					$url = str_replace( WEB_PATH , '' , $file );
-					
+
 					if ( DEBUG == true ) 	$this->css[ $url ] = $url ;
 					else 					$min.= \Minify_CSS::minify( $this->Factory()->File()->read( $file ) ) ;
 				}
