@@ -92,7 +92,7 @@
 								</li>
 							</ul>
 						</li>
-                        <li class="parent{% if menu == 'metadata' or menu == 'redirect' %} expanded active{% endif %}">
+                        <li class="parent{% if menu == 'metadata' or menu == 'microdata' or menu == 'redirect' %} expanded active{% endif %}">
                             <a href="#">
                                 <i class="fa fa-line-chart"></i>
                                 <span>SEO</span>
@@ -101,6 +101,11 @@
                                 <li{% if menu == 'metadata' %} class="active"{% endif %}>
                                     <a href="{{ siteUrl('/ext/metadata') }}">
                                         <i class="fa fa-rss"></i> <span>Métadonnées</span>
+                                    </a>
+                                </li>
+                                <li{% if menu == 'microdata' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/microdata') }}">
+                                        <i class="fa fa-database"></i> <span>Microdata</span>
                                     </a>
                                 </li>
                                 <!--

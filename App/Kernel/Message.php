@@ -82,6 +82,9 @@ class Message
 
             /* JGALLERY */
             "crop_image_gallery" => "L'image a bien été redimensionnee",
+
+            /* MICRODATA */
+            "microdata_success" => "Les microdatas ont bien été mis à jour",
 		) ;
 	}
 }

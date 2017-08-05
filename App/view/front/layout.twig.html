@@ -18,7 +18,13 @@
     {% endfor %}
     {{ block('meta') }}{% block stylesheets %}{{
     css() }}{% endblock %}{{
-    block('javascript_head') }}{{
+    block('javascript_head') }}
+    {% if md.description != '' and md.logo != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"Corporation","description":"{{ md.description }}","url":"{{ siteUrl('/') }}","logo":"{{ md.logo }}"}</script>
+    {% endif %}
+{% if md.name != '' and md.alt_name != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":"{{ md.name }}","url":"{{ siteUrl('/') }}","alternateName":"{{ md.alt_name }}"}</script>
+    {% endif %}{% if md.facebook != '' or md.twitter != '' or md.instagram != '' or md.linkedin != '' or md.pinterest != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"Organization","url":"{{ siteUrl('/') }}"{% if md.facebook != '' %},"sameAs":"{{ md.facebook }}"{% endif %}{% if md.twitter != '' %},"sameAs":"{{ md.twitter }}"{% endif %}{% if md.instagram != '' %},"sameAs":"{{ md.instagram }}"{% endif %}{% if md.linkedin != '' %},"sameAs":"{{ md.linkedin }}"{% endif %}{% if md.pinterest != '' %},"sameAs":"{{ md.pinterest }}"{% endif %}}</script>
+    {% endif %}{% if md.address != '' and md.zip != '' and md.town != '' and md.phone != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"LocalBusiness","image":"{{ md.logo }}","telephone":"{{ md.phone }}","name":"{{ md.name }}","address":{"@context":"http://schema.org","@type":"PostalAddress","streetAddress":"{{ md.address }}","postalCode":"{{ md.zip }}","addressLocality":"{{ md.town }}"}}</script>
+    {% endif %}{{
     webmaster_tools.google }}{{
     webmaster_tools.bing }}{{
     tracking.header }}

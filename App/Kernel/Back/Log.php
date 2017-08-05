@@ -134,6 +134,8 @@ class Log
             58 => "Ajout (éléments) dans l'index du module \"%i\"",
             59 => "Suppression (éléments) de l'index du module \"%i\"",
 
+            60 => "Modification des microdatas",
+
             /* MODULES */
             100 => "Ajout d'un nouvel élément \"%i\"",
             101 => "Modification d'un élément \"%i\"",
@@ -143,7 +145,7 @@ class Log
             105 => "Modification de l'ordre des éléments \"%i\"",
 
             /* NEWSLETTER */
-            /* GROUPES D4ABONNES */
+            /* GROUPES D'ABONNES */
             200 => "Ajout d'un nouveau groupe d'abonné \"%i\"",
             201 => "Modification d'un groupe d'abonné \"%i\"",
             202 => "Suppression d'un groupe d'abonné \"%i\"",

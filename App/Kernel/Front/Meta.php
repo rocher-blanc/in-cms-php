@@ -50,6 +50,21 @@ class Meta
             }
         }
 
+        $content = \DB::for_table('param')
+            ->select('param_key')
+            ->select('param_value')
+            ->where_like('param_key','md_%')
+            ->find_many();
+
+        $md = [];
+        if ( $content )
+        {
+            foreach( $content as $row )
+            {
+                $md[ $row->param_key ] = $row->param_value;
+            }
+        }
+
         $this->CMS()->view()->appendData([
             'site' => [
                 'url'               => $this->Factory()->Url()->getFullUrl(),
@@ -72,12 +87,27 @@ class Meta
                 'geo.position'   => $tab['seo_geo_position'],
                 'ICBM'           => $tab['seo_geo_icbm']
             ],
-			'og' => [
+            'og' => [
                 'type'           => "website",
                 'title'          => "",
                 'language'       => $this->Lang()->getActive()->url,
-				'url' 			 => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl() ,
+                'url' 			 => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl() ,
                 'description'    => ""
+            ],
+            'md' => [
+                'name'           => $md['md_name'],
+                'alt_name'       => $md['md_alt_name'],
+                'description'    => $md['md_description'],
+                'logo' 			 => $md['md_logo'],
+                'facebook'       => $md['md_facebook'],
+                'twitter'        => $md['md_twitter'],
+                'instagram'      => $md['md_instagram'],
+                'linkedin'       => $md['md_linkedin'],
+                'pinterest'      => $md['md_pinterest'],
+                'phone'          => $md['md_phone'],
+                'address'        => $md['md_address'],
+                'zip'            => $md['md_zip'],
+                'town'           => $md['md_town']
             ],
             'webmaster_tools' => [
                 'google'    => $tab['seo_google_webmaster_tools'],
