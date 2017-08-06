@@ -8,9 +8,11 @@ class Redirect
 	/* ****************   VARIABLES   ******************* */
 	/* ************************************************** */
 	
-	private $_module_id ;
-	private $_element_id ;
-	private $_lang_id ;
+	private $_module_id = NULL ;
+	private $_element_id = NULL ;
+	private $_lang_id = NULL ;
+	private $_page_id = NULL ;
+
 	private $_last_url = '' ;
 	private $_new_url = '' ;
 	private $_url = '' ;
@@ -34,11 +36,16 @@ class Redirect
 	{
 		$this->_element_id = $var ;
 	}
-	
-	public function setLangId( $var )
-	{
-		$this->_lang_id = $var ;
-	}
+
+    public function setPageId( $var )
+    {
+        $this->_page_id = $var ;
+    }
+
+    public function setLangId( $var )
+    {
+        $this->_lang_id = $var ;
+    }
 
     public function setNewUrl( $var )
     {
@@ -68,11 +75,16 @@ class Redirect
 	{
 		return $this->_element_id ;
 	}
-	
-	public function getLangId()
-	{
-		return $this->_lang_id ;
-	}
+
+    public function getPageId()
+    {
+        return $this->_page_id ;
+    }
+
+    public function getLangId()
+    {
+        return $this->_lang_id ;
+    }
 
 	public function getNewUrl()
 	{
@@ -140,6 +152,7 @@ class Redirect
     {
         $redirect = \DB::for_table('redirect')->create();
         $redirect->redirect_url         = $this->getLastFullUrl();
+        $redirect->redirect_page_id     = $this->getPageId();
         $redirect->redirect_module_id   = $this->getModuleId();
         $redirect->redirect_element_id  = $this->getElementId();
         $redirect->redirect_lang_id     = $this->getLangId();
