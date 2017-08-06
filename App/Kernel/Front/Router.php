@@ -243,7 +243,19 @@ class Router
             }
         }
 
+        $this->check301() ;
         $this->Factory()->Response()->show404() ;
+    }
+
+    /* ************************************************** */
+    /* *****************      301     ******************* */
+    /* ************************************************** */
+
+    private function check301()
+    {
+        $Redirect = new \App\Kernel\Front\Redirect;
+        $Redirect->setUrl( trim( $this->getFullUrl() , "/" ) );
+        $Redirect->check301();
     }
 
     /* ************************************************** */

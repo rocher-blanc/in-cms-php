@@ -220,6 +220,18 @@ CREATE TABLE `permission` (
   `permission_module_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `redirect` (
+  `redirect_id` int(11) NOT NULL,
+  `redirect_page_id` int(11) DEFAULT NULL,
+  `redirect_module_id` int(11) DEFAULT NULL,
+  `redirect_element_id` int(11) DEFAULT NULL,
+  `redirect_lang_id` int(11) NOT NULL,
+  `redirect_url` varchar(255) COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `redirect` ADD PRIMARY KEY (`redirect_id`);
+ALTER TABLE `redirect` MODIFY `redirect_id` int(11) NOT NULL AUTO_INCREMENT;
+
 CREATE TABLE `seo` (
   `seo_id` int(11) NOT NULL,
   `seo_module_id` int(11) NOT NULL,
@@ -274,136 +286,58 @@ CREATE TABLE `user_group` (
   `user_group_redirect` varchar(250) COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `domain`
-  ADD PRIMARY KEY (`domain_id`);
+ALTER TABLE `domain` ADD PRIMARY KEY (`domain_id`);
+ALTER TABLE `extension` ADD PRIMARY KEY (`extension_id`);
+ALTER TABLE `gallery` ADD PRIMARY KEY (`gallery_id`);
+ALTER TABLE `lang` ADD PRIMARY KEY (`lang_id`);
+ALTER TABLE `log` ADD PRIMARY KEY (`log_id`);
+ALTER TABLE `media` ADD PRIMARY KEY (`media_id`);
+ALTER TABLE `menu` ADD PRIMARY KEY (`menu_id`);
+ALTER TABLE `menu_element` ADD PRIMARY KEY (`menu_element_id`);
+ALTER TABLE `menu_element_lang` ADD PRIMARY KEY (`menu_element_lang_id`);
+ALTER TABLE `newsletter_group_sub` ADD PRIMARY KEY (`newsletter_group_sub_id`);
+ALTER TABLE `newsletter_sub` ADD PRIMARY KEY (`newsletter_sub_id`);
+ALTER TABLE `module` ADD PRIMARY KEY (`module_id`);
+ALTER TABLE `module_group` ADD PRIMARY KEY (`module_group_id`);
+ALTER TABLE `module_lang` ADD PRIMARY KEY (`module_lang_id`), ADD KEY `module_lang_url` (`module_lang_url`);
+ALTER TABLE `page` ADD PRIMARY KEY (`page_id`);
+ALTER TABLE `page_lang` ADD PRIMARY KEY (`page_lang_id`);
+ALTER TABLE `param` ADD PRIMARY KEY (`param_id`);
+ALTER TABLE `permission` ADD PRIMARY KEY (`permission_id`);
+ALTER TABLE `seo` ADD PRIMARY KEY (`seo_id`), ADD KEY `seo_lang_url` (`seo_url`), ADD KEY `seo_lang_lang_id` (`seo_lang_id`);
+ALTER TABLE `user` ADD PRIMARY KEY (`user_id`);
+ALTER TABLE `user_front` ADD PRIMARY KEY (`user_front_id`);
+ALTER TABLE `user_front_group` ADD PRIMARY KEY (`user_front_group_id`);
+ALTER TABLE `user_front_profile` ADD PRIMARY KEY (`user_front_profile_id`);
+ALTER TABLE `user_group` ADD PRIMARY KEY (`user_group_id`);
+ALTER TABLE `document` ADD PRIMARY KEY (`document_id`);
 
-ALTER TABLE `extension`
-  ADD PRIMARY KEY (`extension_id`);
- 
-ALTER TABLE `gallery`
-  ADD PRIMARY KEY (`gallery_id`);
-
-ALTER TABLE `lang`
-  ADD PRIMARY KEY (`lang_id`);
-
-ALTER TABLE `log`
-  ADD PRIMARY KEY (`log_id`);
-
-ALTER TABLE `media`
-  ADD PRIMARY KEY (`media_id`);
-
-ALTER TABLE `menu`
-  ADD PRIMARY KEY (`menu_id`);
-
-ALTER TABLE `menu_element`
-  ADD PRIMARY KEY (`menu_element_id`);
-
-ALTER TABLE `menu_element_lang`
-  ADD PRIMARY KEY (`menu_element_lang_id`);
-  
-ALTER TABLE `newsletter_group_sub`
-  ADD PRIMARY KEY (`newsletter_group_sub_id`);
-  
-ALTER TABLE `newsletter_sub`
-  ADD PRIMARY KEY (`newsletter_sub_id`);
-
-ALTER TABLE `module`
-  ADD PRIMARY KEY (`module_id`);
-
-ALTER TABLE `module_group`
-  ADD PRIMARY KEY (`module_group_id`);
-
-ALTER TABLE `module_lang`
-  ADD PRIMARY KEY (`module_lang_id`),
-  ADD KEY `module_lang_url` (`module_lang_url`);
-
-ALTER TABLE `page`
-  ADD PRIMARY KEY (`page_id`);
-
-ALTER TABLE `page_lang`
-  ADD PRIMARY KEY (`page_lang_id`);
-
-ALTER TABLE `param`
-  ADD PRIMARY KEY (`param_id`);
-
-ALTER TABLE `permission`
-  ADD PRIMARY KEY (`permission_id`);
-
-ALTER TABLE `seo`
-  ADD PRIMARY KEY (`seo_id`),
-  ADD KEY `seo_lang_url` (`seo_url`),
-  ADD KEY `seo_lang_lang_id` (`seo_lang_id`);
-
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`);
-
-ALTER TABLE `user_front`
-  ADD PRIMARY KEY (`user_front_id`);
-
-ALTER TABLE `user_front_group`
-  ADD PRIMARY KEY (`user_front_group_id`);
-
-ALTER TABLE `user_front_profile`
-  ADD PRIMARY KEY (`user_front_profile_id`);
-
-ALTER TABLE `user_group`
-  ADD PRIMARY KEY (`user_group_id`);
-  
-ALTER TABLE `document`
-  ADD PRIMARY KEY (`document_id`);
-
-ALTER TABLE `domain`
-  MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `document`
-  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `extension`
-  MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `gallery`
-  MODIFY `gallery_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `lang`
-  MODIFY `lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `media`
-  MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu_element`
-  MODIFY `menu_element_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu_element_lang`
-  MODIFY `menu_element_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module`
-  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module_group`
-  MODIFY `module_group_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module_lang`
-  MODIFY `module_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `newsletter_group_sub`
-  MODIFY `newsletter_group_sub_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `newsletter_sub`
-  MODIFY `newsletter_sub_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `page`
-  MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `page_lang`
-  MODIFY `page_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `param`
-  MODIFY `param_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `permission`
-  MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `seo`
-  MODIFY `seo_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front`
-  MODIFY `user_front_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front_group`
-  MODIFY `user_front_group_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front_profile`
-  MODIFY `user_front_profile_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `domain`
-  MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_group`
-  MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `domain` MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `document` MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `extension` MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `gallery` MODIFY `gallery_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `lang` MODIFY `lang_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `log` MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `media` MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `menu` MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `menu_element` MODIFY `menu_element_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `menu_element_lang` MODIFY `menu_element_lang_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `module` MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `module_group` MODIFY `module_group_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `module_lang` MODIFY `module_lang_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `newsletter_group_sub` MODIFY `newsletter_group_sub_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `newsletter_sub` MODIFY `newsletter_sub_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `page` MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `page_lang` MODIFY `page_lang_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `param` MODIFY `param_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `permission` MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `seo` MODIFY `seo_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user` MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user_front` MODIFY `user_front_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user_front_group` MODIFY `user_front_group_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user_front_profile` MODIFY `user_front_profile_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `domain` MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user_group` MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;
   
 INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
 ('user', 'Utilisateurs', 1, 1, 1, 0),

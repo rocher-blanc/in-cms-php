@@ -148,8 +148,19 @@ class Seo
 		else					$row = $this->getContent() ;
 
         $this->uniq() ;
-		
-		if ( ( $update == true && $this->getUrl() != '' ) or $update == false ) $row->set( 'seo_url' , $this->getUrl() ) ;
+
+        if ( $update == true && $this->getUrl() != '' && $this->getUrl() != $row->get( 'seo_url' ) )
+        {
+            $Redirect = new \App\Kernel\Back\Redirect;
+            $Redirect->setLastUrl( $row->get( 'seo_url' ) );
+            $Redirect->setNewUrl( $this->getUrl() );
+            $Redirect->setModuleId( $this->getModuleId() );
+            $Redirect->setElementId( $this->getElementId() );
+            $Redirect->setLangId( $this->getLangId() );
+            $Redirect->check();
+        }
+
+        if ( ( $update == true && $this->getUrl() != '' ) or $update == false ) $row->set( 'seo_url' , $this->getUrl() ) ;
 		if ( ( $update == true && $this->getTitle() != '' ) or $update == false ) $row->set( 'seo_title' , $this->getTitle() ) ;
 		$row->set( 'seo_description' , $this->getDescription() ) ;
 		$row->set( 'seo_index' , $this->getIndex() ) ;
