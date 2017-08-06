@@ -65,6 +65,13 @@ class Meta
             }
         }
 
+        $sameAs = [];
+        if ( ! empty( $md['md_facebook'] ) )  $sameAs[] = $md['md_facebook'];
+        if ( ! empty( $md['md_twitter'] ) )   $sameAs[] = $md['md_twitter'];
+        if ( ! empty( $md['md_instagram'] ) ) $sameAs[] = $md['md_instagram'];
+        if ( ! empty( $md['md_linkedin'] ) )  $sameAs[] = $md['md_linkedin'];
+        if ( ! empty( $md['md_pinterest'] ) ) $sameAs[] = $md['md_pinterest'];
+
         $this->CMS()->view()->appendData([
             'site' => [
                 'url'               => $this->Factory()->Url()->getFullUrl(),
@@ -104,6 +111,7 @@ class Meta
                 'instagram'      => $md['md_instagram'],
                 'linkedin'       => $md['md_linkedin'],
                 'pinterest'      => $md['md_pinterest'],
+                'sameAs'         => $sameAs,
                 'phone'          => $md['md_phone'],
                 'address'        => $md['md_address'],
                 'zip'            => $md['md_zip'],
