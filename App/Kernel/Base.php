@@ -392,4 +392,54 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
 (1, 'Administrateurs', '/.+;/', '/admin/'),
 (2, 'Utilisateurs', '/.+;/', '/admin/');";
     }
+
+    public function checkDatabase()
+    {
+        $rst = \DB::for_table('')->raw_query("SHOW TABLES")->find_many();
+        if ( $rst )
+        {
+            $array = [];
+            foreach( $rst as $value )
+            {
+                if ( substr( $value->get( 'Tables_in_' . DB_DATABASE ) , 0 , 4 ) != "mod_" )
+                {
+                    $array[ $value->get( 'Tables_in_' . DB_DATABASE ) ] = $value->get( 'Tables_in_' . DB_DATABASE ) ;
+                }
+            }
+        }
+
+        foreach( $this->getInformationColumn() as $row )
+        {
+
+        }
+    }
+
+    public function infoColumn( $type , $value = NULL , $default = NULL , $empty = false , $increment = false )
+    {
+        return [
+            "type"      => $type,
+            "value"     => $value,
+            "default"   => $default,
+            "increment" => $empty,
+            "empty"     => $increment,
+        ];
+    }
+
+    public function getInformationColumn()
+    {
+        return [
+            "domain" => [
+                "domain_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "extension" => [
+                "extension_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "extension_name" => $this->infoColumn( "VARCHAR" , "100" ),
+                "extension_technical_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "extension_add" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_update" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_delete" => $this->infoColumn( "TINYINT" , "1" , 1 )
+            ]
+        ];
+    }
 }

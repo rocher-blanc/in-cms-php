@@ -211,6 +211,9 @@ class Kernel
         {
             $this->getDb()->connect() ;
 
+            $Base = new \App\Kernel\Base;
+            $Base->checkDatabase();
+
             try
             {
                 $this->getDb()->testTable() ;
