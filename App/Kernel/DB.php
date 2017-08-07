@@ -270,6 +270,74 @@ class DB extends ORM
         return self::get_db()->exec( "TRUNCATE " . $Tbl . ";" ) ;
     }
 
+    /* ********************************************************* */
+    /* ******************    GESTION BASE    ******************* */
+    /* ********************************************************* */
+
+    public static function createSimpleTable( $tableName , $fields )
+    {
+        $Tbl = "CREATE TABLE IF NOT EXISTS `" . $tableName . "` (\n" ;
+
+        foreach( $fields as $columnName => $field )
+        {
+            $Tbl.= "\t" . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ) . ",\n" ;
+
+            if ( $field['increment'] == true )
+            {
+                $primary = $columnName ;
+            }
+        }
+
+        $Tbl.= "\tPRIMARY KEY  (`" . self::getIdName( $primary ) . "`)\n" ;
+        $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
+
+        self::get_db()->exec( $Tbl ) ;
+    }
+
+    public static function createSimpleColumn( $columnName , $value , $type , $default = NULL , $empty = false , $increment = false )
+    {
+        if ( $value !== NULL )
+        {
+            if ( $default !== NULL )
+            {
+                return "`" . $columnName . "` " . $type . "(" . $value . ") NOT NULL DEFAULT '" . $default . "'"  ;
+            }
+            else
+            {
+                return "`" . $columnName . "` " . $type . "(" . $value . ") " . ( $empty ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( $increment ? ' AUTO_INCREMENT' : '' )  ;
+            }
+        }
+        else
+        {
+            return "`" . $columnName . "` " . $type . " " . ( $empty ? "NOT NULL" : "NULL DEFAULT NULL" )  ;
+        }
+    }
+
+    public static function alterSimpleColumn( $tableName , $columnName , $field )
+    {
+        self::get_db()->exec("ALTER TABLE `" . $tableName . "` ADD " . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ). ";\n") ;
+    }
+
+    public static function getColumnsTable( $tableName )
+    {
+        $rst = self::for_table('')->raw_query("SHOW COLUMNS FROM " . $tableName )->find_many();
+        $column = [];
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $column[ $row->Field ] = [
+                    'name' => $row->Field,
+                    'type' => $row->Type,
+                    'null' => $row->Null,
+                    'default' => $row->Default
+                ];
+            }
+        }
+
+        return $column ;
+    }
+
     /* ************************************************** */
     /* ******************    DEBUG    ******************* */
     /* ************************************************** */

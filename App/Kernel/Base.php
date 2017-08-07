@@ -100,7 +100,7 @@ CREATE TABLE `media` (
   `media_size` int(11) NOT NULL,
   `media_type`  varchar(100) COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+ 
 CREATE TABLE `media_alt` (
   `media_alt_id` int(11) NOT NULL,
   `media_alt_module_id` int(11) NOT NULL,
@@ -408,9 +408,38 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             }
         }
 
-        foreach( $this->getInformationColumn() as $row )
+        foreach( $this->getInformationColumn() as $table => $columns )
         {
+            if ( array_key_exists( $table , $array ) )
+            {
+                // on check les colonnes
+                $dbColumns = \DB::getColumnsTable( $table );
 
+                if ( $columns )
+                {
+                    foreach( $columns as $columnName => $info )
+                    {
+                        if ( ! array_key_exists( $columnName , $dbColumns ) )
+                        {
+                            // on créer la colonnes
+                            \DB::alterSimpleColumn( $table , $columnName , $info );
+                        }/*
+                        else
+                        {
+                            $type = ( $info['value'] != '' ? $info['type'] . "(" . $info['value'] . ")" : $info['type'] )
+                            if ( $dbColumns[ $columnName ]['type'] != $type )
+                            {
+                                // on modifie le type
+                            }
+                        }*/
+                    }
+                }
+            }
+            else
+            {
+                // on créer la table
+                \DB::createSimpleTable( $table , $columns );
+            }
         }
     }
 
