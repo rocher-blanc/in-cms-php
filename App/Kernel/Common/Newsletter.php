@@ -10,6 +10,7 @@ class Newsletter
 
     protected $group_id = NULL ;
     protected $email    = NULL ;
+    protected $error    = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -31,6 +32,11 @@ class Newsletter
         $this->email = $var ;
     }
 
+    public function setError( $var )
+    {
+        $this->error = $var ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -43,6 +49,11 @@ class Newsletter
     public function getEmail()
     {
         return trim( $this->email );
+    }
+
+    public function getError()
+    {
+        return \App\Kernel\Front\Translate::getInstance()->getText( $this->error );
     }
 
     /* ************************************************** */
@@ -72,14 +83,18 @@ class Newsletter
             if ( ! $this->exist() )
             {
                 $this->insert();
+
+                return true ;
             }
             else
             {
+                $this->setError('email_already_exist');
                 return false ;
             }
         }
         else
         {
+            $this->setError('email_is_invalid');
             return false ;
         }
     }
