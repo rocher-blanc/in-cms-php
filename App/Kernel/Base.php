@@ -14,11 +14,14 @@ class Base
 	/* ****************   FUNCTIONS   ******************* */
 	/* ************************************************** */
 
-	public function insertBase()
+	public function insertBase( $content = true )
     {
         $this->checkDatabase() ;
-        \DB::get_db()->exec( $this->getSql() ) ;
-        \DB::get_db()->exec( $this->getTrigger() ) ;
+        if ( $content )
+        {
+            \DB::get_db()->exec( $this->getSql() ) ;
+            \DB::get_db()->exec( $this->getTrigger() ) ;
+        }
     }
 
     public function getTrigger()
@@ -167,7 +170,8 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "extension_technical_name" => $this->infoColumn( "VARCHAR" , "50" ),
                 "extension_add" => $this->infoColumn( "TINYINT" , "1" , 1 ),
                 "extension_update" => $this->infoColumn( "TINYINT" , "1" , 1 ),
-                "extension_delete" => $this->infoColumn( "TINYINT" , "1" , 1 )
+                "extension_delete" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_user" => $this->infoColumn( "TINYINT" , "1" , 0 )
             ],
             "gallery" => [
                 "gallery_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
