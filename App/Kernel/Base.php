@@ -265,6 +265,16 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "newsletter_sender_name" => $this->infoColumn( "VARCHAR" , "50" ),
                 "newsletter_sender_email" => $this->infoColumn( "VARCHAR" , "150" )
             ],
+            "newsletter_sub" => [
+                "newsletter_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "newsletter_sub_email" => $this->infoColumn( "VARCHAR" , "255" ),
+                "newsletter_sub_state" => $this->infoColumn( "TINYINT" , "1" ),
+                "newsletter_sub_newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" )
+            ],
+            "newsletter_group_sub" => [
+                "newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "newsletter_group_sub_name " => $this->infoColumn( "VARCHAR" , "50" )
+            ],
             "page" => [
                 "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "page_domain_id" => $this->infoColumn( "INT" , "11" ),
