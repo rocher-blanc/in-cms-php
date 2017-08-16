@@ -224,7 +224,7 @@ class Kernel
 
             if ( isset( $_GET['checkDB'] ) && $generate == false )
             {
-                $this->generateTable( true );
+                $this->generateTable( false );
             }
 
             if ( $this->_caching_db == true	)
