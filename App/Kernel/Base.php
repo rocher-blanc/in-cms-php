@@ -251,23 +251,47 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "module_group" => [
                 "module_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "module_group_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "module_group_icon" => $this->infoColumn( "VARCHAR" , "15" ),
+                "module_group_order" => $this->infoColumn( "INT" , "11" ),
+                "module_group_active" => $this->infoColumn( "TINYINT" , "1" , '0' )
+            ],
+            "newsletter_sender" => [
+                "newsletter_sender_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "newsletter_sender_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "newsletter_sender_email" => $this->infoColumn( "VARCHAR" , "150" )
             ],
             "page" => [
                 "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "page_domain_id" => $this->infoColumn( "INT" , "11" ),
+                "page_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "page_default" => $this->infoColumn( "TINYINT" , "1" ),
+                "page_active" => $this->infoColumn( "TINYINT" , "1" ),
+                "page_priority" => $this->infoColumn( "FLOAT" ),
+                "page_index" => $this->infoColumn( "TINYINT" , "1" ),
+                "page_access_user" => $this->infoColumn( "TINYINT" , "1" ),
+                "page_access_user_group" => $this->infoColumn( "TEXT" ),
+                "page_access_user_redirect" => $this->infoColumn( "INT" , "11" )
             ],
             "page_lang" => [
                 "page_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "page_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "page_lang_page_id" => $this->infoColumn( "INT" , "11" ),
+                "page_lang_url" => $this->infoColumn( "VARCHAR" , "255" ),
+                "page_lang_title" => $this->infoColumn( "VARCHAR" , "255" ),
+                "page_lang_description" => $this->infoColumn( "VARCHAR" , "255" )
             ],
             "param" => [
                 "param_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "param_key" => $this->infoColumn( "VARCHAR" , "50" ),
+                "param_value" => $this->infoColumn( "TEXT" )
             ],
             "permission" => [
                 "permission_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "permission_group_id" => $this->infoColumn( "INT" , "11" ),
+                "permission_value" => $this->infoColumn( "VARCHAR" , "5" ),
+                "permission_extension_id" => $this->infoColumn( "INT" , "11" ),
+                "permission_module_id" => $this->infoColumn( "INT" , "11" )
             ],
             "redirect" => [
                 "redirect_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -275,15 +299,47 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "seo" => [
                 "seo_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "seo_module_id" => $this->infoColumn( "INT" , "11" ),
+                "seo_element_id" => $this->infoColumn( "INT" , "11" ),
+                "seo_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "seo_url" => $this->infoColumn( "VARCHAR" , "255" ),
+                "seo_title" => $this->infoColumn( "VARCHAR" , "255" ),
+                "seo_description" => $this->infoColumn( "VARCHAR" , "255" ),
+                "seo_index" => $this->infoColumn( "TINYINT" , "1" )
             ],
             "user" => [
                 "user_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "user_group_id" => $this->infoColumn( "INT" , "11" ),
+                "user_name" => $this->infoColumn( "VARCHAR" , "150" ),
+                "user_password" => $this->infoColumn( "VARCHAR" , "60" ),
+                "user_fname" => $this->infoColumn( "VARCHAR" , "150" ),
+                "user_lname" => $this->infoColumn( "VARCHAR" , "150" ),
+                "user_type" => $this->infoColumn( "INT" , "11" ),
+                "user_published" => $this->infoColumn( "TINYINT" , "1" )
             ],
             "user_group" => [
                 "user_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "user_group_name" => $this->infoColumn( "VARCHAR" , "150" ),
+                "user_group_url" => $this->infoColumn( "TEXT" ),
+                "user_group_redirect" => $this->infoColumn( "VARCHAR" , "250" )
+            ],
+            "user_front" => [
+                "user_front_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "user_front_login" => $this->infoColumn( "VARCHAR" , "100" ),
+                "user_front_password" => $this->infoColumn( "VARCHAR" , "60" ),
+                "user_front_token" => $this->infoColumn( "VARCHAR" , "34" ),
+                "user_front_active" => $this->infoColumn( "TINYINT" , "1" ),
+                "user_front_user_front_group_id" => $this->infoColumn( "INT" , "11" ),
+                "user_front_date_created" => $this->infoColumn( "DATETIME" ),
+                "user_front_last_connection" => $this->infoColumn( "DATETIME" )
+            ],
+            "user_front_group" => [
+                "user_front_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "user_front_group_name" => $this->infoColumn( "VARCHAR" , "50" )
+            ],
+            "user_front_profile" => [
+                "user_front_profile_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "user_front_profile_user_front_id" => $this->infoColumn( "INT" , "11" )
             ]
         ];
     }
