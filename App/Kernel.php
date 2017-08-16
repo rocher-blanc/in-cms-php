@@ -238,10 +238,10 @@ class Kernel
         }
     }
 
-    protected function generateTable()
+    protected function generateTable( $content = true )
     {
         $Base = new \App\Kernel\Base;
-        $Base->insertBase();
+        $Base->insertBase( $content );
     }
 
     public function activeDbCaching()

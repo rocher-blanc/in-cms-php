@@ -17,6 +17,7 @@ class Base
 	public function insertBase( $content = true )
     {
         $this->checkDatabase() ;
+
         if ( $content )
         {
             \DB::get_db()->exec( $this->getSql() ) ;
