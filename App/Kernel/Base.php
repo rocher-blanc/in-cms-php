@@ -273,7 +273,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "newsletter_group_sub" => [
                 "newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_group_sub_name " => $this->infoColumn( "VARCHAR" , "50" )
+                "newsletter_group_sub_name" => $this->infoColumn( "VARCHAR" , "50" )
             ],
             "page" => [
                 "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
