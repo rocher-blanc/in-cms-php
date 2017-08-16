@@ -210,15 +210,19 @@ class Kernel
         try
         {
             $this->getDb()->connect() ;
-
-            $Base = new \App\Kernel\Base;
-            $Base->checkDatabase();
+            $generate = false ;
 
             try
             {
                 $this->getDb()->testTable() ;
             }
             catch (\Exception $e)
+            {
+                $this->generateTable();
+                $generate = true ;
+            }
+
+            if ( isset( $_GET['checkDB'] ) && $generate == false )
             {
                 $this->generateTable();
             }

@@ -288,7 +288,7 @@ class DB extends ORM
             }
         }
 
-        $Tbl.= "\tPRIMARY KEY  (`" . self::getIdName( $primary ) . "`)\n" ;
+        $Tbl.= "\tPRIMARY KEY (`" . $primary . "`)\n" ;
         $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
 
         self::get_db()->exec( $Tbl ) ;
@@ -296,26 +296,26 @@ class DB extends ORM
 
     public static function createSimpleColumn( $columnName , $value , $type , $default = NULL , $empty = false , $increment = false )
     {
-        if ( $value !== NULL )
+        $str = "`" . $columnName . "` " . $type . ( $value !== NULL ? "(" . $value . ")" : "" ) . " " . ( $empty ? "NULL" : "NOT NULL" ) ;
+
+        if ( $default !== NULL or $empty == true )
         {
-            if ( $default !== NULL )
-            {
-                return "`" . $columnName . "` " . $type . "(" . $value . ") NOT NULL DEFAULT '" . $default . "'"  ;
-            }
-            else
-            {
-                return "`" . $columnName . "` " . $type . "(" . $value . ") " . ( $empty ? "NOT NULL" : "NULL DEFAULT NULL" ) . ( $increment ? ' AUTO_INCREMENT' : '' )  ;
-            }
+            $str.= " DEFAULT " ;
+
+            if ( $default !== NULL ) $str .= "'" . $default . "'" ;
+            else                     $str.= "NULL" ;
         }
-        else
-        {
-            return "`" . $columnName . "` " . $type . " " . ( $empty ? "NOT NULL" : "NULL DEFAULT NULL" )  ;
-        }
+
+        if ( $increment ) $str.= ' AUTO_INCREMENT' ;
+
+        return $str ;
     }
 
     public static function alterSimpleColumn( $tableName , $columnName , $field )
     {
-        self::get_db()->exec("ALTER TABLE `" . $tableName . "` ADD " . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ). ";\n") ;
+        $query = "ALTER TABLE `" . $tableName . "` ADD " . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ) . ";";
+
+        self::get_db()->exec( $query ) ;
     }
 
     public static function getColumnsTable( $tableName )

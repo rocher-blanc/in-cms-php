@@ -66,16 +66,21 @@ class Install
 
     protected static function patchDb()
     {
-        if ( file_exists( PROJECT_PATH . "/config/config.php" ) )
-        {
-            require PROJECT_PATH . "/config/config.php" ;
+        $regex = PROJECT_PATH . "/config/*.php" ;
+        $files = glob( $regex ) ;
 
-            \DB::configure('mysql:host=' . DB_HOST . ( defined('DB_PORT') ? ';port=' . DB_PORT : '' ) . ';dbname=' . DB_DATABASE );
-            \DB::configure('username', DB_USER );
-            \DB::configure('password', DB_PASSWORD );
-            \DB::configure('driver_options', [
-                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-            ]);
+        if ( $files )
+        {
+            foreach( $files as $file )
+            {
+                if ( strpos( $file , 'vps1') !== false )
+                {
+                    $monfichier = str_replace( PROJECT_PATH . "/config/config." , "" , $file );
+                    $url = str_replace( ".php" , "" , $monfichier );
+
+                    @file_get_contents( "http://" . $url . "/?checkDB" ) ;
+                }
+            }
         }
     }
 

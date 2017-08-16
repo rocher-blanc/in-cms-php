@@ -16,6 +16,7 @@ class Base
 
 	public function insertBase()
     {
+        $this->checkDatabase() ;
         \DB::get_db()->exec( $this->getSql() ) ;
         \DB::get_db()->exec( $this->getTrigger() ) ;
     }
@@ -38,308 +39,7 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
         $passPH = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
         $passJweb = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
 
-        return "
-CREATE TABLE `domain` (
-  `domain_id` int(11) NOT NULL,
-  `domain_name` varchar(255) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `extension` (
-  `extension_id` int(11) NOT NULL,
-  `extension_technical_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `extension_name`  varchar(100) COLLATE utf8_general_ci NOT NULL,
-  `extension_perm_add` tinyint(1) NOT NULL DEFAULT '1',
-  `extension_perm_update` tinyint(1) NOT NULL DEFAULT '1',
-  `extension_perm_delete` tinyint(1) NOT NULL DEFAULT '1',
-  `extension_user` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `document` (
-  `document_id` int(11) NOT NULL,
-  `document_module_id` int(11) DEFAULT NULL,
-  `document_name` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `document_size` int(11) NOT NULL,
-  `document_type` varchar(100) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `gallery` (
-  `gallery_id` int(11) NOT NULL,
-  `gallery_module_id` int(11) DEFAULT NULL,
-  `gallery_element_id` int(11) NOT NULL,
-  `gallery_field`  varchar(30) COLLATE utf8_general_ci NOT NULL,
-  `gallery_name`  varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `gallery_size` int(11) NOT NULL,
-  `gallery_type`  varchar(100) COLLATE utf8_general_ci NOT NULL,
-  `gallery_position` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `lang` (
-  `lang_id` int(11) NOT NULL,
-  `lang_display` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `lang_name` varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `lang_url` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `lang_flag` varchar(2) COLLATE utf8_general_ci DEFAULT NULL,
-  `lang_locale` varchar(5) COLLATE utf8_general_ci DEFAULT NULL,
-  `lang_status` int(11) DEFAULT NULL,
-  `lang_front` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-CREATE TABLE `log` (
-  `log_id` int(11) NOT NULL,
-  `log_date` datetime NOT NULL,
-  `log_user_id` int(11) DEFAULT NULL,
-  `log_code` tinyint(1) DEFAULT NULL,
-  `log_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = Info, 2 = Warning, 3 = Alert',
-  `log_value`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `media` (
-  `media_id` int(11) NOT NULL,
-  `media_module_id` int(11) DEFAULT NULL,
-  `media_name`  varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `media_size` int(11) NOT NULL,
-  `media_type`  varchar(100) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
-CREATE TABLE `media_alt` (
-  `media_alt_id` int(11) NOT NULL,
-  `media_alt_module_id` int(11) NOT NULL,
-  `media_alt_element_id` int(11) NOT NULL,
-  `media_alt_lang_id` int(11) NOT NULL,
-  `media_alt_field_name` varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `media_alt_value` varchar(500) COLLATE utf8_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `media_alt` ADD PRIMARY KEY (`media_alt_id`);
-ALTER TABLE `media_alt` MODIFY `media_alt_id` int(11) NOT NULL AUTO_INCREMENT;
-
-CREATE TABLE `menu` (
-  `menu_id` int(11) NOT NULL,
-  `menu_name` varchar(150) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `menu_element` (
-  `menu_element_id` int(11) NOT NULL,
-  `menu_element_menu_id` int(11) NOT NULL,
-  `menu_element_parent_id` int(11) DEFAULT NULL,
-  `menu_element_order` int(11) NOT NULL,
-  `menu_element_type` enum('module','page','link','section') NOT NULL,
-  `menu_element_link_blank` tinyint(1) DEFAULT '0',
-  `menu_element_link_href`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `menu_element_module_id` int(11) DEFAULT NULL,
-  `menu_element_value_id` int(11) DEFAULT NULL,
-  `menu_element_max_level` tinyint(1) DEFAULT NULL,
-  `menu_element_has_submenu` tinyint(1) DEFAULT '0',
-  `menu_element_option` enum('one','all') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `menu_element_lang` (
-  `menu_element_lang_id` int(11) NOT NULL,
-  `menu_element_lang_lang_id` int(11) NOT NULL,
-  `menu_element_lang_menu_element_id` int(11) NOT NULL,
-  `menu_element_lang_label`  varchar(255) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `newsletter_group_sub` (
-  `newsletter_group_sub_id` int(11) NOT NULL,
-  `newsletter_group_sub_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `newsletter_sub` (
-  `newsletter_sub_id` int(11) NOT NULL,
-  `newsletter_sub_email` varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `newsletter_sub_state` tinyint(1) DEFAULT NULL,
-  `newsletter_sub_newsletter_group_sub_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `module` (
-  `module_id` int(11) NOT NULL,
-  `module_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `module_class_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `module_active` tinyint(1) NOT NULL DEFAULT '0',
-  `module_icon`  varchar(20) COLLATE utf8_general_ci NOT NULL,
-  `module_module_group_id` int(11) DEFAULT NULL,
-  `module_order` int(11) DEFAULT NULL,
-  `module_default` tinyint(1) NOT NULL DEFAULT '0',
-  `module_priority` float NOT NULL DEFAULT '0.5',
-  `module_index` tinyint(1) NOT NULL DEFAULT '0',
-  `module_index_elmt` tinyint(1) NOT NULL DEFAULT '0' 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `module_group` (
-  `module_group_id` int(11) NOT NULL,
-  `module_group_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `module_group_icon`  varchar(15) COLLATE utf8_general_ci NOT NULL,
-  `module_group_order` int(11) NOT NULL,
-  `module_group_active` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `module_lang` (
-  `module_lang_id` int(11) NOT NULL,
-  `module_lang_lang_id` int(11) NOT NULL,
-  `module_lang_module_id` int(11) NOT NULL,
-  `module_lang_url`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `module_lang_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `module_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `page` (
-  `page_id` int(11) NOT NULL,
-  `page_domain_id` int(11) NULL DEFAULT NULL,
-  `page_name`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `page_default` tinyint(1) NOT NULL DEFAULT '0',
-  `page_active` tinyint(1) NOT NULL DEFAULT '0',
-  `page_priority` float NOT NULL DEFAULT '0.5',
-  `page_index` tinyint(1) NOT NULL DEFAULT '0',
-  `page_access_user` TINYINT(1) NOT NULL DEFAULT '0',
-  `page_access_user_group` TEXT NULL DEFAULT NULL,
-  `page_access_user_redirect` INT(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `page_lang` (
-  `page_lang_id` int(11) NOT NULL,
-  `page_lang_lang_id` int(11) NOT NULL,
-  `page_lang_page_id` int(11) NOT NULL,
-  `page_lang_url`  varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `page_lang_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `page_lang_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `param` (
-  `param_id` int(11) NOT NULL,
-  `param_key`  varchar(50) COLLATE utf8_general_ci NOT NULL,
-  `param_value` text 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `permission` (
-  `permission_id` int(11) NOT NULL,
-  `permission_group_id` int(11) NOT NULL,
-  `permission_value` varchar(5) COLLATE utf8_general_ci NOT NULL DEFAULT '0',
-  `permission_extension_id` int(11) DEFAULT NULL,
-  `permission_module_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `redirect` (
-  `redirect_id` int(11) NOT NULL,
-  `redirect_page_id` int(11) DEFAULT NULL,
-  `redirect_module_id` int(11) DEFAULT NULL,
-  `redirect_element_id` int(11) DEFAULT NULL,
-  `redirect_lang_id` int(11) NOT NULL,
-  `redirect_url` varchar(255) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `redirect` ADD PRIMARY KEY (`redirect_id`);
-ALTER TABLE `redirect` MODIFY `redirect_id` int(11) NOT NULL AUTO_INCREMENT;
-
-CREATE TABLE `seo` (
-  `seo_id` int(11) NOT NULL,
-  `seo_module_id` int(11) NOT NULL,
-  `seo_element_id` int(11) NOT NULL,
-  `seo_lang_id` int(11) NOT NULL,
-  `seo_url`  varchar(255) COLLATE utf8_general_ci NOT NULL,
-  `seo_title`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `seo_description`  varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
-  `seo_index` tinyint(1) NOT NULL  DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL,
-  `user_group_id` int(11) DEFAULT NULL,
-  `user_name` varchar(150) COLLATE utf8_general_ci DEFAULT NULL,
-  `user_password` varchar(60) COLLATE utf8_general_ci DEFAULT NULL,
-  `user_fname` varchar(150) COLLATE utf8_general_ci DEFAULT NULL,
-  `user_lname` varchar(150) COLLATE utf8_general_ci DEFAULT NULL,
-  `user_type` int(11) DEFAULT NULL,
-  `user_published` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `user_front` (
-  `user_front_id` int(11) NOT NULL,
-  `user_front_login` varchar(100) COLLATE utf8_general_ci NOT NULL,
-  `user_front_password` varchar(60) COLLATE utf8_general_ci NOT NULL,
-  `user_front_token` varchar(64) COLLATE utf8_general_ci NOT NULL,
-  `user_front_active` tinyint(1) NOT NULL DEFAULT '0',
-  `user_front_user_front_group_id` int(11) NOT NULL,
-  `user_front_date_created` datetime DEFAULT NULL,
-  `user_front_last_connection` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-CREATE TABLE `user_front_group` (
-  `user_front_group_id` int(11) NOT NULL,
-  `user_front_group_name` varchar(50) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-CREATE TABLE `user_front_profile` (
-  `user_front_profile_id` int(11) NOT NULL,
-  `user_front_profile_user_front_id` int(11) NOT NULL,
-  `user_front_profile_mod_entreprise_id` int(11) NOT NULL,
-  `user_front_profile_nom` varchar(100) COLLATE utf8_general_ci NOT NULL,
-  `user_front_profile_prenom` varchar(100) COLLATE utf8_general_ci NOT NULL,
-  `user_front_profile_telephone` varchar(30) COLLATE utf8_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
- 
-CREATE TABLE `user_group` (
-  `user_group_id` int(11) NOT NULL,
-  `user_group_name` varchar(150) COLLATE utf8_general_ci DEFAULT NULL,
-  `user_group_url` text,
-  `user_group_redirect` varchar(250) COLLATE utf8_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `domain` ADD PRIMARY KEY (`domain_id`);
-ALTER TABLE `extension` ADD PRIMARY KEY (`extension_id`);
-ALTER TABLE `gallery` ADD PRIMARY KEY (`gallery_id`);
-ALTER TABLE `lang` ADD PRIMARY KEY (`lang_id`);
-ALTER TABLE `log` ADD PRIMARY KEY (`log_id`);
-ALTER TABLE `media` ADD PRIMARY KEY (`media_id`);
-ALTER TABLE `menu` ADD PRIMARY KEY (`menu_id`);
-ALTER TABLE `menu_element` ADD PRIMARY KEY (`menu_element_id`);
-ALTER TABLE `menu_element_lang` ADD PRIMARY KEY (`menu_element_lang_id`);
-ALTER TABLE `newsletter_group_sub` ADD PRIMARY KEY (`newsletter_group_sub_id`);
-ALTER TABLE `newsletter_sub` ADD PRIMARY KEY (`newsletter_sub_id`);
-ALTER TABLE `module` ADD PRIMARY KEY (`module_id`);
-ALTER TABLE `module_group` ADD PRIMARY KEY (`module_group_id`);
-ALTER TABLE `module_lang` ADD PRIMARY KEY (`module_lang_id`), ADD KEY `module_lang_url` (`module_lang_url`);
-ALTER TABLE `page` ADD PRIMARY KEY (`page_id`);
-ALTER TABLE `page_lang` ADD PRIMARY KEY (`page_lang_id`);
-ALTER TABLE `param` ADD PRIMARY KEY (`param_id`);
-ALTER TABLE `permission` ADD PRIMARY KEY (`permission_id`);
-ALTER TABLE `seo` ADD PRIMARY KEY (`seo_id`), ADD KEY `seo_lang_url` (`seo_url`), ADD KEY `seo_lang_lang_id` (`seo_lang_id`);
-ALTER TABLE `user` ADD PRIMARY KEY (`user_id`);
-ALTER TABLE `user_front` ADD PRIMARY KEY (`user_front_id`);
-ALTER TABLE `user_front_group` ADD PRIMARY KEY (`user_front_group_id`);
-ALTER TABLE `user_front_profile` ADD PRIMARY KEY (`user_front_profile_id`);
-ALTER TABLE `user_group` ADD PRIMARY KEY (`user_group_id`);
-ALTER TABLE `document` ADD PRIMARY KEY (`document_id`);
-
-ALTER TABLE `domain` MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `document` MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `extension` MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `gallery` MODIFY `gallery_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `lang` MODIFY `lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `log` MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `media` MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu` MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu_element` MODIFY `menu_element_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `menu_element_lang` MODIFY `menu_element_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module` MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module_group` MODIFY `module_group_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `module_lang` MODIFY `module_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `newsletter_group_sub` MODIFY `newsletter_group_sub_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `newsletter_sub` MODIFY `newsletter_sub_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `page` MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `page_lang` MODIFY `page_lang_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `param` MODIFY `param_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `permission` MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `seo` MODIFY `seo_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user` MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front` MODIFY `user_front_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front_group` MODIFY `user_front_group_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_front_profile` MODIFY `user_front_profile_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `domain` MODIFY `domain_id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `user_group` MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT;
-  
-INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
+        return "INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
 ('user', 'Utilisateurs', 1, 1, 1, 0),
 ('group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
 ('langue', 'Langues', 0, 1, 0, 0),
@@ -449,8 +149,8 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             "type"      => $type,
             "value"     => $value,
             "default"   => $default,
-            "increment" => $empty,
-            "empty"     => $increment,
+            "empty"     => $empty,
+            "increment" => $increment
         ];
     }
 
@@ -468,6 +168,122 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "extension_add" => $this->infoColumn( "TINYINT" , "1" , 1 ),
                 "extension_update" => $this->infoColumn( "TINYINT" , "1" , 1 ),
                 "extension_delete" => $this->infoColumn( "TINYINT" , "1" , 1 )
+            ],
+            "gallery" => [
+                "gallery_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "gallery_module_id" => $this->infoColumn( "INT" , "11" ),
+                "gallery_element_id" => $this->infoColumn( "INT" , "11" ),
+                "gallery_field" => $this->infoColumn( "VARCHAR" , "30" ),
+                "gallery_name" => $this->infoColumn( "VARCHAR" , "255" ),
+                "gallery_size" => $this->infoColumn( "INT" , "11" ),
+                "gallery_type" => $this->infoColumn( "VARCHAR" , "100" ),
+                "gallery_position" => $this->infoColumn( "INT" , "11" )
+            ],
+            "lang" => [
+                "lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "lang_display" => $this->infoColumn( "VARCHAR" , "255" ),
+                "lang_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "lang_url" => $this->infoColumn( "VARCHAR" , "255" ),
+                "lang_flag" => $this->infoColumn( "VARCHAR" , "2" ),
+                "lang_locale" => $this->infoColumn( "VARCHAR" , "5" ),
+                "lang_status" => $this->infoColumn( "INT" , "11" ),
+                "lang_front" => $this->infoColumn( "TINYINT" , "1" )
+            ],
+            "log" => [
+                "log_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "log_date" => $this->infoColumn( "DATETIME" , '' ),
+                "log_user_id" => $this->infoColumn( "INT" , "11" ),
+                "log_code" => $this->infoColumn( "TINYINT" , "1" ),
+                "log_type" => $this->infoColumn( "TINYINT" , "1" ),
+                "log_value" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "media" => [
+                "media_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "media_module_id" => $this->infoColumn( "INT" , "11" ),
+                "media_name" => $this->infoColumn( "VARCHAR" , "255" ),
+                "media_size" => $this->infoColumn( "INT" , "11" ),
+                "media_type" => $this->infoColumn( "VARCHAR" , "100" ),
+            ],
+            "media_alt" => [
+                "media_alt_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "media_alt_module_id" => $this->infoColumn( "INT" , "11" ),
+                "media_alt_element_id" => $this->infoColumn( "INT" , "11" ),
+                "media_alt_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "media_alt_field_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "media_alt_value" => $this->infoColumn( "VARCHAR" , "500" ),
+            ],
+            "menu" => [
+                "menu_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "menu_name" => $this->infoColumn( "VARCHAR" , "150" )
+            ],
+            "menu_element" => [
+                "menu_element_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "menu_element_menu_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_parent_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_order" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_type" => $this->infoColumn( "ENUM" , "'module', 'page', 'link', 'section'" ),
+                "menu_element_link_blank" => $this->infoColumn( "TINYINT" , "1" ),
+                "menu_element_link_href" => $this->infoColumn( "VARCHAR" , "255" ),
+                "menu_element_module_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_value_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_max_level" => $this->infoColumn( "TINYINT" , "1" ),
+                "menu_element_has_submenu" => $this->infoColumn( "TINYINT" , "1" ),
+                "menu_element_option" => $this->infoColumn( "ENUM" , "'one,'all'" )
+            ],
+            "menu_element_lang" => [
+                "menu_element_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "menu_element_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_lang_menu_element_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_lang_label" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "module" => [
+                "module_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "module_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "module_class_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "module_active" => $this->infoColumn( "TINYINT" , "255" ),
+                "module_icon" => $this->infoColumn( "VARCHAR" , "20" ),
+                "module_module_group_id" => $this->infoColumn( "INT" , "11" ),
+                "module_order" => $this->infoColumn( "INT" , "11" ),
+                "module_default" => $this->infoColumn( "TINYINT" , "1" ),
+                "module_priority" => $this->infoColumn( "FLOAT" , "" ),
+                "module_index" => $this->infoColumn( "TINYINT" , "1" ),
+                "module_index_elmt" => $this->infoColumn( "TINYINT" , "1" )
+            ],
+            "module_group" => [
+                "module_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "page" => [
+                "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "page_lang" => [
+                "page_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "param" => [
+                "param_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "permission" => [
+                "permission_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "redirect" => [
+                "redirect_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "seo" => [
+                "seo_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "user" => [
+                "user_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
+            "user_group" => [
+                "user_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
             ]
         ];
     }
