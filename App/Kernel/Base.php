@@ -110,7 +110,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                     $array[ $value->get( 'Tables_in_' . DB_DATABASE ) ] = $value->get( 'Tables_in_' . DB_DATABASE ) ;
                 }
 
-                \DB::get_db()->exec('OPTIMIZE TABLE `' . $value->get( 'Tables_in_' . DB_DATABASE ) . '`') ;
+                // \DB::get_db()->exec('OPTIMIZE TABLE `' . $value->get( 'Tables_in_' . DB_DATABASE ) . '`') ;
             }
         }
 
