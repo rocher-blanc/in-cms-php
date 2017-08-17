@@ -312,7 +312,11 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "redirect" => [
                 "redirect_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+                "redirect_page_id" => $this->infoColumn( "INT" , "11" ),
+                "redirect_module_id" => $this->infoColumn( "INT" , "11" ),
+                "redirect_element_id" => $this->infoColumn( "INT" , "11" ),
+                "redirect_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "redirect_url" => $this->infoColumn( "VARCHAR" , "255" )
             ],
             "seo" => [
                 "seo_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
