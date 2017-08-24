@@ -44,8 +44,8 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
         $passJweb = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
 
         return "INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
-('user', 'Utilisateurs', 1, 1, 1, 0),
-('group', 'Groupes d\'utilisateurs', 1, 1, 1, 0),
+('user', 'Administrateurs', 1, 1, 1, 0),
+('group', 'Groupes d\'administrateurs', 1, 1, 1, 0),
 ('langue', 'Langues', 0, 1, 0, 0),
 ('menu', 'Menu', 1, 1, 1, 0),
 ('page', 'Pages spéciales', 1, 1, 1, 0),
@@ -99,10 +99,11 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
 
     public function checkDatabase()
     {
+        $array = [];
+
         $rst = \DB::for_table('')->raw_query("SHOW TABLES")->find_many();
         if ( $rst )
         {
-            $array = [];
             foreach( $rst as $value )
             {
                 if ( substr( $value->get( 'Tables_in_' . DB_DATABASE ) , 0 , 4 ) != "mod_" )
@@ -171,9 +172,9 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "extension_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "extension_name" => $this->infoColumn( "VARCHAR" , "100" ),
                 "extension_technical_name" => $this->infoColumn( "VARCHAR" , "50" ),
-                "extension_add" => $this->infoColumn( "TINYINT" , "1" , 1 ),
-                "extension_update" => $this->infoColumn( "TINYINT" , "1" , 1 ),
-                "extension_delete" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_perm_add" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_perm_update" => $this->infoColumn( "TINYINT" , "1" , 1 ),
+                "extension_perm_delete" => $this->infoColumn( "TINYINT" , "1" , 1 ),
                 "extension_user" => $this->infoColumn( "TINYINT" , "1" , 0 )
             ],
             "gallery" => [
@@ -198,11 +199,11 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "log" => [
                 "log_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "log_date" => $this->infoColumn( "DATETIME" , '' ),
-                "log_user_id" => $this->infoColumn( "INT" , "11" ),
+                "log_date" => $this->infoColumn( "DATETIME" ),
+                "log_user_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "log_code" => $this->infoColumn( "TINYINT" , "1" ),
                 "log_type" => $this->infoColumn( "TINYINT" , "1" ),
-                "log_value" => $this->infoColumn( "VARCHAR" , "255" )
+                "log_value" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
             ],
             "media" => [
                 "media_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -235,7 +236,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "menu_element_value_id" => $this->infoColumn( "INT" , "11" ),
                 "menu_element_max_level" => $this->infoColumn( "TINYINT" , "1" ),
                 "menu_element_has_submenu" => $this->infoColumn( "TINYINT" , "1" ),
-                "menu_element_option" => $this->infoColumn( "ENUM" , "'one,'all'" )
+                "menu_element_option" => $this->infoColumn( "ENUM" , "'one','all'" )
             ],
             "menu_element_lang" => [
                 "menu_element_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -252,7 +253,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "module_module_group_id" => $this->infoColumn( "INT" , "11" ),
                 "module_order" => $this->infoColumn( "INT" , "11" ),
                 "module_default" => $this->infoColumn( "TINYINT" , "1" ),
-                "module_priority" => $this->infoColumn( "FLOAT" , "" ),
+                "module_priority" => $this->infoColumn( "FLOAT" ),
                 "module_index" => $this->infoColumn( "TINYINT" , "1" ),
                 "module_index_elmt" => $this->infoColumn( "TINYINT" , "1" )
             ],

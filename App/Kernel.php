@@ -234,7 +234,10 @@ class Kernel
         }
         catch (\Exception $e)
         {
-            $this->viewTemplateError('database') ;
+            $this->viewTemplateError('database' , [
+                'exception' => $e,
+                'view' => ( isset( $_GET['debug'] ) ? true : false )
+            ]) ;
         }
     }
 
@@ -383,7 +386,9 @@ class Kernel
             }
         }
 
-        if ( $pass == false ) $this->viewTemplateError('chmod' , [ 'folderTab' => $folders ] ) ;
+        if ( $pass == false ) $this->viewTemplateError('chmod' , [
+            'folderTab' => $folders
+        ]) ;
     }
 
     protected function viewTemplateError( $tpl , $arg = [] )

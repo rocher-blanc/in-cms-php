@@ -11,5 +11,12 @@
                 La connection à la base de données est impossible. Merci de vérifier les identifiants dans le fichier de configuration du projet.
             </div>
         </div>
+        {% if view %}
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                {{ dump( exception ) }}
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

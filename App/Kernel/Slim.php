@@ -28,8 +28,8 @@ class Slim
 	
 	public function setParserExtensions( $ext )
 	{
-		if ( is_array( $ext ) ) $this->_slim->view()->parserExtensions = array_merge( $this->_slim->view()->parserExtensions , $ext ) ;
-	}
+        if ( is_array( $ext ) ) $this->_slim->view()->parserExtensions = array_merge( $this->_slim->view()->parserExtensions , $ext ) ;
+    }
 
     public function setTemplateFolder( $folder )
     {
@@ -92,7 +92,7 @@ class Slim
             $debugbar->addCollector(new \App\Kernel\Collector\Database());
             $this->_slim->add( $debugbar ) ;
         }
-	}
+    }
 	
 	public function addMiddleware( $middleware ) 
 	{
@@ -136,7 +136,7 @@ class Slim
         $viewArray[] = TEMPLATES_COMMON_PATH ;
 
 		$this->_slim->view()->twigTemplateDirs = $viewArray ;
-		$this->_slim->view()->parserExtensions = [
+        $this->_slim->view()->parserExtensions = [
 			new \Twig_Extensions_Extension_Text(),
 			new \Slim\Views\TwigExtension(),
 		];

@@ -278,20 +278,24 @@ class DB extends ORM
     {
         $Tbl = "CREATE TABLE IF NOT EXISTS `" . $tableName . "` (\n" ;
 
+        $ct = count( $fields );
+        $i  = 1 ;
         foreach( $fields as $columnName => $field )
         {
-            $Tbl.= "\t" . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ) . ",\n" ;
+            $Tbl.= "\t" . self::createSimpleColumn( $columnName , $field['value'] , $field['type'] , $field['default'] , $field['empty'] , $field['increment'] ) . ( $i != $ct ? "," : "" ) . "\n" ;
 
             if ( $field['increment'] == true )
             {
                 $primary = $columnName ;
             }
+            $i++;
         }
 
-        $Tbl.= "\tPRIMARY KEY (`" . $primary . "`)\n" ;
-        $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
+        $Tbl.= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;\n" ;
 
         self::get_db()->exec( $Tbl ) ;
+        self::get_db()->exec( "ALTER TABLE `" . $tableName . "` ADD PRIMARY KEY (`" . $primary . "`);" ) ;
+        self::get_db()->exec( "ALTER TABLE `" . $tableName . "` MODIFY `" . $primary . "` int(11) NOT NULL AUTO_INCREMENT;" ) ;
     }
 
     public static function createSimpleColumn( $columnName , $value , $type , $default = NULL , $empty = false , $increment = false )
@@ -306,7 +310,7 @@ class DB extends ORM
             else                     $str.= "NULL" ;
         }
 
-        if ( $increment ) $str.= ' AUTO_INCREMENT' ;
+        // if ( $increment ) $str.= ' AUTO_INCREMENT' ;
 
         return $str ;
     }
