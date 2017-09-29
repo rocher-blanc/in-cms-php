@@ -227,16 +227,16 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             "menu_element" => [
                 "menu_element_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "menu_element_menu_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_parent_id" => $this->infoColumn( "INT" , "11" ),
+                "menu_element_parent_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "menu_element_order" => $this->infoColumn( "INT" , "11" ),
                 "menu_element_type" => $this->infoColumn( "ENUM" , "'module', 'page', 'link', 'section'" ),
-                "menu_element_link_blank" => $this->infoColumn( "TINYINT" , "1" ),
-                "menu_element_link_href" => $this->infoColumn( "VARCHAR" , "255" ),
-                "menu_element_module_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_value_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_max_level" => $this->infoColumn( "TINYINT" , "1" ),
-                "menu_element_has_submenu" => $this->infoColumn( "TINYINT" , "1" ),
-                "menu_element_option" => $this->infoColumn( "ENUM" , "'one','all'" )
+                "menu_element_link_blank" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
+                "menu_element_link_href" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+                "menu_element_module_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
+                "menu_element_value_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
+                "menu_element_max_level" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
+                "menu_element_has_submenu" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
+                "menu_element_option" => $this->infoColumn( "ENUM" , "'one','all'" , NULL , true )
             ],
             "menu_element_lang" => [
                 "menu_element_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -256,6 +256,14 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "module_priority" => $this->infoColumn( "FLOAT" ),
                 "module_index" => $this->infoColumn( "TINYINT" , "1" ),
                 "module_index_elmt" => $this->infoColumn( "TINYINT" , "1" )
+            ],
+            "module_lang" => [
+                "module_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "module_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
+                "module_lang_module_id" => $this->infoColumn( "INT" , "11" ),
+                "module_lang_url" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+                "module_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+                "module_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
             ],
             "module_group" => [
                 "module_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -296,13 +304,13 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "page_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
                 "page_lang_page_id" => $this->infoColumn( "INT" , "11" ),
                 "page_lang_url" => $this->infoColumn( "VARCHAR" , "255" ),
-                "page_lang_title" => $this->infoColumn( "VARCHAR" , "255" ),
-                "page_lang_description" => $this->infoColumn( "VARCHAR" , "255" )
+                "page_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+                "page_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
             ],
             "param" => [
                 "param_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "param_key" => $this->infoColumn( "VARCHAR" , "50" ),
-                "param_value" => $this->infoColumn( "TEXT" )
+                "param_value" => $this->infoColumn( "TEXT" , NULL , NULL , true )
             ],
             "permission" => [
                 "permission_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -313,7 +321,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
             ],
             "redirect" => [
                 "redirect_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "redirect_page_id" => $this->infoColumn( "INT" , "11" ),
+                "redirect_page_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "redirect_module_id" => $this->infoColumn( "INT" , "11" ),
                 "redirect_element_id" => $this->infoColumn( "INT" , "11" ),
                 "redirect_lang_id" => $this->infoColumn( "INT" , "11" ),
