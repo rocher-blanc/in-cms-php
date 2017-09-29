@@ -75,9 +75,9 @@ class TwigFront extends \Twig_Extension
         }
     }
 
-    public function asset( $url )
+    public function asset( $url , $stock = false )
     {
-        if ( substr( $url , -3 ) == '.js' or substr( $url , -4 ) == '.css' )
+        if ( $stock == true && ( substr( $url , -3 ) == '.js' or substr( $url , -4 ) == '.css' ) )
         {
             return $this->stock($url, '/assets/' );
         }
