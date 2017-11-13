@@ -18,6 +18,7 @@
     "phpoffice/phpexcel": "1.8.1",
     "facebook/graph-sdk" : "~5.0",
     "phpmailer/phpmailer" : "5.2.13",
+    "mailjet/mailjet-apiv3-php": "1.2.0",
 
     "symfony/var-dumper": "3.0.*",
     "yusukezzz/slim-debugbar": "1.*",
