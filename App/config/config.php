@@ -69,6 +69,7 @@ defined('TECHNO') || define('TECHNO','JContent');
 
 // DEBUG
 defined('DEBUG_BAR') || define('DEBUG_BAR', false );
+defined('PRODUCTION') || define('PRODUCTION', false );
 
 // REDIS
 defined('REDIS') || define('REDIS', false );
