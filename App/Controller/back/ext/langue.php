@@ -51,7 +51,7 @@ $app->group('/langue', function () use ($app)
                             if ( $info != "A" )
                             {
                                 list( $name , $url ) = explode( '/' , $cell ) ;
-                                $arrayLang[ $info ] = $url ;
+                                $arrayLang[ $info ] = trim( $url ) ;
                             }
                         }
                     }
