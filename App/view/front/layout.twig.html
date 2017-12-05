@@ -18,10 +18,11 @@
     {% endfor %}
     {{ block('meta') }}{% block stylesheets %}{{
     css() }}{% endblock %}{{
+    analytics.google  }}{{
     block('javascript_head') }}
     {% if md.description != '' and md.logo != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"Corporation","description":"{{ md.description }}","url":"{{ siteUrl('/') }}","logo":"{{ md.logo }}"}</script>
     {% endif %}
-{% if md.name != '' and md.alt_name != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":"{{ md.name }}","url":"{{ siteUrl('/') }}","alternateName":"{{ md.alt_name }}"}</script>
+    {% if md.name != '' and md.alt_name != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":"{{ md.name }}","url":"{{ siteUrl('/') }}","alternateName":"{{ md.alt_name }}"}</script>
     {% endif %}{% if md.sameAs|length > 0 %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"Organization","url":"{{ siteUrl('/') }}","sameAs":[{% for row in md.sameAs %}{% if loop.index0 > 0 %},{% endif %}"{{ row }}"{% endfor %}]}</script>
     {% endif %}{% if md.address != '' and md.zip != '' and md.town != '' and md.phone != '' %}<script type="application/ld+json">{"@context":"http://schema.org","@type":"LocalBusiness","image":"{{ md.logo }}","telephone":"{{ md.phone }}","name":"{{ md.name }}","address":{"@context":"http://schema.org","@type":"PostalAddress","streetAddress":"{{ md.address }}","postalCode":"{{ md.zip }}","addressLocality":"{{ md.town }}"}}</script>
     {% endif %}{{
@@ -40,7 +41,6 @@
 {% block javascripts %}{{
 javascript() }}{% endblock %}{{
 tracking.footer
-}}{{
-analytics.google  }}
+}}
 </body>
 </html>{% endblock html_content %}
