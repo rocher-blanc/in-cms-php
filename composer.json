@@ -69,11 +69,6 @@
           "type": "bower-vcs",
           "url": "https://github.com/JWebCreation/cmsmedias.git",
           "name": "bower-asset/cmsmedias"
-        },
-        {
-          "type": "bower-vcs",
-          "url": "https://github.com/JWebCreation/jshopmedias.git",
-          "name": "bower-asset/jshopmedias"
         }
       ]
     }
