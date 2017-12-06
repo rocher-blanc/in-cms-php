@@ -56,5 +56,26 @@
     "psr-4": {
       "App\\" : "App"
     }
+  },
+  "config": {
+    "discard-changes": true,
+    "fxp-asset": {
+      "installer-paths": {
+        "npm-asset-library": "web/assets/vendor",
+        "bower-asset-library": "web/assets/vendor"
+      },
+      "repositories": [
+        {
+          "type": "bower-vcs",
+          "url": "https://github.com/JWebCreation/cmsmedias.git",
+          "name": "bower-asset/cmsmedias"
+        },
+        {
+          "type": "bower-vcs",
+          "url": "https://github.com/JWebCreation/jshopmedias.git",
+          "name": "bower-asset/jshopmedias"
+        }
+      ]
+    }
   }
 }
