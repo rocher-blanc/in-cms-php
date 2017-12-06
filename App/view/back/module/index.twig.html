@@ -38,5 +38,5 @@
 	<script src="{{ vendor('bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 	<script src="{{ vendor('bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min.js') }}"></script>
 	<script src="{{ vendor('select2/dist/js/select2.min.js') }}"></script>
-	{% if hasOrder and right.edit == true %}<script src="{{ vendor('TableDnD/dist/jquery.tablednd.min.js') }}"></script>{% endif %}
+	{% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
 {% endblock %}
