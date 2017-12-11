@@ -4,6 +4,10 @@ namespace App\Kernel\Utils;
 
 class Slack
 {
+    protected $color = "#ffab40" ;
+    protected $username = "JWeb-Bot" ;
+    protected $emoji = ":jweb:" ;
+
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
@@ -42,6 +46,21 @@ class Slack
         $this->channel = $var;
     }
 
+    public function setColor( $var )
+    {
+        $this->color = $var;
+    }
+
+    public function setUsername( $var )
+    {
+        $this->username = $var;
+    }
+
+    public function setEmoji( $var )
+    {
+        $this->emoji = $var;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -66,6 +85,21 @@ class Slack
         return "#" . $this->channel ;
     }
 
+    protected function getColor()
+    {
+        return $this->color ;
+    }
+
+    protected function getUsername()
+    {
+        return $this->username ;
+    }
+
+    protected function getEmoji()
+    {
+        return $this->emoji ;
+    }
+
     /* ************************************************** */
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
@@ -83,19 +117,17 @@ class Slack
     public function notification()
     {
         $msg = new \stdClass;
-        $msg->color = "#ffab40" ;
+        $msg->color = $this->getColor() ;
         $msg->author_name = "JWeb" ;
         $msg->title = $this->getTitle() ;
         $msg->title_link = $this->getTitleLink() ;
         $msg->text = $this->getText() ;
 
         $std = new \stdClass;
-        $std->username = "JWeb-Bot" ;
-        $std->icon_emoji = ":jweb:" ;
+        $std->username = $this->getUsername() ;
+        $std->icon_emoji = $this->getEmoji() ;
         $std->channel = $this->getChannel() ;
-        $std->attachments = [
-            $msg
-        ];
+        $std->attachments = [ $msg ];
 
         $data_string = json_encode( $std );
 
@@ -104,8 +136,8 @@ class Slack
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string))
         );
 
         $result = curl_exec($ch);
