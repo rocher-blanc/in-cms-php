@@ -431,10 +431,8 @@ class Controller
     /* *****************   CHECKBOX   ******************* */
     /* ************************************************** */
 
-    protected function getAssocValue( $field , $id , $level = 1 )
+    protected function getAssocValue( $field , $id , $level = 0 )
     {
-        if ( $level > 2 ) return [] ;
-
         $content = $this->getRepository()->getAssocValue( $field->getName() , $id );
         $result  = [] ;
 
@@ -455,7 +453,7 @@ class Controller
 
                 foreach( $rows as $row )
                 {
-                    $elmts[] = $this->Container()->module( $field->getObject() )->getController()->parseValue( $row , $level++ );
+                    $elmts[] = $this->Container()->module( $field->getObject() )->getController()->parseValue( $row , $level );
                 }
 
                 return $elmts;
@@ -536,7 +534,6 @@ class Controller
 
     protected function getoneAction()
     {
-        die('getoneAction');
         $result = $this->getRepository()->findOne( $this->getId() );
 
         /* Si pas de retour, 404 */
@@ -592,15 +589,13 @@ class Controller
     /* ***************   PARSE VALUE   ****************** */
     /* ************************************************** */
 
-    protected function getSelectValue( $field , $value , $level = 1 )
+    protected function getSelectValue( $field , $value , $level = 0 )
     {
-        if ( $level > 2 ) return NULL ;
-
         if ( $field->isAssociated() )
         {
             $result = $this->Container()->module( $field->getObject() )->getRepository()->findOne( $value );
 
-            if ( $result )  $this->Container()->module( $field->getObject() )->getController()->parseValue( $result , $level++ );
+            if ( $result )  return $this->Container()->module( $field->getObject() )->getController()->parseValue( $result , $level );
             else            return NULL ;
         }
         else
@@ -611,9 +606,11 @@ class Controller
         return NULL ;
     }
 
-    public function parseValue( $result , $level = 1 )
+    public function parseValue( $result , $level = 0 )
     {
-        if ( $level > 2 ) return [] ;
+        $level++;
+
+        if ( $level > 4 ) return [] ;
 
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
@@ -724,11 +721,11 @@ class Controller
                 }
                 else if ( $row->getType() == 'checkbox' )
                 {
-                    $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $level++ ) ;
+                    $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $level ) ;
                 }
                 else if ( $row->getType() == 'select' )
                 {
-                    $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) , $level++ ) ;
+                    $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) , $level ) ;
                 }
                 else if ( $row->getType() == 'date' )
                 {
@@ -761,7 +758,7 @@ class Controller
                 $arrayElement['url'].= $this->getModuleUrl() . $Seo->getUrl() ;
             }
         }
-
+        $arrayElement['lvl'] = $level ;
         return $arrayElement ;
     }
 }
