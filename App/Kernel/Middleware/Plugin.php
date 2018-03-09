@@ -23,8 +23,8 @@ class Plugin extends \Slim\Middleware
 		{
 			foreach( $this->arrayPlugin as $row )
 			{
-				if ( method_exists( $row , 'load' ) ) $row->load();
-                else                                  throw new \App\Kernel\Exception('Function "load" is not defined on this plugin "' . get_class( $row ) . '"') ;
+				if ( method_exists( $row , 'load' ) )       $row->load();
+                else                                                    throw new \App\Kernel\Exception('Function "load" is not defined on this plugin "' . get_class( $row ) . '"') ;
 			}
 		}
     }

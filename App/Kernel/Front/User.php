@@ -180,7 +180,7 @@ class User extends \App\Kernel\Common\User
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
-            die;
+            // die;
         }
         else
         {
@@ -201,7 +201,7 @@ class User extends \App\Kernel\Common\User
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( '' , true );
-            die;
+            // die;
         }
         else
         {

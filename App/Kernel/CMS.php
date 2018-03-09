@@ -80,6 +80,7 @@ class CMS
 
     public function render( $tpl , $arg = [] )
     {
-        return $this->view()->render( $tpl , $arg ) ;
+        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) )    return "" ;
+        else                                                            return $this->view()->render( $tpl , $arg ) ;
     }
 }

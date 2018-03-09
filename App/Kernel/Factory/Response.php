@@ -50,7 +50,7 @@ class Response
 	{
 		$this->getApp()->contentType('application/json');
 		echo json_encode( $array ) ;
-		die;
+		// die;
 	}
 
 	private function saveUrlDestination()
