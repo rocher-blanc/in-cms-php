@@ -4,7 +4,7 @@
                 <div class="img-source">
                     <div class="blocImage" id="source_{{ field_name }}">
                         {% if hasValue %}
-                            <img src="{{ image }}" class="img-responsive" />
+                        <img src="{{ image }}" class="img-responsive" />
                         {% endif %}
                     </div>
                     <div class="type">Source</div>
@@ -12,6 +12,12 @@
                         <i class="fa fa-plus"></i>
                         <span>Sélectionner</span>
                     </a>
+                    {% if required == false %}
+                        <a class="btn btn-danger fileinput-button deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}margin-top: 5px;" data-field="{{ field_name }}" data-fieldid="id_{{ name }}">
+                            <i class="fa fa-trash"></i>
+                            <span>Supprimer</span>
+                        </a>
+                    {% endif %}
                 </div>
                 {% if thumb|length %}
                     {% for row in thumb %}
