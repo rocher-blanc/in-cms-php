@@ -148,9 +148,9 @@ class Slim
 		$this->_slim->configureMode('production', function () {
             $this->_slim->config([
                 'log.enable' => false,
-                'cache' 	 => false,
-                'debug' 	 => true,
-                'twig.debug' => true
+                'cache' 	 => CACHE_PATH,
+                'debug' 	 => false,
+                'twig.debug' => false
             ]);
 
             $this->_slim->log->setEnabled(true);
