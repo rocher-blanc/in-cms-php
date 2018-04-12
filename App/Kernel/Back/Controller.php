@@ -1108,7 +1108,7 @@ class Controller
     {
         if ( $this->getEntity()->hasOrder() )
         {
-            $table = $this->getApp()->request()->get('table-' . $this->getEntityName() );
+            $table = $this->getApp()->request()->post('table-' . $this->getEntityName() );
             if ( $table )
             {
                 $position = 1;
