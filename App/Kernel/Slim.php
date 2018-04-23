@@ -52,7 +52,7 @@ class Slim
 	public function load()
 	{
 		$this->_slim = new \Slim\Slim([
-			'view'  => new \Slim\Views\Twig(),
+            'view'  => new \Slim\Views\Twig(),
 			'cache' => CACHE_PATH,
 			'mode'  => SLIM_MODE
 		]);
@@ -135,7 +135,7 @@ class Slim
         $viewArray[] = TEMPLATES_PATH ;
         $viewArray[] = TEMPLATES_COMMON_PATH ;
 
-		$this->_slim->view()->twigTemplateDirs = $viewArray ;
+        $this->_slim->view()->twigTemplateDirs = $viewArray ;
         $this->_slim->view()->parserExtensions = [
 			new \Twig_Extensions_Extension_Text(),
 			new \Slim\Views\TwigExtension(),

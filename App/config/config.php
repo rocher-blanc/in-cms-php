@@ -122,7 +122,7 @@ if ( ! defined('DEBUG') )
 }
 else
 {
-    define('SLIM_MODE', ( DEBUG !== true ? 'production' : 'development' ) );
+    define('SLIM_MODE', ( PRODUCTION === true ? 'production' : 'development' ) );
 }
 
 require CONFIG_PATH . '/ini.php' ;
