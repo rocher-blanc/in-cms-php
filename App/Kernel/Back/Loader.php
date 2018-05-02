@@ -57,6 +57,7 @@ class Loader
 
         $this->kernel->setParserExtension(new \App\Kernel\View\TwigAdmin);
         $this->kernel->setParserExtension(new \App\Kernel\View\TwigLang);
+        $this->kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
 
         #########################################################
         /* ****************     Plugin     ******************* */

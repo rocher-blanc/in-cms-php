@@ -101,8 +101,8 @@ class Container
     {
         if ( $this->controller === NULL )
         {
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )  $ControllerClass = "\Project\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
-            else																			 $ControllerClass = '\App\Kernel\\' . ( $admin ? "Back" : "Front" ) . '\Controller' ;
+            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )     $ControllerClass = "\Project\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            else																			             $ControllerClass = '\App\Kernel\\' . ( $admin ? "Back" : "Front" ) . '\Controller' ;
 
             $Controller = new $ControllerClass;
             $Controller->setEntityName( $this->getName() );

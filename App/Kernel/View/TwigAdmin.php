@@ -15,8 +15,29 @@ class TwigAdmin extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
+            new \Twig_SimpleFunction('route', array($this, 'route')),
             new \Twig_SimpleFunction('asset', array($this, 'asset'))
         );
+    }
+
+    public function route( $module , $type = '' , $parent = '' , $id = NULL )
+    {
+        $route = '' ;
+        if ( !empty( $type ) )
+        {
+            $route.= '/' . $type ;
+            if ( $parent != '' )
+            {
+                if ( substr( $parent , 0 , 1 ) != '/' )
+                {
+                    $route.= '/' ;
+                }
+                $route.= $parent ;
+            }
+            if ( $id !== NULL ) $route.= '/id/' . $id ;
+        }
+
+        return \App\Kernel\Factory::getInstance()->Url()->get( '/module/' . $module . $route ) ;
     }
 
     public function vendor( $url )

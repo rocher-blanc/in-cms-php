@@ -133,6 +133,10 @@ class Slim
         }
 
         $viewArray[] = TEMPLATES_PATH ;
+        if ( defined('THEME' ) )
+        {
+            $viewArray[] = TEMPLATES_COMMON_TECH_PATH ;
+        }
         $viewArray[] = TEMPLATES_COMMON_PATH ;
 
         $this->_slim->view()->twigTemplateDirs = $viewArray ;

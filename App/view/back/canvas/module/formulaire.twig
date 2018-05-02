@@ -1,0 +1,84 @@
+{% extends 'module.twig.html' %}
+
+{% block icon_page %}{{ mod.icon }}{% endblock %}
+{% block title_page %}{{ mod.title }}{% endblock %}
+
+{% if id != '' %}
+    {% set this_page = 'Edition' %}
+{% else %}
+    {% set this_page = 'Ajout' %}
+{% endif %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+    <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">
+        <ul class="tab-nav clearfix">
+            <li class="ui-tabs-active">
+                <a href="#tabs-form" id="onglet-contenu">
+                    <i class="icon-home2"></i> Contenu
+                </a>
+            </li>
+            {% if seo == true and id != '' %}
+                <li>
+                    <a href="#tabs-seo" id="onglet-seo">
+                        <i class="icon-unlink"></i> Référencement
+                    </a>
+                </li>
+            {% endif %}
+            {% if depedencies|length > 0 %}
+                {% for dependency in depedencies %}
+                    <li>
+                        <a href="#tabs-{{ dependency.slug }}" id="onglet-{{ dependency.slug }}">
+                            <i class="{{ dependency.icon }}"></i> {{ dependency.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if id != '' %}
+                <li>
+                    <a href="#tabs-history" id="onglet-history">
+                        <i class="icon-time"></i> Historique
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-container">
+            <div class="tab-content clearfix" id="tabs-form" data-onglet="onglet-contenu">
+                {{ form }}
+            </div>
+            {% if id != '' %}
+                <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
+                    {% include 'module/tab_history.twig' %}
+                </div>
+            {% endif %}
+            {% if depedencies|length > 0 %}
+                {% for dependency in depedencies %}
+                    <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
+                        {{ dependency.name }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if seo == true and id != '' %}
+            <div class="tab-content clearfix" id="tabs-seo" data-onglet="onglet-seo">
+                {% include 'module/tab_seo.twig' %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ cdn_css }}
+    {{ css }}
+    <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}"/>
+    <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/media.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ cdn_js }}
+    {{ js }}
+    <script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
+{% endblock %}

@@ -30,12 +30,6 @@ class Builder extends Model
 
     /*
      * @boolean
-     * Définit s'il y a une gestion des restrictions d'affichage dans pour les groupes d'utulisateurs
-     */
-    protected $_hasRestrictionGroup = false;
-
-    /*
-     * @boolean
      * Définit si une gestion de validation est présente
      */
     protected $_hasValidation = false;
@@ -79,16 +73,21 @@ class Builder extends Model
 
     /*
      * @boolean
-     * Définit s'il y a des paragraphes dans le module
-     */
-    protected $_hasParagraph = false;
-
-    /*
-     * @boolean
      * Définit s'il y a des dépendances
      */
     public $_hasDependency = false;
 
+    /*
+     * @array
+     * Liste toutes les dépendances du module
+     */
+    public $_dependency = [];
+
+    /*
+     * @boolean
+     * Définit si c'est une dépendance
+     */
+    public $_isDependency = false;
 
     /*
      * @array
@@ -114,6 +113,48 @@ class Builder extends Model
      */
     protected $_doc_field = [];
 
+    /*
+     * @boolean
+     * Variable qui définit si le module est un parent
+     */
+    protected $_hasModuleParent = false;
+
+    /*
+     * @string
+     * Variable contenant le nom du module parent
+     */
+    protected $_module_parent_name = '' ;
+
+    /*
+     * @string
+     * Variable contenant le nom du module enfant
+     */
+    protected $_module_child_name = '' ;
+
+    /*
+     * @string
+     * Variable contenant le nom du champ stockant l'ID de l'èlément de module parent
+     */
+    protected $_module_parent_id_name = '' ;
+
+    /*
+     * @array
+     * Variable contenant le ou les champs de références quand un autre module appel celui ci
+     */
+    protected $_field_reference ;
+
+    protected $forbidden_field = [
+        'id',
+        'parent_id',
+        'element_module_parent_id',
+        'module_id',
+        'element_id',
+        'date_created',
+        'date_last_updated',
+        'date_updated',
+        'isValid'
+    ];
+
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
@@ -128,6 +169,23 @@ class Builder extends Model
     }
 
     /* ************************************************** */
+    /* *******************   ISER   ******************** */
+    /* ************************************************** */
+
+    public function isDependency()
+    {
+        $this->_isDependency = true ;
+
+        $this->build('module_id' , true )->isModuleId();
+        $this->build('element_id' , true )->isElementId();
+    }
+
+    public function isChild()
+    {
+        return ( empty( $this->_module_parent_name ) ? false : true ) ;
+    }
+
+    /* ************************************************** */
     /* *******************   HASER   ******************** */
     /* ************************************************** */
 
@@ -139,11 +197,6 @@ class Builder extends Model
     public function hasOrder()
     {
         return $this->_hasOrder ;
-    }
-
-    public function hasRestrictionGroup()
-    {
-        return $this->_hasRestrictionGroup ;
     }
 
     public function hasValidation()
@@ -176,14 +229,14 @@ class Builder extends Model
         return $this->_hasParent ;
     }
 
-    public function hasParagraph()
-    {
-        return $this->_hasParagraph ;
-    }
-
     public function hasDependency()
     {
         return $this->_hasDependency ;
+    }
+
+    public function hasModuleParent()
+    {
+        return $this->_hasModuleParent ;
     }
 
     /* ************************************************** */
@@ -198,11 +251,6 @@ class Builder extends Model
     protected function setOrder()
     {
         $this->_hasOrder = true ;
-    }
-
-    protected function setRestrictionGroup()
-    {
-        $this->_hasRestrictionGroup = true ;
     }
 
     protected function setUrl()
@@ -234,11 +282,6 @@ class Builder extends Model
     protected function setParent()
     {
         $this->_hasParent = true ;
-    }
-
-    protected function setDependency()
-    {
-        $this->_hasDependency = true ;
     }
 
     protected function setLast( $name )
@@ -283,9 +326,15 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function setDependencyName( $name )
+    protected function setModuleIdName( $name )
     {
-        $this->_dependency_name = $name ;
+        $this->_module_id_name = $name ;
+        return $this ;
+    }
+
+    protected function setElementIdName( $name )
+    {
+        $this->_element_id_name = $name ;
         return $this ;
     }
 
@@ -319,9 +368,74 @@ class Builder extends Model
         return $this ;
     }
 
+    /**
+     * @param string $module_parent_name
+     */
+    public function setModuleParent($module_parent_name)
+    {
+        $this->addAction("parent") ;
+        $this->_module_parent_name = $module_parent_name;
+        $this->build('element_module_parent_id' , true )->isModuleParentId();
+    }
+
+    /**
+     * @param string $module_child_name
+     */
+    public function setModuleChild($module_child_name)
+    {
+        $this->_hasModuleParent = true;
+        $this->_module_child_name = $module_child_name;
+    }
+
+    protected function setFieldReference( $var )
+    {
+        if ( ! is_array( $var ) )
+        {
+            $var = [ $var ] ;
+        }
+        $this->_field_reference = $var ;
+    }
+
+    protected function setModuleParentIdName( $name )
+    {
+        $this->_module_parent_id_name = $name;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    /*
+     *
+     */
+    public function getModuleParentIdName()
+    {
+        return $this->_module_parent_id_name ;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFieldReference()
+    {
+        return $this->_field_reference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleParentName()
+    {
+        return $this->_module_parent_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleChildName()
+    {
+        return $this->_module_child_name;
+    }
 
     protected function getLast()
     {
@@ -373,14 +487,24 @@ class Builder extends Model
         return $this->_parent_name ;
     }
 
+    public function getModuleIdName()
+    {
+        return $this->_module_id_name ;
+    }
+
+    public function getElementIdName()
+    {
+        return $this->_element_id_name ;
+    }
+
     public function getParentTargetName()
     {
         return $this->_parent_target_name ;
     }
 
-    public function getDependencyName()
+    public function getDependency()
     {
-        return $this->_dependency_name ;
+        return $this->_dependency ;
     }
 
     public function getFolder()
@@ -392,13 +516,26 @@ class Builder extends Model
     /* ******************   CHAMPS   ******************** */
     /* ************************************************** */
 
-    public function build( $name )
+    public function addDependency( $name )
+    {
+        $this->_hasDependency = true ;
+        $this->_dependency[] = $name ;
+    }
+
+    public function build( $name , $force = false )
     {
         $this->setLast( $name ) ;
 
         if ( ! array_key_exists( $name , $this->getField() ) )
         {
-            $this->initField( $name ) ;
+            if ( $force == false && in_array( $name , $this->forbidden_field ) )
+            {
+                throw new \App\Kernel\Exception("Prohibit naming this field \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
+            }
+            else
+            {
+                $this->initField( $name ) ;
+            }
         }
 
         return $this ;
@@ -428,18 +565,10 @@ class Builder extends Model
     /* ID */
     protected function initDefaultField()
     {
-        $this->build('id')->isId();
-        $this->build('date_created')->isHiddenDate();
-        $this->build('date_last_updated')->isHiddenDate();
-        $this->build('date_updated')->isHiddenDate();
-    }
-
-    /* PARAGRAPH */
-    public function enableParagraph()
-    {
-        $this->_hasParagraph = true ;
-        $this->addAction("content") ;
-        $this->addAction("paragraphlist") ;
+        $this->build('id' , true )->isId();
+        $this->build('date_created' , true )->isHiddenDate();
+        $this->build('date_last_updated' , true )->isHiddenDate();
+        $this->build('date_updated' , true )->isHiddenDate();
     }
 
     /* ORDER */
@@ -448,20 +577,13 @@ class Builder extends Model
         $this->build('order')->isOrder();
     }
 
-    /* DEPENDANCE */
-    protected function enableDependency( $module )
-    {
-        $this->setDependency();
-        $this->setDependencyName( $module );
-    }
-
     /* VALIDATION */
     protected function enableValidation()
     {
-        $this->build('isValid')
+        $this->build('isValid' , true )
             ->isBoolean()
             ->defaut(1)
-            ->name('Visible ?');
+            ->name('En ligne');
 
         $this->addAction("enable") ;
         $this->addAction("disable") ;
@@ -472,7 +594,7 @@ class Builder extends Model
     /* PARENTS */
     protected function enableParent( $target )
     {
-        $this->build('parent_id')
+        $this->build('parent_id' , true )
             ->isSelect()
             ->name('Parent');
 
@@ -490,7 +612,39 @@ class Builder extends Model
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "SQL_AUTO_INCREMENT" , true ) ;
         $this->field()->setData( "noUpdate" , true ) ;
+        $this->field()->setData( "twig" , 'id' ) ;
         $this->setIdName( $this->field()->getName() ) ;
+
+        return $this ;
+    }
+
+    protected function isModuleParentId()
+    {
+        $this->field()->setData( "SQL_VALUE" , 11 ) ;
+        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "moduleParent" , true ) ;
+        $this->setModuleParentIdName( $this->field()->getName() ) ;
+
+        return $this ;
+    }
+
+    protected function isModuleId()
+    {
+        $this->field()->setData( "SQL_VALUE" , 11 ) ;
+        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "noUpdate" , true ) ;
+        $this->setModuleIdName( $this->field()->getName() ) ;
+
+        return $this ;
+    }
+
+    protected function isElementId()
+    {
+        $this->field()->setData( "SQL_VALUE" , 11 ) ;
+        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "noUpdate" , true ) ;
+        $this->setElementIdName( $this->field()->getName() ) ;
 
         return $this ;
     }
@@ -502,13 +656,6 @@ class Builder extends Model
         $this->setUrl() ;
         $this->addAction("seo") ;
 
-        return $this ;
-    }
-
-    protected function isBuilder( $width = '' )
-    {
-        $this->field()->setData( "type" , "builder" ) ;
-        $this->field()->setData( "widthMax" , $width ) ;
         return $this ;
     }
 
@@ -720,6 +867,13 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function full()
+    {
+        $this->field()->setData( "full" , true ) ;
+
+        return $this ;
+    }
+
     /* ASSOCIATION DE CHAMPS */
     protected function OneToOne( $object , $var )
     {
@@ -771,6 +925,12 @@ class Builder extends Model
     protected function comment( $t )
     {
         $this->field()->setData( "comment" , $t ) ;
+        return $this ;
+    }
+
+    protected function twig( $t )
+    {
+        $this->field()->setData( "twig" , $t ) ;
         return $this ;
     }
 

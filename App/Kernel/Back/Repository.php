@@ -6,10 +6,12 @@ class Repository extends \App\Kernel\Common\Repository
 {
     public function checkIfPatchTable( $id )
     {
-        if ( \App\Kernel\Container::getInstance()->param()->get('key_module_' . $id ) != md5_file( ENTITY_PATH . "/" . $this->getName() . ".php" ) )
+        $file = ENTITY_PATH . "/" . $this->getName() . ".php";
+
+        if ( \App\Kernel\Container::getInstance()->param()->get('key_module_' . $id ) != md5_file( $file ) )
         {
             \DB::patchModuleTable( $this->getName() ) ;
-            \App\Kernel\Container::getInstance()->param()->set('key_module_' . $id , md5_file( ENTITY_PATH . "/" . $this->getName() . ".php" ) );
+            \App\Kernel\Container::getInstance()->param()->set('key_module_' . $id , md5_file( $file ) );
         }
     }
 
@@ -61,7 +63,7 @@ class Repository extends \App\Kernel\Common\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function getAllTableIndex( $order , $by , $fields )
+    public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id = NULL )
     {
         $content = \DB::for_module( $this->getName() );
 
@@ -104,6 +106,11 @@ class Repository extends \App\Kernel\Common\Repository
                     $content = $content->where_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_start'] );
                 }
             }
+        }
+
+        if ( $module_element_parent_id !== NULL && $this->getEntity()->isChild() )
+        {
+            $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $module_element_parent_id );
         }
 
         if ( $order === NULL && $by === NULL or ( $by != 'desc' && $by != 'asc' ) )
@@ -158,5 +165,39 @@ class Repository extends \App\Kernel\Common\Repository
             ->where_raw("(seo.seo_title IS NULL OR seo.seo_description IS NULL)",[])
             ->group_by('seo.seo_element_id')
             ->find_many();
+    }
+
+    public function getParentContent( $module_element_parent_id = NULL )
+    {
+        $all = \DB::for_module( $this->getName() );
+        $all->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+
+        if ( $this->getEntity()->hasMultiLang() )
+        {
+            $idName			= \DB::getIdName( $this->getName() ) ;
+            $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
+            $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
+
+            $all = $all->left_outer_join( $this->getTblLang() , [ $this->getTbl() . '.' . $idName , '=', $this->getTblLang() . '.' . $idNameInLang ] )
+                ->where_equal( $this->getTblLang() . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getActive()->id );
+        }
+
+        if ( $module_element_parent_id !== NULL && $this->getEntity()->isChild() )
+        {
+            $all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $module_element_parent_id );
+        }
+
+        if ( $this->getEntity()->getFieldReference() )
+        {
+            foreach( $this->getEntity()->getFieldReference() as $ref )
+            {
+                $all = $all->select( $this->getEntity()->get( $ref )->fieldSql() );
+            }
+        }
+
+        if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
+        else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+
+        return $all->find_many();
     }
 }

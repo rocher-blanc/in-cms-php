@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Back;
 
-class Controller
+class Controller extends \App\Kernel\Common\Controller
 {
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
@@ -16,6 +16,7 @@ class Controller
     protected $_action = NULL ;
 
     protected $_id = NULL ;
+    protected $_id_parent = [] ;
     protected $_token = NULL ;
     protected $_lang = NULL ;
 
@@ -23,6 +24,8 @@ class Controller
 
     protected $_msg = [] ;
     protected $_options = [] ;
+
+    protected $_module = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -40,6 +43,11 @@ class Controller
     public function setRender( $key , $value )
     {
         $this->_renderArray[ $key ] = $value ;
+    }
+
+    public function setIdParent( $var )
+    {
+        $this->_id_parent = $var ;
     }
 
     public function setId( $var )
@@ -81,6 +89,14 @@ class Controller
         $this->_options[ $key ] = $var ;
     }
 
+    protected function setModule( $row )
+    {
+        $this->_module = new \stdClass;
+        $this->_module->icon = $row->module_icon ;
+        $this->_module->name = $row->module_name  ;
+        $this->_module->default = $row->module_default  ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -96,9 +112,24 @@ class Controller
         return $this->_renderArray ;
     }
 
+    protected function getModule()
+    {
+        return $this->_module ;
+    }
+
     protected function getId()
     {
         return $this->_id ;
+    }
+
+    protected function getIdParent()
+    {
+        return $this->_id_parent ;
+    }
+
+    protected function getUriParent()
+    {
+        return implode( '/' , $this->_id_parent ) ;
     }
 
     protected function getToken()
@@ -139,6 +170,11 @@ class Controller
     protected function Lang()
     {
         return \App\Kernel\Lang::getInstance() ;
+    }
+
+    protected function Log()
+    {
+        return Log::getInstance() ;
     }
 
     protected function Message()
@@ -182,7 +218,6 @@ class Controller
 
     protected function initRender()
     {
-        $this->_renderArray = [] ;
         $this->_renderArray = [] ;
     }
 
@@ -240,11 +275,14 @@ class Controller
 
     public function loadEntity()
     {
-        $ct = \DB::for_table('module')
+        $module = \DB::for_table('module')
             ->where(array('module_class_name' => $this->getEntityName() , 'module_active' => 1))
-            ->count();
+            ->find_one();
 
-        if ( $ct == 0 ) return false ;
+        if ( ! $module ) return false ;
+
+        if ( $module->module_default == 1 ) $this->setMain();
+        $this->setModule( $module ) ;
 
         if ( ! file_exists( ENTITY_PATH . '/' . $this->getEntityName() . '.php' ) )
         {
@@ -376,6 +414,10 @@ class Controller
                     $opt = $this->getValueAssociated( $row , "array" , true );
                     $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
                 }
+                else if ( $row->isParentModule() )
+                {
+                    $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
+                }
             }
         }
 
@@ -399,12 +441,18 @@ class Controller
         }
 
         $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
+
+        $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
         $this->setRender( 'cdn_js' , $form->getCdnJS() ) ;
 
         $this->setRender( 'css' , $form->getLibCSS() ) ;
         $this->setRender( 'js' , $form->getLibJS() ) ;
 
-        $this->setRender( 'field' , $arrayField ) ;
+        $this->setRender( 'form' , $this->renderForm([
+            'field' => $arrayField,
+            'route_type' => ( $value == false ? 'add' : 'edit' ),
+            'id' => $this->getId()
+        ])) ;
     }
 
     // Systeme de many / one TO many / one
@@ -437,49 +485,9 @@ class Controller
 
     public function getElementForAssociation( $name , $returnType = NULL )
     {
-        /*
-        $idName     = \DB::getIdName( $this->getEntityName() ) ;
-        $table 	    = \DB::getTableName( $this->getEntityName() ) ;
-
-        $tableLang  = \DB::getTableNameLang( $this->getEntityName() ) ;
-
-
-        if ( ! $target->hasLang() )
-        {
-            $content = \DB::for_module( $this->getEntityName() )
-                ->select( $idName , 'id' )
-                ->select( $target->getColumn() , $alias );
-        }
-        else
-        {
-            $idNameInLang	= \DB::getIdNameInLang( $this->getEntityName() ) ;
-            $langIdLangName	= \DB::getLangIdLangName( $this->getEntityName() ) ;
-
-            $content = \DB::for_module( $this->getEntityName() )
-                ->select( $tableLang . "." . $target->getColumn() , $alias )
-                ->select( $table . "." . $idName , 'id' )
-                ->left_outer_join( $tableLang ,[ $table . '.' . $idName , '=', $tableLang . '.' . $idNameInLang ])
-                ->where_equal( $tableLang . '.' . $langIdLangName , $this->Lang()->getDefault()->id );
-        }
-
-        if ( $this->getEntity()->hasParent() )       $content = $content->select( $table . "." . $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getEntity()->getParentName() );
-
-        if ( $this->getEntity()->hasOrder() )        $content = $content->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() )->order_by_asc( $table . "." . $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
-        else                                         $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
-
-        // if ( $this->getEntity()->hasValidation() )   $content = $content->where_equal( $table . "." . $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , 1 );
-
-        $content = $content->find_many();
-        */
-
         $alias      = 'titre' ;
         $target     = $this->getEntity()->get( $name );
         $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
-
-        /*if ( $this->getEntity()->hasParent() )
-        {
-            $returnType = NULL;
-        }*/
 
         switch( $returnType )
         {
@@ -715,7 +723,7 @@ class Controller
             }
 
             $content->delete();
-            \App\Kernel\Back\Log::getInstance()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
+            $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
 
             $this->Factory()->Response()->returnJSON("delete_success", true ) ;
         }
@@ -790,7 +798,7 @@ class Controller
                 }
             }
 
-            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray ) ;
+            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
 
             if ( $content )
             {
@@ -845,6 +853,25 @@ class Controller
                     if ( $this->getEntity()->hasParent() ) 		$tdArray[ $i ][ $this->getEntity()->getParentName() ] = $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasOrder() ) 		$tdArray[ $i ]['order'] = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasValidation() ) 	$tdArray[ $i ]['validation'] = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasUrl() )
+                    {
+                        if ( ! $this->isMain() )
+                        {
+                            $this->loadModuleUrl();
+                        }
+
+                        $Seo = new \App\Kernel\Front\Seo;
+                        $Seo->setElementId( $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+                        $Seo->setModuleId( $this->getEntityId() ) ;
+                        $tdArray[ $i ]['url'] = \App\Kernel\Http::getInstance()->getUrl() . '/' ;
+
+                        if ( $this->Lang()->count() > 1 )
+                        {
+                            $tdArray[ $i ]['url'].= \App\Kernel\Lang::getInstance()->getActive()->url . "/" ;
+                        }
+
+                        $tdArray[ $i ]['url'].= $this->getModuleUrl() . $Seo->getUrl() ;
+                    }
 
                     $i++;
                 }
@@ -859,6 +886,7 @@ class Controller
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
+        $this->setRender( 'hasURL' , $this->getEntity()->hasURL() ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
         $this->setRender( 'order' , $order ) ;
@@ -893,6 +921,7 @@ class Controller
     {
         $rst = \DB::for_table('module')
             ->select('module_name')
+            ->select('module_icon')
             ->select('module_id')
             ->where(array('module_class_name' => $this->getEntityName() , 'module_active' => 1))
             ->find_one();
@@ -902,7 +931,8 @@ class Controller
             $this->getApp()->view()->appendData(array(
                 'mod' => array(
                     'name'  => $this->getEntityName(),
-                    'title' => $rst->module_name
+                    'title' => $rst->module_name,
+                    'icon' => $rst->module_icon
                 ),
                 'action' => $this->getActionName()
             ));
@@ -922,6 +952,12 @@ class Controller
     /* Fonction appelée par "add" & "update" */
     protected function pushData( $add = true )
     {
+        $result = [
+            'msg' => '',
+            'url' => '',
+            'result' => false
+        ];
+
         if ( $this->checkForm() )
         {
             if ( !empty( $this->getEntity()->getField() ) )
@@ -1063,15 +1099,51 @@ class Controller
                 $contentLang[ $lang->url ]->save() ;
             }
 
-            if ( $this->getApp()->request->post('submit') == "stay" ) 	$url = 'module/' . $this->getEntityName() . '/edit/' . $this->getId() ;
-            else 														$url = 'module/' . $this->getEntityName() ;
+            if ( $this->getApp()->request->post('submit') == "stay" ) 	$result['url'] = 'module/' . $this->getEntityName() . '/edit/' . $this->getId() ;
+            else 														    $result['url'] = 'module/' . $this->getEntityName() ;
 
-            if ( $add ) $msg = $this->m("add_success") ;
-            else		$msg = $this->m("edit_success") ;
+            $result['url'] = $this->Factory()->Url()->get( $result['url'] );
 
-            \App\Kernel\Back\Log::getInstance()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
-            $this->Factory()->Response()->flashAndRedirect( $msg , true , $url ) ;
+            if ( $add ) $result['msg'] = $this->m("add_success") ;
+            else		$result['msg'] = $this->m("edit_success") ;
+
+            $result['result'] = true;
+
+            $this->Log()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
         }
+        else
+        {
+            $tab   = [];
+            $first = true;
+            if ( !empty( $this->getEntity()->getField() ) )
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->getError() != '' )
+                    {
+                        $tab[] = [
+                            'field' => $row->getName(),
+                            'error' => $row->getError()
+                        ];
+
+                        if ( $first )
+                        {
+                            $result['msg'] = $row->getError() ;
+                            $first = false ;
+                        }
+                    }
+                }
+            }
+
+            $result['fields'] = $tab ;
+        }
+
+        return $result ;
+    }
+
+    protected function field( $name )
+    {
+        return $this->getEntity()->build( $name )->field() ;
     }
 
     // Check si tous les champs sont corrects
@@ -1084,7 +1156,7 @@ class Controller
         {
             foreach( $this->getEntity()->getField() as $row )
             {
-                $rst = $this->getEntity()->build( $row->getName() )->field()->checkEmpty() ;
+                $rst = $this->field( $row->getName() )->checkEmpty() ;
                 if ( $rst == false ) $this->_return = false ;
             }
 
@@ -1092,12 +1164,33 @@ class Controller
             {
                 foreach( $this->getEntity()->getField() as $row )
                 {
-                    $this->getEntity()->build( $row->getName() )->field()->getFormatValue() ;
+                    $this->field( $row->getName() )->getFormatValue() ;
                 }
             }
         }
 
         return $this->_return ;
+    }
+
+    /* ************************************************** */
+    /* ******************  DEPENDENCY  ****************** */
+    /* ************************************************** */
+
+    protected function loadDependencies()
+    {
+        if ( $this->getEntity()->hasDependency() )
+        {
+            foreach( $this->getEntity()->getDependency() as $dependency )
+            {
+                $depedencies[] = [
+                    'name' => $dependency,
+                    'slug' => strtolower( $dependency ),
+                    'icon' => 'icon-line-layers',
+                ];
+            }
+        }
+
+        $this->setRender( 'depedencies' , $depedencies ) ;
     }
 
     /* ************************************************** */
@@ -1121,7 +1214,7 @@ class Controller
                 }
             }
 
-            \App\Kernel\Back\Log::getInstance()->info( 105 , $this->getEntityName() ) ;
+            $this->Log()->info( 105 , $this->getEntityName() , $this->getEntityId() ) ;
 
             return true;
         }
@@ -1147,7 +1240,7 @@ class Controller
         $content->set( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() , $value ) ;
         $content->save();
 
-        \App\Kernel\Back\Log::getInstance()->info( ( $value == 0 ? 104 : 103 ) , "#" . $this->getId() . " - " . $this->getEntityName() ) ;
+        $this->Log()->info( ( $value == 0 ? 104 : 103 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
 
         return true ;
     }
@@ -1169,19 +1262,185 @@ class Controller
     }
 
     /* ************************************************** */
+    /* ***************   MODULE PARENT   **************** */
+    /* ************************************************** */
+
+    public function getParentContent()
+    {
+        if ( empty( $this->getEntity()->getFieldReference() ) ) return '' ;
+
+        $content = $this->getRepository()->getParentContent( ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) );
+        $tab     = [];
+        if ( $content )
+        {
+            foreach( $content as $row )
+            {
+                $std = new \stdClass;
+                $std->id   = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
+                $std->name = '' ;
+
+                $i = 0;
+                foreach( $this->getEntity()->getFieldReference() as $ref )
+                {
+                    $std->name.= ( $i > 0 ? " " : "" ) . $row->get( $this->getEntity()->get( $ref )->getColumn() );
+                    $i++;
+                }
+
+                $tab[] = $std ;
+            }
+        }
+
+        $this->setRender( 'content' , $tab ) ;
+        $this->setRender( 'module' , $this->getModule() ) ;
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+
+        $table = $this->fetch( 'index.parent.twig' );
+        return $table;
+    }
+
+    protected function getParentArray()
+    {
+        if ( ! $this->getEntity()->isChild() ) return [] ;
+
+        $tab = [] ;
+        $remontada = true ;
+        $parent = $this->getEntity()->getModuleParentName() ;
+        $tab[] = $parent ;
+        while( $remontada )
+        {
+            $Entity = \App\Kernel\Container::getInstance()->module( $parent )->getEntity();
+            if ( $Entity->isChild() )
+            {
+                $parent = $Entity->getModuleParentName();
+                $tab[] = $parent ;
+            }
+            else
+            {
+                $remontada = false ;
+            }
+        }
+
+        if ( $tab )
+        {
+            $idParent = $this->getIdParent() ;
+            $newTab = [];
+            $idParentSave = [] ;
+            $ct = count( $tab ) - 1;
+            $j = 0;
+            $current = false ;
+            $first = false ;
+            for( $i = $ct; $i >= 0; $i-- )
+            {
+                $module = \DB::for_table('module')
+                    ->select('module_icon')
+                    ->select('module_name')
+                    ->where(array('module_class_name' => $tab[ $i ] , 'module_active' => 1))
+                    ->find_one();
+
+                $newTab[ $j ] = [
+                    'name' => $tab[ $i ],
+                    'id' => ( array_key_exists( $j , $idParent ) ? $idParent[ $j ] : NULL ),
+                    'current' => false,
+                    'url' => "",
+                    'human_name' => $module->module_name,
+                    'icon' => $module->module_icon
+                ];
+
+                if ( $first == true )
+                {
+                    $idParentSave[ $j - 1 ] = $idParent[ $j - 1 ] ;
+                    $newTab[ $j ]['url'] = implode( '/' , $idParentSave ) ;
+                }
+
+                if ( ! array_key_exists( $j , $idParent ) && $current == false )
+                {
+                    $newTab[ $j ]['current'] = true ;
+                    $newTab[ $j ]['url'] = $this->getUriParent() ;
+
+                    $current = true ;
+                    $currentModule = $tab[ $i ] ;
+                }
+
+                if ( $first == false && ( count( $tab ) == count( $this->getIdParent() ) or $newTab[ $j ]['current'] == true ) )
+                {
+                    $first = true ;
+                }
+
+                $j++;
+            }
+        }
+
+        return [
+            'last' => $parent,
+            'current' => $currentModule,
+            'count' => count( $newTab ),
+            'array' => $newTab
+        ];
+    }
+
+    protected function viewParent()
+    {
+        $arrayParent = $this->getParentArray();
+
+        $Controller = \App\Kernel\Container::getInstance()->module( $arrayParent['current'] )->getController( true );
+        $Controller->setIdParent( $this->getIdParent() ) ;
+        $parentContent = $Controller->getParentContent();
+
+        $this->setRender( 'parent' , $parentContent ) ;
+        $this->setRender( 'parentLine' , $arrayParent ) ;
+        $this->render('parent.twig');
+    }
+
+    /* ************************************************** */
     /* ******************   ACTIONS   ******************* */
     /* ************************************************** */
 
     protected function indexAction()
     {
-        $this->generateTable() ;
+        $counter = 0 ;
+        $arrayParent = $this->getParentArray();
 
-        if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
-        else                                    $template = 'table' ;
+        if ( $this->getEntity()->isChild() )
+        {
+            $counter = $arrayParent['count'] ;
+        }
 
-        $table = $this->fetch( $template . '.twig.html' );
-        $this->setRender( 'table' , $table ) ;
-        $this->render('index.twig.html');
+        if ( $this->getEntity()->isChild() && $counter > count( $this->getIdParent() ) )
+        {
+            if ( count( $this->getIdParent() ) < $arrayParent['count'] )
+            {
+                $this->viewParent() ;
+            }
+            else
+            {
+                $this->generateTable() ;
+                if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
+                else                                    $template = 'table' ;
+
+                $this->setRender( 'parentLine' , $arrayParent ) ;
+                $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+
+                $table = $this->fetch( $template . '.twig' );
+
+                $this->setRender( 'table' , $table ) ;
+                $this->render('index.twig');
+            }
+        }
+        else
+        {
+            $this->generateTable() ;
+            if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
+            else                                    $template = 'table' ;
+
+            $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+            $this->setRender( 'parentLine' , $arrayParent ) ;
+            $this->setRender( 'isChild' , $this->getEntity()->isChild() ) ;
+
+            $table = $this->fetch( $template . '.twig' );
+
+            $this->setRender( 'table' , $table ) ;
+            $this->render('index.twig');
+        }
     }
 
     protected function tableAction()
@@ -1195,64 +1454,43 @@ class Controller
 
     protected function addAction()
     {
-        if ( $this->getApp()->request->isPost() ) $this->pushData() ;
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $rst = $this->pushData() ;
+            return $this->Factory()->Response()->printJSON( $rst ) ;
+        }
 
+        $this->loadDependencies() ;
         $this->generateForm() ;
-        $this->render('add.twig.html') ;
+
+        $arrayParent = $this->getParentArray();
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+        $this->setRender( 'parentLine' , $arrayParent ) ;
+
+        $this->render('formulaire.twig') ;
     }
 
     protected function editAction()
     {
         if ( $this->getApp()->request->isPost() ) $this->pushData( false ) ;
 
+        $depedencies = [];
+
         $this->setRender( 'id' , $this->getId() ) ;
 
         if ( $this->getEntity()->hasUrl() )
         {
             $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-            $this->setRender( 'tabs' , true ) ;
             $this->setRender( 'seo' , $this->getEntity()->hasUrl() ) ;
         }
 
+        $this->loadDependencies() ;
         $this->generateForm( true ) ;
-        $this->render('edit.twig.html') ;
-    }
 
-    protected function contentAction()
-    {
-        if ( $this->getApp()->request->isPost() )
-        {
-            $Content = new \App\Kernel\Back\Content;
-            $Content->setId( $this->getId() ) ;
-            $Content->setLangId( $this->getLang() ) ;
-            $Content->setModuleId( $this->getEntityId() ) ;
-            $Content->save() ;
-
-            if ( $this->getApp()->request->post('submit') == "stay" ) 	$url = 'module/' . $this->getEntityName() . '/content/' . $this->getId() . '/' . $this->getToken() . '/' . $this->getLang() ;
-            else 														$url = 'module/' . $this->getEntityName() ;
-
-            $this->Factory()->Response()->flashAndRedirect( $this->m("edit_success") , true , $url ) ;
-        }
-
-        $this->setRender( 'id' , $this->getId() ) ;
-        $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-        $this->setRender( 'lang_id' , $this->getLang() ) ;
-        $this->setRender( 'tabs' , true ) ;
-        $this->setRender( 'content' , true ) ;
-        $this->setRender( 'seo' , $this->getEntity()->hasUrl() ) ;
-
-        $this->render('content.twig.html') ;
-    }
-
-    protected function paragraphlistAction()
-    {
-        $Content = new \App\Kernel\Back\Content;
-        $Content->setId( $this->getId() ) ;
-        $Content->setLangId( $this->getLang() ) ;
-        $Content->setModuleId( $this->getEntityId() ) ;
-
-        $array = $Content->generic_paragraph_list() ;
-        $this->Factory()->Response()->printJSON( $array ) ;
+        $arrayParent = $this->getParentArray();
+        $this->setRender( 'parentLine' , $arrayParent ) ;
+        $this->setRender( 'history' , $this->Log()->getElementHistory( $this->getEntityId() , $this->getId() ) ) ;
+        $this->render('formulaire.twig') ;
     }
 
     protected function orderAction()
@@ -1268,7 +1506,7 @@ class Controller
         $this->checkToken() ;
 
         if ( $this->updatePublication(1) )	$this->Factory()->Response()->returnJSON( $this->m("enable_success") , true ) ;
-        else								$this->Factory()->Response()->returnJSON( $this->m("enable_failed") ) ;
+        else								        $this->Factory()->Response()->returnJSON( $this->m("enable_failed") ) ;
     }
 
     protected function disableAction()
@@ -1276,7 +1514,7 @@ class Controller
         $this->checkToken() ;
 
         if ( $this->updatePublication(0) )	$this->Factory()->Response()->returnJSON( $this->m("disable_success") , true ) ;
-        else								$this->Factory()->Response()->returnJSON( $this->m("disable_failed") ) ;
+        else								        $this->Factory()->Response()->returnJSON( $this->m("disable_failed") ) ;
     }
 
     protected function deleteAction()
@@ -1298,18 +1536,9 @@ class Controller
         if ( $this->getApp()->request->isPost() )
         {
             $seo->update() ;
-
-            /*
-
-            if ( $this->getApp()->request->post('submit') == "stay" ) 	$url = 'module/' . $this->getEntityName() . '/seo/' . $this->getId() ;
-            else 														$url = 'module/' . $this->getEntityName() ;
-
-            $this->Factory()->Response()->flashAndRedirect( $this->m("edit_success") , true , $url ) ;
-*/
         }
 
         $this->setRender( 'content' , $seo->getAll() ) ;
-        $this->setRender( 'hasParagraph' , $this->getEntity()->hasParagraph() ) ;
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
         $this->setRender( 'index' , $seo->getIndex() ) ;

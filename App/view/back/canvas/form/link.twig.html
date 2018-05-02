@@ -1,0 +1,11 @@
+<div class="input-group">
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-link-form btn-default dropdown-toggle" id="menu_{{ name }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">http:// <span class="caret"></span></button>
+        <ul class="dropdown-menu link">
+            <li><a data-hidden="id_{{ name }}_type" data-menu="menu_{{ name }}" href="javascript:;">https://</a></li>
+            <li><a data-hidden="id_{{ name }}_type" data-menu="menu_{{ name }}" href="javascript:;">http://</a></li>
+        </ul>
+    </div><!-- /btn-group -->
+    <input type="hidden" value="" name="{{ name }}_type" id="id_{{ name }}_type" />
+    <input type="text" value="{{ value }}" placeholder="www.domaine.fr" class="form-control input-link" data-menu="menu_{{ name }}" data-hidden="id_{{ name }}_type" name="{{ name }}" id="id_{{ name }}" maxlength="{{ maxlength }}"{{ required ? ' required="1"' : '' }} />
+</div><!-- /input-group -->

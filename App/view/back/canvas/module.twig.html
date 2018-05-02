@@ -1,0 +1,42 @@
+{% extends 'admin.twig.html' %}
+
+{% block title_page %}{{ mod.title }}{% endblock %}
+
+{% block ariane %}
+	<li>
+		<a href="{{ menu == 'module' ? siteUrl('/module/' ~ mod.name ) : 'javascript:;' }}">
+            {{ block('title_page') }}
+		</a>
+	</li>
+	<li>
+		<span>
+			{{ this_page }}
+		</span>
+	</li>
+{% endblock %}		
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-2">
+            {% for group in menuTree %}
+                {% if group.children|length > 1 %}
+                    {% if group.open == true %}
+                        <ul class="sidenav">
+                            <li class="parent"><a href="#"><i class="{{ group.icon }}"></i>{{ group.name }}</a></li>
+                            {% for module in group.children %}
+                                <li{% if module.selected == true %} class="ui-tabs-active ui-state-active"{% endif %}>
+                                    <a href="{{ siteUrl('/module/' ~ module.class ) }}">
+                                        <i class="{{ module.icon }}"></i>{{ module.name }}<i class="icon-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-md-10 clearfix">
+            {{ block('module') }}
+        </div>
+    </div>
+{% endblock %}

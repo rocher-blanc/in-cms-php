@@ -1,0 +1,115 @@
+{% if td|length > 0 or search == 1 %}
+	<form action="{{ route( mod.name , 'index' , uri_id_parent ) }}" method="get" id="formSeach">
+		<div class="table-responsive">
+			<table class="table table-striped table-hover" id="table-{{ mod.name }}">
+				<thead>
+					<tr>
+						{% if hasOrder and right.edit == true %}
+							<th style="width: 50px;"></th>
+						{% endif %}
+						{% for thvalue in th %}
+							<th>
+								<span>{{ thvalue.title }}</span>
+								<a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="icon-chevron-sign-down"></i></a>
+								<a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="icon-chevron-sign-up"></i></a>
+							</th>
+						{% endfor %}
+                        {% if hasValidation %}
+                            <th class="text-center" style="width: 100px;">En ligne</th>
+                        {% endif %}
+                        <th class="text-center" style="width: 100px;"></th>
+
+                    <tr class="trSearch">
+						{% if hasOrder and right.edit == true %}
+							<td style="width: 50px;"></td>
+						{% endif %}
+						{% for thvalue in th %}
+							<td>
+								{% if loop.first %}
+									<input type="hidden" value="{{ order }}" name="order" id="orderSearch" />
+									<input type="hidden" value="{{ by }}" name="by" id="bySearch" />
+									<input type="hidden" value="1" name="search" />
+								{% endif %}
+								{% if thvalue.type == 'text' or thvalue.type == 'hidden' %}
+									<input type="text" class="form-control form-control-sm" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
+								{% elseif thvalue.type == 'date' %}
+									<div class="date-range" id="range-{{ thvalue.name }}">
+										<div class="input-group">
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+											<input type="text" class="form-control form-control-sm date" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+										</div>
+										<div class="input-group scdline">
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+											<input type="text" class="form-control form-control-sm date" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+										</div>
+									</div>
+								{% elseif thvalue.type == 'number' %}
+									<div class="input-group searchNumber">
+										<input type="number" class="form-control form-control-sm" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+									</div>
+									<div class="input-group scdline">
+										<input type="number" class="form-control form-control-sm" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+									</div>
+								{% elseif thvalue.type == 'select' %}
+									<select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
+										<option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- Aucune sélection -----</option>
+										{% for key,value in thvalue.options %}
+											<option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
+										{% endfor %}
+									</select>
+                                {% endif %}
+							</td>
+						{% endfor %}
+                        {% if hasValidation %}
+                            <td></td>
+                        {% endif %}
+						<td class="text-right searchButton">
+                            <button class="button button-rounded button-reveal button-small button-3d" type="submit"><i class="icon-search2"></i><span>Rechercher</span></button>
+							{% if search == 1 %}<a class="button button-rounded button-reveal button-light button-white button-small button-3d" href="{{ route( mod.name ) }}"><i class="icon-repeat"></i><span>Réinitialiser</span></a>{% endif %}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+				{% for content in td %}
+					<tr class="tr1" data-parent-id="none" id="{{ content.id }}">
+						{% if hasOrder and right.edit == true %}
+							<td>{% if order == 'order' and search == 0 %}<a href="javascript:;" class="btn btn-sm btn-default orderTable" data-tr="{{ content.id }}"><i class="fa fa-arrows"></i></a>{% endif %}</td>
+						{% endif %}
+						{% for index,row in content.td %}
+							<td style="vertical-align: middle;">{{ row }}</td>
+						{% endfor %}
+                        {% if hasValidation %}
+                            <td class="text-center" style="vertical-align: middle;">
+                                {% if right.validation == true %}
+                                    <div class="switch text-center" data-url="">
+                                        <input id="switch-toggle-{{ content.id }}" class="switch-toggle switch-rounded-mini switch-toggle-round" name="active" type="checkbox"{{ content.validation == 1 ? ' checked' : '' }}>
+                                        <label for="switch-toggle-{{ content.id }}"></label>
+                                    </div>
+                                {% else %}
+                                    <i class="{{ content.validation == 1 ? 'icon-line2-check success' : 'icon-line-circle-cross danger' }}"></i>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+						<td class="text-right actionLink" style="vertical-align: middle;">
+			                {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
+                            {% if right.edit == true %}<a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>{% endif %}
+							{% if right.delete == true %}<a class="modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ route( mod.name , 'delete' , '' , content.id ) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="icon-trash2"></i></a>{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% if td|length == 0 %}
+            <div class="sb-msg"><i class="icon-question-sign"></i>Aucun résultat</div>
+		{% endif %}
+	</form>
+{% else %}
+    <div class="style-msg" style="background-color: #eee;">
+        <div class="sb-msg"><i class="icon-question-sign"></i>Il n'y a aucun contenu d'enregistré actuellement</div>
+    </div>
+{% endif %}

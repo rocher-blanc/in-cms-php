@@ -175,4 +175,89 @@ class Repository extends \App\Kernel\Common\Repository
     {
         return \DB::for_module( $this->getName() )->count();
     }
+
+    public function requestAll( $request )
+    {
+        return $this->request( $request )->find_many();
+    }
+
+    public function requestOne( $request )
+    {
+        return $this->request( $request )->find_one();
+    }
+
+    public function request( $request )
+    {
+        $rst = $this->getKit(false ) ;
+
+        if ( ! empty( $request ) )
+        {
+            foreach( $request as $type => $rqt )
+            {
+                switch( $type )
+                {
+                    case "id" :
+                        $rst->where_id_is( $rqt );
+                    break;
+                    case "where" :
+                        $exp = explode( ";" , $rqt );
+
+                        foreach( $exp as $row )
+                        {
+                            $array = explode(':', $row);
+                            if ( count( $array ) == 3 )
+                            {
+                                list( $key , $value , $op ) = explode( ":" , $row );
+                                switch ( $op )
+                                {
+                                    case "<" :
+                                        $rst = $rst->where_lt( $this->field( $key ) , $value );
+                                        break;
+                                    case "<=" :
+                                        $rst = $rst->where_lte( $this->field( $key ) , $value );
+                                        break;
+                                    case ">" :
+                                        $rst = $rst->where_gt( $this->field( $key ) , $value );
+                                        break;
+                                    case ">=" :
+                                        $rst = $rst->where_gte( $this->field( $key ) , $value );
+                                        break;
+                                    case "!=" :
+                                        $rst = $rst->where_not_equal( $this->field( $key ) , $value );
+                                        break;
+                                    case "date" :
+                                        $rst = $rst->where_date( $this->field( $key ) , $value );
+                                        break;
+                                    case "date_gte" :
+                                        $rst = $rst->where_date_gte( $this->field( $key ) , $value );
+                                        break;
+                                    case "date_lte" :
+                                        $rst = $rst->where_date_lte( $this->field( $key ) , $value );
+                                        break;
+                                    case "in" :
+                                        $rst = $rst->where_in( $this->field( $key ) , explode( ',' , $value ) );
+                                        break;
+                                    case "notin" :
+                                        $rst = $rst->where_not_in( $this->field( $key ) , explode( ',' , $value ) );
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                list( $key , $value ) = explode( ":" , $row );
+                                $rst = $rst->where_equal( $this->field( $key ) , $value );
+                            }
+                        }
+                    break;
+                }
+            }
+        }
+
+        return $rst ;
+    }
+
+    protected function field( $key )
+    {
+        return $this->getEntity()->get( $key )->fieldSql() ;
+    }
 }

@@ -1,0 +1,30 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Index' %}
+
+{% block icon_page %}{{ mod.icon }}{% endblock %}
+
+{% block module %}
+    {% include 'module/header.twig' with {menu: false} %}
+    {{ parent }}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('select2/dist/css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/easydoor/table.css') }}" />
+    {% if hasValidation and right.validation == true %}<link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-switches.css') }}" type="text/css" />{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+    <script src="{{ vendor('bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ vendor('bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min.js') }}"></script>
+    <script src="{{ vendor('select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
+    {% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
+    {% if hasValidation and right.validation == true %}<script src="{{ asset('canvas/js/components/bs-switches.js') }}" data-turbolinks-eval="false"></script>{% endif %}
+{% endblock %}

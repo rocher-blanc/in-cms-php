@@ -201,6 +201,8 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "log_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "log_date" => $this->infoColumn( "DATETIME" ),
                 "log_user_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
+                "log_module_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
+                "log_element_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "log_code" => $this->infoColumn( "TINYINT" , "1" ),
                 "log_type" => $this->infoColumn( "TINYINT" , "1" ),
                 "log_value" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )

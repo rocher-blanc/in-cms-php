@@ -1,0 +1,23 @@
+<input type="hidden" value="{{ value }}" name="{{ name }}" id="id_element_dropzone" />
+<input type="hidden" value="{{ field_name }}" name="field_dropzone" id="field_dropzone" />
+<div id="gallery_{{ field_name }}" class="blockGallery" data-crop="{{ hasCrop ? '1' : '0' }}" data-value="{{ value }}" data-url="{{ siteUrl('/module/' ~ module ~ '/jgallery_order') }}" data-field="{{ field_name }}">
+    <a class="btn btn-info btnAdd" data-jgallery data-field="{{ field_name }}" data-fieldid="id_{{ name }}" href="{{ siteUrl('/module/' ~ module ~ '/jgallery') }}">
+        <i class="fa fa-plus"></i> Ajouter
+    </a>
+    {% if rst|length > 0 %}
+        {% for key, img in rst %}
+            <div class="mini-img" id="gallery-{{ key }}">
+                <img src="{{ img['100x100'] }}"/>
+                <div class="btn-bar">
+                    <a href="{{ siteUrl('/module/' ~ module ~ '/jgallery_delete') }}" class="delete" data-image-id="{{ key }}"><i class="fa fa-trash"></i></a>&nbsp;&nbsp;
+                    <i class="fa fa-arrows move"></i>&nbsp;&nbsp;
+                    {% if hasCrop %}
+                        <a href="{{ siteUrl('/module/' ~ module ~ '/jgallery_crop') }}" class="crop" data-field="{{ field_name }}" data-image-id="{{ key }}"><i class="fa fa-crop"></i></a>&nbsp;&nbsp;
+                    {% endif %}
+                    <i class="fa fa-info-circle" data-toggle="tooltip" title="{{ img.size }} | {{ img.name }}"></i>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="clearGallery"></div>
+</div>

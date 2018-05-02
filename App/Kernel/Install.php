@@ -249,6 +249,7 @@ class Install
             "Project/view/front/mail",
             "Project/view/front/module",
             "Project/view/front/page",
+            "Project/view/front/component",
             "Project/view/front/helper",
             "Project/view/front/helper/module",
             "Project/view/front/helper/page",

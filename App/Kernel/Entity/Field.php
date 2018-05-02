@@ -117,10 +117,22 @@ class Field
         else										return false ;
     }
 
+    public function isFull()
+    {
+        if ( $this->getData('full') === true ) 	return true ;
+        else										return false ;
+    }
+
     public function isOrder()
     {
         if ( $this->getData('order') === true ) 	return true ;
         else										return false ;
+    }
+
+    public function isParentModule()
+    {
+        if ( $this->getData('moduleParent') === true ) 	return true ;
+        else										        return false ;
     }
 
     public function isAssociated()
@@ -165,6 +177,12 @@ class Field
         else									return false ;
     }
 
+    public function hasTwigKey()
+    {
+        if ( $this->getData('twig') != '' ) 	return true ;
+        else									    return false ;
+    }
+
     public function hasThumb()
     {
         if ( $this->getData('thumb') !== NULL ) return true ;
@@ -198,6 +216,11 @@ class Field
     /* ************************************************** */
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
+
+    public function getTwigKey()
+    {
+        return $this->getData('twig') ;
+    }
 
     public function getCrop()
     {

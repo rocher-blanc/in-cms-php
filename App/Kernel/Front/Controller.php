@@ -2,22 +2,21 @@
 
 namespace App\Kernel\Front;
 
-class Controller
+class Controller extends \App\Kernel\Common\Controller
 {
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
     protected $_url = [] ;
-    protected $_url_module = "" ;
     protected $_elm = false ;
     protected $_id = NULL ;
     protected $_entity = NULL ;
     protected $_entity_id = NULL ;
     protected $_entity_name = '' ;
     protected $_action_name = '' ;
+    protected $_component_name = '' ;
     protected $_var = [];
-    protected $_main = false;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -72,11 +71,6 @@ class Controller
         else                     $this->_url = $var ;
     }
 
-    public function setModuleUrl( $var )
-    {
-        $this->_url_module = $var ;
-    }
-
     public function setEntityName( $var )
     {
         $this->_entity_name = ucfirst( $var ) ;
@@ -97,14 +91,17 @@ class Controller
         $this->_elm = true ;
     }
 
-    public function setMain()
-    {
-        $this->_main = true ;
-    }
-
     protected function setVar( $key , $elt )
     {
         $this->_var[ $key ] = $elt ;
+    }
+
+    /**
+     * @param string $component_name
+     */
+    public function setComponentName($component_name)
+    {
+        $this->_component_name = $component_name;
     }
 
     /* ***************************************************** */
@@ -129,6 +126,14 @@ class Controller
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    /**
+     * @return string
+     */
+    public function getComponentName()
+    {
+        return $this->_component_name;
+    }
 
     public function getVar()
     {
@@ -156,11 +161,6 @@ class Controller
         else                 	return $this->_url[ $key ] ;
     }
 
-    public function getModuleUrl()
-    {
-        return $this->_url_module . '/' ;
-    }
-
     protected function getMethodName()
     {
         return $this->_action_name . 'Action' ;
@@ -178,11 +178,6 @@ class Controller
     protected function isElement()
     {
         return $this->_elm ;
-    }
-
-    protected function isMain()
-    {
-        return $this->_main ;
     }
 
     /* ************************************************** */
@@ -295,19 +290,6 @@ class Controller
             ->find_one();
 
         if ( $result ) $this->setId( $result->seo_element_id );
-    }
-
-    protected function loadModuleUrl()
-    {
-        if ( ! $this->isMain() )
-        {
-            $row = \DB::for_table('module_lang')
-                ->select('module_lang_url')
-                ->where(['module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang_module_id' => $this->getEntityId()])
-                ->find_one();
-
-            $this->setModuleUrl( $row->module_lang_url ) ;
-        }
     }
 
     /* ************************************************** */
@@ -760,5 +742,62 @@ class Controller
         }
         $arrayElement['lvl'] = $level ;
         return $arrayElement ;
+    }
+
+    public function getComponent( $type , $request )
+    {
+        $elmts = [] ;
+        switch( $type )
+        {
+            case "one" :
+                $result = $this->getRepository()->requestOne( $request );
+                break;
+            case "all" :
+                $result = $this->getRepository()->requestAll( $request );
+                break;
+        }
+
+        if ( $result )
+        {
+            switch( $type )
+            {
+                case "one" :
+                    $parse = $this->parseValue( $result );
+
+                    foreach( $this->getEntity()->getField() as $field )
+                    {
+                        if ( $field->hasTwigKey() )
+                        {
+                            $elmts[ $field->getTwigKey() ] = $parse[ $field->getName() ];
+                        }
+                    }
+
+                    if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
+                    break;
+                case "all" :
+
+                    $i = 0;
+                    foreach( $result as $row )
+                    {
+                        $parse = $this->parseValue( $row );
+
+                        foreach( $this->getEntity()->getField() as $field )
+                        {
+                            if ( $field->hasTwigKey() )
+                            {
+                                $elmts[ $i ][ $field->getTwigKey() ] = $parse[ $field->getName() ];
+                            }
+                        }
+
+                        if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
+                        $i++;
+                    }
+                    break;
+            }
+        }
+
+        return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , [
+            'object' => $elmts
+        ] );
     }
 }

@@ -1,0 +1,27 @@
+<h3 class="ed-h3"><i class="{{ module.icon }}"></i> {{ module.name }}</h3>
+
+<div class="container clearfix">
+
+    {% for row in content %}
+        <div class="col_one_fourth col_last">
+            <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+                <div class="fbox-icon">
+                    <a href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}"><i class="{{ module.icon }} i-alt"></i></a>
+                </div>
+                <h3>{{ row.name }}</h3>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="col_one_fourth col_last newparentelement">
+        <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+            <div class="fbox-icon">
+                <a href="{{ route( row.name , 'add' , uri_id_parent ) }}"><i class="icon-line-plus i-alt"></i></a>
+            </div>
+            <h3>Ajouter un nouvel élément</h3>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+</div>

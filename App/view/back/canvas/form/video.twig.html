@@ -1,0 +1,11 @@
+<div class="jvideo">
+    <div id="video_id_{{ name }}" class="preview embed-responsive embed-responsive-16by9">{{ value == '' ? 'Aucune vidéo' : '' }}</div>
+</div>
+<div class="input-group input-group-icon">
+    <span class="input-group-addon">
+        <span class="icon">
+            <i class="fa fa-video-camera"></i>
+        </span>
+    </span>
+    <input type="text" value="{{ value }}" data-video placeholder="http://youtu.be/xxxxxxx" class="form-control" name="{{ name }}" id="id_{{ name }}"{{ required ? ' required="1"' : '' }} />
+</div>

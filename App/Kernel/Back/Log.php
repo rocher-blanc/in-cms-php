@@ -162,8 +162,8 @@ class Log
 
     private function getDate()
     {
-        $date = new \DateTime( $this->_data->log_date ) ;
-        return $date->format('d/m/Y - H:i:s') ;
+        $time = strtotime( $this->_data->log_date ) ;
+        return strftime( "%d %B %Y" , $time ) . " à " . strftime( "%Hh%M" , $time ) ;
     }
 
     private function getUser()
@@ -208,7 +208,7 @@ class Log
         }
     }
 
-    public function log( $type , $code , $value )
+    public function log( $type , $code , $value , $module = null , $element = null )
     {
         $date = new \DateTime() ;
 
@@ -219,27 +219,29 @@ class Log
         if ( $ct == 0 ) $this->delest() ;
 
         $log = \DB::for_table('log')->create();
-        $log->log_type 		= $type ;
-        $log->log_code 		= $code ;
-        $log->log_value 	= $value ;
-        $log->log_user_id 	= $this->getUserId() ;
-        $log->log_date 		= $date->format('Y-m-d H:i:s') ;
+        $log->log_type 		    = $type ;
+        $log->log_code 		    = $code ;
+        $log->log_value 	    = $value ;
+        $log->log_user_id 	    = $this->getUserId() ;
+        $log->log_module_id 	= $module ;
+        $log->log_element_id 	= $element ;
+        $log->log_date 		    = $date->format('Y-m-d H:i:s') ;
         $log->save();
     }
 
-    public function info( $code , $value = NULL )
+    public function info( $code , $value = NULL , $module = null , $element = null )
     {
-        return $this->log( 1 , $code , $value ) ;
+        return $this->log( 1 , $code , $value , $module , $element ) ;
     }
 
-    public function warning( $code , $value = NULL )
+    public function warning( $code , $value = NULL , $module = null , $element = null )
     {
-        return $this->log( 2 , $code , $value ) ;
+        return $this->log( 2 , $code , $value , $module , $element ) ;
     }
 
-    public function alert( $code , $value = NULL )
+    public function alert( $code , $value = NULL , $module = null , $element = null )
     {
-        return $this->log( 3 , $code , $value ) ;
+        return $this->log( 3 , $code , $value , $module , $element ) ;
     }
 
     /* ************************************************** */
@@ -266,4 +268,23 @@ class Log
         return $std ;
     }
 
+    public function getElementHistory( $module , $element )
+    {
+        $logRows = \DB::for_table('log')
+            ->where_equal('log_module_id' , $module )
+            ->where_equal('log_element_id' , $element )
+            ->order_by_desc('log_date')
+            ->find_many() ;
+
+        $rows = [] ;
+        if ( $logRows )
+        {
+            foreach( $logRows as $row ) {
+                $this->setData( $row ) ;
+                $rows[] = $this->parse() ;
+            }
+        }
+
+        return $rows ;
+    }
 }

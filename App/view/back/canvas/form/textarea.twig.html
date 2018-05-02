@@ -1,0 +1,12 @@
+{% if hasFlag %}
+<div style="margin-bottom:10px;" class="input-group input-group-icon">
+    <span class="input-group-addon">
+        <span class="icon">
+            <i class="flag-icon flag-icon-{{ flag }}"></i>
+        </span>
+    </span>
+{% endif %}
+    <textarea class="form-control{{ editor ? ' cke' : '' }}" name="{{ name }}" id="id_{{ column }}"{{ required ? ' required="1"' : '' }}>{{ value }}</textarea>
+{% if hasFlag %}
+</div>
+{% endif %}

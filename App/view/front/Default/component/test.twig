@@ -1,0 +1,20 @@
+
+<div id="post-lists" class="widget clearfix">
+    <h4 class="highlight-me">Recent Posts</h4>
+        {% for row in object %}
+            <div class="spost clearfix">
+                <div class="entry-image">
+                    <a href="#" class="nobg"><img src="images/magazine/small/2.jpg" alt=""></a>
+                </div>
+                <div class="entry-c">
+                    <div class="entry-title">
+                        <h4><a href="#">{{ row.title }}</a></h4>
+                    </div>
+                    <ul class="entry-meta">
+                        <li>10th July 2014</li>
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,24 @@
+{% if parentLine.array|length > 0 %}
+        {% set count = parentLine.array|length + 1 %}
+    <ul class="process-steps process-{{ count }} clearfix" style="margin-bottom: 10px;">
+        {% for parent in parentLine.array %}
+            <li{{ parent.current == true ? ' class="active"' : '' }}>
+                <a href="{{ route( mod.name , 'index' , parent.url ) }}" class="i-bordered i-circled divcenter {{ parent.icon }}"></a>
+                <h5>{{ parent.human_name }}</h5>
+            </li>
+        {% endfor %}
+        <li{{ parentLine.current == null ? ' class="active"' : '' }}>
+            <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="i-bordered i-circled divcenter {{ mod.icon }}"></a>
+            <h5>{{ mod.title }}</h5>
+        </li>
+    </ul>
+{% endif %}
+
+{% if menu != false %}
+<input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
+<div class="ed-menu">
+    <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+    <a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+</div>
+<div class="divider divider-center ed-divider"><i class="{{ mod.icon }}"></i></div>
+{% endif %}
