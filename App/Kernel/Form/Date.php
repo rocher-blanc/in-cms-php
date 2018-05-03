@@ -7,10 +7,10 @@ class Date extends \App\Kernel\Back\Form
 	public function html( $field, $name, $value = NULL )
 	{
 		$this->_lib_js  = [
-            'bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-            'bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min.js'
+            'cmsmedias/canvas/js/components/datepicker.js',
+            'cmsmedias/canvas/js/components/datepicker.fr.js'
         ];
-		$this->_lib_css = 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
+		$this->_lib_css = 'cmsmedias/canvas/css/src/components/datepicker.css';
 
         return $this->View()->fetch( 'form/date.twig.html' , [
             'name' => $name,

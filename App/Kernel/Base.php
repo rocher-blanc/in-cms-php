@@ -346,6 +346,7 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "user_password" => $this->infoColumn( "VARCHAR" , "60" ),
                 "user_fname" => $this->infoColumn( "VARCHAR" , "150" ),
                 "user_lname" => $this->infoColumn( "VARCHAR" , "150" ),
+                "user_photo" => $this->infoColumn( "VARCHAR" , "255" ),
                 "user_type" => $this->infoColumn( "INT" , "11" ),
                 "user_published" => $this->infoColumn( "TINYINT" , "1" )
             ],
