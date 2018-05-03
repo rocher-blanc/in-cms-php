@@ -6,6 +6,8 @@
         <meta name="author" content="SemiColonWeb" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="token" content="{{csrf_token}}" />
+        <meta name="tokename" content="{{csrf_key}}" />
         {{ block('meta') }}
 
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />
@@ -19,7 +21,9 @@
         {{ block('stylesheets') }}
         <title>{% block title %}Administration{% endblock %}</title>
         <script src="{{ asset('js/init.js') }}"></script>
-
+        <script>
+            var siteurl = site + '/{{ adminFolder }}/' ;
+        </script>
         {{ block('javascript_head') }}
     </head>
     <body class="stretched">
@@ -31,6 +35,11 @@
         <script src="{{ asset('canvas/js/plugins.js') }}"></script>
         <script src="{{ asset('canvas/js/functions.js') }}"></script>
         <script src="{{ asset('canvas/js/easydoor/common.js') }}"></script>
+        {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
+            <script>
+                Notify("{{flash.__msg}}", {{flash.__result == true ? 'true' : 'false' }});
+            </script>
+        {% endif %}
         {{ block('javascripts') }}
         {{ block('javascripts_end') }}
     </body>

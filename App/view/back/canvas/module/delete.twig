@@ -1,0 +1,12 @@
+<div class="modal1" id="myModal1">
+    <div class="block divcenter" style="background-color: #fff; max-width: 500px;">
+        <div class="center" style="padding: 50px;">
+            <h3>Êtes vous sûr de vouloir supprimer cet élément ?</h3>
+            <p class="nobottommargin">Attention, la suppression est définitive et ne pourra en aucun cas être restaurée.</p>
+        </div>
+        <div class="section center nomargin" style="padding: 30px;">
+            <a href="#" class="button" onClick="deleteElement('{{ route( mod.name , 'delete' , '' , id , csrf_token ) }}');"><i class="icon-ok"></i> Oui</a>
+            <a href="#" class="button button-red" onClick="$.magnificPopup.close();return false;"><i class="icon-remove"></i> Non</a>
+        </div>
+    </div>
+</div>

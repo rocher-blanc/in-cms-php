@@ -20,7 +20,7 @@ class TwigAdmin extends \Twig_Extension
         );
     }
 
-    public function route( $module , $type = '' , $parent = '' , $id = NULL )
+    public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
     {
         $route = '' ;
         if ( !empty( $type ) )
@@ -35,6 +35,7 @@ class TwigAdmin extends \Twig_Extension
                 $route.= $parent ;
             }
             if ( $id !== NULL ) $route.= '/id/' . $id ;
+            if ( $token !== NULL ) $route.= '/' . $token ;
         }
 
         return \App\Kernel\Factory::getInstance()->Url()->get( '/module/' . $module . $route ) ;

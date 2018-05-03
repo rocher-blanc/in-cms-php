@@ -97,7 +97,7 @@
 						<td class="text-right actionLink" style="vertical-align: middle;">
 			                {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
                             {% if right.edit == true %}<a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>{% endif %}
-							{% if right.delete == true %}<a class="modal-module-delete" href="#deleteModal" data-id="{{ content.id }}" data-link="{{ route( mod.name , 'delete' , '' , content.id ) }}" data-text="Êtes-vous sûr de vouloir supprimer cet élément ?"><i class="icon-trash2"></i></a>{% endif %}
+							{% if right.delete == true %}<a href="{{ route( mod.name , 'delete' , '' , content.id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>{% endif %}
 						</td>
 					</tr>
 				{% endfor %}

@@ -1,11 +1,12 @@
 <?php
 
-$app->map('/:entity/:action/id/:id', function ( $entity , $action , $id )
+$app->map('/:entity/:action/id/:id(/:token)', function ( $entity , $action , $id , $token = NULL )
 {
     $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
     $Controller->setEntityName( $entity );
     $Controller->setActionName( $action );
     $Controller->setIdParent([]);
+    $Controller->setToken( $token );
     $Controller->setId( $id );
     $Controller->execute();
 
@@ -15,8 +16,11 @@ $app->map('/:entity/:action/id/:id', function ( $entity , $action , $id )
     'entity' => '[_a-zA-Z0-9]+'
 ])->via('GET', 'POST');
 
-$app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action , $parent = [] , $id = NULL )
+$app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action , $parent = '' , $id = NULL )
 {
+    if ( empty( $parent ) ) $parent = [];
+    else                    $parent = explode( '/' , $parent );
+
     $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
     $Controller->setEntityName( $entity );
     $Controller->setActionName( $action );
@@ -26,7 +30,9 @@ $app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action ,
 
 })->conditions([
     'action' => '[_a-zA-Z0-9]+',
-    'entity' => '[_a-zA-Z0-9]+'
+    'entity' => '[_a-zA-Z0-9]+',
+    'parent' => '[\/0-9]+',
+    'id' => '[0-9]+'
 ])->via('GET', 'POST');
 
 $app->map('/:entity(/:action(/:id(/:token(/:lang))))', function ( $entity , $action = "index" , $id = NULL , $token = NULL , $lang = NULL )

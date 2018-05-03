@@ -618,6 +618,12 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function delete()
     {
+        $result = [
+            'msg' => '',
+            'url' => '',
+            'result' => false
+        ];
+
         $content = $this->getRepository()->findOne( $this->getId() );
         $this->deleteOnMenu() ;
         if ( $content )
@@ -725,12 +731,15 @@ class Controller extends \App\Kernel\Common\Controller
             $content->delete();
             $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
 
-            $this->Factory()->Response()->returnJSON("delete_success", true ) ;
+            $result['msg'] = $this->m("delete_success");
+            $result['result'] = true ;
         }
         else
         {
-            $this->Factory()->Response()->returnJSON("delete_failed") ;
+            $result['msg'] = $this->m("delete_success");
         }
+
+        return $result ;
     }
 
     /* ************************************************** */
@@ -1107,6 +1116,8 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $add ) $result['msg'] = $this->m("add_success") ;
             else		$result['msg'] = $this->m("edit_success") ;
 
+            $this->Factory()->Response()->flash( $result['msg'] , true );
+
             $result['result'] = true;
 
             $this->Log()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
@@ -1449,7 +1460,7 @@ class Controller extends \App\Kernel\Common\Controller
         if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
         else                                    $template = 'table' ;
 
-        $this->render( $template . '.twig.html');
+        $this->render( $template . '.twig');
     }
 
     protected function addAction()
@@ -1472,24 +1483,36 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function editAction()
     {
-        if ( $this->getApp()->request->isPost() ) $this->pushData( false ) ;
-
-        $depedencies = [];
-
-        $this->setRender( 'id' , $this->getId() ) ;
-
         if ( $this->getEntity()->hasUrl() )
         {
-            $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
+            $seo = new \App\Kernel\Back\Seo;
+            $seo->setElementId( $this->getId() );
+            $seo->setModuleId( $this->getEntityId() );
+
             $this->setRender( 'seo' , $this->getEntity()->hasUrl() ) ;
+            $this->setRender( 'content' , $seo->getAll() ) ;
+            $this->setRender( 'index' , $seo->getIndex() ) ;
         }
+
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $seo->update() ;
+            $rst = $this->pushData( false ) ;
+            return $this->Factory()->Response()->printJSON( $rst ) ;
+        }
+
+        $depedencies = [];
 
         $this->loadDependencies() ;
         $this->generateForm( true ) ;
 
         $arrayParent = $this->getParentArray();
+
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
         $this->setRender( 'parentLine' , $arrayParent ) ;
         $this->setRender( 'history' , $this->Log()->getElementHistory( $this->getEntityId() , $this->getId() ) ) ;
+
         $this->render('formulaire.twig') ;
     }
 
@@ -1519,9 +1542,16 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function deleteAction()
     {
-        $this->setToken( $this->getApp()->request->post( $this->getApp()->config('token') ) ) ;
-        $this->checkToken() ;
-        $this->delete();
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $this->setToken( $this->getApp()->request->post( $this->getApp()->config('token') ) ) ;
+            $this->checkToken() ;
+            $rst = $this->delete();
+            return $this->Factory()->Response()->printJSON( $rst ) ;
+        }
+
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('delete.twig') ;
     }
 
     protected function seoAction()
@@ -1529,6 +1559,14 @@ class Controller extends \App\Kernel\Common\Controller
         $seo = new \App\Kernel\Back\Seo;
         $seo->setElementId( $this->getId() );
         $seo->setModuleId( $this->getEntityId() );
+        $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
+        $this->setRender( 'content' , $seo->getAll() ) ;
+        $this->setRender( 'index' , $seo->getIndex() ) ;
+        if ( $this->getApp()->request->isPost() )
+        {
+            $seo->update() ;
+        }
+
 
         $one = $this->getRepository()->findOne( $this->getId() );
 
