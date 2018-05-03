@@ -46,8 +46,8 @@ class Install
         self::checkHtaccess() ;
         self::checkConfig() ;
         self::checkIndex() ;
-        self::minify() ;
-        self::patchVendor() ;
+        // self::minify() ;
+        // self::patchVendor() ;
         self::patchDb() ;
 
         \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , ( $install ? "Installation" : "Mise à jour" ) . " du CMS avec succés\nProjet : " . self::getFolderProject() );
