@@ -41,7 +41,7 @@ class JContent
 
     public function run()
     {
-        $this->view->
+        //$this->view->
     }
 
     public function view()

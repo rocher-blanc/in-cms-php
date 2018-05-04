@@ -116,7 +116,7 @@ class Slack
 
     public function notification()
     {
-        $msg = new \stdClass;
+        /*$msg = new \stdClass;
         $msg->color = $this->getColor() ;
         $msg->author_name = "JWeb" ;
         $msg->title = $this->getTitle() ;
@@ -141,6 +141,6 @@ class Slack
         );
 
         $result = curl_exec($ch);
-        curl_close($ch);
+        curl_close($ch);*/
     }
 }

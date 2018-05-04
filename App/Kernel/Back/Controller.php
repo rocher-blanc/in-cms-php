@@ -441,8 +441,6 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
-
-        $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
         $this->setRender( 'cdn_js' , $form->getCdnJS() ) ;
 
         $this->setRender( 'css' , $form->getLibCSS() ) ;
@@ -450,6 +448,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         $this->setRender( 'form' , $this->renderForm([
             'field' => $arrayField,
+            'uri_id_parent' => $this->getUriParent(),
             'route_type' => ( $value == false ? 'add' : 'edit' ),
             'id' => $this->getId()
         ])) ;
@@ -1108,10 +1107,14 @@ class Controller extends \App\Kernel\Common\Controller
                 $contentLang[ $lang->url ]->save() ;
             }
 
-            if ( $this->getApp()->request->post('submit') == "stay" ) 	$result['url'] = 'module/' . $this->getEntityName() . '/edit/' . $this->getId() ;
-            else 														    $result['url'] = 'module/' . $this->getEntityName() ;
-
-            $result['url'] = $this->Factory()->Url()->get( $result['url'] );
+            if ( $this->getApp()->request->post('submit') == "stay" )
+            {
+                $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , $token ) ;
+            }
+            else
+            {
+                $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) ;
+            }
 
             if ( $add ) $result['msg'] = $this->m("add_success") ;
             else		$result['msg'] = $this->m("edit_success") ;
@@ -1457,6 +1460,9 @@ class Controller extends \App\Kernel\Common\Controller
     protected function tableAction()
     {
         $this->generateTable() ;
+
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+
         if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
         else                                    $template = 'table' ;
 

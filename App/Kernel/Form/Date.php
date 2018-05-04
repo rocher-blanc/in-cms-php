@@ -12,7 +12,7 @@ class Date extends \App\Kernel\Back\Form
         ];
 		$this->_lib_css = 'cmsmedias/canvas/css/src/components/datepicker.css';
 
-        return $this->View()->fetch( 'form/date.twig.html' , [
+        return $this->View()->fetch( 'form/date.twig' , [
             'name' => $name,
             'value' => $value,
             'column' => $field->getColumn(),

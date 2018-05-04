@@ -272,4 +272,25 @@ class Url
             return false ;
         }
     }
+
+    public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
+    {
+        $route = '' ;
+        if ( !empty( $type ) )
+        {
+            $route.= '/' . $type ;
+            if ( $parent != '' )
+            {
+                if ( substr( $parent , 0 , 1 ) != '/' )
+                {
+                    $route.= '/' ;
+                }
+                $route.= $parent ;
+            }
+            if ( $id !== NULL ) $route.= '/id/' . $id ;
+            if ( $token !== NULL ) $route.= '/' . $token ;
+        }
+
+        return $this->get( '/module/' . $module . $route ) ;
+    }
 }
