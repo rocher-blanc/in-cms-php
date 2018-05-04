@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use JasonGrimes\Paginator;
+
 class Controller extends \App\Kernel\Common\Controller
 {
     /* ************************************************** */
@@ -753,11 +755,13 @@ class Controller extends \App\Kernel\Common\Controller
         $typeArray      = [] ;
 
         $elmtPerPage = ( $this->getApp()->request->get('elmt_per_page') != '' ? $this->getApp()->request->get('elmt_per_page') : 25 ) ;
-        $page  = ( $this->getApp()->request->get('page') != '' ? $this->getApp()->request->get('page') : 1 ) ;
-        $order = ( $this->getApp()->request->get('order') != '' ? $this->getApp()->request->get('order') : NULL ) ;
-        $by    = ( $this->getApp()->request->get('by') != '' ? $this->getApp()->request->get('by') : NULL ) ;
+        $page        = ( $this->getApp()->request->get('page') != '' ? $this->getApp()->request->get('page') : 1 ) ;
+        $order       = ( $this->getApp()->request->get('order') != '' ? $this->getApp()->request->get('order') : NULL ) ;
+        $by          = ( $this->getApp()->request->get('by') != '' ? $this->getApp()->request->get('by') : NULL ) ;
 
         if ( $elmtPerPage == 'all' ) $elmtPerPage = 0;
+
+        $offset      = $elmtPerPage * ( $page - 1 );
 
         if ( $order === NULL && $by === NULL )
         {
@@ -771,7 +775,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $order = $this->getEntity()->getIdName() ;
                 $by    = 'desc' ;
             }
-        }
+        } 
 
         $Guard = new \App\Kernel\Back\Acl;
         $Guard->setModule( $this->getEntityName() );
@@ -810,10 +814,25 @@ class Controller extends \App\Kernel\Common\Controller
                 }
             }
 
-            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
+            $count   = $this->getRepository()->countTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
+
+            if ( $count < $offset )
+            {
+                $page = 1;
+                $offset = 0;
+            }
+
+            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage ) ;
 
             if ( $content )
             {
+                $paginator = new Paginator($count, $elmtPerPage, $page, '?page=(:num)');
+                $paginator->setNextText('Suivant');
+                $paginator->setPreviousText('Précédent');
+                $paginator->setMaxPagesToShow(5);
+
+                $this->setRender( 'paginator' , $paginator->getPages() ) ;
+
                 // TD
                 $i = 0;
                 foreach( $content as $row )

@@ -63,7 +63,24 @@ class Repository extends \App\Kernel\Common\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id = NULL )
+    public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id , $offset , $limit )
+    {
+        $content = $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id );
+
+        if ( $limit != 0 )
+        {
+            $content = $content->limit( $limit )->offset( $offset );
+        }
+
+        return $content->find_many();
+    }
+
+    public function countTableIndex( $order , $by , $fields , $module_element_parent_id )
+    {
+        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )->count();;
+    }
+
+    public function requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )
     {
         $content = \DB::for_module( $this->getName() );
 
@@ -136,7 +153,7 @@ class Repository extends \App\Kernel\Common\Repository
             }
         }
 
-        return $content->find_many();
+        return $content ;
     }
 
     public function getOnIndex( $id_module )

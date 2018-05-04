@@ -16,7 +16,7 @@ $app->map('/:entity/:action/id/:id(/:token)', function ( $entity , $action , $id
     'entity' => '[_a-zA-Z0-9]+'
 ])->via('GET', 'POST');
 
-$app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action , $parent = '' , $id = NULL )
+$app->map('/:entity/:action(/:parent+(/id/:id(/:token)))', function ( $entity , $action , $parent = '' , $id = NULL , $token = NULL )
 {
     if ( empty( $parent ) ) $parent = [];
     else                    $parent = explode( '/' , $parent );
@@ -25,6 +25,7 @@ $app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action ,
     $Controller->setEntityName( $entity );
     $Controller->setActionName( $action );
     $Controller->setIdParent( $parent );
+    $Controller->setToken( $token );
     $Controller->setId( $id );
     $Controller->execute();
 
@@ -32,6 +33,7 @@ $app->map('/:entity/:action(/:parent+(/id/:id))', function ( $entity , $action ,
     'action' => '[_a-zA-Z0-9]+',
     'entity' => '[_a-zA-Z0-9]+',
     'parent' => '[\/0-9]+',
+    'token' => '[a-zA-Z0-9]+',
     'id' => '[0-9]+'
 ])->via('GET', 'POST');
 
