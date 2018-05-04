@@ -1,5 +1,7 @@
 {% set counter = 0 %}
+
 <form name="form" method="post" action="{{ route( mod.name , route_type , uri_id_parent , id ) }}" class="form-vertical">
+    <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}"/>
     <input type="hidden" name="id_element" value="{{ id != NULL ? id : '-1' }}" />
     {% for c in field if c.type == 'hidden' %}

@@ -744,7 +744,7 @@ class Controller extends \App\Kernel\Common\Controller
         return $arrayElement ;
     }
 
-    public function getComponent( $type , $request )
+    public function getComponent( $type , $request , $vars )
     {
         $elmts = [] ;
         switch( $type )
@@ -796,8 +796,8 @@ class Controller extends \App\Kernel\Common\Controller
             }
         }
 
-        return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , [
+        return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge([
             'object' => $elmts
-        ] );
+        ], $vars ));
     }
 }

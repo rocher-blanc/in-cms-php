@@ -23,11 +23,13 @@ class TwigModule extends \Twig_Extension
         );
     }
 
-    public function component( $module , $component , $type , $request = [] )
+    public function component( $module , $component , $type , $request = [] , $vars = [] )
     {
+        if ( is_string( $request ) ) $request = [];
+
         $Controller = \App\Kernel\Container::getInstance()->module( $module )->getController();
         $Controller->setComponentName( $component );
 
-        return $Controller->getComponent( $type , $request );
+        return $Controller->getComponent( $type , $request , $vars );
     }
 }

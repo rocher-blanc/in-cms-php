@@ -198,7 +198,10 @@ class Repository extends \App\Kernel\Common\Repository
                 {
                     case "id" :
                         $rst->where_id_is( $rqt );
-                    break;
+                        break;
+                    case "parent" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
+                        break;
                     case "where" :
                         $exp = explode( ";" , $rqt );
 

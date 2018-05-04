@@ -22,23 +22,7 @@ class TwigAdmin extends \Twig_Extension
 
     public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
     {
-        $route = '' ;
-        if ( !empty( $type ) )
-        {
-            $route.= '/' . $type ;
-            if ( $parent != '' )
-            {
-                if ( substr( $parent , 0 , 1 ) != '/' )
-                {
-                    $route.= '/' ;
-                }
-                $route.= $parent ;
-            }
-            if ( $id !== NULL ) $route.= '/id/' . $id ;
-            if ( $token !== NULL ) $route.= '/' . $token ;
-        }
-
-        return \App\Kernel\Factory::getInstance()->Url()->get( '/module/' . $module . $route ) ;
+        return \App\Kernel\Factory::getInstance()->Url()->route( $module , $type , $parent , $id , $token ) ;
     }
 
     public function vendor( $url )
