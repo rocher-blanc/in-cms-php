@@ -752,8 +752,12 @@ class Controller extends \App\Kernel\Common\Controller
         $tdArray 	    = [] ;
         $typeArray      = [] ;
 
+        $elmtPerPage = ( $this->getApp()->request->get('elmt_per_page') != '' ? $this->getApp()->request->get('elmt_per_page') : 25 ) ;
+        $page  = ( $this->getApp()->request->get('page') != '' ? $this->getApp()->request->get('page') : 1 ) ;
         $order = ( $this->getApp()->request->get('order') != '' ? $this->getApp()->request->get('order') : NULL ) ;
         $by    = ( $this->getApp()->request->get('by') != '' ? $this->getApp()->request->get('by') : NULL ) ;
+
+        if ( $elmtPerPage == 'all' ) $elmtPerPage = 0;
 
         if ( $order === NULL && $by === NULL )
         {
@@ -901,6 +905,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'by' , $by ) ;
         $this->setRender( 'type' , $typeArray ) ;
         $this->setRender( 'search' , $this->getApp()->request->get('search') == 1 ? 1 : 0 ) ;
+        $this->setRender( 'elmt_per_page' , ( $elmtPerPage == 0 ? 'all' : $elmtPerPage ) ) ;
     }
 
     protected function getTreeTableParent( $rows, $parent_id = -1 )
