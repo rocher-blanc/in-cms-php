@@ -13,11 +13,14 @@
     {% include 'module/header.twig' %}
     <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">
         <ul class="tab-nav clearfix">
-            <li class="ui-tabs-active">
-                <a href="#tabs-form" id="onglet-contenu">
-                    <i class="icon-home2"></i> Contenu
-                </a>
-            </li>
+            {% for tab in tabs %}
+                <li{{ loop.first ? ' class="ui-tabs-active"' : '' }}>
+                    <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}">
+                        <i class="{{ tab.icon }}"></i> {{ tab.name }}
+                    </a>
+                </li>
+            {% endfor %}
+
             {% if seo == true and id != '' %}
                 <li>
                     <a href="#tabs-seo" id="onglet-seo">
@@ -43,9 +46,7 @@
             {% endif %}
         </ul>
         <div class="tab-container" id="form-module">
-            <div class="tab-content clearfix" id="tabs-form" data-onglet="onglet-contenu">
-                {{ form }}
-            </div>
+            {{ form }}
             {% if id != '' %}
                 <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
                     {% include 'module/tab_history.twig' %}

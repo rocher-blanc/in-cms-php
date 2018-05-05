@@ -431,9 +431,12 @@ class Controller extends \App\Kernel\Common\Controller
                 if ( ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
                 {
                     $arrayField[] = [
+                        "name"      => $row->getName(),
                         "Form_HTML" => $form->genHTML( $row ),
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
+                        "tab" 		=> $row->getTab(),
+                        "full" 		=> $row->isFull(),
                         "comment"	=> $row->getComment(),
                         "required"	=> $row->isRequired(),
                         "error" 	=> $row->getError()
@@ -442,14 +445,19 @@ class Controller extends \App\Kernel\Common\Controller
             }
         }
 
+        $arrayTab = $this->getEntity()->getTabs() ;
+
         $this->setRender( 'cdn_css' , $form->getCdnCSS() ) ;
         $this->setRender( 'cdn_js' , $form->getCdnJS() ) ;
 
         $this->setRender( 'css' , $form->getLibCSS() ) ;
         $this->setRender( 'js' , $form->getLibJS() ) ;
 
+        $this->setRender( 'tabs' , $arrayTab ) ;
+
         $this->setRender( 'form' , $this->renderForm([
             'field' => $arrayField,
+            'tabs' => $arrayTab,
             'uri_id_parent' => $this->getUriParent(),
             'route_type' => ( $value == false ? 'add' : 'edit' ),
             'id' => $this->getId()
@@ -478,7 +486,6 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType ) ;
 
-            //\App\Kernel\Debug::view( $tab );
             unset( $Controller );
             return $tab ;
         }
@@ -794,17 +801,37 @@ class Controller extends \App\Kernel\Common\Controller
             {
                 if ( $field->getData('index') == true )
                 {
-                    $thArray[ $field->getName() ] = [
+                    $arrayDate = [];
+
+                    if ( $field->getType() == 'date' )
+                    {
+                        $value_convert_start = NULL;
+                        $value_convert_end   = NULL;
+
+                        $valueSearch = $this->getApp()->request->get( $field->getName() ) ;
+                        if ( ! empty( $valueSearch ) )
+                        {
+                            list( $start , $end ) = explode( ' - ' , $valueSearch );
+
+                            $value_convert_start = $this->Factory()->Date()->convertUs( $start );
+                            $value_convert_end   = $this->Factory()->Date()->convertUs( $end );
+                        }
+
+                        $arrayDate = [
+                            'value_convert_start' => $value_convert_start,
+                            'value_convert_end' => $value_convert_end,
+                        ];
+                    }
+
+                    $thArray[ $field->getName() ] = array_merge([
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
                         'value' => $this->getApp()->request->get( $field->getName() ),
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
-                        'value_convert_start' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_start" ) ) : NULL ),
-                        'value_convert_end' => ( $field->getType() == 'date' ? $this->Factory()->Date()->convertUs( $this->getApp()->request->get( $field->getName() . "_end" ) ) : NULL ),
                         'type' => $field->getType(),
                         'options' => ( $field->isAssociated() == true ? $this->getValueAssociated( $field , "array" , true ) : NULL )
-                    ];
+                    ], $arrayDate);
 
                     if ( $field->getType() == "select" && $field->isAssociated() == true )
                     {
@@ -826,7 +853,7 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $content )
             {
-                $paginator = new Paginator($count, $elmtPerPage, $page, '?page=(:num)');
+                $paginator = new Paginator($count, $elmtPerPage, $page, '(:num)');
                 $paginator->setNextText('Suivant');
                 $paginator->setPreviousText('Précédent');
                 $paginator->setMaxPagesToShow(5);
@@ -914,6 +941,7 @@ class Controller extends \App\Kernel\Common\Controller
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
         }
 
+        $this->setRender( 'page' , $page ) ;
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
@@ -1166,7 +1194,9 @@ class Controller extends \App\Kernel\Common\Controller
 
                         if ( $first )
                         {
-                            $result['msg'] = $row->getError() ;
+                            $result['msg']   = $row->getError() ;
+                            $result['tab']   = $row->getTab() ;
+                            $result['field'] = $row->getName() ;
                             $first = false ;
                         }
                     }
@@ -1242,7 +1272,7 @@ class Controller extends \App\Kernel\Common\Controller
             $table = $this->getApp()->request()->post('table-' . $this->getEntityName() );
             if ( $table )
             {
-                $position = 1;
+                $position = $this->getRepository()->minPosition( $table ) ;
                 foreach( $table as $row )
                 {
                     $elmt = \DB::find( $this->getEntityName() , $row );

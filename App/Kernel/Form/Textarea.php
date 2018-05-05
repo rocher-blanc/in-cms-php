@@ -14,7 +14,7 @@ class Textarea extends \App\Kernel\Back\Form
             ];
         }
 
-        return $this->View()->fetch( 'form/textarea.twig.html' , [
+        return $this->View()->fetch( 'form/textarea.twig' , [
             'name' => $name,
             'value' => $value,
             'editor' => $field->getData('editor'),

@@ -31,7 +31,7 @@ class Gallery extends \App\Kernel\Back\Form
         $Gal->setFolder( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getEntity()->getFolder() );
         $rst = $Gal->getAllByField();
 
-        return $this->View()->fetch( 'form/gallery.twig.html' , [
+        return $this->View()->fetch( 'form/gallery.twig' , [
             'rst' => $rst,
             'name' => $name,
             'value' => $value,

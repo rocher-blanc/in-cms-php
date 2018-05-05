@@ -25,6 +25,12 @@ class Repository extends \App\Kernel\Common\Repository
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
     }
 
+    public function minPosition( $array )
+    {
+        return \DB::for_module( $this->getName() )
+            ->where_in( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , $array )->min( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
+    }
+
     public function findOneLang( $id , $idlang )
     {
         return \DB::for_module_lang( $this->getName() , $id , $idlang )->find_one() ;

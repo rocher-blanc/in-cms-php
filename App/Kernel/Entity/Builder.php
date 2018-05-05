@@ -11,6 +11,12 @@ class Builder extends Model
     protected $_field = [] ;
 
     /*
+     * @array
+     * Variable contenant toutes les tabs
+     */
+    protected $_tab = [] ;
+
+    /*
      * @string
      * Variable contenant le nom du dernier champ construit
      */
@@ -161,6 +167,9 @@ class Builder extends Model
 
     public function __construct()
     {
+        // Tab par défaut pour les formulaires
+        $this->addTab( 'contenu' , "Contenu" , 'icon-home2' ) ;
+
         $this->setCustomFolder( $this->getClassName() );
         $this->initDefaultField() ;
         $this->setDefaultSetting() ;
@@ -512,14 +521,58 @@ class Builder extends Model
         return $this->_folder_name ;
     }
 
+    public function getTabs()
+    {
+        $tab = [];
+        if ( ! empty( $this->getField() ) )
+        {
+            foreach( $this->getField() as $row )
+            {
+                if ( array_key_exists( $row->getTab() , $this->_tab ) )
+                {
+                    $tab[ $row->getTab() ] = $this->_tab[ $row->getTab() ];
+                }
+                else
+                {
+                    $tab[ $row->getTab() ] = [
+                        'name' => $row->getTab(),
+                        'icon' => 'icon-question',
+                        'key' => $row->getTab()
+                    ];
+                }
+            }
+        }
+
+        return $tab ;
+    }
+
     /* ************************************************** */
     /* ******************   CHAMPS   ******************** */
     /* ************************************************** */
 
+    public function addTab( $key , $name , $icon )
+    {
+        $this->_tab[ $key ] = [
+            'name' => $name,
+            'icon' => $icon,
+            'key' => $key
+        ];
+    }
+
     public function addDependency( $name )
     {
-        $this->_hasDependency = true ;
-        $this->_dependency[] = $name ;
+        if ( ! in_array( $name , $this->_dependency ) )
+        {
+            $ct = \DB::for_table('module')
+                ->where(array('module_class_name' => $name , 'module_active' => 1))
+                ->count();
+
+            if( $ct != 0 )
+            {
+                $this->_hasDependency = true ;
+                $this->_dependency[] = $name ;
+            }
+        }
     }
 
     public function build( $name , $force = false )
@@ -728,6 +781,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_VALUE" , $size ) ;
         $this->field()->setData( "SQL_TYPE" , $type ) ;
         $this->field()->setData( "SQL_DEFAULT" , $defaut ) ;
+        $this->field()->setData( "tab" , "" ) ;
         $this->field()->setData( "type" , "hidden" ) ;
         return $this ;
     }
@@ -931,6 +985,12 @@ class Builder extends Model
     protected function twig( $t )
     {
         $this->field()->setData( "twig" , $t ) ;
+        return $this ;
+    }
+
+    protected function tab( $t )
+    {
+        $this->field()->setData( "tab" , $t ) ;
         return $this ;
     }
 

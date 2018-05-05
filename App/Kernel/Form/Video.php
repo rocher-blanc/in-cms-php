@@ -9,7 +9,7 @@ class Video extends \App\Kernel\Back\Form
         $this->_lib_js  = ['cmsmedias/js/jvideo.js'];
         $this->_lib_css = ['cmsmedias/css/jvideo.css'];
 
-        return $this->View()->fetch( 'form/video.twig.html' , [
+        return $this->View()->fetch( 'form/video.twig' , [
             'name' => $name,
             'value' => $value,
             'required' => $field->isRequired()

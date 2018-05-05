@@ -58,7 +58,7 @@ class Image extends \App\Kernel\Back\Form
             $alt_img = $Alt->getOne();
         }
 
-        return $this->View()->fetch( 'form/image.twig.html' , [
+        return $this->View()->fetch( 'form/image.twig' , [
             'name' => $name,
             'has_alt_img' => $field->getData('hasAltText'),
             'alt_img' => $alt_img,

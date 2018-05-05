@@ -1,5 +1,3 @@
-{% set counter = 0 %}
-
 <form name="form" method="post" action="{{ route( mod.name , route_type , uri_id_parent , id ) }}" class="form-vertical">
     <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}"/>
@@ -7,28 +5,35 @@
     {% for c in field if c.type == 'hidden' %}
         {{ c.Form_HTML }}
     {% endfor %}
-    {% for c in field if c.type != 'hidden' %}
-        {% if c.full != true %}
-            {% set counter = counter + 1 %}
-            {% if counter == 2 %}
-                {% set classCol = 'col_half col_last' %}
-                {% set counter = 0 %}
-            {% else %}
-                {% set classCol = 'col_half' %}
-            {% endif %}
-        {% else %}
-            {% set classCol = 'col_full' %}
-        {% endif %}
-        <div class="ed_field {{ classCol }}{% if c.error != '' %} error{% endif %}">
-            <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
-            {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
-            {{ c.Form_HTML }}
+
+    {% for tab in tabs %}
+        {% set counter = 0 %}
+        <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}">
+            {% for c in field if c.tab == tab.key %}
+                {% if c.full != true %}
+                    {% set counter = counter + 1 %}
+                    {% if counter == 2 %}
+                        {% set classCol = 'col_half col_last' %}
+                        {% set counter = 0 %}
+                    {% else %}
+                        {% set classCol = 'col_half' %}
+                    {% endif %}
+                {% else %}
+                    {% set classCol = 'col_full' %}
+                {% endif %}
+                <div class="ed_field {{ classCol }}{% if c.error != '' %} error{% endif %}" id="field-{{ c.name }}">
+                    <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
+                    {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
+                    {{ c.Form_HTML }}
+                </div>
+            {% endfor %}
+
+            <div class="ed_field col_full">
+                <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
+            </div>
+            <div class="ed_field col_full">
+                <p class="ed-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
+            </div>
         </div>
     {% endfor %}
-    <div class="ed_field col_full">
-        <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
-    </div>
-    <div class="ed_field col_full">
-        <p class="ed-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
-    </div>
 </form>

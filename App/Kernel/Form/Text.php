@@ -6,7 +6,7 @@ class Text extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
 	{
-        return $this->View()->fetch( 'form/text.twig.html' , [
+        return $this->View()->fetch( 'form/text.twig' , [
             'name' => $name,
             'value' => htmlspecialchars( $value ),
             'maxlength' => $field->getData('maxLength'),

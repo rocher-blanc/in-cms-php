@@ -15,7 +15,10 @@ class Field
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->setData( "tab" , "contenu" ) ;
+    }
 
     /* ************************************************** */
     /* ****************    SETTER     ******************* */
@@ -225,6 +228,11 @@ class Field
     public function getCrop()
     {
         return $this->getData('crop') ;
+    }
+
+    public function getTab()
+    {
+        return $this->getData('tab') ;
     }
 
     public function getThumb()

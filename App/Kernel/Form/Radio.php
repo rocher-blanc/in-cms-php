@@ -15,7 +15,7 @@ class Radio extends \App\Kernel\Back\Form
 		$this->_lib_js  = 'cmsmedias/canvas/js/components/bs-switches.js';
 		$this->_lib_css = 'cmsmedias/canvas/css/src/components/bs-switches.css';
 
-        return $this->View()->fetch( 'form/radio_boolean.twig.html' , [
+        return $this->View()->fetch( 'form/radio_boolean.twig' , [
             'name' => $name,
             'value' => $value
         ]);
