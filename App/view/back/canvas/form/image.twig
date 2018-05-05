@@ -1,10 +1,21 @@
-        <div id="bloc_media_id_{{ name }}" class="clear">
+        <div id="bloc_media_id_{{ name }}">
             <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
             <div class="scrollhimage">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" style="width: 100px; height: 100px; margin: 0 auto;" src="{{ hasValue ? image : asset('canvas/img/nophoto.png') }}" />
+                    <div class="card-body">
+                        <p class="card-text">Source</p>
+                        <a href="{{ route( mod.name , 'media' ) }}" class="button button-3d button-mini button-rounded" data-lightbox="ajax"><i class="icon-photo"></i> Sélectionner</a>
+                        {% if required == false %}
+                            <a class="button button-3d button-mini button-rounded button-red deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}" data-field="{{ field_name }}" data-fieldid="id_{{ name }}"><i class="icon-trash2"></i>Supprimer</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {#
                 <div class="img-source">
                     <div class="blocImage" id="source_{{ field_name }}">
                         {% if hasValue %}
-                        <img src="{{ image }}" class="img-responsive" />
+                            <img src="{{ image }}" class="img-responsive" />
                         {% endif %}
                     </div>
                     <div class="type">Source</div>
@@ -19,34 +30,34 @@
                         </a>
                     {% endif %}
                 </div>
-                {% if thumb|length %}
-                    {% for row in thumb %}
-                        <div class="img-thumb">
-                            <div class="blocImage" id="t_{{ field_name }}_{{ row.width }}x{{ row.height }}">
-                                {% if hasValue %}
-                                    <img src="{{ row.image }}" class="img-responsive" />
-                                {% endif %}
-                            </div>
-                            <div class="type">Taille: {{ row.width }}x{{ row.height }}</div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                #}
                 {% if crop|length %}
                     {% for row in crop %}
+                        <div class="card" style="width: 18rem;" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}">
+                            <img class="card-img-top" style="width: 100px; height: 100px; margin: 0 auto;" src="{{ hasValue ? row.image : asset('canvas/img/nophoto.png') }}" />
+                            <div class="card-body">
+                                <p class="card-text">Taille: {{ row.width }}x{{ row.height }}</p>
+                                <a class="button button-3d button-mini button-rounded openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
+                                    <i class="icon-crop2"></i>Recadrer
+                                </a>
+                            </div>
+                        </div>
+                        {#
                         <div class="img-crop">
                             <div class="blocImage" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}">
                                 {% if hasValue %}
                                     <img src="{{ row.image }}" class="img-responsive" />
                                 {% endif %}
                             </div>
-                            <div class="type">Taille: {{ row.width }}x{{ row.height }}</div>
-                            <a class="btn btn-info fileinput-button openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
-                                <i class="fa fa-crop"></i>
-                                <span>Recadrer</span>
+                            <div class="type"></div>
+                            <a class="button button-3d button-mini button-rounded openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
+                                <i class="icon-crop2"></i>Recadrer
                             </a>
                         </div>
+                        #}
                     {% endfor %}
                 {% endif %}
+                <div class="clear"></div>
             </div>
         </div>
 {% if has_alt_img %}

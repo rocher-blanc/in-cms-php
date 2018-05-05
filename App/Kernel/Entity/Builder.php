@@ -563,14 +563,18 @@ class Builder extends Model
     {
         if ( ! in_array( $name , $this->_dependency ) )
         {
-            $ct = \DB::for_table('module')
+            $rst = \DB::for_table('module')
+                ->select('module_icon')
                 ->where(array('module_class_name' => $name , 'module_active' => 1))
-                ->count();
+                ->find_one();
 
-            if( $ct != 0 )
+            if( $rst )
             {
                 $this->_hasDependency = true ;
-                $this->_dependency[] = $name ;
+                $this->_dependency[] = [
+                    'name' => $name,
+                    'icon' => $rst->module_icon
+                ];
             }
         }
     }

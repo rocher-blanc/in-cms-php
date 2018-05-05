@@ -1251,9 +1251,9 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $this->getEntity()->getDependency() as $dependency )
             {
                 $depedencies[] = [
-                    'name' => $dependency,
-                    'slug' => strtolower( $dependency ),
-                    'icon' => 'icon-line-layers',
+                    'name' => $dependency['name'],
+                    'slug' => strtolower( $dependency['name'] ),
+                    'icon' => $dependency['icon'],
                 ];
             }
         }
@@ -1571,6 +1571,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
         $this->setRender( 'parentLine' , $arrayParent ) ;
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
         $this->setRender( 'history' , $this->Log()->getElementHistory( $this->getEntityId() , $this->getId() ) ) ;
 
         $this->render('formulaire.twig') ;

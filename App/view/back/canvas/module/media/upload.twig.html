@@ -1,0 +1,68 @@
+<div class="modal1" id="myModal1">
+    <div class="block divcenter" style="background-color: #fff; max-width: 932px;">
+        <div class="title-modal">
+            <div class="col_half nomargin"><h3>Sélectionner une image</h3></div>
+            <div class="col_half col_last nomargin" style="width: 52%;"><a style="float: right;" href="#" class="button button-3d button-mini button-rounded"><i class="icon-line2-cloud-upload"></i> Charger une image</a></div>
+            <div class="clear"></div>
+        </div>
+        <div class="content content-modal">
+            <div class="clear"></div>
+
+            <div id="portfolio" class="portfolio grid-container">
+                {% for i in 1..20 %}
+                <article class="portfolio-item pf-media pf-icons">
+                    <div class="portfolio-image">
+                        <a href="javascript:;">
+                            <img src="https://fakeimg.pl/100x100/" />
+                        </a>
+                        <div class="portfolio-overlay">
+                            <a href="javascript:;" class="left-icon" data-lightbox="image"><i class="icon-line-plus"></i></a>
+                            <a href="javascript:;" class="right-icon"><i class="icon-trash2"></i></a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{#
+<div class="media">
+	<div class="title">
+		Gestion des médias
+		<span class="pull-right">
+			{% if noImage != true %}<a href="{{ siteUrl('module/' ~ mod.name ~ '/media') }}" class="link-popup btn btn-xs btn-success"><i class="fa fa-picture-o"></i> Voir les images</a>{% endif %}
+			<a href="javascript:;" class="close-popup btn btn-xs btn-default"><i class="fa fa-times"></i> Fermer</a>
+		</span>
+	</div>
+	<div class="content">
+		<div class="blocUpload">
+			<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+			<span class="btn btn-success fileinput-button" id="btn-upload">
+				<i class="glyphicon glyphicon-plus"></i>
+				<span>Sélectionner une image</span>
+				<input type="file" name="files" id="fileupload" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/postupload') }}" data-url="{{ siteUrl('module/' ~ mod.name ~ '/upload') }}" />
+			</span>
+			<div class="loading">
+				<div id="num">1 %</div>
+				Upload en cours ...
+			</div>
+			<div class="progress" id="progress">
+				<div class="progress-bar progress-bar-success"></div>
+			</div>
+		</div>
+		<div class="postupload" id="postupload">
+			<div class="loading">
+				<span>
+                    Traitement de l'image en cours ...<br />
+                    Cette opération peut prendre plusieurs secondes en fonction de la taille de l'image source.
+                </span>
+				<img src="{{ asset('img/ajax-loader-medium.gif') }}" alt="" />
+			</div>
+		</div>
+		<div class="files" id="files">
+			<div class="progress-bar progress-bar-success"></div>
+		</div>
+	</div>
+</div>
+#}

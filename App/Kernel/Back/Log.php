@@ -9,7 +9,8 @@ class Log
     /* ************************************************** */
 
     private static $instance = NULL ;
-    private $codeArray = array() ;
+    private $codeArray = [] ;
+    private $codeArraySimple = [] ;
     public $_data = NULL ;
     private $_limit = 650 ;
 
@@ -155,6 +156,19 @@ class Log
         ];
     }
 
+    private function getCodeSimple()
+    {
+        return [
+            /* MODULES */
+            100 => "Ajout",
+            101 => "Modification",
+            102 => "Suppression",
+            103 => "Activation",
+            104 => "Désactivation",
+            105 => "Modification de l'ordre"
+        ];
+    }
+
     private function getType()
     {
         return $this->_data->log_type ;
@@ -248,19 +262,28 @@ class Log
     /* ****************      VIEW     ******************* */
     /* ************************************************** */
 
-    private function parseCode()
+    private function parseCode( $elmt = false )
     {
-        if ( empty( $this->codeArray ) ) $this->codeArray = $this->getCode() ;
+        if ( $elmt == false )
+        {
+            if ( empty( $this->codeArray ) ) $this->codeArray = $this->getCode() ;
 
-        if ( array_key_exists( $this->_data->log_code , $this->codeArray ) ) 	return str_replace( "%i" , $this->_data->log_value , $this->codeArray[ $this->_data->log_code ] ) ;
-        else																	return "Aucun message pour le code erreur : " . $this->_data->log_code . ' / ' . $this->_data->log_value ;
+            if ( array_key_exists( $this->_data->log_code , $this->codeArray ) ) 	return str_replace( "%i" , $this->_data->log_value , $this->codeArray[ $this->_data->log_code ] ) ;
+            else																	return "Aucun message pour le code erreur : " . $this->_data->log_code . ' / ' . $this->_data->log_value ;
+        }
+        else
+        {
+            if ( empty( $this->codeArraySimple ) ) $this->codeArraySimple = $this->getCodeSimple() ;
+
+            return $this->codeArraySimple[ $this->_data->log_code ] ;
+        }
 
     }
 
-    public function parse()
+    public function parse( $elmt = false )
     {
         $std = new \stdClass;
-        $std->msg   = $this->parseCode() ;
+        $std->msg   = $this->parseCode( $elmt ) ;
         $std->type = $this->getType() ;
         $std->date = $this->getDate() ;
         $std->user = $this->getUser() ;
@@ -281,7 +304,7 @@ class Log
         {
             foreach( $logRows as $row ) {
                 $this->setData( $row ) ;
-                $rows[] = $this->parse() ;
+                $rows[] = $this->parse( true ) ;
             }
         }
 

@@ -9,8 +9,13 @@ class Textarea extends \App\Kernel\Back\Form
         if ( $field->getData('editor') == true )
         {
             $this->_lib_js  = [
-                'cmsmedias/js/ckeditor/ckeditor.js',
-                'cmsmedias/js/ckeditor.js'
+                'cmsmedias/canvas/js/wysiwyg/summernote.min.js',
+                'cmsmedias/canvas/js/wysiwyg/summernote-image-attributes.js',
+                'cmsmedias/canvas/js/wysiwyg/lang/summernote-fr-FR.js'
+            ];
+
+            $this->_lib_css  = [
+                'cmsmedias/canvas/css/src/wysiwyg/summernote.css'
             ];
         }
 

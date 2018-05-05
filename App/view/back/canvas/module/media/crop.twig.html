@@ -1,0 +1,23 @@
+<div class="media">
+	<div class="title" style="margin: 0;">
+		Recadrage d'une image
+		<span class="pull-right">
+			<a href="javascript:;" class="btn btn-xs btn-default hide saveInProgress"><img src="{{ asset('img/ajax-loader.gif') }}" alt="Sauvegarde en cours ..." /></a>
+			<a href="javascript:;" class="saveCrop btn btn-xs btn-success hide"><i class="fa fa-floppy-o"></i> Sauvegarder</a>
+			<a href="javascript:;" class="close-popup btn btn-xs btn-default"><i class="fa fa-times"></i> Fermer</a>
+		</span>
+	</div>
+	<img src="{{ siteUrl( path ~ '/' ~ imageName , false ) }}" id="cropimage" />
+	<form id="formCropImage" action="{{ siteUrl('module/' ~ mod.name ~ '/cropimage') }}" method="post">
+		<input type="hidden" name="image" id="image" value="{{ path }}/{{ imageName }}" />
+		<input type="hidden" name="imageName" id="imageName" value="{{ imageName }}" />
+		<input type="hidden" name="field" id="field" value="{{ field }}" />
+		<input type="hidden" name="crop_x" id="crop_x" value="0" />
+		<input type="hidden" name="crop_y" id="crop_y" value="0" />
+		<input type="hidden" name="crop_x2" id="crop_x2" value="0" />
+		<input type="hidden" name="crop_y2" id="crop_y2" value="0" />
+		<input type="hidden" name="crop_width" id="crop_width" value="0" />
+		<input type="hidden" name="crop_height" id="crop_height" value="0" />
+		<input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+	</form>
+</div>
