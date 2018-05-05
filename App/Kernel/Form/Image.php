@@ -68,7 +68,7 @@ class Image extends \App\Kernel\Back\Form
             'hasValue' => $this->hasValue(),
             'minWidth' => $this->min_width,
             'minHeight' => $this->min_height,
-            'hrefLink' => $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/media' ),
+            'hrefLink' => $this->Factory()->Url()->route( $field->getData('module') , 'media' ),
             'image' => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg') ),
             'value' => ( $this->validValue( $mini ) == true ? $value : '' ),
             'field_name' => $field->getName()
@@ -122,7 +122,7 @@ class Image extends \App\Kernel\Back\Form
                 $tab[] = [
                     "image" => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : $this->Factory()->Url()->get('assets/themes/default/img/image-not-found.jpg') ),
                     "disabled" => $disabled,
-                    "href" => $this->Factory()->Url()->get( '/module/' . $field->getData('module') . '/crop/' . $value ),
+                    "href" => $this->Factory()->Url()->route( $field->getData('module') , 'crop' , '' , $value ),
                     "width" => $crop[0],
                     "height" => $crop[1]
                 ];

@@ -1655,12 +1655,12 @@ class Controller extends \App\Kernel\Common\Controller
         $Media->upload( UPLOAD_PATH ) ;
     }
 
-    protected function newuploadAction()
+    protected function reloadmediaAction()
     {
-        $this->render('media/upload.twig.html') ;
+        $this->reloadAllImage( true );
     }
 
-    protected function mediaAction()
+    protected function reloadAllImage( $render = false )
     {
         $Media = new \App\Kernel\Back\Media;
         $Media->setModuleId( $this->getEntityId() ) ;
@@ -1689,13 +1689,58 @@ class Controller extends \App\Kernel\Common\Controller
 
             $this->setRender( 'images' , $images ) ;
             $this->setRender( 'path' , $this->getEntity()->getPathImage(false) ) ;
-            $this->render('media/index.twig.html') ;
+
+            if ( $render )  $this->render('media/image.twig') ;
+            else            return $this->fetch('media/image.twig') ;
         }
         else
         {
-            $this->setRender( 'noImage' , true ) ;
-            $this->newuploadAction() ;
+            if ( $render )  $this->render('media/noimage.twig') ;
+            else            return $this->fetch('media/noimage.twig') ;
         }
+    }
+
+
+    protected function mediaAction()
+    {
+        $Media = new \App\Kernel\Back\Media;
+        $Media->setModuleId( $this->getEntityId() ) ;
+
+        $images = $Media->getAll() ;
+        if ( $images )
+        {
+            $rqt = \DB::for_module($this->getEntityName());
+            $fieldImage = $this->getEntity()->getImageField();
+            foreach ($fieldImage as $field)
+            {
+                $rqt = $rqt->select($field);
+            }
+            $rqt = $rqt->find_many();
+
+            if ($rqt)
+            {
+                foreach ($rqt as $row)
+                {
+                    foreach ($fieldImage as $field)
+                    {
+                        if (array_key_exists($row->get($field), $images)) $images[$row->get($field)]->media_delete = false;
+                    }
+                }
+            }
+        }
+        else
+        {
+            $images = [];
+        }
+
+        $this->setRender( 'images' , $images ) ;
+        $this->setRender( 'path' , $this->getEntity()->getPathImage(false) ) ;
+        $this->setRender( 'field' , $this->getApp()->request->get('field') ) ;
+        $this->setRender( 'fieldid' , $this->getApp()->request->get('fieldid') ) ;
+        $this->setRender( 'minwidth' , $this->getApp()->request->get('minwidth') ) ;
+        $this->setRender( 'minheight' , $this->getApp()->request->get('minheight') ) ;
+
+        $this->render('media/index.twig') ;
     }
 
     protected function postuploadAction()
@@ -1726,9 +1771,15 @@ class Controller extends \App\Kernel\Common\Controller
         $Media = new \App\Kernel\Back\Media;
         $Media->setImageId( $this->getId() );
         $Media->getNameById();
+
+        $this->setRender( 'width' , $this->getApp()->request->get('width') ) ;
+        $this->setRender( 'height' , $this->getApp()->request->get('height') ) ;
+        $this->setRender( 'field' , $this->getApp()->request->get('field') ) ;
+        $this->setRender( 'fieldid' , $this->getApp()->request->get('id') ) ;
         $this->setRender( 'imageName' , $Media->getImageName() ) ;
         $this->setRender( 'path' , $this->getEntity()->getPathImage(false) ) ;
-        $this->render('media/crop.twig.html') ;
+
+        $this->render('media/crop.twig') ;
     }
 
     protected function deletemediaAction()
@@ -1798,7 +1849,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $json[] = [
-            'key' => "source_" . $field->getName(),
+            'key' => "source_" . $field->getName() ,
             'file' => $this->Factory()->Url()->get( $this->getEntity()->getPathImage( false ) . '/t/' . $source , true )
         ];
 
@@ -1807,12 +1858,7 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $field->getThumb() as $thumb )
             {
                 // width, height
-                $file = $Media->genThumb( $thumb[0] , $thumb[1] ) ;
-
-                $json[] = [
-                    'key' => "t_" . $field->getName() . "_" . $thumb[0] . 'x' .  $thumb[1] ,
-                    'file' => $this->Factory()->Url()->get( $this->getEntity()->getPathImage( false ) . '/t/' . $file , true )
-                ];
+                $Media->genThumb( $thumb[0] , $thumb[1] ) ;
             }
         }
 
@@ -1835,7 +1881,7 @@ class Controller extends \App\Kernel\Common\Controller
             'id' => [
                 'key' => 'id_' . $field->getColumn() ,
                 'value' => $Media->getImageId() ,
-                'linkCrop' => $this->Factory()->Url()->get( 'module/' . $this->getEntityName() . '/crop/' . $Media->getImageId() )
+                'linkCrop' => $this->Factory()->Url()->route( $this->getEntityName() , 'crop' , $this->getUriParent() , $Media->getImageId() )
             ],
             'files' => $json
         ]) ;

@@ -1,65 +1,32 @@
-        <div id="bloc_media_id_{{ name }}">
-            <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
-            <div class="scrollhimage">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" style="width: 100px; height: 100px; margin: 0 auto;" src="{{ hasValue ? image : asset('canvas/img/nophoto.png') }}" />
-                    <div class="card-body">
-                        <p class="card-text">Source</p>
-                        <a href="{{ route( mod.name , 'media' ) }}" class="button button-3d button-mini button-rounded" data-lightbox="ajax"><i class="icon-photo"></i> Sélectionner</a>
-                        {% if required == false %}
-                            <a class="button button-3d button-mini button-rounded button-red deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}" data-field="{{ field_name }}" data-fieldid="id_{{ name }}"><i class="icon-trash2"></i>Supprimer</a>
-                        {% endif %}
-                    </div>
-                </div>
-                {#
-                <div class="img-source">
-                    <div class="blocImage" id="source_{{ field_name }}">
-                        {% if hasValue %}
-                            <img src="{{ image }}" class="img-responsive" />
-                        {% endif %}
-                    </div>
-                    <div class="type">Source</div>
-                    <a class="btn btn-info fileinput-button openMedia" data-field="{{ field_name }}" data-fieldid="id_{{ name }}" data-minwidth="{{ minWidth }}" data-minheight="{{ minHeight }}" href="{{ hrefLink }}">
-                        <i class="fa fa-plus"></i>
-                        <span>Sélectionner</span>
-                    </a>
-                    {% if required == false %}
-                        <a class="btn btn-danger fileinput-button deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}margin-top: 5px;" data-field="{{ field_name }}" data-fieldid="id_{{ name }}">
-                            <i class="fa fa-trash"></i>
-                            <span>Supprimer</span>
-                        </a>
-                    {% endif %}
-                </div>
-                #}
-                {% if crop|length %}
-                    {% for row in crop %}
-                        <div class="card" style="width: 18rem;" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}">
-                            <img class="card-img-top" style="width: 100px; height: 100px; margin: 0 auto;" src="{{ hasValue ? row.image : asset('canvas/img/nophoto.png') }}" />
-                            <div class="card-body">
-                                <p class="card-text">Taille: {{ row.width }}x{{ row.height }}</p>
-                                <a class="button button-3d button-mini button-rounded openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
-                                    <i class="icon-crop2"></i>Recadrer
-                                </a>
-                            </div>
-                        </div>
-                        {#
-                        <div class="img-crop">
-                            <div class="blocImage" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}">
-                                {% if hasValue %}
-                                    <img src="{{ row.image }}" class="img-responsive" />
-                                {% endif %}
-                            </div>
-                            <div class="type"></div>
-                            <a class="button button-3d button-mini button-rounded openCrop{{ disabled ? ' disabled' : '' }}" data-height="{{ row.height }}" data-width="{{ row.width }}" data-field="{{ field_name }}" href="{{ row.href }}">
-                                <i class="icon-crop2"></i>Recadrer
-                            </a>
-                        </div>
-                        #}
-                    {% endfor %}
+<div id="bloc_media_id_{{ name }}">
+    <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
+    <div class="scrollhimage">
+        <div class="card">
+            <img class="card-img-top" id="source_{{ field_name }}" src="{{ hasValue ? image : asset('canvas/img/nophoto.png') }}" />
+            <div class="card-body">
+                <p class="card-text">Source</p>
+                <a href="{{ route( mod.name , 'media' ) }}?fieldid=id_{{ name }}&field={{ field_name }}&minwidth={{ minWidth }}&minheight={{ minHeight }}" class="button button-3d button-mini button-rounded" data-lightbox="ajax"><i class="icon-photo"></i> Sélectionner</a>
+                {% if required == false %}
+                    <a class="button button-3d button-mini button-rounded button-red deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}" data-field="{{ field_name }}" data-fieldid="id_{{ name }}"><i class="icon-trash2"></i>Supprimer</a>
                 {% endif %}
-                <div class="clear"></div>
             </div>
         </div>
+        {% if crop|length %}
+            {% for row in crop %}
+                <div class="card card-crop"{{ hasValue ? '' : ' style="display: none;"' }}>
+                    <img class="card-img-top" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}" src="{{ hasValue ? row.image : asset('canvas/img/nophoto.png') }}" data-url="{{ row.image }}" />
+                    <div class="card-body">
+                        <p class="card-text">Taille: {{ row.width }}x{{ row.height }}</p>
+                        <a class="button button-3d button-mini button-rounded openCrop" href="{{ row.href }}?height={{ row.height }}&width={{ row.width }}&field={{ field_name }}&id=c_{{ field_name }}_{{ row.width }}x{{ row.height }}" data-lightbox="ajax">
+                            <i class="icon-crop2"></i>Recadrer
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="clear"></div>
+    </div>
+</div>
 {% if has_alt_img %}
     <div class="alt">
         {% for l in lang %}

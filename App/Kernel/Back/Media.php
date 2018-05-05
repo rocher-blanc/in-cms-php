@@ -287,6 +287,9 @@ class Media extends \App\Kernel\Common\Media
 		$height  	= $this->getApp()->request->post('crop_height') ;
 		
 		$img = new \abeautifulsite\SimpleImage( $this->getFolder() . '/' . $imageName );
-		$img->crop($x, $y, $x2, $y2)->resize( $width , $height )->save( $this->getFolder() . '/c/' . $this->updateName( $imageName , $width . "x" . $height ) );
+		$img
+            ->crop($x, $y, $x2, $y2)
+            ->resize( $width , $height )
+            ->save( $this->getFolder() . '/c/' . $this->updateName( $imageName , $width . "x" . $height ) );
 	}
 }

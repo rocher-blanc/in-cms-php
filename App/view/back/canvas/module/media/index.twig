@@ -1,0 +1,59 @@
+<div class="modal1" id="myModal1">
+    <div class="block divcenter" style="background-color: #fff; max-width: 932px;">
+        <div class="title-modal">
+            <div class="col_half nomargin"><h3>Sélectionner une image</h3></div>
+            <div class="col_half col_last nomargin" style="width: 52%;">
+                <span style="float: right;" class="button button-3d button-mini button-rounded fileinput-button" id="btn-upload">
+                    <i class="icon-line2-cloud-upload"></i> Charger une image
+                    <input type="file" name="files" id="fileupload"
+                           data-field="{{ field }}"
+                           data-fieldid="{{ fieldid }}"
+                           data-minwidth="{{ minwidth }}"
+                           data-minheight="{{ minheight }}"
+                           data-postaction="{{ route( mod.name , 'postupload' ) }}"
+                           data-url="{{ route( mod.name , 'upload' ) }}"
+                           data-reload="{{ route( mod.name , 'reloadmedia' ) }}" />
+                </span>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="content content-modal" id="content-media">
+            <div class="clear"></div>
+            <div class="loadingmedia text-center" style="display: none">
+                <i class="fa fa-cog fa-spin fa-2x fa-fw"></i><br />
+                Traiement en cours
+            </div>
+            <div id="portfolio" class="portfolio grid-container">
+                <article class="portfolio-item pf-media pf-icons upload" id="uploadencours" style="display: none;">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <a href="javascript:;"><i class="fa fa-cog fa-spin fa-2x fa-fw"></i></a>
+                            <span>Traitement en cours</span>
+                        </div>
+                    </div>
+                </article>
+                {% for image in images %}
+                    <article class="portfolio-item pf-media pf-icons imagemedia">
+                        <div class="portfolio-image">
+                            <a href="javascript:;">
+                                <img src="{{ siteUrl( path ~ '/' ~ image.media_mini_name , false ) }}" />
+                            </a>
+                            <div class="portfolio-overlay">
+                                <a href="javascript:;" class="left-icon actionclickmedia" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/postclick') }}" data-id="{{ image.media_id }}"><i class="icon-line-plus"></i></a>
+                                {% if image.media_delete == true %}
+                                    <a class="right-icon deleteMedia" data-module="{{ mod.name }}" data-id="{{ image.media_id }}" href="{{ siteUrl('module/' ~ mod.name ~ '/deletemedia/' ~ image.media_id ~ '/' ~ csrf_token) }}"><i class="icon-trash2"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+                <div class="style-msg" id="noimagemsg" style="background-color: #eee;{{ images|length > 0 ? 'display:none;' : '' }}">
+                    <div class="sb-msg"><i class="icon-question-sign"></i>Il n'y a actuellement aucune image d'enregistrée</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    uploadImage();
+</script>
