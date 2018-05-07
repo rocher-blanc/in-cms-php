@@ -1,0 +1,60 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Menu{% endblock %}
+
+{% if id != -1 %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification d\'un menu' %}
+{% else %}
+{% set this_page = 'Ajout' %}
+{% set title_block_page = 'Ajout d\'un nouveau menu' %}
+{% endif %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('ext/menu/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
+    <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel table ext">
+                <header class="panel-heading">
+                    <h2 class="panel-title">{{ title_block_page }}</h2>
+                </header>
+                <div class="tab-content">
+                    <div class="tab-pane active panel-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Nom</label>
+                            <div class="col-md-6">
+                                <input type="text" id="menu_name" name="menu_name" class="form-control" value="{{ post.menu_name }}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <a id="btn_back" href="{{ siteUrl('ext/menu') }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+                            </div>
+
+                            <div class="col-md-5 col-md-offset-5 text-right">
+                                <button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
+                                <button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</form>
+<script>
+    var errorForm = {{ error }};
+    var tabError = '{{ tabError }}';
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
+<link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+<script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
+{% endblock %}

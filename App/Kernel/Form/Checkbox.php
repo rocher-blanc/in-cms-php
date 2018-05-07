@@ -14,8 +14,8 @@ class Checkbox extends \App\Kernel\Back\Form
 
     private function getMultiselect( $field, $name, $value = NULL )
     {
-        $this->_lib_js  = 'bootstrap-multiselect/dist/js/bootstrap-multiselect.js';
-        $this->_lib_css = 'bootstrap-multiselect/dist/css/bootstrap-multiselect.css';
+        $this->_lib_js  = 'cmsmedias/canvas/js/components/bs-select.js';
+        $this->_lib_css = 'cmsmedias/canvas/css/src/components/bs-select.css';
 
         if ( $value === NULL ) $value = [];
 
@@ -26,14 +26,9 @@ class Checkbox extends \App\Kernel\Back\Form
         }
 
         return '
-        <div class="input-group btn-group">
-            <span class="input-group-addon">
-                    <i class="fa fa-th-list"></i>
-            </span>
-            <select name="' . $name . '" id="id_' . $field->getColumn() . '" data-plugin-multiselect multiple="multiple" data-live-search="true">
-                ' . $select . '
-            </select>
-        </div>' ;
+        <select name="' . $name . '" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options">
+            ' . $select . '
+        </select>' ;
     }
 
     private function getMultiselectParent( $field, $name, $value = NULL )

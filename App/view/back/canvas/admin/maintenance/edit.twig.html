@@ -1,0 +1,33 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Maintenance{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/admin/maintenance') }}" role="form" class="form-horizontal group-border-dashed">
+    <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Mise en maintenance du site internet</h3>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>Activer la maintenance</label>
+                <div class="comment">Quand cette option est activée, seules les personnes ayant leur adresse IP dans la liste ci-dessous auront accès au site internet.</div>
+                {% include 'form/generic/switch.twig' with {'value':maintenance_active, 'name':'maintenance_active'} %}
+            </div>
+            <div class="ed_field col_half">
+                <label>Adresse IP autorisées</label>
+                <textarea name="maintenance_ip" class="form-control" rows="10">{{ maintenance_ip }}</textarea>
+            </div>
+            <div class="ed_field col_full">
+                <div class="style-msg infomsg">
+                    <div class="sb-msg"><i class="icon-info-sign"></i>Votre adresse IP est <strong>{{ ip }}</strong></div>
+                </div>
+            </div>
+            {% include 'form/generic/button.twig' %}
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -41,45 +41,87 @@
                             {% endfor %}
                             <li>
                                 <a href="#">
+                                    Paramètres
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/page') }}">
+                                            Pages spéciales
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/parammodule') }}">
+                                            Modules
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/user') }}">
+                                            Administrateurs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/group') }}">
+                                            Groupes d'administrateurs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/langue') }}">
+                                            Langues
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/metadata') }}">
+                                            Métadonnées
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/microdata') }}">
+                                            Microdata
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">
                                     <div>Développeur</div>
                                 </a>
                                 <ul>
-                                    <li{% if menu == 'moduleadmin' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/moduleadmin') }}">
                                             <div>Modules</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'domain' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/domain') }}">
                                             <div>Domaines</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'pageadmin' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/pageadmin') }}">
                                             <div>Pages spéciales</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'groupmodule' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/groupmodule') }}">
                                             <div>Menu d'administration</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'performance' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/performance') }}">
                                             <div>Performances</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'log' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/log') }}">
                                             <div>Journal d'événements</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'maintenance' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/maintenance') }}">
                                             <div>Maintenance</div>
                                         </a>
                                     </li>
-                                    <li{% if menu == 'security' %} class="active"{% endif %}>
+                                    <li>
                                         <a href="{{ siteUrl('/admin/security') }}">
                                             <div>Sécurité</div>
                                         </a>

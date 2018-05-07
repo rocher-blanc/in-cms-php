@@ -4,45 +4,62 @@
         <label>Title</label>
         <div class="comment">55 caractères maximum, indique aux moteurs de recherche le titre de votre page</div>
         {% for l in lang %}
-            <div style="margin-bottom:10px;" class="input-group input-group-icon">
-                <span class="input-group-addon">
-                    <span class="icon">
-                        <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+            {% if lang|length == 1 %}
+                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                    <input type="text" data-plugin-counter="55" name="seo_title_{{ l.url }}" value="{{ content[ l.url ]['title'] }}" class="form-control" />
+                </div>
+            {% else %}
+                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                    <span class="input-group-addon">
+                        <span class="icon">
+                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                        </span>
                     </span>
-                </span>
-                <input type="text" data-plugin-counter="55" name="seo_title_{{ l.url }}" value="{{ content[ l.url ]['title'] }}" class="form-control" />
-            </div>
+                    <input type="text" data-plugin-counter="55" name="seo_title_{{ l.url }}" value="{{ content[ l.url ]['title'] }}" class="form-control" />
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div class="ed_field col_full">
         <label>Description</label>
         <div class="comment">115 caractères maximum, indique aux moteurs de recherche la description de votre page</div>
         {% for l in lang %}
-            <div style="margin-bottom:10px;" class="input-group input-group-icon">
+            {% if lang|length == 1 %}
+                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                    <input type="text" data-plugin-counter="115" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
+                </div>
+            {% else %}
+                <div style="margin-bottom:10px;" class="input-group input-group-icon">
                 <span class="input-group-addon">
                     <span class="icon">
                         <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                     </span>
                 </span>
-                <input type="text" data-plugin-counter="115" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
-            </div>
+                    <input type="text" data-plugin-counter="115" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
-    <div class="ed_field col_half">
+    <div class="ed_field col_full">
         <label>Url</label>
         {% for l in lang %}
-            <div style="margin-bottom:10px;" class="input-group input-group-icon">
-                <span class="input-group-addon">
-                    <span class="icon">
-                        <i class="flag-icon flag-icon-{{ l.flag }}"></i>
-                    </span>
-                </span>
+            {% if lang|length == 1 %}
                 <input type="text" name="seo_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" class="form-control" />
                 <input type="hidden" name="seo_last_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" />
-            </div>
+            {% else %}
+                <div style="margin-bottom:10px;" class="input-group input-group-icon">
+                    <span class="input-group-addon">
+                        <span class="icon">
+                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                        </span>
+                    </span>
+                    <input type="text" name="seo_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" class="form-control" />
+                    <input type="hidden" name="seo_last_url_{{ l.url }}" value="{{ content[ l.url ]['url'] }}" />
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
-    <div class="ed_field col_half col_last">
+    <div class="ed_field col_full">
         <label>Indexer</label>
         <input type="hidden" name="{{ name }}" value="0" />
         <div class="switch">

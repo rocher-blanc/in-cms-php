@@ -1,0 +1,90 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Metadonnées{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/ext/metadata') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Gestion des métadonnées</h3>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Générale</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_one_fourth">
+                <label>Activer l'indexation</label>
+                {% include 'form/generic/switch.twig' with {'value':post.seo_robots, 'name':'seo_robots'} %}
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Forcer HTTPS</label>
+                {% include 'form/generic/switch.twig' with {'value':post.seo_ssl, 'name':'seo_ssl'} %}
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Forcer WWW</label>
+                {% include 'form/generic/switch.twig' with {'value':post.seo_www, 'name':'seo_www'} %}
+            </div>
+            <div class="ed_field col_one_fourth col_last">
+                <label>Author</label>
+                <input type="text" name="seo_author" class="form-control" value="{{ post.seo_author }}" />
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Géo</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_one_fourth">
+                <label>Region</label>
+                <input type="text" name="seo_geo_region" class="form-control" value="{{ post.seo_geo_region }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Placename</label>
+                <input type="text" name="seo_geo_placename" class="form-control" value="{{ post.seo_geo_placename }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Position</label>
+                <input type="text" name="seo_geo_position" class="form-control" value="{{ post.seo_geo_position }}" />
+            </div>
+            <div class="ed_field col_one_fourth col_last">
+                <label>ICBM</label>
+                <input type="text" name="seo_geo_icbm" class="form-control" value="{{ post.seo_geo_icbm }}" />
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Webmaster tools & statstiques</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_half">
+                <label>Google webmaster tools</label>
+                <input type="text" name="seo_google_webmaster_tools" class="form-control" value="{{ post.seo_google_webmaster_tools }}" />
+            </div>
+            <div class="ed_field col_half col_last">
+                <label>Bing webmaster tools</label>
+                <input type="text" name="seo_bing_webmaster_tools" class="form-control" value="{{ post.seo_bing_webmaster_tools }}" />
+            </div>
+            <div class="ed_field col_full">
+                <label>Google Analytics</label>
+                <textarea name="seo_google_analytics" class="form-control">{{ post.seo_google_analytics }}</textarea>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    {% include 'form/generic/button.twig' %}
+</form>	
+{% endblock %}

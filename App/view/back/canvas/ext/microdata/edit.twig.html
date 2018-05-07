@@ -1,0 +1,113 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Microdata{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/ext/microdata') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Gestion des microdatas</h3>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Générale</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>URL de votre logo</label>
+                <input type="text" name="md_logo" class="form-control" value="{{ post.md_logo }}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Corporation</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>Description</label>
+                <input type="text" name="md_description" class="form-control" value="{{ post.md_description }}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Website</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_half">
+                <label>Nom du site internet (court)</label>
+                <input type="text" name="md_name" class="form-control" value="{{ post.md_name }}" />
+            </div>
+            <div class="ed_field col_half col_last">
+                <label>Nom alternatif (court)</label>
+                <input type="text" name="md_alt_name" class="form-control" value="{{ post.md_alt_name }}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Réseaux sociaux</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_one_fifth">
+                <label>Facebook</label>
+                <input type="text" name="md_facebook" class="form-control" value="{{ post.md_facebook }}" />
+            </div>
+            <div class="ed_field col_one_fifth">
+                <label>Twitter</label>
+                <input type="text" name="md_twitter" class="form-control" value="{{ post.md_twitter }}" />
+            </div>
+            <div class="ed_field col_one_fifth">
+                <label>LinkedIn</label>
+                <input type="text" name="md_linkedin" class="form-control" value="{{ post.md_linkedin }}" />
+            </div>
+            <div class="ed_field col_one_fifth">
+                <label>Instagram</label>
+                <input type="text" name="md_instagram" class="form-control" value="{{ post.md_instagram }}" />
+            </div>
+            <div class="ed_field col_one_fifth col_last">
+                <label>Pinterest</label>
+                <input type="text" name="md_pinterest" class="form-control" value="{{ post.md_pinterest }}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Adresse</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_one_fourth">
+                <label>Téléphone</label>
+                <input type="text" name="md_phone" class="form-control" value="{{ post.md_phone }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Adresse</label>
+                <input type="text" name="md_address" class="form-control" value="{{ post.md_address }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>Code postal</label>
+                <input type="text" name="md_zip" class="form-control" value="{{ post.md_zip }}" />
+            </div>
+            <div class="ed_field col_one_fourth col_last">
+                <label>Ville</label>
+                <input type="text" name="md_town" class="form-control" value="{{ post.md_town }}" />
+            </div>
+        </div>
+    </div>
+
+    {% include 'form/generic/button.twig' %}
+</form>	
+{% endblock %}

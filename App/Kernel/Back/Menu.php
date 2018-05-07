@@ -96,13 +96,14 @@ class Menu
 
         $this->getApp()->view()->appendData([
             'adminFolder'       => trim( $this->getApp()->config('admin.url') , "/"),
+            'cat'               => ( array_key_exists( 0 , $this->_url ) == true ? $this->_url[0] : '' ),
             'menu'              => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
             'submenu'           => ( array_key_exists( 2 , $this->_url ) == true ? $this->_url[2] : '' ),
-			'menuTree'          => $rowsArray,
-			'active_user'       => ACTIVE_USER,
-			'active_newsletter' => NEWSLETTER_ACTIVE,
-			'color'             => COLOR,
-			'techno'            => TECHNO
+            'menuTree'          => $rowsArray,
+            'active_user'       => ACTIVE_USER,
+            'active_newsletter' => NEWSLETTER_ACTIVE,
+            'color'             => COLOR,
+            'techno'            => TECHNO
         ]);
 	}
 }

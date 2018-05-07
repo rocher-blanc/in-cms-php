@@ -39,7 +39,7 @@
                                 <img src="{{ siteUrl( path ~ '/' ~ image.media_mini_name , false ) }}" />
                             </a>
                             <div class="portfolio-overlay">
-                                <a href="javascript:;" class="left-icon actionclickmedia" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/postclick') }}" data-id="{{ image.media_id }}"><i class="icon-line-plus"></i></a>
+                                <a href="javascript:;" class="{{ image.media_delete ? 'left-icon' : 'center-icon' }} actionclickmedia" data-postaction="{{ siteUrl('module/' ~ mod.name ~ '/postclick') }}" data-id="{{ image.media_id }}"><i class="icon-line-plus"></i></a>
                                 {% if image.media_delete == true %}
                                     <a class="right-icon deleteMedia" data-module="{{ mod.name }}" data-id="{{ image.media_id }}" href="{{ siteUrl('module/' ~ mod.name ~ '/deletemedia/' ~ image.media_id ~ '/' ~ csrf_token) }}"><i class="icon-trash2"></i></a>
                                 {% endif %}

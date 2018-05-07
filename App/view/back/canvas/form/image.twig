@@ -5,9 +5,9 @@
             <img class="card-img-top" id="source_{{ field_name }}" src="{{ hasValue ? image : asset('canvas/img/nophoto.png') }}" />
             <div class="card-body">
                 <p class="card-text">Source</p>
-                <a href="{{ route( mod.name , 'media' ) }}?fieldid=id_{{ name }}&field={{ field_name }}&minwidth={{ minWidth }}&minheight={{ minHeight }}" class="button button-3d button-mini button-rounded" data-lightbox="ajax"><i class="icon-photo"></i> Sélectionner</a>
+                <a style="width: 142px;" href="{{ route( mod.name , 'media' ) }}?fieldid=id_{{ name }}&field={{ field_name }}&minwidth={{ minWidth }}&minheight={{ minHeight }}" class="button button-3d button-mini button-rounded" data-lightbox="ajax"><i class="icon-photo"></i> Sélectionner</a>
                 {% if required == false %}
-                    <a class="button button-3d button-mini button-rounded button-red deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}" data-field="{{ field_name }}" data-fieldid="id_{{ name }}"><i class="icon-trash2"></i>Supprimer</a>
+                    <a style="width: 142px;" class="button button-3d button-mini button-rounded button-red deleteMediaBtn" id="del_btn_id_{{ name }}" style="{{ value != '' ? '' : 'display:none; ' }}" data-field="{{ field_name }}" data-fieldid="id_{{ name }}"><i class="icon-trash2"></i>Supprimer</a>
                 {% endif %}
             </div>
         </div>
@@ -17,7 +17,7 @@
                     <img class="card-img-top" id="c_{{ field_name }}_{{ row.width }}x{{ row.height }}" src="{{ hasValue ? row.image : asset('canvas/img/nophoto.png') }}" data-url="{{ row.image }}" />
                     <div class="card-body">
                         <p class="card-text">Taille: {{ row.width }}x{{ row.height }}</p>
-                        <a class="button button-3d button-mini button-rounded openCrop" href="{{ row.href }}?height={{ row.height }}&width={{ row.width }}&field={{ field_name }}&id=c_{{ field_name }}_{{ row.width }}x{{ row.height }}" data-lightbox="ajax">
+                        <a style="width: 142px;" class="button button-3d button-mini button-rounded openCrop" href="{{ row.href }}?height={{ row.height }}&width={{ row.width }}&field={{ field_name }}&id=c_{{ field_name }}_{{ row.width }}x{{ row.height }}" data-lightbox="ajax">
                             <i class="icon-crop2"></i>Recadrer
                         </a>
                     </div>
@@ -30,14 +30,18 @@
 {% if has_alt_img %}
     <div class="alt">
         {% for l in lang %}
-            <div class="input-group input-group-icon">
-                <span class="input-group-addon">
-                    <span class="icon">
-                        <i class="flag-icon flag-icon-{{ l.flag }}"></i>
-                    </span>
-                </span>
+            {% if lang|length == 1 %}
                 <input type="text" value="{{ alt_img[ l.id ] }}" placeholder="Texte alternatif" class="form-control" name="alt_{{ name }}_{{ l.flag }}" id="id_alt_{{ name }}_{{ l.flag }}" />
-            </div>
+            {% else %}
+                <div class="input-group input-group-icon">
+                    <span class="input-group-addon">
+                        <span class="icon">
+                            <i class="flag-icon flag-icon-{{ l.flag }}"></i>
+                        </span>
+                    </span>
+                    <input type="text" value="{{ alt_img[ l.id ] }}" placeholder="Texte alternatif" class="form-control" name="alt_{{ name }}_{{ l.flag }}" id="id_alt_{{ name }}_{{ l.flag }}" />
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}

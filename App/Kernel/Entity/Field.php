@@ -207,7 +207,7 @@ class Field
     public function hasOption()
     {
         if ( $this->getData('option') !== NULL && count( $this->getData('option') ) > 0 ) 	return true ;
-        else									                                            return false ;
+        else									                                                    return false ;
     }
 
     public function hasOffeset()

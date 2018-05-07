@@ -12,8 +12,8 @@ class Select extends \App\Kernel\Back\Form
 	
 	private function getSelect( $field, $name, $value = NULL )
 	{
-        $this->_lib_js  = 'select2/dist/js/select2.min.js';
-		$this->_lib_css = 'select2/dist/css/select2.min.css';
+        $this->_lib_js  = 'cmsmedias/canvas/js/components/select-boxes.js';
+		$this->_lib_css = 'cmsmedias/canvas/css/src/components/select-boxes.css';
 		
 		$select = '' ;
 		if ( ! $field->isRequired() )
@@ -35,7 +35,7 @@ class Select extends \App\Kernel\Back\Form
         }
 		
 		return '
-		<select name="' . $name . '" id="id_' . $field->getColumn() . '" data-plugin-selectTwo class="form-control">
+		<select name="' . $name . '" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectTwo>
 			' . $select . '
 		</select>' ;
 	}

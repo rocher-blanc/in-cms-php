@@ -10,15 +10,16 @@
         <meta name="tokename" content="{{csrf_key}}" />
         {{ block('meta') }}
 
+        <link rel="icon" type="image/png" href="{% include 'favicon.twig.html' %}" />
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ asset('canvas/css/src/bootstrap.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/bootstrap-canvas.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('canvas/css/src/font-icons.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('canvas/css/src/animate.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('canvas/css/src/magnific-popup.css') }}" type="text/css" />
-        <link rel="stylesheet" href="{{ asset('canvas/css/src/style.css') }}" type="text/css" />
-        <link rel="icon" type="image/png" href="{% include 'favicon.twig.html' %}" />
-
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-switches.css') }}" type="text/css" />
         {{ block('stylesheets') }}
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/style.css') }}" type="text/css" />
+
         <title>{% block title %}Administration{% endblock %}</title>
         <script src="{{ asset('js/init.js') }}"></script>
         <script>
@@ -34,6 +35,7 @@
         <script src="{{ asset('canvas/js/jquery.js') }}"></script>
         <script src="{{ asset('canvas/js/plugins.js') }}"></script>
         <script src="{{ asset('canvas/js/functions.js') }}"></script>
+        <script src="{{ asset('canvas/js/components/bs-switches.js') }}"></script>
         <script src="{{ asset('canvas/js/easydoor/common.js') }}"></script>
         {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
             <script>

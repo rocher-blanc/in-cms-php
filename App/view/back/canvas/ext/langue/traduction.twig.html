@@ -1,0 +1,57 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Langues{% endblock %}
+{% set this_page = 'Traduction' %}
+
+{% block module %}
+<div class="row">
+	<div class="col-md-12">
+		<section class="panel">
+			<header class="panel-heading">
+                <h2 class="panel-title">Traduction du site internet</h2>
+			</header>
+			<div class="panel-body">
+				<div class="hot-container">
+					<div id="handsontable"></div>
+				</div>
+			</div>
+		</section>
+
+		<div class="tab-content">
+			<div class="tab-pane active panel-body panel-body-border">
+				<div class="row">
+					<div class="col-md-2">
+						<a id="btn_back" href="{{ siteUrl('ext/langue') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/handsontable.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		var car_data = [
+			{car: "Mercedes", model: "GL500", year: 2009, color: "blue", price: 32500},
+			{car: "Chevrolet", model: "Camaro", year: 2012, color: "red", price: 42400},
+			{car: "Dodge", model: "Charger", year: 2011, color: "white", price: 24900},
+			{car: "Hummer", model: "H3", year: 2014, color: "black", price: 54000},
+			{car: "Chevrolet", model: "Tahoe", year: 2009, color: "purple", price: 29300},
+			{car: "Toyota", model: "Land Cruiser", year: 2007, color: "lime", price: 54500},
+			{car: "Nissan", model: "GTR", year: 2009, color: "cyan", price: 44900},
+			{car: "Porsche", model: "Cayenne", year: 2012, color: "yellow", price: 35000},
+			{car: "Volkswagen", model: "Touareg", year: 2010, color: "crimson", price: 41000},
+			{car: "BMW", model: "X5", year: 2010, color: "orange", price: 48800},
+			{car: "Audi", model: "Q7", year: 2009, color: "green", price: 21000},
+			{car: "Cadillac", model: "Escalade", year: 2012, color: "silver", price: 63900}
+		];
+	</script>
+	<script src="{{ asset('libs/handsontable.min.js') }}"></script>
+	<script src="{{ asset('js/handsontable.js') }}"></script>
+{% endblock %}

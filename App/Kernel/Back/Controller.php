@@ -823,6 +823,16 @@ class Controller extends \App\Kernel\Common\Controller
                         ];
                     }
 
+                    $option = NULL;
+                    if ( $field->isAssociated() )
+                    {
+                        $option = $this->getValueAssociated( $field , "array" , true );
+                    }
+                    else if ( $field->hasOption() )
+                    {
+                        $option = $field->getOptions() ;
+                    }
+
                     $thArray[ $field->getName() ] = array_merge([
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
@@ -830,7 +840,7 @@ class Controller extends \App\Kernel\Common\Controller
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
                         'type' => $field->getType(),
-                        'options' => ( $field->isAssociated() == true ? $this->getValueAssociated( $field , "array" , true ) : NULL )
+                        'options' => $option
                     ], $arrayDate);
 
                     if ( $field->getType() == "select" && $field->isAssociated() == true )

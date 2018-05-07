@@ -15,15 +15,13 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><!-- Pour date range + form-process -->
     <link rel="stylesheet" href="{{ asset('canvas/css/src/components/daterangepicker.css') }}" />
-    <link rel="stylesheet" href="{{ vendor('select2/dist/css/select2.min.css') }}" />
-    {% if hasValidation and right.validation == true %}<link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-switches.css') }}" type="text/css" />{% endif %}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-boxes.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('canvas/js/components/moment.js') }}"></script>
     <script src="{{ asset('canvas/js/components/daterangepicker.js') }}"></script>
-    <script src="{{ vendor('select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('canvas/js/components/bs-boxes.js') }}"></script>
     <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
     {% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
-    {% if hasValidation and right.validation == true %}<script src="{{ asset('canvas/js/components/bs-switches.js') }}" data-turbolinks-eval="false"></script>{% endif %}
 {% endblock %}

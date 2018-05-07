@@ -66,6 +66,11 @@ class DB extends ORM
 
     public static function patchModuleTable( $name )
     {
+        $haveLang = \App\Kernel\Container::getInstance()->module( $name )->getEntity()->hasMultilang();
+        $fields   = \App\Kernel\Container::getInstance()->module( $name )->getEntity()->getField();
+
+        self::checkModuleTable( $name , $haveLang , $fields ) ;
+
         $rst = self::for_table('')->raw_query("SHOW COLUMNS FROM " . self::getTableName( $name ) )->find_many();
         $column = [];
         if ( $rst )
@@ -81,7 +86,7 @@ class DB extends ORM
             }
         }
 
-        if ( \App\Kernel\Container::getInstance()->module( $name )->getEntity()->hasMultilang() == true )
+        if ( $haveLang == true )
         {
             $rst = self::for_table('')->raw_query("SHOW COLUMNS FROM " . self::getTableNameLang( $name ) )->find_many();
             $columnLang = [];
@@ -100,7 +105,7 @@ class DB extends ORM
         }
 
         $sql = "" ;
-        foreach( \App\Kernel\Container::getInstance()->module( $name )->getEntity()->getField() as $field )
+        foreach( $fields as $field )
         {
             if ( ! $field->hasLang() )
             {

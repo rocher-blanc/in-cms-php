@@ -1,0 +1,33 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Sécurité{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/admin/security') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Sécurité de l'administration</h3>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>Activer le filtre IP pour l'administration</label>
+                <div class="comment">Quand cette option est activée, seules les personnes ayant leur adresse IP dans la liste ci-dessous auront accès à l'administration.</div>
+                {% include 'form/generic/switch.twig' with {'value':lock_ip, 'name':'security_lock_ip'} %}
+            </div>
+            <div class="ed_field col_half">
+                <label>Adresse IP autorisées</label>
+                <textarea name="security_list_ip" class="form-control" rows="10">{{ list_ip }}</textarea>
+            </div>
+            <div class="ed_field col_full">
+                <div class="style-msg errormsg">
+                    <div class="sb-msg"><i class="icon-warning-sign"></i>Il est impossible d'activer cette option si votre IP ne figure pas dans le liste des adresses autorisées. Votre adresse IP est <strong>{{ ip }}</div>
+                </div>
+            </div>
+            {% include 'form/generic/button.twig' %}
+        </div>
+    </div>
+</form>	
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Performances{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/admin/performance') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Optimisation des performances</h3>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_half">
+                <label>URL du serveur CDN</label>
+                <div class="comment">L'URL doit être au format <strong>cdn.mondomaine.com</strong></div>
+                <input type="text" name="server_cdn" class="form-control" value="{{ cdn }}" />
+            </div>
+
+            {% include 'form/generic/button.twig' %}
+        </div>
+    </div>
+</form>
+{% endblock %}
