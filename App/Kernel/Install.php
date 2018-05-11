@@ -16,7 +16,7 @@ class Install
         $vendorName = 'jweb/cms' ;
 
         defined('_PATH_') || define('_PATH_', getenv('APP_HOME') );
-        defined('_PATH_PUBLIC_') || define('_PATH_', _PATH_ . '/public' );
+        defined('_PATH_PUBLIC_') || define('_PATH_PUBLIC_', _PATH_ . '/public' );
         defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_PUBLIC_ . '/Project');
         defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
