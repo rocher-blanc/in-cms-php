@@ -13,20 +13,14 @@ class Install
 
     public static function postUpdate()
     {
-        $separator = "/" ;
         $vendorName = 'jweb/cms' ;
-        $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
 
-        if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
-
-        $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
-        $path   = str_replace( $vendor , "" , $path );
-
-        defined('_PATH_') || define('_PATH_', $path );
-        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
+        defined('_PATH_') || define('_PATH_', getenv('APP_HOME') );
+        defined('_PATH_PUBLIC_') || define('_PATH_', _PATH_ . '/public' );
+        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_PUBLIC_ . '/Project');
         defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
-        defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
+        defined('WEB_PATH') || define('WEB_PATH', _PATH_PUBLIC_ . '/web');
         defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
         defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
         defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
@@ -42,7 +36,7 @@ class Install
         $install = self::isInstallation() ;
 
         self::checkFolder() ;
-        self::checkConfigSass() ;
+        //self::checkConfigSass() ;
         self::checkHtaccess() ;
         self::checkConfig() ;
         self::checkIndex() ;
@@ -274,7 +268,6 @@ class Install
             "web/assets/img"
         ] ;
 
-        $base = getenv('APP_HOME') . '/clever' ;
         foreach( $folders as $folder )
         {
             echo $base . "/" . $folder . "\n";
