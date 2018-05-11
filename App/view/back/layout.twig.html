@@ -1,46 +1,48 @@
-<!doctype html>
-<html class="fixed" lang="fr">
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+
     <head>
-        <!-- Load DNS for optimize -->
-        <link rel="dns-prefetch" href="//ajax.googleapis.com">
-        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="SemiColonWeb" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="token" content="{{csrf_token}}" />
+        <meta name="tokename" content="{{csrf_key}}" />
+        {{ block('meta') }}
+
+        <link rel="icon" type="image/png" href="{% include 'favicon.twig.html' %}" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/bootstrap-canvas.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/font-icons.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/animate.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/magnific-popup.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-switches.css') }}" type="text/css" />
+        {{ block('stylesheets') }}
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/style.css') }}" type="text/css" />
 
         <title>{% block title %}Administration{% endblock %}</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/png" href="{% include 'favicon.twig.html' %}" />
-        {{ block('meta') }}
-        {{ debugbar.head }}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="{{ vendor('bootstrap/dist/css/bootstrap.min.css') }}" />
-        <link rel="stylesheet" href="{{ vendor('bootstrap/dist/css/bootstrap-theme.min.css') }}" />
-        <link rel="stylesheet" href="{{ vendor('normalize.css/normalize.css') }}" />
-        <link rel="stylesheet" href="{{ vendor('jquery-ui/themes/base/jquery-ui.min.css') }}">
-        <link rel="stylesheet" href="{{ vendor('flag-icon-css/css/flag-icon.min.css') }}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" />
-        {{ block('stylesheets') }}
-        <link rel="stylesheet" href="{{ asset('css/std.css') }}" />
         <script src="{{ asset('js/init.js') }}"></script>
-        {{ block('javascript_head') }}
-    </head>
-    <body>
-        {{ block('contenu') }}
-        <script src="{{ asset('libs/jquery.1.9.1.min.js') }}"></script>
-        <script src="{{ vendor('jquery-ui/jquery-ui.min.js') }}"></script>
-        <script src="{{ vendor('bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        {{ block('javascripts') }}
-        {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
-        <script>
-            var errorForm = 0;
-            var tabError = '{"__result":{"txt":{{flash.__msg}},"result":{{flash.__result == true ? 'true' : 'false' }}}}';
-        </script>
-        {% endif %}
         <script>
             var siteurl = site + '/{{ adminFolder }}/' ;
         </script>
-        {{ debugbar.body }}
-        <script src="{{ asset('js/script.js') }}"></script>
+        {{ block('javascript_head') }}
+    </head>
+    <body class="stretched no-transition">
+        {{ block('contenu') }}
+
+        <div id="gotoTop" class="icon-angle-up"></div>
+
+        <script src="{{ asset('canvas/js/jquery.js') }}"></script>
+        <script src="{{ asset('canvas/js/plugins.js') }}"></script>
+        <script src="{{ asset('canvas/js/functions.js') }}"></script>
+        <script src="{{ asset('canvas/js/components/bs-switches.js') }}"></script>
+        <script src="{{ asset('canvas/js/easydoor/common.js') }}"></script>
+        {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
+            <script>
+                Notify("{{flash.__msg}}", {{flash.__result == true ? 'true' : 'false' }});
+            </script>
+        {% endif %}
+        {{ block('javascripts') }}
         {{ block('javascripts_end') }}
     </body>
 </html>

@@ -7,54 +7,27 @@
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('/admin/security') }}" role="form" class="form-horizontal group-border-dashed">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
-	<div class="row">
-		<div class="col-md-12">
-            <section class="panel table ext">
-                <header class="panel-heading">
-                    <h2 class="panel-title">Sécurité de l'administration</h2>
-                </header>
-                <div class="tab-content">
-                    <div class="tab-pane active panel-body">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Activer le filtre IP pour l'administration</label>
-                            <div class="col-md-6">
-                                <input value="1" type="checkbox"{{ lock_ip == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="security_lock_ip" id="security_lock_ip" />
-                                <span class="help-block">
-                                    Quand cette option est activée, seules les personnes ayant leur adresse IP dans la liste ci-dessous auront accès à l'administration.
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Adresse IP autorisées</label>
-                            <div class="col-md-6">
-                                <textarea name="security_list_ip" class="form-control" rows="10">{{ list_ip }}</textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="alert alert-danger col-md-12">
-                                <i class="fa fa-exclamation-triangle "></i> Il est impossible d'activer cette option si votre IP ne figure pas dans le liste des adresses autorisées. Votre adresse IP est <strong>{{ ip }}</strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7"></div>
-                            <div class="col-md-5 text-right">
-                                <button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="fancy-title title-dotted-border">
+        <h3>Sécurité de l'administration</h3>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>Activer le filtre IP pour l'administration</label>
+                <div class="comment">Quand cette option est activée, seules les personnes ayant leur adresse IP dans la liste ci-dessous auront accès à l'administration.</div>
+                {% include 'form/generic/switch.twig' with {'value':lock_ip, 'name':'security_lock_ip'} %}
+            </div>
+            <div class="ed_field col_half">
+                <label>Adresse IP autorisées</label>
+                <textarea name="security_list_ip" class="form-control" rows="10">{{ list_ip }}</textarea>
+            </div>
+            <div class="ed_field col_full">
+                <div class="style-msg errormsg">
+                    <div class="sb-msg"><i class="icon-warning-sign"></i>Il est impossible d'activer cette option si votre IP ne figure pas dans le liste des adresses autorisées. Votre adresse IP est <strong>{{ ip }}</div>
                 </div>
-            </section>
-		</div>
-	</div>
+            </div>
+            {% include 'form/generic/button.twig' %}
+        </div>
+    </div>
 </form>	
-{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
-    <link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
-    <script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
 {% endblock %}

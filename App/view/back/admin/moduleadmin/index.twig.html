@@ -4,6 +4,10 @@
 {% set this_page = 'Gestion' %}
 
 {% block module %}
+    <div class="fancy-title title-dotted-border">
+        <h3>Gestion technique des modules</h3>
+    </div>
+
 	{% if noInstall|length == 0 and contentRows|length == 0 %}
 		<div class="row">
 			<div class="col-md-12 title-alone">
@@ -15,16 +19,39 @@
 	{% endif %}
 
 	{% if contentRows|length > 0 %}
-		<div class="row">
-			<div class="col-md-12 title-alone">
-				<header class="panel-heading">
-					<h2 class="panel-title"><i class="fa fa-cubes"></i> Module{{ contentRows|length > 1 ? "s" : "" }} installé{{ contentRows|length > 1 ? "s" : "" }}</h2>
-				</header>
-			</div>
-		</div>
+        <div class="fancy-title title-bottom-border">
+            <h3>Module{{ contentRows|length > 1 ? "s" : "" }} installé{{ contentRows|length > 1 ? "s" : "" }}</h3>
+        </div>
 	{% endif %}
 
-	{% for row in contentRows %}
+    <div class="list-module">
+        {% for row in contentRows %}
+            <div class="promo promo-light">
+                <div class="col_two_fifth">
+                    <span>{{ row.module_name }}</span>
+                </div>
+                <div class="col_three_fifth col_last">
+                    <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
+                    <a href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}" class="button button-mini button-rounded">Editer</a>
+                    {% if row.module_default == 0 %}
+                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
+                    {% else %}
+                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
+                    {% endif %}
+                    {% if row.module_active == 0 %}
+                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
+                    {% else %}
+                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
+                    {% endif %}
+                    <a href="#" class="button button-mini button-rounded button-black">Vider les tables MySQL</a>
+                    {% if img[ row.module_id ] == true %}<a href="#" class="button button-mini button-rounded button-blue">Regénérer les images</a>{% endif %}
+                </div>
+                <div class="clear"></div>
+            </div>
+        {% endfor %}
+    </div>
+{#
+    {% for row in contentRows %}
 		<div class="row">
 			<div class="col-md-12">
 				<section class="panel mod">
@@ -42,8 +69,8 @@
 										<div class="btn-group">
 											<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-bomb"></i> Actions <span class="caret"></span></button>
 											<ul class="dropdown-menu" role="menu">
-												<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}">Vider les tables MySQL</a></li>
-												{% if img[ row.module_id ] == true %}<li><a href="{{ siteUrl('admin/moduleadmin/image/' ~  row.module_id ~ '/' ~ csrf_token) }}">Regénérer les images</a></li>{% endif %}
+												<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}"></a></li>
+                                                {% if img[ row.module_id ] == true %}<li><a href="{{ siteUrl('admin/moduleadmin/image/' ~  row.module_id ~ '/' ~ csrf_token) }}"></a></li>{% endif %}
 											</ul>
 										</div>
 										{% if row.module_active == 0 %}
@@ -68,50 +95,24 @@
 			</div>
 		</div>
 	{% endfor %}
-
+#}
 	{% if noInstall|length > 0 %}
-		<div class="row">
-			<div class="col-md-12 title-alone">
-				<header class="panel-heading">
-					<h2 class="panel-title"><i class="fa fa-cubes"></i> Module{{ noInstall|length > 1 ? "s" : "" }} disponible{{ noInstall|length > 1 ? "s" : "" }}</h2>
-				</header>
-			</div>
-		</div>
+        <div class="fancy-title title-bottom-border" style="margin-top: 30px;">
+            <h3>Module{{ noInstall|length > 1 ? "s" : "" }} disponible{{ noInstall|length > 1 ? "s" : "" }}</h3>
+        </div>
 	{% endif %}
 
+    <div class="list-module">
 	{% for rep in noInstall %}
-		<div class="row">
-			<div class="col-md-12">
-				<section class="panel mod">
-					<div class="panel-body mod">
-						<table class="table mb-none list-module noinstall">
-							<tbody>
-								<tr>
-									<td class="ico">
-										<i class="fa fa-cloud"></i>
-									</td>
-									<td class="name">
-										{{ rep }}
-									</td>
-									<td class="text-right">
-										<a class="btn btn-sm btn-success" href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}"><i class="fa fa-plus"></i> Installer</a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</section>
-			</div>
-		</div>
+        <div class="promo promo-light">
+            <div class="col_two_fifth">
+                <span>{{ rep }}</span>
+            </div>
+            <div class="col_three_fifth col_last">
+                <a href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}" class="button button-mini button-rounded button-green">Installer</a>
+            </div>
+            <div class="clear"></div>
+        </div>
 	{% endfor %}
-{% endblock %}
-
-{% block stylesheets %}
-	<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
-	<link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
-{% endblock %}
-
-{% block javascripts %}
-	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
-	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+    </div>
 {% endblock %}

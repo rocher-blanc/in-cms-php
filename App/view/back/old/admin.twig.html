@@ -1,0 +1,261 @@
+{% extends 'layout.twig.html' %}
+
+{% block javascript_head %}
+    <script>
+        var siteurl = site + '{{ adminFolder }}/' ;
+    </script>
+    {% include 'style.twig.html' with {'color': color} %}
+    {{ parent() }}
+{% endblock %}
+
+{% block contenu %}
+        <input type="hidden" id="token" name="{{csrf_key}}" value="{{csrf_token}}" />
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<div id="logo">
+                        {% include 'logo.twig.html' %}
+                    </div>
+                    <div class="overborder"></div>
+                    <ul class="nav nav-sidebar">
+						<li{% if menu == '' %} class="active"{% endif %}>
+							<a href="{{ siteUrl('/') }}">
+								<i class="fa fa-tachometer"></i>
+								<span>Tableau de bord</span>
+							</a>
+						</li>
+						<li{% if menu == 'menu' %} class="active"{% endif %}>
+							<a href="{{ siteUrl('/ext/menu') }}">
+								<i class="fa fa-link"></i>
+								<span>Menu</span>
+							</a>
+						</li>
+                        {% include '../menu/top-module.twig.html' with {'menu':menu} %}
+						{% for group in menuTree %}
+							{% if group.children|length > 1 %}
+								<li class="parent{% if group.open == true %} expanded active{% endif %}">
+									<a href="javascript:;">
+										<i class="fa fa-{{ group.icon }}"></i>
+										<span>{{ group.name }}</span>
+									</a>
+									<ul class="nav children">
+										{% for module in group.children %}
+											<li{% if module.selected == true %} class="active"{% endif %}>
+												<a href="{{ siteUrl('/module/' ~ module.class ) }}">
+													<i class="fa fa-{{ module.icon }}"></i> <span>{{ module.name }}</span>
+												</a>
+											</li>
+										{% endfor %}
+									</ul>
+								</li>
+							{% else %}
+								{% for module in group.children %}
+									<li{% if module.selected == true %} class="active"{% endif %}>
+										<a href="{{ siteUrl('/module/' ~ module.class ) }}">
+											<i class="fa fa-{{ module.icon }}"></i> <span>{{ module.name }}</span>
+										</a>
+									</li>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
+                        {% include '../menu/bottom-module.twig.html' with {'menu':menu} %}
+						<li class="parent{% if menu == 'group' or menu == 'parammodule' or menu == 'page' or menu == 'user' or menu == 'langue' %} expanded active{% endif %}">
+							<a href="#">
+								<i class="fa fa-cogs"></i>
+								<span>Paramètres</span>
+							</a>
+							<ul class="nav children">
+                                <li{% if menu == 'page' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/page') }}">
+                                        <i class="fa fa-file-text"></i> <span>Pages spéciales</span>
+                                    </a>
+                                </li>
+                                <li{% if menu == 'parammodule' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/parammodule') }}">
+                                        <i class="fa fa-dropbox"></i> <span>Modules</span>
+                                    </a>
+                                </li>
+                                <li{% if menu == 'user' %} class="active"{% endif %}>
+									<a href="{{ siteUrl('/ext/user') }}">
+										<i class="fa fa-user"></i> <span>Administrateurs</span>
+									</a>
+								</li>
+								<li{% if menu == 'group' %} class="active"{% endif %}>
+									<a href="{{ siteUrl('/ext/group') }}">
+										<i class="fa fa-users"></i> <span>Groupes d'administrateurs</span>
+									</a>
+								</li>
+								<li{% if menu == 'langue' %} class="active"{% endif %}>
+									<a href="{{ siteUrl('/ext/langue') }}">
+										<i class="fa fa-language"></i> <span>Langues</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+                        <li class="parent{% if menu == 'metadata' or menu == 'microdata' or menu == 'redirect' %} expanded active{% endif %}">
+                            <a href="#">
+                                <i class="fa fa-line-chart"></i>
+                                <span>SEO</span>
+                            </a>
+                            <ul class="nav children">
+                                <li{% if menu == 'metadata' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/metadata') }}">
+                                        <i class="fa fa-rss"></i> <span>Métadonnées</span>
+                                    </a>
+                                </li>
+                                <li{% if menu == 'microdata' %} class="active"{% endif %}>
+                                    <a href="{{ siteUrl('/ext/microdata') }}">
+                                        <i class="fa fa-database"></i> <span>Microdata</span>
+                                    </a>
+                                </li>
+                                <!--
+								<li{% if menu == 'redirect' %} class="active"{% endif %}>
+									<a href="{{ siteUrl('/admin/redirect') }}">
+										<i class="fa fa-retweet"></i> <span>Redirection 301</span>
+									</a>
+								</li>
+								-->
+                            </ul>
+                        </li>
+                        {% if active_user == true %}
+                            <li class="parent{% if menu == 'user_front' or menu == 'user_front_group' or menuUser == true %} expanded active{% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-user-secret"></i>
+                                    <span>Utilisateurs</span>
+                                </a>
+                                <ul class="nav children">
+                                    <li{% if menu == 'user_front' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/user_front') }}">
+                                            <i class="fa fa-user"></i> <span>Utilisateurs</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'user_front_group' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/user_front_group') }}">
+                                            <i class="fa fa-users"></i> <span>Groupes d'utilisateurs</span>
+                                        </a>
+                                    </li>
+                                    {% include '../menu/user.twig.html' with {'menu':menu} %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if active_newsletter == true %}
+                            <li class="parent{% if menu == 'newsletter_group_sub' or menu == 'newsletter_campaign' or menu == 'newsletter_sender' %} expanded active{% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-paper-plane"></i>
+                                    <span>Newsletter</span>
+                                </a>
+                                <ul class="nav children">
+                                    <li{% if menu == 'newsletter_group_sub' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
+                                            <i class="fa fa-address-book-o"></i> <span>Groupes d'abonnés</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'newsletter_sender' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/newsletter_sender') }}">
+                                            <i class="fa fa-podcast"></i> <span>Expéditeurs</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'newsletter_campaign' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                                            <i class="fa fa-newspaper-o"></i> <span>Campagnes</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                {% include '../menu/emailing.twig.html' with {'menu':menu} %}
+                            </li>
+                        {% endif %}
+						{% if isAdmin == true %}
+                            <li class="parent{% if menu == 'maintenance' or menu == 'log' or menu == 'domain' or menu == 'theme' or menu == 'security' or menu == 'performance' or menu == 'pageadmin' or menu == 'moduleadmin' or menu == 'groupmodule' %} expanded active{% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-code"></i>
+                                    <span>Développeur</span>
+                                </a>
+                                <ul class="nav children">
+                                    <li{% if menu == 'moduleadmin' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/moduleadmin') }}">
+                                            <i class="fa fa-dropbox"></i> <span>Modules</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'domain' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/domain') }}">
+                                            <i class="fa fa-external-link"></i> <span>Domaines</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'pageadmin' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/pageadmin') }}">
+                                            <i class="fa fa-file-text"></i> <span>Pages spéciales</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'groupmodule' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/groupmodule') }}">
+                                            <i class="fa fa-bars"></i> <span>Menu d'administration</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'performance' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/performance') }}">
+                                            <i class="fa fa-dashboard"></i> <span>Performances</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'log' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/log') }}">
+                                            <i class="fa fa-history"></i> <span>Journal d'événements</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'maintenance' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/maintenance') }}">
+                                            <i class="fa fa-wrench"></i> <span>Maintenance</span>
+                                        </a>
+                                    </li>
+                                    <li{% if menu == 'security' %} class="active"{% endif %}>
+                                        <a href="{{ siteUrl('/admin/security') }}">
+                                            <i class="fa fa-shield"></i> <span>Sécurité</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endif %}
+					</ul>
+				</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 col-sm-9 main">
+					<header class="top col-sm-9 col-md-10 col-md-offset-2">
+                        <div class="col-md-6 col-sm-5">
+                            <div class="ariane">
+                                <ol class="breadcrumbs">
+                                    <li>
+                                        <a href="{{ siteUrl('/') }}">
+                                            <i class="fa fa-home"></i>
+                                        </a>
+                                    </li>
+                                    {{ block('ariane') }}
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="pull-right">
+                                <a class="viewfront" target="_blank" href="{{ siteUrl('/',false) }}">
+                                    <i class="fa fa-star"></i> Voir mon site
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="pull-right">
+                                <div class="profile">
+                                    {{ user.fname }} {{ user.lname }}
+                                    <span>{{ user.group_name }}</span>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{ siteUrl('/secured/profile') }}"><i class="fa fa-user pull-right"></i> Mon profil</a></li>
+                                        <li><a href="{{ siteUrl('/secured/logout') }}"><i class="fa fa-power-off pull-right"></i> Déconnexion</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+					</header>
+					<div class="content">
+						<section class="content-body" role="main">
+							{{ block('content') }}
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock contenu %}

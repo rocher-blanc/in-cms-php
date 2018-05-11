@@ -11,42 +11,29 @@
 {% endif %}
 
 {% block module %}
-<form name="form" method="post" action="{{ siteUrl('admin/domain/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
-	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
-	<div class="row">
-		<div class="col-md-12">
-			<section class="panel table ext">
-				<header class="panel-heading">
-					<h2 class="panel-title">{{ title_block_page }}</h2>
-				</header>
-				<div class="tab-content">
-					<div class="tab-pane active panel-body">
-						<div class="form-group">
-							<label class="col-md-3 control-label">Nom de domaine</label>
-							<div class="col-md-6">
-								<input type="text" id="domain_name" name="domain_name" class="form-control" value="{{ post.domain_name }}" />
-							</div>
-						</div>
 
-						<div class="row">
-							<div class="col-md-2">
-								<a id="btn_back" href="{{ siteUrl('admin/domain') }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
-							</div>
-							<div class="col-md-5 col-md-offset-5 text-right">
-								<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
-								<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
+	<div class="fancy-title title-dotted-border">
+		<h3>{{ title_block_page }}</h3>
 	</div>
-</form>
-<script>
-	var errorForm = {{ error }};
-	var tabError = '{{ tabError }}';
-</script>
+
+	<form name="form" method="post" action="{{ siteUrl('admin/domain/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
+		<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+
+		<div class="ed_field col_half">
+			<label>Nom de domaine</label>
+			<input type="text" name="domain_name" class="form-control" value="{{ post.domain_name }}" />
+		</div>
+		
+		<div class="clear"></div>
+
+		{% include 'form/generic/button.twig' %}
+	</form>
+
+	<script>
+		var errorForm = {{ error }};
+		var tabError = '{{ tabError }}';
+	</script>
+
 {% endblock %}
 
 {% block stylesheets %}
