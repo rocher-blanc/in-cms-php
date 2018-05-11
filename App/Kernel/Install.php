@@ -13,14 +13,29 @@ class Install
 
     public static function postUpdate()
     {
-        $vendorName = 'jweb/cms' ;
+        if ( getenv('APP_HOME') === false )
+        {
+            $separator = "/" ;
+            $vendorName = 'jweb/cms' ;
+            $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
 
-        defined('_PATH_') || define('_PATH_', getenv('APP_HOME') );
-        defined('_PATH_PUBLIC_') || define('_PATH_PUBLIC_', _PATH_ . '/public' );
-        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_PUBLIC_ . '/Project');
+            if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
+
+            $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
+            $path   = str_replace( $vendor , "" , $path );
+        }
+        else
+        {
+            $path   = getenv('APP_HOME') . "/public" ;
+            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
+        }
+
+
+        defined('_PATH_') || define('_PATH_', $path );
+        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
         defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
-        defined('WEB_PATH') || define('WEB_PATH', _PATH_PUBLIC_ . '/web');
+        defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
         defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
         defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
         defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
@@ -36,7 +51,7 @@ class Install
         $install = self::isInstallation() ;
 
         self::checkFolder() ;
-        //self::checkConfigSass() ;
+        self::checkConfigSass() ;
         self::checkHtaccess() ;
         self::checkConfig() ;
         self::checkIndex() ;
@@ -148,8 +163,18 @@ class Install
         {
             $php = '' ;
             $php.= "<"."?"."php\n" ;
-            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../")) ));' . "\n" ;
-            $php.= 'define("VENDOR_PATH", _PATH_ . "..//vendor");' . "\n" ;
+
+            if ( getenv('APP_HOME') !== false )
+            {
+                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" ) ));' . "\n" ;
+                $php.= 'define("VENDOR_PATH", getenv("APP_HOME") . "/vendor");' . "\n" ;
+            }
+            else
+            {
+                $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../")) ));' . "\n" ;
+                $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
+            }
+
             $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Back\Loader;' . "\n" ;
             $php.= '$loader->index();' ;
@@ -163,8 +188,16 @@ class Install
         {
             $php = '' ;
             $php.= "<"."?"."php\n" ;
-            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../")) ));' . "\n" ;
-            $php.= 'define("VENDOR_PATH", _PATH_ . "/..//vendor");' . "\n" ;
+            if ( getenv('APP_HOME') !== false )
+            {
+                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" ) ));' . "\n" ;
+                $php.= 'define("VENDOR_PATH", getenv("APP_HOME") . "/vendor");' . "\n" ;
+            }
+            else
+            {
+                $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../")) ));' . "\n" ;
+                $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
+            }
             $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Front\Loader;' . "\n" ;
             $php.= '$loader->index();' ;
@@ -175,19 +208,40 @@ class Install
 
     protected static function checkConfig()
     {
-        $configFileProject = PROJECT_PATH . '/config/config.sample.php' ;
-
-        if ( ! file_exists( $configFileProject ) )
+        if ( getenv('APP_ID') !== false && getenv( 'MYSQL_ADDON_HOST' ) !== false )
         {
-            $php = '' ;
-            $php.= "<"."?"."php\n" ;
-            $php.= "define('DB_HOST','');\n" ;
-            $php.= "define('DB_USER','');\n" ;
-            $php.= "define('DB_PASSWORD','');\n" ;
-            $php.= "define('DB_DATABASE','');\n" ;
-            $php.= "define('DEBUG',true);" ;
+            $configFileProject = PROJECT_PATH . '/config/config.' . str_replace( "app_" , "app-" , getenv('APP_ID') ) .'.cleverapps.io.php' ;
 
-            self::create( $configFileProject , $php ) ;
+            if ( ! file_exists( $configFileProject ) )
+            {
+                $php = '' ;
+                $php.= "<"."?"."php\n" ;
+                $php.= "define('DB_HOST','" . getenv('MYSQL_ADDON_HOST') . "');\n" ;
+                $php.= "define('DB_USER','" . getenv('MYSQL_ADDON_USER') . "');\n" ;
+                $php.= "define('DB_PASSWORD','" . getenv('MYSQL_ADDON_PASSWORD') . "');\n" ;
+                $php.= "define('DB_DATABASE','" . getenv('MYSQL_ADDON_DB') . "');\n" ;
+                $php.= "define('DB_PORT','" . getenv('MYSQL_ADDON_PORT') . "');\n" ;
+                $php.= "define('DEBUG',true);" ;
+
+                self::create( $configFileProject , $php ) ;
+            }
+        }
+        else
+        {
+            $configFileProject = PROJECT_PATH . '/config/config.sample.php' ;
+
+            if ( ! file_exists( $configFileProject ) )
+            {
+                $php = '' ;
+                $php.= "<"."?"."php\n" ;
+                $php.= "define('DB_HOST','');\n" ;
+                $php.= "define('DB_USER','');\n" ;
+                $php.= "define('DB_PASSWORD','');\n" ;
+                $php.= "define('DB_DATABASE','');\n" ;
+                $php.= "define('DEBUG',true);" ;
+
+                self::create( $configFileProject , $php ) ;
+            }
         }
     }
 
@@ -270,7 +324,7 @@ class Install
 
         foreach( $folders as $folder )
         {
-            if ( ! is_dir( _PATH_PUBLIC_ . "/" . $folder ) ) mkdir( _PATH_PUBLIC_ . "/" . $folder ) ;
+            if ( ! is_dir( _PATH_ . "/" . $folder ) ) mkdir( _PATH_ . "/" . $folder ) ;
         }
     }
 
