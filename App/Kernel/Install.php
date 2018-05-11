@@ -148,7 +148,7 @@ class Install
         {
             $php = '' ;
             $php.= "<"."?"."php\n" ;
-            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../")) ));' . "\n" ;
+            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../../")) ));' . "\n" ;
             $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
             $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Back\Loader;' . "\n" ;
@@ -163,7 +163,7 @@ class Install
         {
             $php = '' ;
             $php.= "<"."?"."php\n" ;
-            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../")) ));' . "\n" ;
+            $php.= 'define("_PATH_", implode(PATH_SEPARATOR, array( realpath(dirname(__FILE__) . "/../../")) ));' . "\n" ;
             $php.= 'define("VENDOR_PATH", _PATH_ . "/vendor");' . "\n" ;
             $php.= "require VENDOR_PATH . '/autoload.php';" . "\n" ;
             $php.= '$loader = new \App\Kernel\Front\Loader;' . "\n" ;
