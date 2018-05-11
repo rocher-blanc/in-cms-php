@@ -131,7 +131,15 @@ $app->group('/user', function () use ($app)
 
 	})->name('user_edit')->via('GET', 'POST');
 
-	$app->delete('/delete/:id', function ($id) use ($app)
+    $app->get('/delete/:id', function ($id) use ($app)
+    {
+        $app->render('delete.twig',[
+            'id' => $id,
+            'url' => \App\Kernel\Factory::getInstance()->Url()->get('ext/user/delete/' . $id )
+        ]);
+    });
+
+    $app->post('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
 		if ( $id == $_SESSION[ $app->config('session') ]['id'] )

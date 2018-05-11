@@ -207,7 +207,7 @@ $app->group('/moduleadmin', function () use ($app)
 
     $app->get('/delete/:id', function ($id) use ($app)
     {
-        $app->render('admin/moduleadmin/delete.twig',[
+        $app->render('delete.twig',[
             'id' => $id,
             'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin/delete/' . $id )
         ]);
