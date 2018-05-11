@@ -23,9 +23,7 @@
 
     "symfony/var-dumper": "3.0.*",
     "yusukezzz/slim-debugbar": "1.*",
-    "jdorn/sql-formatter": "dev-master",
-
-    "bower-asset/cmsmedias": "dev-master"
+    "jdorn/sql-formatter": "dev-master"
   },
   "authors": [
     {

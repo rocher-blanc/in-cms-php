@@ -205,7 +205,15 @@ $app->group('/moduleadmin', function () use ($app)
         echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
     })->name('moduleadmin_image');
 
-    $app->delete('/delete/:id', function ($id) use ($app)
+    $app->get('/delete/:id', function ($id) use ($app)
+    {
+        $app->render('admin/moduleadmin/delete.twig',[
+            'id' => $id,
+            'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin/delete/' . $id )
+        ]);
+    });
+
+    $app->post('/delete/:id', function ($id) use ($app)
     {
         $ret = false ;
         $contentRow = \DB::for_table('module')
@@ -225,7 +233,8 @@ $app->group('/moduleadmin', function () use ($app)
             $msg = "Une erreur est survenue lors de la suppression" ;
         }
 
-        echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+        \App\Kernel\Factory::getInstance()->Response()->flash( $msg , $ret );
+        echo json_encode([ "url" => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin') ]) ;
     })->name('moduleadmin_delete');
 
     $app->get('/truncate/:id/:token', function ($id,$token) use ($app)

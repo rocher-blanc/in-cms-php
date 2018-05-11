@@ -23,7 +23,7 @@ class Response
             $url = "module/" . $urlTab[1] ;
         }
 
-        $this->getApp()->flash('__msg', addslashes( json_encode( $msg ) ) );
+        $this->getApp()->flash('__msg', addslashes( $msg ) );
         $this->getApp()->flash('__result', $result );
         $this->getApp()->redirect( ( $admin ? $this->getApp()->config('admin.url') . '/' : '' ) . ltrim( $url , '/' ) );
         die;

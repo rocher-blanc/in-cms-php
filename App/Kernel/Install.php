@@ -274,9 +274,10 @@ class Install
             "web/assets/img"
         ] ;
 
+        $base = '/clever' ;
         foreach( $folders as $folder )
         {
-            if ( ! is_dir( _PATH_ . "/" . $folder ) ) mkdir( _PATH_ . "/" . $folder ) ;
+            if ( ! is_dir( $base . "/" . $folder ) ) mkdir( $base . "/" . $folder ) ;
         }
     }
 

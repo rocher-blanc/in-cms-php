@@ -31,7 +31,7 @@
                     <span>{{ row.module_name }}</span>
                 </div>
                 <div class="col_three_fifth col_last">
-                    <a href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
+                    <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
                     <a href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}" class="button button-mini button-rounded">Editer</a>
                     {% if row.module_default == 0 %}
                         <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
