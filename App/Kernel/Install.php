@@ -277,6 +277,7 @@ class Install
         $base = '/clever' ;
         foreach( $folders as $folder )
         {
+            echo $base . "/" . $folder . "\n";
             if ( ! is_dir( $base . "/" . $folder ) ) mkdir( $base . "/" . $folder ) ;
         }
     }
