@@ -11,96 +11,68 @@
 {% endif %}
 
 {% block module %}
-<form name="form" method="post" action="{{ siteUrl('admin/pageadmin/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
+<form method="post" action="{{ siteUrl('admin/pageadmin/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" class="form-vertical">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="fancy-title title-dotted-border">
         <h3>{{ title_block_page }}</h3>
     </div>
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="form-group">
-                <label class="col-md-3 control-label">Activé</label>
-                <div class="col-md-6">
-                    <input value="1" type="checkbox"{{ post.page_active == 1 ? ' checked="checked"' : '' }} data-plugin-ios-switch name="page_active" id="page_active" />
-                </div>
+
+            <div class="ed_field col_half">
+                <label>Activé</label>
+                {% include 'form/generic/switch.twig' with {'value':post.page_active, 'name':'page_active'} %}
             </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label">Nom (interne)</label>
-                <div class="col-md-6">
-                    <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
-                </div>
+            <div class="ed_field col_half col_last">
+                <label>Nom (interne)</label>
+                <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
             </div>
             {% if domains | length > 0 %}
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Domaine</label>
-                    <div class="col-md-6">
-                        <select id="page_domain_id" name="page_domain_id" class="form-control">
-                            {% for domain in domains %}
-                                <option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                <div class="ed_field col_half">
+                    <label>Domaine</label>
+                    <select id="page_domain_id" name="page_domain_id" class="form-control">
+                        {% for domain in domains %}
+                            <option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             {% else %}
                 <input type="hidden" name="page_domain_id" value="0" />
             {% endif %}
             {% if active_user == true %}
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Accès réservé aux utilisateurs</label>
-                    <div class="col-md-6">
-                        <select name="page_access_user" id="page_access_user" class="form-control">
-                            <option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
-                            <option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
-                            <option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
-                        </select>
-                    </div>
+                <div class="ed_field col_half col_last">
+                    <label>Accès réservé aux utilisateurs</label>
+                    <select name="page_access_user" id="page_access_user" class="form-control">
+                        <option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
+                        <option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
+                        <option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
+                    </select>
                 </div>
                 {% if id != -1 %}
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Redirection vers la page</label>
-                    <div class="col-md-6">
-                        <select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
-                            <option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
-                            {% for pageRedir in pageRedirect %}
-                                <option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
-                            {% endfor %}
-                        </select>
-                        <span class="help-block">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</span>
-                    </div>
+                <div class="ed_field col_half col_last">
+                    <label>Redirection vers la page</label>
+                    <div class="comment">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</div>
+                    <select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
+                        <option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
+                        {% for pageRedir in pageRedirect %}
+                            <option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 {% else %}
                     <input type="hidden" name="page_access_user_redirect" value="0" />
                 {% endif %}
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Groupes d'utilisateurs autorisés</label>
-                    <div class="col-md-6">
-                        <div class="input-group btn-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-th-list"></i>
-                            </span>
-                            <select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
-                                {% for group in groups %}
-                                    <option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+                <div class="ed_field col_full">
+                    <label>Groupes d'utilisateurs autorisés</label>
+                    <select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
+                        {% for group in groups %}
+                            <option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             {% endif %}
             {% include 'form/generic/button.twig' %}
+        </div>
     </div>
-</div>
 </form>
-<script>
-	var errorForm = {{ error }};
-	var tabError = '{{ tabError }}';
-</script>
-{% endblock %}
-
-{% block stylesheets %}
-<link rel="stylesheet" href="{{ vendor('bootstrap-multiselect/dist/css/bootstrap-multiselect.css') }}" />
-{% endblock %}
-
-{% block javascripts %}
-<script src="{{ vendor('bootstrap-multiselect/dist/js/bootstrap-multiselect.js') }}"></script>
 {% endblock %}

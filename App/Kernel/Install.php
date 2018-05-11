@@ -274,7 +274,7 @@ class Install
             "web/assets/img"
         ] ;
 
-        $base = '/clever' ;
+        $base = ${APP_HOME} . '/clever' ;
         foreach( $folders as $folder )
         {
             echo $base . "/" . $folder . "\n";
