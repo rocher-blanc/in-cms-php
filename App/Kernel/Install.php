@@ -168,7 +168,7 @@ class Install
 
             if ( getenv('APP_HOME') !== false )
             {
-                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" ) ));' . "\n" ;
+                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" );' . "\n" ;
                 $php.= 'define("VENDOR_PATH", getenv("APP_HOME") . "/vendor");' . "\n" ;
             }
             else
@@ -192,7 +192,7 @@ class Install
             $php.= "<"."?"."php\n" ;
             if ( getenv('APP_HOME') !== false )
             {
-                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" ) ));' . "\n" ;
+                $php.= 'define("_PATH_", getenv("APP_HOME") . "/public" );' . "\n" ;
                 $php.= 'define("VENDOR_PATH", getenv("APP_HOME") . "/vendor");' . "\n" ;
             }
             else
