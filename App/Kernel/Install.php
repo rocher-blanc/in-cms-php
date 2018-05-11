@@ -13,16 +13,17 @@ class Install
 
     public static function postUpdate()
     {
+        $vendorName = 'jweb/cms' ;
         if ( getenv('APP_HOME') === false )
         {
             $separator = "/" ;
-            $vendorName = 'jweb/cms' ;
             $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
 
             if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
 
             $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
             $path   = str_replace( $vendor , "" , $path );
+
             defined('_PATH_') || define('_PATH_', $path );
             defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
         }
@@ -35,7 +36,6 @@ class Install
 
 
         defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
-        defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
         defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
         defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
