@@ -23,15 +23,17 @@ class Install
 
             $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
             $path   = str_replace( $vendor , "" , $path );
+            defined('_PATH_') || define('_PATH_', $path );
+            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
         }
         else
         {
             $path   = getenv('APP_HOME') . "/public" ;
+            defined('_PATH_') || define('_PATH_', $path );
             defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
         }
 
 
-        defined('_PATH_') || define('_PATH_', $path );
         defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
         defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
 
