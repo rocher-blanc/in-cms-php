@@ -270,8 +270,7 @@ class Install
 
         foreach( $folders as $folder )
         {
-            echo $base . "/" . $folder . "\n";
-            if ( ! is_dir( $base . "/" . $folder ) ) mkdir( $base . "/" . $folder ) ;
+            if ( ! is_dir( _PATH_PUBLIC_ . "/" . $folder ) ) mkdir( _PATH_PUBLIC_ . "/" . $folder ) ;
         }
     }
 
