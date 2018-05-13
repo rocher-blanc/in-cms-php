@@ -10,13 +10,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected $_url = [] ;
     protected $_elm = false ;
-    protected $_id = NULL ;
-    protected $_entity = NULL ;
-    protected $_entity_id = NULL ;
-    protected $_entity_name = '' ;
-    protected $_action_name = '' ;
     protected $_component_name = '' ;
-    protected $_var = [];
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -28,42 +22,8 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     /* ************************************************** */
-    /* ****************     TOOLS     ******************* */
-    /* ************************************************** */
-
-    protected function Factory()
-    {
-        return \App\Kernel\Factory::getInstance() ;
-    }
-
-    protected function Lang()
-    {
-        return \App\Kernel\Lang::getInstance() ;
-    }
-
-    protected function Message()
-    {
-        return \App\Kernel\Message::getInstance() ;
-    }
-
-    protected function getApp()
-    {
-        return \Slim\Slim::getInstance() ;
-    }
-
-    private function CMS()
-    {
-        return \App\Kernel\CMS::getInstance() ;
-    }
-
-    /* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
-
-    protected function setId( $var )
-    {
-        $this->_id = $var ;
-    }
 
     public function setUrl( $var )
     {
@@ -71,29 +31,9 @@ class Controller extends \App\Kernel\Common\Controller
         else                     $this->_url = $var ;
     }
 
-    public function setEntityName( $var )
-    {
-        $this->_entity_name = ucfirst( $var ) ;
-    }
-
-    protected function setEntityId( $var )
-    {
-        $this->_entity_id = $var ;
-    }
-
-    protected function setActionName( $var )
-    {
-        $this->_action_name = $var ;
-    }
-
     public function setElement()
     {
         $this->_elm = true ;
-    }
-
-    protected function setVar( $key , $elt )
-    {
-        $this->_var[ $key ] = $elt ;
     }
 
     /**
@@ -102,25 +42,6 @@ class Controller extends \App\Kernel\Common\Controller
     public function setComponentName($component_name)
     {
         $this->_component_name = $component_name;
-    }
-
-    /* ***************************************************** */
-    /* ******************   CONTAINER   ******************** */
-    /* ***************************************************** */
-
-    protected function Container()
-    {
-        return \App\Kernel\Container::getInstance() ;
-    }
-
-    public function getEntity()
-    {
-        return $this->Container()->module( $this->getEntityName() )->getEntity() ;
-    }
-
-    public function getRepository()
-    {
-        return $this->Container()->module( $this->getEntityName() )->getRepository() ;
     }
 
     /* ************************************************** */
@@ -135,40 +56,10 @@ class Controller extends \App\Kernel\Common\Controller
         return $this->_component_name;
     }
 
-    public function getVar()
-    {
-        return $this->_var ;
-    }
-
-    public function getId()
-    {
-        return $this->_id ;
-    }
-
-    public function getEntityName()
-    {
-        return $this->_entity_name ;
-    }
-
-    protected function getEntityId()
-    {
-        return $this->_entity_id ;
-    }
-
     public function getUrl( $key = NULL )
     {
         if ( $key === NULL ) 	return $this->_url ;
         else                 	return $this->_url[ $key ] ;
-    }
-
-    protected function getMethodName()
-    {
-        return $this->_action_name . 'Action' ;
-    }
-
-    public function getActionName()
-    {
-        return $this->_action_name ;
     }
 
     /* ************************************************** */
@@ -204,21 +95,10 @@ class Controller extends \App\Kernel\Common\Controller
                 $this->setActionName('getall');
             }
 
-            if ( $this->getEntity()->hasAction( $this->getActionName() ) )
+            if ( $this->isValidAction() == true )
             {
-                if ( method_exists( $this , $this->getMethodName() ) == true )
-                {
-                    $method = $this->getMethodName() ;
-                    $this->$method();
-                }
-                else
-                {
-                    return $this->Factory()->Response()->error("La méthode '" . $this->getMethodName() . "' n'est pas disponible dans le controller") ;
-                }
-            }
-            else
-            {
-                return $this->Factory()->Response()->error("Aucune action possible ...") ;
+                $method = $this->getMethodName() ;
+                $this->$method();
             }
         }
         else
@@ -240,31 +120,6 @@ class Controller extends \App\Kernel\Common\Controller
             $this->getEntity()->addAction('getall');
             $this->getEntity()->addAction('getone');
         }
-    }
-
-    public function loadEntity()
-    {
-        $result = \DB::for_table('module')
-            ->select('module_id')
-            ->select('module_default')
-            ->where(array('module_class_name' => $this->getEntityName() , 'module_active' => 1))
-            ->find_one();
-
-        if ( ! $result ) return false ;
-
-        if ( $result->module_default == 1 ) $this->setMain();
-
-        if ( ! file_exists( ENTITY_PATH . '/' . $this->getEntityName() . '.php' ) )
-        {
-            $this->Factory()->Response()->error("Le fichier '" . $this->getEntityName() . "' n'éxiste pas");
-            return false ;
-        }
-
-        $this->setEntityId( $result->module_id ) ;
-        $this->loadId();
-
-        if ( !is_object( $this->getEntity() ) ) return false ;
-        else							 		return true ;
     }
 
     protected function loadId()
@@ -329,7 +184,7 @@ class Controller extends \App\Kernel\Common\Controller
             ];
 
             $meta = array_merge( $lastTab , $meta );
-            $this->setVar( 'meta' , $meta );
+            $this->setRender( 'meta' , $meta );
 
             $og = [
                 'type' => "article",
@@ -338,7 +193,7 @@ class Controller extends \App\Kernel\Common\Controller
             ];
 
             $og = array_merge( $this->getApp()->view()->getData('og') , $og ) ;
-            $this->setVar('og',$og);
+            $this->setRender('og',$og);
         }
     }
 
@@ -371,7 +226,7 @@ class Controller extends \App\Kernel\Common\Controller
             ];
 
             $meta = array_merge($lastTab, $meta);
-            $this->setVar('meta',$meta);
+            $this->setRender('meta',$meta);
 
             $og = [
                 'type' => "article",
@@ -380,7 +235,7 @@ class Controller extends \App\Kernel\Common\Controller
             ];
 
             $og = array_merge( $this->getApp()->view()->getData('og') , $og ) ;
-            $this->setVar('og',$og);
+            $this->setRender('og',$og);
         }
     }
 
@@ -391,7 +246,7 @@ class Controller extends \App\Kernel\Common\Controller
     protected function render( $template )
     {
         $this->checkTemplate( $template ) ;
-        $this->getApp()->render( 'module/' . $this->getEntityName() . '/' . $template . ".twig.html" , $this->getVar() );
+        return parent::render( $template ) ;
     }
 
     protected function checkTemplate( $template )
@@ -530,8 +385,8 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $this->getEntity()->hasUrl() ) $this->loadMeta();
 
-        $this->setVar('element', $this->parseValue( $result ) );
-        $this->render('getone');
+        $this->setRender('element', $this->parseValue( $result ) );
+        $this->render('getone.twig.html');
     }
 
     protected function getallAction()
@@ -556,15 +411,15 @@ class Controller extends \App\Kernel\Common\Controller
                 $elmts[] = $this->parseValue( $row );
             }
 
-            $this->setVar('arrayGetAll', $elmts );
+            $this->setRender('arrayGetAll', $elmts );
         }
         else
         {
-            $this->setVar('arrayGetAll', [] );
+            $this->setRender('arrayGetAll', [] );
         }
 
         $this->loadMetaModule() ;
-        $this->render('getall') ;
+        $this->render('getall.twig.html') ;
     }
 
     /* ************************************************** */
@@ -600,8 +455,6 @@ class Controller extends \App\Kernel\Common\Controller
         {
             if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
         }
-
-        //if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
 
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
@@ -773,9 +626,8 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
-                    break;
+                break;
                 case "all" :
-
                     $i = 0;
                     foreach( $result as $row )
                     {
@@ -792,12 +644,50 @@ class Controller extends \App\Kernel\Common\Controller
                         if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
                         $i++;
                     }
-                    break;
+                break;
             }
         }
 
         return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge([
             'object' => $elmts
         ], $vars ));
+    }
+
+    protected function generateForm( $value = false )
+    {
+        $form = parent::generateForm( $value );
+
+        if ( $form === false )
+        {
+            return false ;
+        }
+
+        return array_merge( $form , [
+            'form' => $this->renderForm([
+                'field' => $form['field'],
+                'tabs' => $form['tabs'],
+                'route' => \App\Kernel\Http::getInstance()->getUrl(),
+                'id' => $form['id'],
+                'module' => $this->getEntityName(),
+            ])
+        ]);
+    }
+
+    protected function getDataView()
+    {
+        return "front" ;
+    }
+
+    public function getForm( $type )
+    {
+        switch( $type )
+        {
+            case "html" :
+                return $this->generateForm( $value = false ) ;
+            break;
+            case "object" :
+
+            break;
+        }
     }
 }

@@ -238,7 +238,7 @@ class Form
         }
         else
         {
-            throw new \App\Kernel\Exception("No PHP class for field type: " . $field->getType() . ' (field: ' . $field->getName() . ') ');
+            throw new \App\Kernel\Exception("No PHP class for field type: " . $field->getType() . ' (field: ' . $field->getName() . ' - ' . FORM_PATH . '/' . $className . '.php) ');
         }
     }
 

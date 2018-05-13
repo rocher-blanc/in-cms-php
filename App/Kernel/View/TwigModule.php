@@ -20,6 +20,7 @@ class TwigModule extends \Twig_Extension
     {
        return array(
             new \Twig_SimpleFunction('component', [$this, 'component']),
+            new \Twig_SimpleFunction('form', [$this, 'form']),
         );
     }
 
@@ -31,5 +32,12 @@ class TwigModule extends \Twig_Extension
         $Controller->setComponentName( $component );
 
         return $Controller->getComponent( $type , $request , $vars );
+    }
+
+    public function form( $module , $type = 'html' )
+    {
+        $Controller = \App\Kernel\Container::getInstance()->module( $module )->getController();
+
+        return $Controller->getForm( $type );
     }
 }

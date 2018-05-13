@@ -18,6 +18,8 @@ class Field
     public function __construct()
     {
         $this->setData( "tab" , "contenu" ) ;
+        $this->setData( "front" , true ) ;
+        $this->setData( "back" , true ) ;
     }
 
     /* ************************************************** */

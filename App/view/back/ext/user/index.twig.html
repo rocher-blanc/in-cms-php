@@ -39,7 +39,7 @@
                     </td>
                     <td class="text-right">
                         <a href="{{ siteUrl('ext/user/edit/' ~ row.user_id) }}"><i class="icon-pencil"></i></a>
-                        <a href="{{ siteUrl('ext/user/delete/' ~ row.user_id) }}"><i class="icon-trash2"></i></a>
+                        <a data-lightbox="ajax" href="{{ siteUrl('ext/user/delete/' ~ row.user_id) }}"><i class="icon-trash2"></i></a>
                     </td>
                 </tr>
             {% endfor %}

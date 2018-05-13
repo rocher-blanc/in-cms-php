@@ -16,6 +16,8 @@ defined('ENTITY_PATH') || define('ENTITY_PATH', MODULE_PATH . '/Entity');
 defined('ENTITIES_PROJECT_PATH') || define('ENTITIES_PROJECT_PATH', ENTITY_PATH . '/Class');
 defined('REPOSITORY_PROJECT_PATH') || define('REPOSITORY_PROJECT_PATH', MODULE_PATH . '/Repository');
 defined('WEBSERVICE_PROJECT_PATH') || define('WEBSERVICE_PROJECT_PATH', MODULE_PATH . '/Webservice');
+defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
+
 
 /* COMMON */
 defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJECT_PATH . '/CustomClass/Common');

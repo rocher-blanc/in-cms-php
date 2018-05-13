@@ -797,6 +797,18 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function noFront()
+    {
+        $this->field()->setData( 'front' , false ) ;
+        return $this ;
+    }
+
+    protected function noBack()
+    {
+        $this->field()->setData( 'back' , false ) ;
+        return $this ;
+    }
+
     protected function format( $name , $format )
     {
         $this->field()->setFormat( $name , $format ) ;
