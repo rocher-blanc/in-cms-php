@@ -653,6 +653,10 @@ class Controller extends \App\Kernel\Common\Controller
         ], $vars ));
     }
 
+    /* ************************************************** */
+    /* ******************   FORMER   ******************** */
+    /* ************************************************** */
+
     protected function generateForm( $value = false )
     {
         $form = parent::generateForm( $value );
@@ -669,6 +673,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'route' => \App\Kernel\Http::getInstance()->getUrl(),
                 'id' => $form['id'],
                 'module' => $this->getEntityName(),
+                'keyControl' => md5( $this->getEntityName() . $form['id'] ),
             ])
         ]);
     }
@@ -686,8 +691,13 @@ class Controller extends \App\Kernel\Common\Controller
                 return $this->generateForm( $value = false ) ;
             break;
             case "object" :
-
+                // a faire
             break;
         }
+    }
+
+    public function listenForm()
+    {
+        
     }
 }

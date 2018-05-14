@@ -234,6 +234,10 @@ class Controller
         else							 		return true ;
     }
 
+    /* ************************************************** */
+    /* ******************   FORMER   ******************** */
+    /* ************************************************** */
+
     protected function renderForm( $values )
     {
         $View = $this->Container()->newClass('App\Kernel\View');

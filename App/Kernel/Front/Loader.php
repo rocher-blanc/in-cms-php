@@ -43,9 +43,10 @@ class Loader
         }
 
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Assetic);
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Adwords);
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Referer);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\User);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Front\Module);
 
         #########################################################
         /* ****************   Extensions   ******************* */

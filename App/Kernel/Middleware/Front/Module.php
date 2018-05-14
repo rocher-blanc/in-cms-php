@@ -16,26 +16,11 @@ class Module extends \Slim\Middleware
     {
         if ( $this->app->request->isPost() )
         {
-            if ( $this->app->request->post('moduleAction') == '1' )
+            if ( $this->app->request->post('moduleAction') == '1' && $this->app->request->post('moduleName') != '' && $this->app->request->post('keyControl') != '' )
             {
-                $this->user()->login();
+                $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
+                $Controller->listenForm();
             }
         }
-        else
-        {
-            $this->user()->connectWithFacebook() ;
-
-            if ( $this->app->request->get('logout') == 'me' )
-            {
-                $this->user()->logout();
-            }
-
-            if ( $this->app->request->get('user_validation') == 'me' )
-            {
-                $this->user()->validation();
-            }
-        }
-
-        $this->user()->appendVar();
     }
 }

@@ -639,6 +639,7 @@ class Builder extends Model
     {
         $this->build('isValid' , true )
             ->isBoolean()
+            ->noFront()
             ->defaut(1)
             ->name('En ligne');
 
