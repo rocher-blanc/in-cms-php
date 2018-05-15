@@ -28,7 +28,7 @@
                     </a>
                 </li>
             {% endif %}
-            {% if depedencies|length > 0 %}
+            {% if depedencies|length > 0 and id != '' %}
                 {% for dependency in depedencies %}
                     <li>
                         <a href="#tabs-{{ dependency.slug }}" id="onglet-{{ dependency.slug }}">
@@ -55,7 +55,7 @@
             {% if depedencies|length > 0 %}
                 {% for dependency in depedencies %}
                     <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                        {{ dependency.name }}
+                        <a class="ed-button button button-rounded button-reveal button-large button-3d" data-lightbox="ajax" ><i class="icon-plus"></i><span>Ajouter</span></a>
                     </div>
                 {% endfor %}
             {% endif %}

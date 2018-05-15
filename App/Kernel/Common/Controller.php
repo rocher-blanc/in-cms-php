@@ -396,4 +396,26 @@ class Controller
     {
         return $this->getEntity()->build( $name )->field() ;
     }
+
+    /* ***************************************************** */
+    /* ******************     HOOK      ******************** */
+    /* ***************************************************** */
+
+    /*  **** ADD **** */
+    protected function hookAddCheckBefore() { return true; }
+    protected function hookAddCheckAfter() { return true; }
+    protected function hookAddSaveAfter() { return true; }
+
+    /*  **** UPDATE **** */
+    protected function hookUpdateCheckBefore() { return true; }
+    protected function hookUpdateCheckAfter() { return true; }
+    protected function hookUpdateSaveAfter() { return true; }
+
+    /*  **** DELETE **** */
+    protected function hookDeleteBefore() { return true; }
+    protected function hookDeleteAfter() { return true; }
+
+    /*  **** VALIDATION **** */
+    protected function hookEnableAfter() { return true; }
+    protected function hookDisableAfter() { return true; }
 }

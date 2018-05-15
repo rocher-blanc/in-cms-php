@@ -388,125 +388,133 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function delete()
     {
-        $result = [
-            'msg' => '',
-            'url' => '',
-            'result' => false
-        ];
+        $result = $this->hookDeleteBefore() ;
 
-        $content = $this->getRepository()->findOne( $this->getId() );
-        $this->deleteOnMenu() ;
-        if ( $content )
+        if ( $result === true )
         {
-            if ( $this->getEntity()->hasMultiLang() )
-            {
-                \DB::for_module_lang( $this->getEntityName() , $this->getId() )
-                    ->delete_many();
-            }
+            $result = [
+                'msg' => '',
+                'url' => '',
+                'result' => false
+            ];
 
-            if ( !empty( $this->getEntity()->getField() ) )
+            $content = $this->getRepository()->findOne( $this->getId() );
+            $this->deleteOnMenu() ;
+            if ( $content )
             {
-                foreach( $this->getEntity()->getField() as $name => $row )
+                if ( $this->getEntity()->hasMultiLang() )
                 {
-                    if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
+                    \DB::for_module_lang( $this->getEntityName() , $this->getId() )
+                        ->delete_many();
+                }
+
+                if ( !empty( $this->getEntity()->getField() ) )
+                {
+                    foreach( $this->getEntity()->getField() as $name => $row )
                     {
-                        $Alt = new \App\Kernel\Back\Alt;
-                        $Alt->setElementId( $this->getId() );
-                        $Alt->setModuleId( $this->getEntityId() );
-                        $Alt->delete();
-                    }
-                    else if ( $row->getType() == 'checkbox' )
-                    {
-                        \DB::for_module_assoc( $this->getEntityName() , $name )
-                            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
-                            ->delete_many();
-                    }
-                    else if ( $row->getType() == 'gallery' )
-                    {
-                        $Gallery = new \App\Kernel\Back\Gallery;
-                        $Gallery->setElementId( $this->getId() );
-                        $Gallery->setField( $row->getName() );
-                        $Gallery->setModuleId( $this->getEntityId() );
-                        if ( $row->hasThumb() )
+                        if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
                         {
-                            foreach( $row->getThumb() as $thumb )
-                            {
-                                // width, height
-                                $Gallery->setThumb( $thumb[0] , $thumb[1] );
-                            }
+                            $Alt = new \App\Kernel\Back\Alt;
+                            $Alt->setElementId( $this->getId() );
+                            $Alt->setModuleId( $this->getEntityId() );
+                            $Alt->delete();
                         }
-                        $Gallery->deleteElement();
+                        else if ( $row->getType() == 'checkbox' )
+                        {
+                            \DB::for_module_assoc( $this->getEntityName() , $name )
+                                ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+                                ->delete_many();
+                        }
+                        else if ( $row->getType() == 'gallery' )
+                        {
+                            $Gallery = new \App\Kernel\Back\Gallery;
+                            $Gallery->setElementId( $this->getId() );
+                            $Gallery->setField( $row->getName() );
+                            $Gallery->setModuleId( $this->getEntityId() );
+                            if ( $row->hasThumb() )
+                            {
+                                foreach( $row->getThumb() as $thumb )
+                                {
+                                    // width, height
+                                    $Gallery->setThumb( $thumb[0] , $thumb[1] );
+                                }
+                            }
+                            $Gallery->deleteElement();
+                        }
                     }
                 }
-            }
 
-            if ( $this->getEntity()->hasUrl() )
-            {
-                $seo = new \App\Kernel\Back\Seo;
-                $seo->setElementId( $this->getId() );
-                $seo->setModuleId( $this->getEntityId() );
-                $seo->delete();
-            }
+                if ( $this->getEntity()->hasUrl() )
+                {
+                    $seo = new \App\Kernel\Back\Seo;
+                    $seo->setElementId( $this->getId() );
+                    $seo->setModuleId( $this->getEntityId() );
+                    $seo->delete();
+                }
 
-            if ( $this->getEntity()->hasParent() )
-            {
-                $parent_id = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
+                if ( $this->getEntity()->hasParent() )
+                {
+                    $parent_id = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasOrder() )
+                    {
+                        $max = \DB::for_module( $this->getEntityName() );
+
+                        if ( is_null( $parent_id ) )    $max = $max->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() );
+                        else                            $max = $max->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id );
+
+                        $max = $max->count();
+                    }
+
+                    $rst = \DB::for_module( $this->getEntityName() )->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getId() ) ;
+                    if ( $this->getEntity()->hasOrder() ) $rst = $rst->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
+                    $rst = $rst->find_many();
+
+                    if ( $rst )
+                    {
+                        $order = $max + 1;
+                        foreach( $rst as $rep )
+                        {
+                            $rep->set( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id ) ;
+                            if ( $this->getEntity()->hasOrder() ) $rep->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
+                            $rep->save();
+                            $order++;
+                        }
+                    }
+                }
+
                 if ( $this->getEntity()->hasOrder() )
                 {
-                    $max = \DB::for_module( $this->getEntityName() );
+                    $order = $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+                    $rst = \DB::for_module( $this->getEntityName() )
+                        ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() )
+                        ->select( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasParent() ) $rst = $rst->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ) ;
+                    $rst = $rst->where_gt( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order )->find_many();
 
-                    if ( is_null( $parent_id ) )    $max = $max->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() );
-                    else                            $max = $max->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id );
-
-                    $max = $max->count();
-                }
-
-                $rst = \DB::for_module( $this->getEntityName() )->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getId() ) ;
-                if ( $this->getEntity()->hasOrder() ) $rst = $rst->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
-                $rst = $rst->find_many();
-
-                if ( $rst )
-                {
-                    $order = $max + 1;
-                    foreach( $rst as $rep )
+                    if ( $rst )
                     {
-                        $rep->set( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id ) ;
-                        if ( $this->getEntity()->hasOrder() ) $rep->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
-                        $rep->save();
-                        $order++;
+                        foreach( $rst as $row )
+                        {
+                            $order = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) - 1 ;
+                            $row->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
+                            $row->save();
+                        }
                     }
                 }
-            }
 
-            if ( $this->getEntity()->hasOrder() )
+                $content->delete();
+
+                $this->hookDeleteAfter() ;
+
+                $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
+
+                $result['msg'] = $this->m("delete_success");
+                $result['result'] = true ;
+            }
+            else
             {
-                $order = $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
-                $rst = \DB::for_module( $this->getEntityName() )
-                    ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() )
-                    ->select( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
-                if ( $this->getEntity()->hasParent() ) $rst = $rst->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ) ;
-                $rst = $rst->where_gt( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order )->find_many();
-
-                if ( $rst )
-                {
-                    foreach( $rst as $row )
-                    {
-                        $order = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) - 1 ;
-                        $row->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
-                        $row->save();
-                    }
-                }
+                $result['msg'] = $this->m("delete_success");
             }
-
-            $content->delete();
-            $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
-
-            $result['msg'] = $this->m("delete_success");
-            $result['result'] = true ;
-        }
-        else
-        {
-            $result['msg'] = $this->m("delete_success");
         }
 
         return $result ;
@@ -784,198 +792,223 @@ class Controller extends \App\Kernel\Common\Controller
     /* Fonction appelée par "add" & "update" */
     protected function pushData( $add = true )
     {
-        $result = [
-            'msg' => '',
-            'url' => '',
-            'result' => false
-        ];
+        if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
+        else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
 
-        if ( $this->checkForm() )
+        $result = $this->$hookBeforeCheck();
+
+        if ( $result === true )
         {
-            if ( !empty( $this->getEntity()->getField() ) )
+            $result = [
+                'msg' => '',
+                'url' => '',
+                'result' => false
+            ];
+
+            if ( $this->checkForm() )
             {
-                if ( $this->getId() !== NULL )
+                if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
+                else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
+
+                $resultHook = $this->$hookAfterCheck();
+
+                if ( $resultHook === true )
                 {
-                    $content = $this->getRepository()->findOne( $this->getId() );
-                    if ( ! $content )
+                    if ( !empty( $this->getEntity()->getField() ) )
                     {
-                        $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
+                        if ( $this->getId() !== NULL )
+                        {
+                            $content = $this->getRepository()->findOne( $this->getId() );
+                            if ( ! $content )
+                            {
+                                $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
+                            }
+                        }
+                        else
+                        {
+                            $content = $this->getRepository()->create();
+                        }
+
+                        foreach( $this->Lang()->getAll() as $lang )
+                        {
+                            if ( $this->getId() !== NULL )
+                            {
+                                $contentLang[ $lang->url ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
+
+                                if ( ! $contentLang[ $lang->url ] )
+                                {
+                                    $contentLang[ $lang->url ] = $this->getRepository()->createLang();
+                                    $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
+                                }
+                            }
+                            else
+                            {
+                                $contentLang[ $lang->url ] = $this->getRepository()->createLang();
+                                $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
+                            }
+                        }
+
+                        foreach( $this->getEntity()->getField() as $row )
+                        {
+                            if ( ! $row->hasLang() )
+                            {
+                                if ( $row->isOrder() == true && $add == true )
+                                {
+                                    $content->set( $row->getColumn() , $row->getDefault() ) ;
+                                }
+                                else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                                {
+                                    $content->set( $row->getColumn() , $row->getValue() ) ;
+                                }
+                            }
+                            else
+                            {
+                                foreach( $this->Lang()->getAll() as $lang )
+                                {
+                                    $contentLang[ $lang->url ]->set( $row->getColumn() , $row->getValue( $lang->url ) ) ;
+                                }
+                            }
+                        }
+
+                        $date = new \DateTime();
+
+                        if ( $add == true )
+                        {
+                            $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+                            $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+                        }
+                        else
+                        {
+                            $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
+                        }
+                        $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+
+                        // On ajoute les infos sans multi-langue
+                        $content->save() ;
+
+                        if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+
+                        foreach( $this->getEntity()->getField() as $nameField => $field )
+                        {
+                            if ( $field->getType() == "image" && $field->getData('hasAltText') == true )
+                            {
+                                foreach( $this->Lang()->getAll() as $lang )
+                                {
+                                    $Alt = new \App\Kernel\Back\Alt;
+                                    $Alt->setElementId( $this->getId() );
+                                    $Alt->setModuleId( $this->getEntityId() );
+                                    $Alt->setFieldName( $field->getName() );
+                                    $Alt->setLangId( $lang->id );
+                                    $Alt->setValue( $this->getApp()->request->post('alt_' . $field->getColumn() . '_' . $lang->flag ) );
+                                    $Alt->update();
+                                }
+                            }
+                            else if ( $field->getType() == "checkbox" )
+                            {
+                                $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
+                            }
+                            else if ( $field->getType() == "gallery" && $add == true )
+                            {
+                                // On met a jour les 0
+                                $Gallery = new \App\Kernel\Back\Gallery;
+                                $Gallery->setElementId( $this->getId() );
+                                $Gallery->setField( $field->getName() );
+                                $Gallery->setModuleId( $this->getEntityId() );
+                                $Gallery->updateZero();
+                            }
+                        }
+
+                        if ( $this->getEntity()->hasUrl() && $add == true )
+                        {
+                            if ( $this->getEntity()->hasMultilang() )
+                            {
+                                $field = $this->getEntity()->build( $this->getEntity()->getUrlName() )->field() ;
+
+                                foreach( $this->Lang()->getAll() as $lang )
+                                {
+                                    $seo = new \App\Kernel\Back\Seo;
+                                    $seo->setElementId( $this->getId() );
+                                    $seo->setModuleId( $this->getEntityId() );
+                                    $seo->setTitle( $field->getValue( $lang->url ) );
+                                    $seo->setLangId( $lang->id );
+                                    $seo->save();
+                                }
+                            }
+                            else
+                            {
+                                $seo = new \App\Kernel\Back\Seo;
+                                $seo->setElementId( $this->getId() );
+                                $seo->setModuleId( $this->getEntityId() );
+                                $seo->setTitle( $this->getEntity()->build( $this->getEntity()->getUrlName() )->field()->getValue() );
+                                $seo->setLangId( $this->Lang()->getDefault()->id );
+                                $seo->save();
+                            }
+                        }
                     }
+
+                    // On ajoute les infos avec multi-langue
+                    foreach( $this->Lang()->getAll() as $lang )
+                    {
+                        $contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
+                        $contentLang[ $lang->url ]->save() ;
+                    }
+
+                    if ( $this->getApp()->request->post('submit') == "stay" )
+                    {
+                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , $token ) ;
+                    }
+                    else
+                    {
+                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) ;
+                    }
+
+                    if ( $add ) $result['msg'] = $this->m("add_success") ;
+                    else		$result['msg'] = $this->m("edit_success") ;
+
+                    $this->Factory()->Response()->flash( $result['msg'] , true );
+
+                    $result['result'] = true;
+
+                    $this->Log()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
+
+                    if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
+                    else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
+
+                    $this->$hookAfterCheck();
                 }
                 else
                 {
-                    $content = $this->getRepository()->create();
+                    $result = $resultHook ;
                 }
-
-                foreach( $this->Lang()->getAll() as $lang )
-                {
-                    if ( $this->getId() !== NULL )
-                    {
-                        $contentLang[ $lang->url ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
-
-                        if ( ! $contentLang[ $lang->url ] )
-                        {
-                            $contentLang[ $lang->url ] = $this->getRepository()->createLang();
-                            $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
-                        }
-                    }
-                    else
-                    {
-                        $contentLang[ $lang->url ] = $this->getRepository()->createLang();
-                        $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
-                    }
-                }
-
-                foreach( $this->getEntity()->getField() as $row )
-                {
-                    if ( ! $row->hasLang() )
-                    {
-                        if ( $row->isOrder() == true && $add == true )
-                        {
-                            $content->set( $row->getColumn() , $row->getDefault() ) ;
-                        }
-                        else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
-                        {
-                            $content->set( $row->getColumn() , $row->getValue() ) ;
-                        }
-                    }
-                    else
-                    {
-                        foreach( $this->Lang()->getAll() as $lang )
-                        {
-                            $contentLang[ $lang->url ]->set( $row->getColumn() , $row->getValue( $lang->url ) ) ;
-                        }
-                    }
-                }
-
-                $date = new \DateTime();
-
-                if ( $add == true )
-                {
-                    $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
-                    $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
-                }
-                else
-                {
-                    $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-                }
-                $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
-
-                // On ajoute les infos sans multi-langue
-                $content->save() ;
-
-                if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
-
-                foreach( $this->getEntity()->getField() as $nameField => $field )
-                {
-                    if ( $field->getType() == "image" && $field->getData('hasAltText') == true )
-                    {
-                        foreach( $this->Lang()->getAll() as $lang )
-                        {
-                            $Alt = new \App\Kernel\Back\Alt;
-                            $Alt->setElementId( $this->getId() );
-                            $Alt->setModuleId( $this->getEntityId() );
-                            $Alt->setFieldName( $field->getName() );
-                            $Alt->setLangId( $lang->id );
-                            $Alt->setValue( $this->getApp()->request->post('alt_' . $field->getColumn() . '_' . $lang->flag ) );
-                            $Alt->update();
-                        }
-                    }
-                    else if ( $field->getType() == "checkbox" )
-                    {
-                        $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
-                    }
-                    else if ( $field->getType() == "gallery" && $add == true )
-                    {
-                        // On met a jour les 0
-                        $Gallery = new \App\Kernel\Back\Gallery;
-                        $Gallery->setElementId( $this->getId() );
-                        $Gallery->setField( $field->getName() );
-                        $Gallery->setModuleId( $this->getEntityId() );
-                        $Gallery->updateZero();
-                    }
-                }
-
-                if ( $this->getEntity()->hasUrl() && $add == true )
-                {
-                    if ( $this->getEntity()->hasMultilang() )
-                    {
-                        $field = $this->getEntity()->build( $this->getEntity()->getUrlName() )->field() ;
-
-                        foreach( $this->Lang()->getAll() as $lang )
-                        {
-                            $seo = new \App\Kernel\Back\Seo;
-                            $seo->setElementId( $this->getId() );
-                            $seo->setModuleId( $this->getEntityId() );
-                            $seo->setTitle( $field->getValue( $lang->url ) );
-                            $seo->setLangId( $lang->id );
-                            $seo->save();
-                        }
-                    }
-                    else
-                    {
-                        $seo = new \App\Kernel\Back\Seo;
-                        $seo->setElementId( $this->getId() );
-                        $seo->setModuleId( $this->getEntityId() );
-                        $seo->setTitle( $this->getEntity()->build( $this->getEntity()->getUrlName() )->field()->getValue() );
-                        $seo->setLangId( $this->Lang()->getDefault()->id );
-                        $seo->save();
-                    }
-                }
-            }
-
-            // On ajoute les infos avec multi-langue
-            foreach( $this->Lang()->getAll() as $lang )
-            {
-                $contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
-                $contentLang[ $lang->url ]->save() ;
-            }
-
-            if ( $this->getApp()->request->post('submit') == "stay" )
-            {
-                $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , $token ) ;
             }
             else
             {
-                $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) ;
-            }
-
-            if ( $add ) $result['msg'] = $this->m("add_success") ;
-            else		$result['msg'] = $this->m("edit_success") ;
-
-            $this->Factory()->Response()->flash( $result['msg'] , true );
-
-            $result['result'] = true;
-
-            $this->Log()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
-        }
-        else
-        {
-            $tab   = [];
-            $first = true;
-            if ( !empty( $this->getEntity()->getField() ) )
-            {
-                foreach( $this->getEntity()->getField() as $row )
+                $tab   = [];
+                $first = true;
+                if ( !empty( $this->getEntity()->getField() ) )
                 {
-                    if ( $row->getError() != '' )
+                    foreach( $this->getEntity()->getField() as $row )
                     {
-                        $tab[] = [
-                            'field' => $row->getName(),
-                            'error' => $row->getError()
-                        ];
-
-                        if ( $first )
+                        if ( $row->getError() != '' )
                         {
-                            $result['msg']   = $row->getError() ;
-                            $result['tab']   = $row->getTab() ;
-                            $result['field'] = $row->getName() ;
-                            $first = false ;
+                            $tab[] = [
+                                'field' => $row->getName(),
+                                'error' => $row->getError()
+                            ];
+
+                            if ( $first )
+                            {
+                                $result['msg']   = $row->getError() ;
+                                $result['tab']   = $row->getTab() ;
+                                $result['field'] = $row->getName() ;
+                                $first = false ;
+                            }
                         }
                     }
                 }
-            }
 
-            $result['fields'] = $tab ;
+                $result['fields'] = $tab ;
+            }
         }
 
         return $result ;
@@ -1050,6 +1083,15 @@ class Controller extends \App\Kernel\Common\Controller
         $content->save();
 
         $this->Log()->info( ( $value == 0 ? 104 : 103 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
+
+        if ( $value == 0 )
+        {
+            $this->hookDisableAfter() ;
+        }
+        else
+        {
+            $this->hookEnaableAfter() ;
+        }
 
         return true ;
     }
