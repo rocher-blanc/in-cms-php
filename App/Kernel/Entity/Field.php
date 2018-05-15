@@ -424,6 +424,11 @@ class Field
         return $return ;
     }
 
+    public function clearValue()
+    {
+        $this->setValue(NULL );
+    }
+
     public function clearSqlInfos()
     {
         // $this->clearData( array("SQL_TYPE","SQL_VALUE","SQL_DEFAULT") ) ;

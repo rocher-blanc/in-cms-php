@@ -16,10 +16,18 @@ class Module extends \Slim\Middleware
     {
         if ( $this->app->request->isPost() )
         {
-            if ( $this->app->request->post('moduleAction') == '1' && $this->app->request->post('moduleName') != '' && $this->app->request->post('keyControl') != '' )
+            $key = md5( $this->app->request->post('moduleName') . $this->app->request->post('id_element') );
+            if ( $this->app->request->post('moduleAction') == '1' && $this->app->request->post('moduleName') != '' && $this->app->request->post('keyControl') != '' && $key == $this->app->request->post('keyControl') )
             {
                 $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
-                $Controller->listenForm();
+                $rst = $Controller->listenForm();
+
+                if ( $this->app->request->isAjax() )
+                {
+                    header('Content-Type: application/json');
+                    json_encode( $rst );
+                    die;
+                }
             }
         }
     }

@@ -981,37 +981,6 @@ class Controller extends \App\Kernel\Common\Controller
         return $result ;
     }
 
-    protected function field( $name )
-    {
-        return $this->getEntity()->build( $name )->field() ;
-    }
-
-    // Check si tous les champs sont corrects
-    // Appelée dans la fonction "pushData"
-    protected function checkForm()
-    {
-        $this->_return = true ;
-
-        if ( !empty( $this->getEntity()->getField() ) )
-        {
-            foreach( $this->getEntity()->getField() as $row )
-            {
-                $rst = $this->field( $row->getName() )->checkEmpty() ;
-                if ( $rst == false ) $this->_return = false ;
-            }
-
-            if ( $this->_return == true )
-            {
-                foreach( $this->getEntity()->getField() as $row )
-                {
-                    $this->field( $row->getName() )->getFormatValue() ;
-                }
-            }
-        }
-
-        return $this->_return ;
-    }
-
     /* ************************************************** */
     /* ******************  DEPENDENCY  ****************** */
     /* ************************************************** */

@@ -54,11 +54,6 @@ class Repository extends \App\Kernel\Common\Repository
         }
     }
 
-    public function create()
-    {
-        return \DB::for_module( $this->getName() )->create();
-    }
-
     public function createLang()
     {
         return \DB::for_module_lang( $this->getName() )->create();

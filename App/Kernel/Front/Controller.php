@@ -673,7 +673,8 @@ class Controller extends \App\Kernel\Common\Controller
                 'route' => \App\Kernel\Http::getInstance()->getUrl(),
                 'id' => $form['id'],
                 'module' => $this->getEntityName(),
-                'keyControl' => md5( $this->getEntityName() . $form['id'] ),
+                'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
+                'result' => $this->result_form,
             ])
         ]);
     }
@@ -696,8 +697,136 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-    public function listenForm()
+    public function listenForm( $add = true )
     {
-        
+        $result = [
+            'msg' => '',
+            'url' => '',
+            'result' => false
+        ];
+
+        if ( $this->checkForm() )
+        {
+            if ( !empty( $this->getEntity()->getField() ) )
+            {
+                if ( $this->getId() !== NULL )
+                {
+                    $content = $this->getRepository()->findOne( $this->getId() );
+                    if ( ! $content )
+                    {
+                        $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
+                    }
+                }
+                else
+                {
+                    $content = $this->getRepository()->create();
+                }
+
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->isOrder() == true && $add == true )
+                    {
+                        $content->set( $row->getColumn() , $row->getDefault() ) ;
+                    }
+                    else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                    {
+                        $content->set( $row->getColumn() , $row->getValue() ) ;
+                    }
+                }
+
+                $date = new \DateTime();
+
+                if ( $add == true )
+                {
+                    $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+                    $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+                }
+                else
+                {
+                    $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
+                }
+                $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+
+                // On ajoute les infos sans multi-langue
+                $content->save() ;
+
+                if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+
+                foreach( $this->getEntity()->getField() as $nameField => $field )
+                {
+                    if ( $field->getType() == "checkbox" )
+                    {
+                        $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
+                    }
+                    else if ( $field->getType() == "gallery" && $add == true )
+                    {
+                        // On met a jour les 0
+                        $Gallery = new \App\Kernel\Back\Gallery;
+                        $Gallery->setElementId( $this->getId() );
+                        $Gallery->setField( $field->getName() );
+                        $Gallery->setModuleId( $this->getEntityId() );
+                        $Gallery->updateZero();
+                    }
+                }
+
+                if ( $this->getEntity()->hasUrl() && $add == true )
+                {
+                    $seo = new \App\Kernel\Back\Seo;
+                    $seo->setElementId( $this->getId() );
+                    $seo->setModuleId( $this->getEntityId() );
+                    $seo->setTitle( $this->getEntity()->build( $this->getEntity()->getUrlName() )->field()->getValue() );
+                    $seo->setLangId( $this->Lang()->getDefault()->id );
+                    $seo->save();
+                }
+            }
+
+            /*
+            if ( $add ) $result['msg'] = $this->m("add_success") ;
+            else		$result['msg'] = $this->m("edit_success") ;
+            */
+
+            foreach( $this->getEntity()->getField() as $nameField => $field )
+            {
+                $this->field( $field->getname() )->clearValue() ;
+            }
+
+            $this->Factory()->Response()->flash( $result['msg'] , true );
+
+            $result['result'] = true;
+        }
+        else
+        {
+            $tab   = [];
+            $first = true;
+            if ( !empty( $this->getEntity()->getField() ) )
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->getError() != '' )
+                    {
+                        $tab[] = [
+                            'field' => $row->getName(),
+                            'error' => $row->getError()
+                        ];
+
+                        if ( $first )
+                        {
+                            $result['msg']   = $row->getError() ;
+                            $result['tab']   = $row->getTab() ;
+                            $result['field'] = $row->getName() ;
+                            $first = false ;
+                        }
+                    }
+                }
+            }
+
+            $result['fields'] = $tab ;
+        }
+
+        $this->result_form = $result ;
+
+
+
+        return $result ;
     }
 }

@@ -18,4 +18,9 @@ class Repository
     {
         return \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity() ;
     }
+
+    public function create()
+    {
+        return \DB::for_module( $this->getName() )->create();
+    }
 }

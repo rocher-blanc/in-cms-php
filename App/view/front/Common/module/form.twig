@@ -1,3 +1,15 @@
+{% if result != null %}
+    {% if result.result == false %}
+        <div class="style-msg alertmsg">
+            <div class="sb-msg"><i class="icon-warning-sign"></i><strong>Warning!</strong> {{ result.msg }}</div>
+        </div>
+    {% else %}
+        <div class="style-msg successmsg">
+            <div class="sb-msg"><i class="icon-thumbs-up"></i><strong>Well done!</strong> {{ result.msg }}</div>
+        </div>
+    {% endif %}
+{% endif %}
+
 {% if tabs|length > 1 %}
 <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">
     <ul class="tab-nav clearfix">
