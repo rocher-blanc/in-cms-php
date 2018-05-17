@@ -52,12 +52,14 @@
                     {% include 'module/tab_history.twig' %}
                 </div>
             {% endif %}
-            {% if depedencies|length > 0 %}
-                {% for dependency in depedencies %}
-                    <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                        <a class="ed-button button button-rounded button-reveal button-large button-3d" data-lightbox="ajax" ><i class="icon-plus"></i><span>Ajouter</span></a>
-                    </div>
-                {% endfor %}
+            {% if id != '' %}
+                {% if depedencies|length > 0 %}
+                    {% for dependency in depedencies %}
+                        <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
+                            <a class="ed-button button button-rounded button-reveal button-large button-3d" data-lightbox="ajax" ><i class="icon-plus"></i><span>Ajouter</span></a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
             {% if seo == true and id != '' %}
             <div class="tab-content clearfix" id="tabs-seo" data-onglet="onglet-seo">
