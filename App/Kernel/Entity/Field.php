@@ -222,10 +222,20 @@ class Field
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
 
-    public function getTwigKey()
-    {
-        return $this->getData('twig') ;
-    }
+	public function getTwigKey()
+	{
+		return $this->getData('twig') ;
+	}
+
+	public function front()
+	{
+		return $this->getData('front') ;
+	}
+
+	public function back()
+	{
+		return $this->getData('back') ;
+	}
 
     public function getCrop()
     {

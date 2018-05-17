@@ -547,7 +547,7 @@ class Builder extends Model
     }
 
     /* ************************************************** */
-    /* ******************   CHAMPS   ******************** */
+    /* *****************   TABULATIONS   **************** */
     /* ************************************************** */
 
     public function addTab( $key , $name , $icon )
@@ -558,6 +558,10 @@ class Builder extends Model
             'key' => $key
         ];
     }
+
+    /* ************************************************** */
+    /* ****************   DEPEDENCY   ******************* */
+    /* ************************************************** */
 
     public function addDependency( $name )
     {
@@ -579,54 +583,9 @@ class Builder extends Model
         }
     }
 
-    public function build( $name , $force = false )
-    {
-        $this->setLast( $name ) ;
-
-        if ( ! array_key_exists( $name , $this->getField() ) )
-        {
-            if ( $force == false && in_array( $name , $this->forbidden_field ) )
-            {
-                throw new \App\Kernel\Exception("Prohibit naming this field \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
-            }
-            else
-            {
-                $this->initField( $name ) ;
-            }
-        }
-
-        return $this ;
-    }
-
-    protected function initField( $name )
-    {
-        /* On initialiste tout par défaut */
-        $field = new \App\Kernel\Entity\Field;
-        $field->setEntityName( $this->getClassName() );
-        $field->setName( $name );
-
-        $this->_field[ $name ] = $field;
-    }
-
-    public function field()
-    {
-        if ( is_object( $this->_field[ $this->getLast() ] ) ) 	return $this->_field[ $this->getLast() ] ;
-        else													throw new \App\Kernel\Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
-    }
-
-    public function get( $field )
-    {
-        return $this->setLast( $field )->field() ;
-    }
-
-    /* ID */
-    protected function initDefaultField()
-    {
-        $this->build('id' , true )->isId();
-        $this->build('date_created' , true )->isHiddenDate();
-        $this->build('date_last_updated' , true )->isHiddenDate();
-        $this->build('date_updated' , true )->isHiddenDate();
-    }
+    /* ************************************************** */
+    /* ****************   GENERICS FIELDS   ************* */
+    /* ************************************************** */
 
     /* ORDER */
     protected function enableOrder()
@@ -634,20 +593,33 @@ class Builder extends Model
         $this->build('order')->isOrder();
     }
 
-    /* VALIDATION */
-    protected function enableValidation()
-    {
-        $this->build('isValid' , true )
-            ->isBoolean()
-            ->noFront()
-            ->defaut(1)
-            ->name('En ligne');
+	/* VALIDATION */
+	protected function enableValidation()
+	{
+		$this->build('isValid' , true )
+			->isBoolean()
+			->noFront()
+			->defaut(1)
+			->name('En ligne');
 
-        $this->addAction("enable") ;
-        $this->addAction("disable") ;
-        $this->setValidation() ;
-        $this->setValidationName( $this->field()->getName() ) ;
-    }
+		$this->addAction("enable") ;
+		$this->addAction("disable") ;
+		$this->setValidation() ;
+		$this->setValidationName( $this->field()->getName() ) ;
+	}
+
+	/* VALIDATION */
+	protected function enableUser()
+	{
+		if ( ACTIVE_USER )
+		{
+			$this->build('isValid' , true )
+				->isSelect()
+				->noFront()
+				->defaut(\App\Kernel\Front\User::getInstance()->getId())
+				->name('Utilisateur');
+		}
+	}
 
     /* PARENTS */
     protected function enableParent( $target )
@@ -707,15 +679,61 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isURL()
+    /* ************************************************** */
+    /* *****************   FUNCTIONS   ****************** */
+    /* ************************************************** */
+
+    public function build( $name , $force = false )
     {
-        $this->setUrlName( $this->field()->getName() );
-        $this->field()->setData( "isURL" , true ) ;
-        $this->setUrl() ;
-        $this->addAction("seo") ;
+        $this->setLast( $name ) ;
+
+        if ( ! array_key_exists( $name , $this->getField() ) )
+        {
+            if ( $force == false && in_array( $name , $this->forbidden_field ) )
+            {
+                throw new \App\Kernel\Exception("Prohibit naming this field \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
+            }
+            else
+            {
+                $this->initField( $name ) ;
+            }
+        }
 
         return $this ;
     }
+
+    protected function initField( $name )
+    {
+        /* On initialiste tout par défaut */
+        $field = new \App\Kernel\Entity\Field;
+        $field->setEntityName( $this->getClassName() );
+        $field->setName( $name );
+
+        $this->_field[ $name ] = $field;
+    }
+
+    public function field()
+    {
+        if ( is_object( $this->_field[ $this->getLast() ] ) ) 	return $this->_field[ $this->getLast() ] ;
+        else													throw new \App\Kernel\Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
+    }
+
+    public function get( $field )
+    {
+        return $this->setLast( $field )->field() ;
+    }
+
+    protected function initDefaultField()
+    {
+        $this->build('id' , true )->isId();
+        $this->build('date_created' , true )->isHiddenDate();
+        $this->build('date_last_updated' , true )->isHiddenDate();
+        $this->build('date_updated' , true )->isHiddenDate();
+    }
+
+    /* ************************************************** */
+    /* ******************   CHAMPS   ******************** */
+    /* ************************************************** */
 
     protected function isVideo()
     {
@@ -795,24 +813,6 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;
-        return $this ;
-    }
-
-    protected function noFront()
-    {
-        $this->field()->setData( 'front' , false ) ;
-        return $this ;
-    }
-
-    protected function noBack()
-    {
-        $this->field()->setData( 'back' , false ) ;
-        return $this ;
-    }
-
-    protected function format( $name , $format )
-    {
-        $this->field()->setFormat( $name , $format ) ;
         return $this ;
     }
 
@@ -902,6 +902,54 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isCheckbox()
+    {
+        $this->field()->setData( "type" , "checkbox" ) ;
+        $this->field()->setData( "noOffset" , true ) ;
+        return $this ;
+    }
+
+    protected function isSelect( $integer = true  , $taille = 11 )
+    {
+        $this->field()->setData( "type" , "select" ) ;
+        $this->field()->setData( "SQL_VALUE" , $taille ) ;
+        $this->field()->setData( "SQL_TYPE" , ( $integer == true ? "INT" : "VARCHAR" ) ) ;
+
+        return $this ;
+    }
+
+    /* ************************************************** */
+    /* ******************   OPTIONS   ******************* */
+    /* ************************************************** */
+
+    protected function isURL()
+    {
+        $this->setUrlName( $this->field()->getName() );
+        $this->field()->setData( "isURL" , true ) ;
+        $this->setUrl() ;
+        $this->addAction("seo") ;
+
+        return $this ;
+    }
+
+    protected function noFront()
+    {
+        $this->field()->setData( 'front' , false ) ;
+        return $this ;
+    }
+
+    protected function noBack()
+    {
+        $this->field()->setData( 'back' , false ) ;
+        return $this ;
+    }
+
+    protected function format( $name , $format )
+    {
+        $this->field()->setFormat( $name , $format ) ;
+        return $this ;
+    }
+
     protected function Thumb( $width , $height )
     {
         $this->field()->setThumb( array( $width , $height ) ) ;
@@ -922,26 +970,15 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isCheckbox()
-    {
-        $this->field()->setData( "type" , "checkbox" ) ;
-        $this->field()->setData( "noOffset" , true ) ;
-        return $this ;
-    }
-
-    protected function isSelect( $integer = true  , $taille = 11 )
-    {
-        $this->field()->setData( "type" , "select" ) ;
-        $this->field()->setData( "SQL_VALUE" , $taille ) ;
-        $this->field()->setData( "SQL_TYPE" , ( $integer == true ? "INT" : "VARCHAR" ) ) ;
-
-        return $this ;
-    }
-
     protected function full()
     {
         $this->field()->setData( "full" , true ) ;
+        return $this ;
+    }
 
+    protected function readonly()
+    {
+        $this->field()->setData( "readonly" , true ) ;
         return $this ;
     }
 
