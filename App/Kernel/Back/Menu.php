@@ -20,11 +20,16 @@ class Menu
 	/* ************************************************** */
 	/* ******************   GETTER   ******************** */
 	/* ************************************************** */
-	
+
 	private function getApp()
-	{
-		return \Slim\Slim::getInstance() ;
-	}
+    {
+        return \Slim\Slim::getInstance() ;
+    }
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
 	
 	private function Factory()
 	{
@@ -94,7 +99,7 @@ class Menu
 			}
 		}
 
-        $this->getApp()->view()->appendData([
+        $this->Container()->newClass('App\Kernel\View')->appendData([
             'adminFolder'       => trim( $this->getApp()->config('admin.url') , "/"),
             'cat'               => ( array_key_exists( 0 , $this->_url ) == true ? $this->_url[0] : '' ),
             'menu'              => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
