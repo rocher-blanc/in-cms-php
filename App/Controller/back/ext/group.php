@@ -145,7 +145,7 @@ $app->group('/group', function () use ($app)
 					$std->perm_add   	 	= $Controller->getEntity()->hasAction('add') ;
 					$std->perm_update    	= $Controller->getEntity()->hasAction('edit') ;
 					$std->perm_delete    	= $Controller->getEntity()->hasAction('delete') ;
-					$std->perm_validation   = ( $Controller->getEntity()->hasAction('up') && $Controller->getEntity()->hasAction('down') ) ;
+					$std->perm_validation   = ( $Controller->getEntity()->hasAction('enable') && $Controller->getEntity()->hasAction('disable') ) ;
 					$std->perm_config		= $Controller->getEntity()->hasAction('config') ;
 					
 					$Guard = new \App\Kernel\Back\Acl;
