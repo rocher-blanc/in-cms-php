@@ -21,6 +21,7 @@ class TwigModule extends \Twig_Extension
        return array(
             new \Twig_SimpleFunction('component', [$this, 'component']),
             new \Twig_SimpleFunction('form', [$this, 'form']),
+            new \Twig_SimpleFunction('parse', [$this, 'parse']),
         );
     }
 
@@ -39,5 +40,17 @@ class TwigModule extends \Twig_Extension
         $Controller = \App\Kernel\Container::getInstance()->module( $module )->getController();
 
         return $Controller->getForm( $type );
+    }
+
+    public function parse( $field )
+    {
+        if ( array_key_exists( 'id' , $field ) == true &&
+            array_key_exists( 'type' , $field ) == true &&
+            array_key_exists( 'value' , $field ) == true &&
+            array_key_exists( 'name' , $field ) == true &&
+            array_key_exists( 'module' , $field ) == true )
+        {
+            return \App\Kernel\Container::getInstance()->module( $field['module'] )->getController()->subParse( $field );
+        }
     }
 }

@@ -268,9 +268,9 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************   CHECKBOX   ******************* */
     /* ************************************************** */
 
-    protected function getAssocValue( $field , $id , $level = 0 )
+    protected function getAssocValue( $module , $fieldName , $id )
     {
-        $content = $this->getRepository()->getAssocValue( $field->getName() , $id );
+        $content = $this->getRepository()->getAssocValue( $fieldName , $id );
         $result  = [] ;
 
         if ( $content )
@@ -283,14 +283,14 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $result )
         {
-            $rows = $this->Container()->module( $field->getObject() )->getRepository()->findIn( $result );
+            $rows = $this->Container()->module( $module )->getRepository()->findIn( $result );
             if ( $rows )
             {
                 $elmts = [] ;
 
                 foreach( $rows as $row )
                 {
-                    $elmts[] = $this->Container()->module( $field->getObject() )->getController()->parseValue( $row , $level );
+                    $elmts[] = $this->Container()->module( $module )->getController()->parseValue( $row );
                 }
 
                 return $elmts;
@@ -426,29 +426,40 @@ class Controller extends \App\Kernel\Common\Controller
     /* ***************   PARSE VALUE   ****************** */
     /* ************************************************** */
 
-    protected function getSelectValue( $field , $value , $level = 0 )
+    protected function getObject( $id , $value , $field )
     {
-        if ( $field->isAssociated() )
-        {
-            $result = $this->Container()->module( $field->getObject() )->getRepository()->findOne( $value );
-
-            if ( $result )  return $this->Container()->module( $field->getObject() )->getController()->parseValue( $result , $level );
-            else            return NULL ;
-        }
-        else
-        {
-            return $field->getOption( $value );
-        }
-
-        return NULL ;
+        return [
+            'id'     => $id,
+            'type'   => $field->getType(),
+            'name'   => $field->getName(),
+            'value'  => $value,
+            'module' => $field->getObject()
+        ];
     }
 
-    public function parseValue( $result , $level = 0 )
+    protected function getSelectValue( $module , $value )
     {
-        $level++;
+        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
 
-        if ( $level > 4 ) return [] ;
+        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
+        else            return NULL ;
+    }
 
+    public function subParse( $object )
+    {
+        switch( $object['type'] )
+        {
+            case 'select' :
+                return $this->getSelectValue( $object['module'] , $object['value'] ) ;
+            break;
+            case 'checkbox' :
+                return $this->getAssocValue( $object['module'] , $object['name'] , $object['value'] ) ;
+            break;
+        }
+    }
+
+    public function parseValue( $result )
+    {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
         if ( $this->getId() === NULL )
@@ -554,13 +565,13 @@ class Controller extends \App\Kernel\Common\Controller
                         $arrayElement[ $row->getName() ] = $tab;
                     }
                 }
-                else if ( $row->getType() == 'checkbox' )
+                else if ( $row->getType() == 'checkbox' or ( $row->isAssociated() && $row->getType() == 'select' ) )
                 {
-                    $arrayElement[ $row->getName() ] = $this->getAssocValue( $row , $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $level ) ;
+                    $arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
                 }
-                else if ( $row->getType() == 'select' )
+                else if ( ! $row->isAssociated() && $row->getType() == 'select' )
                 {
-                    $arrayElement[ $row->getName() ] = $this->getSelectValue( $row , $result->get( $row->getColumn() ) , $level ) ;
+                    $arrayElement[ $row->getName() ] = $row->getOption( $result->get( $row->getColumn() ) );
                 }
                 else if ( $row->getType() == 'date' )
                 {
