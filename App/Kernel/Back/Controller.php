@@ -965,8 +965,6 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( $add ) $result['msg'] = $this->m("add_success") ;
                     else		$result['msg'] = $this->m("edit_success") ;
 
-                    $this->Factory()->Response()->flash( $result['msg'] , true );
-
                     $result['result'] = true;
 
                     $this->Log()->info( ( $add ? 100 : 101 ) , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
@@ -1090,7 +1088,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
-            $this->hookEnaableAfter() ;
+            $this->hookEnableAfter() ;
         }
 
         return true ;

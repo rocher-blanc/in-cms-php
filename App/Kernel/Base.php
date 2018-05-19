@@ -33,7 +33,6 @@ CREATE TRIGGER `after_delete_extension` AFTER DELETE ON `extension` FOR EACH ROW
 CREATE TRIGGER `after_delete_module_group` AFTER DELETE ON `module_group` FOR EACH ROW BEGIN UPDATE module SET module_module_group_id = NULL WHERE module_module_group_id = old.module_group_id; END;
 CREATE TRIGGER `after_delete_module` AFTER DELETE ON `module` FOR EACH ROW BEGIN DELETE FROM param WHERE param_key = CONCAT(\'key_module_\',old.module_id); DELETE FROM module_lang WHERE module_lang_module_id = old.module_id; END;
 CREATE TRIGGER `after_delete_user_front` AFTER DELETE ON `user_front` FOR EACH ROW BEGIN DELETE FROM user_front_profile WHERE user_front_profile_user_front_id = old.user_front_id; END;
-CREATE TRIGGER `after_delete_menu` AFTER DELETE ON `menu` FOR EACH ROW BEGIN DELETE FROM menu_element WHERE menu_element_menu_id = old.menu_id; END;
 CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_group_id = old.user_group_id; END;');
     }
 
@@ -87,10 +86,10 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('maintenance_active', 0),
 ('security_list_ip', NULL);
 
-INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_type`, `user_published`) VALUES
-(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
-(1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1, 1),
-(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
+INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_published`) VALUES
+(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1),
+(1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1),
+(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1);
 
 INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, `user_group_redirect`) VALUES
 (1, 'Administrateurs', '/.+;/', '/admin/'),
@@ -222,30 +221,6 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "media_alt_field_name" => $this->infoColumn( "VARCHAR" , "50" ),
                 "media_alt_value" => $this->infoColumn( "VARCHAR" , "500" ),
             ],
-            "menu" => [
-                "menu_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "menu_name" => $this->infoColumn( "VARCHAR" , "150" )
-            ],
-            "menu_element" => [
-                "menu_element_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "menu_element_menu_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_parent_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
-                "menu_element_order" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_type" => $this->infoColumn( "ENUM" , "'module', 'page', 'link', 'section'" ),
-                "menu_element_link_blank" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
-                "menu_element_link_href" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
-                "menu_element_module_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
-                "menu_element_value_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
-                "menu_element_max_level" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
-                "menu_element_has_submenu" => $this->infoColumn( "TINYINT" , "1" , NULL , true ),
-                "menu_element_option" => $this->infoColumn( "ENUM" , "'one','all'" , NULL , true )
-            ],
-            "menu_element_lang" => [
-                "menu_element_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "menu_element_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_lang_menu_element_id" => $this->infoColumn( "INT" , "11" ),
-                "menu_element_lang_label" => $this->infoColumn( "VARCHAR" , "255" )
-            ],
             "module" => [
                 "module_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "module_name" => $this->infoColumn( "VARCHAR" , "50" ),
@@ -347,14 +322,11 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "user_fname" => $this->infoColumn( "VARCHAR" , "150" ),
                 "user_lname" => $this->infoColumn( "VARCHAR" , "150" ),
                 "user_photo" => $this->infoColumn( "VARCHAR" , "255" ),
-                "user_type" => $this->infoColumn( "INT" , "11" ),
                 "user_published" => $this->infoColumn( "TINYINT" , "1" )
             ],
             "user_group" => [
                 "user_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "user_group_name" => $this->infoColumn( "VARCHAR" , "150" ),
-                "user_group_url" => $this->infoColumn( "TEXT" ),
-                "user_group_redirect" => $this->infoColumn( "VARCHAR" , "250" )
+                "user_group_name" => $this->infoColumn( "VARCHAR" , "150" )
             ],
             "user_front" => [
                 "user_front_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),

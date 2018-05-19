@@ -33,18 +33,21 @@
                 <div class="col_three_fifth col_last">
                     <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
                     <a href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}" class="button button-mini button-rounded">Editer</a>
+
                     {% if row.module_default == 0 %}
                         <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
                     {% else %}
                         <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
                     {% endif %}
+
                     {% if row.module_active == 0 %}
                         <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
                     {% else %}
                         <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
                     {% endif %}
-                    <a href="#" class="button button-mini button-rounded button-black">Vider les tables MySQL</a>
-                    {% if img[ row.module_id ] == true %}<a href="#" class="button button-mini button-rounded button-blue">Regénérer les images</a>{% endif %}
+
+                    <a href="{{ siteUrl('admin/moduleadmin/truncate/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-black">Vider les tables MySQL</a>
+                    {% if img[ row.module_id ] == true %}<a href="{{ siteUrl('admin/moduleadmin/image/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-blue">Regénérer les images</a>{% endif %}
                 </div>
                 <div class="clear"></div>
             </div>

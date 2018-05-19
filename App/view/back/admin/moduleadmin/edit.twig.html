@@ -10,21 +10,25 @@
     <div class="fancy-title title-dotted-border">
         <h3>{{ title_block_page }}</h3>
     </div>
+    <div class="ed-menu">
+        <a href="{{ siteUrl('admin/moduleadmin') }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+    </div>
+    <br />
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_half">
                 <label>Activer</label>
                 {% include 'form/generic/switch.twig' with {'value':post.module_active, 'name':'module_active'} %}
             </div>
-            <div class="ed_field col_half col_last">
+            <div class="ed_field col_half col_last" id="field-module_name">
                 <label>Nom <span class="icon-asterisk"></span></label>
                 <input type="text" id="module_name" name="module_name" class="form-control" value="{{ post.module_name }}" />
             </div>
-            <div class="ed_field col_half">
+            <div class="ed_field col_half" id="field-module_class_name">
                 <label>Nom de la class <span class="icon-asterisk"></span></label>
                 <input type="text" id="module_class_name" name="module_class_name" class="form-control" value="{{ post.module_class_name }}" />
             </div>
-            <div class="ed_field col_half col_last">
+            <div class="ed_field col_half col_last" id="field-module_icon">
                 <label>Icône <span class="icon-asterisk"></span></label>
                 <input type="text" id="module_icon" name="module_icon" class="form-control" value="{{ post.module_icon }}" />
             </div>
@@ -32,4 +36,8 @@
         </div>
     </div>
 </form>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
 {% endblock %}
