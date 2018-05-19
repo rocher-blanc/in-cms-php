@@ -62,8 +62,6 @@ $app->group('/group', function () use ($app)
 			if ( $error == false ) {
 				if ( !$contentRow ) {
 					$contentRow = DB::for_table('user_group')->create();
-					$contentRow->user_group_url 	 = "/.+;/" ;
-					$contentRow->user_group_redirect = "/admin/";
 					$add = true ;
 				}
 				
@@ -73,13 +71,13 @@ $app->group('/group', function () use ($app)
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 7 : 8 ) , $contentRow->user_group_name ) ;
 				
 				$id = $contentRow->user_group_id ;
-				
-				$app->flash('__msg',addslashes( json_encode( "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
-				$app->flash('__result',true);
-				
-				if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/group/edit/' . $id );
-				else 											$app->redirect( $app->config('admin.url') . '/ext/group' );
+
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) , true , '/ext/group' );
 			}
+			else
+            {
+
+            }
 		}
 		
 		if ( $id != -1 ) {

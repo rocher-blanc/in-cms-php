@@ -17,7 +17,10 @@
     <div class="fancy-title title-dotted-border">
         <h3>{{ title_block_page }}</h3>
     </div>
-
+    <div class="ed-menu bottommargin-sm">
+        <a href="{{ siteUrl('ext/group') }}" class="button button-mini"><i class="icon-th-list"></i> Gérer</a>
+        <a href="{{ siteUrl('ext/group/edit') }}" class="button button-mini"><i class="icon-plus"></i> Ajouter</a>
+    </div>
     <div class="ed field col_full">
         <label>Nom <span class="icon-asterisk"></span></label>
         <input type="text" id="user_group_name" name="user_group_name" class="form-control" value="{{ post.user_group_name }}" />

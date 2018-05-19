@@ -8,7 +8,7 @@ $app->group('/maintenance', function () use ($app)
 
         if ( $app->request->isPost() )
         {
-            $Container->param()->set('maintenance_active' , ($app->request->post('maintenance_active') == NULL ? 0 : 1) );
+            $Container->param()->set('maintenance_active' , $app->request->post('maintenance_active') );
             $Container->param()->set('maintenance_ip' , $app->request->post('maintenance_ip') );
 
             \App\Kernel\Back\Log::getInstance()->info( 44 ) ;

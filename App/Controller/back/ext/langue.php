@@ -115,75 +115,6 @@ $app->group('/langue', function () use ($app)
         });
     });
 
-    $app->get('/export', function () {
-        $objPHPExcel = new \PHPExcel();
-        $objPHPExcel->setActiveSheetIndex(0);
-
-        $arrayLetter = ["B","C","D","E","F","G","H","I","J","K","L"];
-        $tab         = [];
-        $tabIndex    = [];
-        $i           = 0;
-        $index       = 2;
-
-        foreach( \App\Kernel\Lang::getInstance()->getAll() as $lang )
-        {
-            $line = $arrayLetter[ $i ];
-            $cell = $line . '1';
-
-            $objPHPExcel->getActiveSheet()->SetCellValue( $cell , $lang->name . "/" . $lang->url );
-
-            $file = PROJECT_PATH . '/Lang/' . strtoupper( $lang->url ) . '.php' ;
-            if ( file_exists( $file ) )
-            {
-                $className = "\Project\Lang\\" . strtoupper( $lang->url ) ;
-                $class     = new $className ;
-                $arrayTrad = $class->getVar();
-
-                ksort( $arrayTrad );
-
-                foreach( $arrayTrad as $key => $value )
-                {
-                    if ( array_key_exists( $key , $tabIndex ) )
-                    {
-                        $locate = $tabIndex[ $key ] ;
-                    }
-                    else
-                    {
-                        $objPHPExcel->getActiveSheet()->SetCellValue( 'A' . $index , $key );
-                        $tabIndex[ $key ] = $index ;
-                        $locate = $tabIndex[ $key ] ;
-                        $index++;
-                    }
-                    $val = str_replace( '<strong>' , '**' , $value );
-                    $val = str_replace( '</strong>' , '**' , $val );
-                    $val = str_replace( '<em>' , '*' , $val );
-                    $val = str_replace( '</em>' , '*' , $val );
-
-                    $objPHPExcel->getActiveSheet()->SetCellValue( $line . $locate , html_entity_decode( $val ) );
-                }
-            }
-
-            $i++;
-        }
-
-        // Redirect output to a client’s web browser (Excel2007)
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="traduction.xlsx"');
-        header('Cache-Control: max-age=0');
-
-        // If you're serving to IE 9, then the following may be needed
-        header('Cache-Control: max-age=1');
-
-        // If you're serving to IE over SSL, then the following may be needed
-        header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-        header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-        header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-        header ('Pragma: public'); // HTTP/1.0
-
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save('php://output');
-    })->name('langue_export');
-
     $app->map('/edit/:id', function ($id) use ($app)
     {
         $error 	  = false ;
@@ -275,9 +206,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/ext/langue' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_up');
 
         $app->get('/down/:id/:token', function ($id,$token) use ($app)
@@ -322,9 +251,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/ext/langue' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_down');
 
     });
@@ -358,9 +285,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/ext/langue' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_active');
 
         $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -405,9 +330,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/ext/langue' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_disactive');
     });
 
@@ -447,9 +370,7 @@ $app->group('/langue', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/ext/langue' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_active');
 
     $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -506,8 +427,6 @@ $app->group('/langue', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/ext/langue' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_disactive');
 });

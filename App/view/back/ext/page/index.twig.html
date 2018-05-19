@@ -41,7 +41,7 @@
                             {% if row.page_default == 1 %}
                                 <a href="javascript:;" class="button button-mini button-green">Page par défaut</a>
                             {% else %}
-                                <a href="{{ siteUrl('ext/page/default/' ~  row.page_id ~ '/' ~ csrf_token ) }}" class="btn btn-sm btn-default">Mettre par défaut</a>
+                                <a href="{{ siteUrl('ext/page/default/' ~  row.page_id ~ '/' ~ csrf_token ) }}" class="button button-mini button-blue">Mettre par défaut</a>
                             {% endif %}
                         </td>
                         <td>

@@ -57,7 +57,11 @@ class Response
 	{
 		$this->getApp()->contentType('application/json');
 		echo json_encode( $array ) ;
-		// die;
+
+		if ( array_key_exists( 'msg' , $array ) && array_key_exists( 'result' , $array ) )
+        {
+            $this->flash( $array['msg'] , $array['result'] );
+        }
 	}
 
 	private function saveUrlDestination()
