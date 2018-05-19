@@ -34,6 +34,35 @@
 
 		<div class="clear"></div>
 
+		<div class="row show-grid">
+			<div class="col-sm-12 nopadding">
+				<table class="table" id="groupmodule-menu-table">
+					<tbody>
+					<tr>
+						<td width="300px" class="col-fix">
+							<div class="text-center">
+								<button type="button" class="ed-button button button-rounded button-reveal button-green button-mini button-3d" id="groupmodule-button-addcolumn">
+									<i class="icon-plus"></i>
+									<span>Ajouter une colonne</span>
+								</button>
+							</div>
+							<div class="clear"></div>
+
+							<h4 class="mt10">Modules disponibles</h4>
+							<div class="module-block" data-id="0">
+								<div class="module-block-content">
+									{% for mod in modules %}
+									<div class="button button-small button-3d btn-block module-element" data-id="{{ mod.id }}" data-block="{{ mod.block }}">{{ mod.title }}</div>
+									{% endfor %}
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
 		{% include 'form/generic/button.twig' %}
 	</form>
 
@@ -47,9 +76,461 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
 <link rel="stylesheet" href="{{ vendor('switchery/dist/switchery.min.css') }}" />
+
+<style type="text/css">
+	#groupmodule-menu-table {
+		margin: 0;
+		display: table;
+		table-layout: fixed;
+	}
+	#groupmodule-menu-table td {
+		vertical-align: top;
+	}
+	#groupmodule-menu-table h4 {
+		margin: 20px 0 0 0;
+	}
+	.module-column {
+		border: none !important;
+		border-right: 1px black solid !important;
+		padding: 10px !important;
+		vertical-align: top !important;
+		padding-bottom: 100px !important;
+		position: relative !important;
+	}
+	.module-column-buttons {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		text-align: center;
+	}
+	.module-column-buttons .button {
+		margin: 0 10px;
+	}
+	.module-block.placeholder {
+		height: 50px;
+		margin-bottom: 20px;
+	}
+	.module-block:not(:last-child) {
+		margin-bottom: 12px;
+	}
+	.module-block .row {
+		margin: 0;
+	}
+	.module-block-handle {
+		display: inline-block !important;
+		width: 38px !important;
+		border-radius: 0 !important;
+		padding: 7px !important;
+		text-align: center !important;
+	}
+	.module-block-handle i {
+		font-size: 21px;
+	}
+	.input-title {
+		border-right: none !important;
+	}
+	.title-save {
+		display: inline-block !important;
+		width: 26px !important;
+		padding: 10px 5px !important;
+		text-align: center !important;
+		/*background: white !important;*/
+		border-left: none !important;
+		cursor: pointer;
+	}
+	.button-delete {
+		margin: 4px 0 0 !important;
+		padding: 0 !important;
+		width: 30px !important;
+		height: 30px !important;
+		display: inline-block;
+	}
+	.button-delete i {
+		padding: 0 !important;
+		top: -4px !important;
+		left: 3px !important;
+	}
+	.module-block [class^=col-] {
+		padding: 0 !important;
+		background: transparent !important;
+		border: none !important;
+	}
+	.module-block-content {
+		margin-top: 8px;
+		padding: 0 0 27px;
+		transition: all .3s;
+	}
+	.module-block-content.bordered {
+		padding: 10px 10px 22px;
+		border: 1px blue dashed;
+	}
+	.module-element {
+		background: grey;
+		color: black;
+		padding: 8px 12px;
+		margin: 0 0 8px !important;
+	}
+	.placeholder {
+		opacity: .5;
+	}
+</style>
 {% endblock %}
 
 {% block javascripts %}
 <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
 <script src="{{ vendor('switchery/dist/switchery.min.js') }}"></script>
+<script src="{{ vendor('jquery-ui/jquery-ui.min.js') }}"></script>
+
+
+<script type="text/javascript">
+
+	var addCSRF = function( values ) {
+	    values['{{ csrf_key }}'] = "{{ csrf_token }}";
+	    return values;
+	};
+
+	var sort_element;
+
+
+	var groupmoduleMoveElement = function( element, block_id, doAjaxRequest ) {
+       $(element).appendTo( $(".module-block[data-id="+ block_id +"]").find(".module-block-content") );
+	};
+
+
+	var resetSortable = function() {
+        // Sortable modules
+        sort_element = $( ".module-block-content" ).sortable({
+            connectWith: ".module-block-content",
+            placeholder: "module-element placeholder",
+            start: function(event, ui) {
+                $(".module-block-content").addClass("bordered");
+            },
+            stop: function(event, ui) {
+                $(".module-block-content").removeClass("bordered");
+            },
+            update: function(event, ui) {
+                var $item = $( ui.item[0] );
+                var $block = $item.parents(".module-block");
+
+                var list = $block.find(".module-element").map(function() {
+                    return $(this).data("id");
+                }).get().join(",");
+
+                var data = {
+                    module_id : $item.data("id"),
+                    block_id  : $block.data("id"),
+                    new_order: list
+                };
+                data = addCSRF(data);
+
+                console.log( data );
+
+                $.ajax({
+                    url     : '/admin-site/admin/groupmodule/order-module',
+                    data    : data,
+                    method  : "POST",
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
+        });
+
+        // Sortable block
+        $( ".module-column" ).sortable({
+            handle: ".module-block-handle",
+            connectWith: ".module-column",
+            placeholder: "module-block placeholder",
+            start: function(event, ui) {
+//                $( ui.item[0] ).height(40).find(".module-block-content").slideUp(0);
+				$(".module-block-content").hide(0);
+				$(".button-delete").hide(0);
+            },
+            stop: function(event, ui) {
+//                $( ui.item[0] ).height("auto").find(".module-block-content").slideDown(300);
+                $(".module-block-content").show(0);
+                $(".button-delete").show(0);
+            },
+            update: function(event, ui) {
+                var $item = $( ui.item[0] );
+                var $column = $item.parents(".module-column");
+
+                var list = $column.find(".module-block").map(function() {
+                    return $(this).data("id");
+                }).get().join(",");
+
+                var data = {
+                    block_id : $item.data("id"),
+                    column_id: $column.data("id"),
+                    new_order: list
+                };
+                data = addCSRF(data);
+
+                $.ajax({
+                    url     : '/admin-site/admin/groupmodule/order-block',
+                    data    : data,
+                    method  : "POST",
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
+        });
+	};
+
+    $(function() {
+        // Add column button click
+        $("#groupmodule-button-addcolumn").click(function() {
+            groupmoduleCreateColumn();
+        });
+
+        // Créate all blocks
+        {% for column in columns %}
+        	groupmoduleAddColumn( {{ column.id }} );
+
+        	{% for block in column.blocks %}
+        		groupmoduleAddBlock( {{ column.id }}, {{ block.id }}, "{{ block.title }}" );
+			{% endfor %}
+		{% endfor %}
+
+		// Move module elements in them blocks
+		$(".module-block[data-id=0]").find(".module-element").each(function( index, element ) {
+		    var block = $(element).data("block");
+		    if( block > 0 ) {
+                groupmoduleMoveElement( element, block );
+			}
+		});
+
+         groupmoduleManageColumns();
+    });
+
+
+    var groupmoduleAddColumn = function( column_id ) {
+		var $column = $("<td>")
+			.addClass("module-column")
+			.attr("data-id", column_id)
+			.appendTo( $("#groupmodule-menu-table").find("tbody").find("tr").eq(0) )
+			.insertBefore(".col-fix");
+
+		var $buttons = $("<div>")
+            .addClass("module-column-buttons")
+			.appendTo( $column );
+
+        $("<span>")
+			.addClass("ed-button button button-rounded button-reveal button-green button-mini button-3d")
+            .append(  $("<i>").addClass("icon-plus")  )
+			.append(  $("<span>").text("Ajouter un bloc")  )
+			.click(function() { groupmoduleCreateBlock(this) })
+            .appendTo( $buttons );
+
+		$("<span>")
+            .addClass("ed-button button button-rounded button-reveal button-red button-mini button-3d")
+            .append(  $("<i>").addClass("icon-trash")  )
+            .append(  $("<span>").text("Supprimer la conne")  )
+			.click(function() { groupmoduleColumnDelete(this) })
+			.appendTo( $buttons );
+    };
+
+
+    var groupmoduleCreateColumn = function() {
+        var data = {
+            group: 1,
+			method: "POST",
+			{{ csrf_key }}: "{{ csrf_token }}"
+		};
+
+        $.ajax({
+			url     : '/admin-site/admin/groupmodule/add-column',
+			data    : data,
+			method  : "POST",
+			dataType: 'json',
+			success : function(response) {
+			    console.log(response);
+
+			    groupmoduleAddColumn( response.column_id );
+			    groupmoduleAddBlock( response.column_id, response.block_id, "" );
+				groupmoduleManageColumns();
+			}
+		});
+    };
+
+
+    var groupmoduleColumnDelete = function( el ) {
+        $btn    = $(el);
+        $column = $btn.parents(".module-column");
+
+        var data = {
+            column_id : $column.data("id")
+        };
+        data = addCSRF(data);
+
+        $.ajax({
+            url     : '/admin-site/admin/groupmodule/delete-column',
+            data    : data,
+            method  : "POST",
+            dataType: 'json',
+            success: function (response) {
+                $column.find(".module-element").each(function(index, element) {
+                    groupmoduleMoveElement( element, 0 );
+                });
+
+                $column.remove();
+                groupmoduleManageColumns();
+            }
+        });
+    };
+
+
+    var groupmoduleAddBlock = function( column_id, block_id, title ) {
+
+        var $column = $(".module-column[data-id='"+column_id+"']");
+
+        var $block = $("<div>")
+            .addClass("module-block")
+            .attr('data-id', block_id)
+            .appendTo($column);
+
+        // Header
+        var $header = $("<div>")
+            .addClass("row module-block-header")
+            .appendTo($block);
+
+        var $header_col_1 = $("<div>")
+            .addClass("col-sm-10")
+            .appendTo($header);
+
+        var $input_group = $("<div>").addClass("input-group").appendTo($header_col_1);
+        $("<span>")
+            .addClass("input-group-addon module-block-handle")
+            .append( $("<i>").addClass("icon-line2-cursor-move") )
+            .appendTo($input_group);
+        $("<input>")
+            .addClass("form-control input-title")
+            .val(title)
+            .appendTo($input_group);
+        $("<span>")
+            .addClass("input-group-addon title-save")
+            .append( $("<i>").addClass("icon-line-check") )
+            .click(function() { groupmoduleTitleSave(this) })
+            .appendTo($input_group);
+
+        var $header_col_2 = $("<div>")
+            .addClass("col-sm-2 text-right")
+            .appendTo($header);
+        $("<button>")
+            .addClass("button button-border button-rounded button-red button-delete")
+            .attr("type", "button")
+            .append( $("<i>").addClass("icon-trash") )
+            .click( function() { groupmoduleBlockDelete(this) } )
+            .appendTo($header_col_2);
+
+        // Content
+        var $content = $("<div>")
+            .addClass("module-block-content")
+            .appendTo($block);
+
+    };
+
+
+    var groupmoduleCreateBlock = function(el) {
+        $btn = $(el);
+		$column = $btn.parents(".module-column");
+
+        var data = {
+            column_id: $column.data("id"),
+            order    : $column.find(".module-block").length + 1,
+			method   : "POST"
+		};
+        data = addCSRF(data);
+
+        $.ajax({
+			url     : '/admin-site/admin/groupmodule/add-block',
+			data    : data,
+			method  : "POST",
+			dataType: 'json',
+			success : function(response) {
+			    console.log(response);
+
+			    groupmoduleAddBlock( $column.data("id"), response.block_id, "" );
+                groupmoduleManageColumns();
+			}
+		});
+    };
+
+
+    var groupmoduleBlockDelete = function( el ) {
+        $btn   = $(el);
+        $block = $btn.parents(".module-block");
+
+        var data = {
+            block_id : $block.data("id")
+        };
+        data = addCSRF(data);
+
+        $.ajax({
+            url     : '/admin-site/admin/groupmodule/delete-block',
+            data    : data,
+            method  : "POST",
+            dataType: 'json',
+            success: function (response) {
+                $block.find(".module-element").each(function(index, element) {
+                    groupmoduleMoveElement( element, 0 );
+				});
+
+                $block.remove();
+            }
+        });
+    };
+
+
+    var groupmoduleManageColumns = function() {
+        var $table = $("#groupmodule-menu-table");
+        var $tr    = $table.find("tbody").find("tr").eq(0);
+
+        var count = $(".module-column").length;
+
+        if( count >= 5 )  {
+            $("#groupmodule-button-addcolumn").hide();
+        }
+        else {
+            $("#groupmodule-button-addcolumn").show();
+        }
+
+
+        if( count === 1 )  {
+            var $td = $tr.find("td").not(".col-add").first();
+            $td.find(".module-column-buttons").hide();
+        }
+        else {
+            $("td").find(".module-column-buttons").show();
+        }
+
+        resetSortable();
+    };
+
+
+    var groupmoduleTitleSave = function( el ) {
+        $btn = $(el);
+        $input = $btn.prev(".input-title");
+
+        var data = {
+            block_id : $btn.parents(".module-block").data("id"),
+            title    : $input.val()
+        };
+        data = addCSRF(data);
+
+        $.ajax({
+            url     : '/admin-site/admin/groupmodule/rename-block',
+            data    : data,
+            method  : "POST",
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    };
+</script>
+
 {% endblock %}
