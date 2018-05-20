@@ -48,40 +48,20 @@ $app->group('/log', function () use ($app)
             $tabType = [];
 
             if ( $app->request->post('info') == NULL ) $info = false ;
-            else                                       $tabType[] = 1;
+            else                                            $tabType[] = 1;
 
-             if ( $app->request->post('danger') == NULL ) $danger = false ;
-            else                                          $tabType[] = 2;
+             if ( $app->request->post('danger') == NULL )   $danger = false ;
+            else                                                $tabType[] = 2;
 
              if ( $app->request->post('alerte') == NULL ) $alerte = false ;
-            else                                          $tabType[] = 3;
+            else                                                $tabType[] = 3;
 
-            if ( $app->request->post('date_start') != '' )
+            if ( $app->request->post('date') != '' )
             {
-                $tmp = converteDateDb( $app->request->post('date_start') );
-                if ( $tmp !== false )
-                {
-                    $date_start = $tmp . " 00:00:00";
-                    unset( $tmp ) ;
-                }
-            }
+                list( $start , $end ) = explode( ' - ' , $app->request->post('date') );
 
-            if ( $app->request->post('date_end') != '' )
-            {
-                $tmp = converteDateDb( $app->request->post('date_end') );
-                if ( $tmp !== false )
-                {
-                    $date_end = $tmp . " 23:59:59";
-                    unset( $tmp ) ;
-                }
-            }
-
-            $timeStart = converteDateToTime( $date_start ) ;
-            $timeEnd   = converteDateToTime( $date_end ) ;
-
-            if ( $timeEnd < $timeStart )
-            {
-                $date_end = date("Y-m-d H:i:s" , $timeStart + 86400 );
+                $date_start = \App\Kernel\Factory::getInstance()->Date()->convertUs( $start ) . " 00:00:00";
+                $date_end   = \App\Kernel\Factory::getInstance()->Date()->convertUs( $end ) . " 23:59:59";
             }
         }
 
@@ -107,9 +87,8 @@ $app->group('/log', function () use ($app)
             "info" => $info,
             "alerte" => $alerte,
             "danger" => $danger,
-            "date_start" => converteDateFr( $date_start ),
-            "date_end" => converteDateFr( $date_end )
+            "date" => $app->request->post('date'),
         ]);
 
-    })->name('log_index')->via('GET', 'POST');
+    })->via('GET', 'POST');
 });

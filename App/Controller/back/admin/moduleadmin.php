@@ -117,10 +117,7 @@ $app->group('/moduleadmin', function () use ($app)
 
             \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
             \App\Kernel\Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
-
-            $app->flash('__msg',addslashes( json_encode( "Le module a bien été installé") ) );
-            $app->flash('__result',true);
-            $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le module a bien été installé" , true , '/admin/moduleadmin' );
         }
         else
         {
@@ -351,6 +348,7 @@ $app->group('/moduleadmin', function () use ($app)
         $app->flash('__msg',addslashes( json_encode( $msg )));
         $app->flash('__result',$ret);
         $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
     })->name('moduleadmin_active');
 
     $app->get('/default/:id/:token', function ($id,$token) use ($app)
@@ -387,9 +385,7 @@ $app->group('/moduleadmin', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
     })->name('moduleadmin_default');
 
     $app->get('/notdefault/:id/:token', function ($id,$token) use ($app)
@@ -418,9 +414,7 @@ $app->group('/moduleadmin', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
     })->name('moduleadmin_notdefault');
 	
 	$app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -448,10 +442,9 @@ $app->group('/moduleadmin', function () use ($app)
 			$msg = "Le token de sécurité est invalide";
 			$ret = false;
 		}
-		
-		$app->flash('__msg',addslashes( json_encode( $msg )));
-		$app->flash('__result',$ret);
-		$app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+
+
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 	})->name('moduleadmin_disactive');
 
     $app->get('/edit(/:id)', function ($id = -1) use ($app)
