@@ -10,9 +10,7 @@ $app->group('/groupmodule', function () use ($app)
                           ->find_many();
 
         $app->render('admin/groupmodule/index.twig.html', array(
-            "contentRows" => $contentRows,
-            "moduleNoGroupRows" => $moduleNoGroupRows,
-            "moduleGroupRows" => $contentRows,
+            "contentRows" => $contentRows
         ));
 
     })->name('groupmodule_index');
@@ -78,7 +76,13 @@ $app->group('/groupmodule', function () use ($app)
 
     })->name('groupmodule_module_by_group')->via('GET', 'POST');
 
-    $app->delete('/delete/:id', function ($id) use ($app)
+    $app->get('/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/admin/groupmodule/delete/' . $id)
+        ]);
+    });
+
+    $app->post('/delete/:id', function ($id) use ($app)
     {
         $ret = false ;
         $contentRow = \DB::for_table('module_group')
@@ -122,7 +126,11 @@ $app->group('/groupmodule', function () use ($app)
             $msg = "Une erreur est survenue lors de la suppression" ;
         }
 
-        echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+        $result['msg'] = $msg;
+        $result['result'] = $ret;
+        $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/groupmodule') ;
+
+        \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
     })->name('groupmodule_delete');
 
     $app->get('/active/:id/:token', function ($id,$token) use ($app)
@@ -151,9 +159,8 @@ $app->group('/groupmodule', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/admin/groupmodule' );
+
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
     })->name('groupmodule_active');
 
     $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -182,9 +189,7 @@ $app->group('/groupmodule', function () use ($app)
             $ret = false;
         }
 
-        $app->flash('__msg',addslashes( json_encode( $msg )));
-        $app->flash('__result',$ret);
-        $app->redirect( $app->config('admin.url') . '/admin/groupmodule' );
+        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
     })->name('groupmodule_disactive');
 
     $app->map('/edit(/:id)', function ($id = -1) use ($app)
@@ -236,11 +241,7 @@ $app->group('/groupmodule', function () use ($app)
 
                 $id = $contentRow->module_group_id;
 
-                $app->flash('__msg',addslashes( json_encode( "Le groupe de modules a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
-                $app->flash('__result',true);
-
-                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/admin/groupmodule/edit/' . $id );
-                else 											$app->redirect( $app->config('admin.url') . '/admin/groupmodule' );
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le groupe de modules a bien été " . ( $add == true ? "ajouté" : "modifié" ) , true , '/admin/groupmodule' );
             }
         }
         else {
@@ -343,9 +344,7 @@ $app->group('/groupmodule', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/admin/groupmodule' );
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
         })->name('groupmodule_up');
 
         $app->get('/down/:id/:token', function ($id,$token) use ($app)
@@ -383,9 +382,8 @@ $app->group('/groupmodule', function () use ($app)
                 $ret = false;
             }
 
-            $app->flash('__msg',addslashes( json_encode( $msg )));
-            $app->flash('__result',$ret);
-            $app->redirect( $app->config('admin.url') . '/admin/groupmodule' );
+
+            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
         })->name('groupmodule_down');
 
     });
@@ -455,6 +453,7 @@ $app->group('/groupmodule', function () use ($app)
         $group_id = $one->module_column_module_group_id;
         $one->delete();
 
+<<<<<<< HEAD
         // Get columns of group for counting
         $columns = \DB::for_table( "module_column" )
             ->where_equal( "module_column_module_group_id", $group_id )
@@ -507,6 +506,12 @@ $app->group('/groupmodule', function () use ($app)
             'msg'             => "",
             'only_one_column' => $only_one_column
         ]);
+=======
+        \App\Kernel\Factory::getInstance()->Response()->printJSON([
+            'result'    => true,
+            'msg'       => "La colonne a bien été supprimée",
+        ]) ;
+>>>>>>> ca326576369269a267cfa13447d15feda1728717
     });
 
 

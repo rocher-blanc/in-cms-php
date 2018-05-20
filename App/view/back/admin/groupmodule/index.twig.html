@@ -27,18 +27,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="tr1">
-                <td>Accueil</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="tr1">
-                <td>Menu</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
             {% for row in contentRows %}
             <tr class="tr1">
                 <td>
@@ -65,59 +53,12 @@
                 </td>
             </tr>
             {% endfor %}
-
-            <tr class="tr1">
-                <td>Paramètres</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-
-            <tr class="tr1">
-                <td>SEO</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="tr1">
-                <td>Développeur</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
             </tbody>
         </table>
     </div>
 
 {% else %}
-
-    <div class="nocontent"> Aucun menu d'administration enregistré. </div>
-
+    {% include 'form/generic/nocontent.twig' with {'msg':"Aucun menu n'est enregistré."} %}
 {% endif %}
-
-<div id="orderModule" style="display: none;">
-    <section class="panel table ext">
-        <header class="panel-heading">
-            <h2 class="panel-title" id="titleGroupe">Modules du groupe</h2>
-        </header>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <ul class="Selecter" id="SelecterHasGroup"></ul>
-            </div>
-        </div>
-    </section>
-</div>
-<div id="noGroupModule" style="display: none;">
-    <section class="panel table ext">
-        <header class="panel-heading">
-            <h2 class="panel-title">Module(s) disponible(s)</h2>
-        </header>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <ul class="Selecter" id="SelecterNoGroup"></ul>
-            </div>
-        </div>
-    </section>
-</div>
 
 {% endblock %}

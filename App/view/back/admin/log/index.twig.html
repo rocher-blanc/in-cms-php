@@ -6,43 +6,51 @@
 
 {% block module %}
 
+    <div class="fancy-title title-dotted-border">
+        <h3>Journal d'événements</h3>
+    </div>
+
 <form method="post" action="{{ siteUrl('/admin/log') }}">
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="row fLog">
         <div class="col-md-12">
-            <section class="panel">
-                <div class="panel-body form-horizontal">
-                    <div class="row">
-                        <div class="col-md-4">
+            <section class="section nopadding nomargin">
+                    <div class="row" style="padding-top: 10px; padding-left: 20px;">
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label class="col-md-3 control-label">Date</label>
+                                <label class="col-md-3 control-label" for="date">Date</label>
+                                <input type="text" class="form-control form-control-sm daterange" name="date" value="{{ date }}" />
+                            </div>
+                        </div>
+                        <div class="col-md-5 check">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Type</label>
                                 <div class="col-md-9">
-                                    <div class="input-daterange input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                        <input class="form-control" name="date_start" data-plugin-datepicker type="text" value="{{ date_start }}">
-                                        <span class="input-group-addon">à</span>
-                                        <input class="form-control" name="date_end" data-plugin-datepicker type="text" value="{{ date_end }}">
+                                    <div class="form-check fleft">
+                                        <input class="form-check-input" name="info" value="1" id="info" type="checkbox"{{ info == true ? " checked" : "" }}>
+                                        <label class="text-info form-check-label" for="info">
+                                            <i class="icon-info-sign"></i> Information
+                                        </label>
+                                    </div>
+                                    <div class="form-check fleft" style="margin-left: 10px;">
+                                        <input class="form-check-input" value="1" id="danger" name="danger" type="checkbox"{{ danger == true ? " checked" : "" }}>
+                                        <label class="text-warning form-check-label" for="danger">
+                                            <i class="icon-warning-sign"></i> Danger
+                                        </label>
+                                    </div>
+                                    <div class="form-check fleft" style="margin-left: 10px;">
+                                        <input class="form-check-input" value="1" id="alerte" name="alerte" type="checkbox"{{ alerte == true ? " checked" : "" }}>
+                                        <label class="text-alert form-check-label" for="alerte">
+                                            <i class="icon-remove-sign"></i> Alerte
+                                        </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 check">
-                            <div class="form-group">
-                                <label class="col-md-2 control-label">Type</label>
-                                <div class="col-md-9">
-                                    <span class="text-info"><input type="checkbox" name="info" value="1"{{ info == true ? " checked" : "" }} /> <i class="fa fa-info"></i> Information</span>
-                                    <span class="text-warning"><input type="checkbox" name="danger" value="1"{{ danger == true ? " checked" : "" }} /> <i class="fa fa-warning"></i> Danger</span>
-                                    <span class="text-alert"><input type="checkbox" name="alerte" value="1"{{ alerte == true ? " checked" : "" }} /> <i class="fa fa-times-circle"></i> Alerte</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <button class="btn btn-success" type="submit">Rechercher</button>
+                        <div class="col-md-3">
+                            <button class="button button-3d button-rounded button-green" style="margin-top: 20px;" type="submit">Rechercher</button>
                         </div>
                     </div>
-                </div>
             </section>
         </div>
     </div>
@@ -50,9 +58,6 @@
     <div class="row">
 	<div class="col-md-12">
 		<section class="panel table">
-			<header class="panel-heading">
-				<h2 class="panel-title">Journal d'événements</h2>
-			</header>
 			<div class="panel-body">
 				<div class="table-responsive">
 				{% if logRows|length > 0 %}
@@ -60,7 +65,7 @@
 						<thead>
 							<tr>
 								<th style="width: 170px;">Date</th>
-								<th style="width: 110px;">Type</th>
+								<th style="width: 130px;">Type</th>
 								<th>Utilisateur</th>
 								<th>Message</th>
 							</tr>
@@ -71,11 +76,11 @@
 								<td>{{ row.date }}</td>
 								<td>
 									{% if row.type == 1 %}
-										<div class="text-info"><i class="fa fa-info-circle"></i> Information</div>
+										<div class="text-info"><i class="icon-info-sign"></i> Information</div>
 									{% elseif row.type == 2 %}
-										<div class="text-warning"><i class="fa fa-warning"></i> Danger</div>
+										<div class="text-warning"><i class="icon-warning-sign"></i> Danger</div>
 									{% elseif row.type == 3 %}
-										<div class="text-alert"><i class="fa fa-times-circle"></i> Alerte</div>
+										<div class="text-alert"><i class="icon-remove-sign"></i> Alerte</div>
 									{% endif %}
 								</td>
 								<td>
@@ -91,7 +96,7 @@
 						</tbody>
 					</table>
 				{% else %}
-                    <div class="nocontent"><i class="fa fa-info-circle"></i> Aucun événement n'est actuellement enregistré.</div>
+                    {% include 'form/generic/nocontent.twig' with {'msg':"Aucun événement n'est enregistré."} %}
 				{% endif %}
 				</div>
 			</div>
@@ -101,14 +106,12 @@
 {% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
-	<link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
-    <link rel="stylesheet" href="{{ vendor('bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><!-- Pour date range + form-process -->
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/daterangepicker.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
-	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
-    <script src="{{ vendor('bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ vendor('bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min.js') }}"></script>
+    <script src="{{ asset('canvas/js/components/moment.js') }}"></script>
+    <script src="{{ asset('canvas/js/components/daterangepicker.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
 {% endblock %}

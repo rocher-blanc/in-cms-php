@@ -13,7 +13,7 @@
     <br />
     <div class="table-responsive">
     {% if content|length > 0 %}
-        <table class="table table-striped table-gestion table-search table-ext table-hover mb-none">
+        <table class="table table-striped table-hover mb-none">
             <thead>
                 <tr>
                     <th>#ID</th>
@@ -100,18 +100,8 @@
             </tbody>
         </table>
     {% else %}
-        <div class="nocontent"><i class="fa fa-info-circle"></i> Aucune page n'est enregistrée.</div>
+        {% include 'form/generic/nocontent.twig' with {'msg':"Aucune page n'est enregistrée."} %}
     {% endif %}
     </div>
 
-{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
-    <link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
 {% endblock %}
