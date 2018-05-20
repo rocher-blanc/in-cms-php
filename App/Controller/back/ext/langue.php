@@ -12,6 +12,7 @@ $app->group('/langue', function () use ($app)
 
     })->name('langue_index');
 
+
     $app->get('/traduction', function () use ($app) {
 
         $contentRows = \DB::for_table('lang')
@@ -24,6 +25,7 @@ $app->group('/langue', function () use ($app)
         ]);
 
     })->name('langue_traduction');
+
 
     $app->post('/import', function () use ($app) {
         $upload_dir 	= UPLOAD_PATH . '/' ;
@@ -114,6 +116,7 @@ $app->group('/langue', function () use ($app)
             \App\Kernel\Factory::getInstance()->Response()->returnJSON( "Les traductions ont bien été importées" , true );
         });
     });
+
 
     $app->map('/edit/:id', function ($id) use ($app)
     {
@@ -429,4 +432,56 @@ $app->group('/langue', function () use ($app)
 
         \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_disactive');
+
+
+
+    $app->post('/traduction/get-lang', function() use ($app) {
+        $lang_id = $app->request->post('lang_id');
+
+        $lang = $lang_id == 1
+            ? [ 'id' => 1, 'title' => "Français" ]
+            : [ 'id' => 2, 'title' => "Anglais" ];
+
+        $keys = $lang_id == 1
+            ? [
+                'cle_1' => [ 'type' => "text", 'value' => "Ok" ],
+                'cle_2' => [ 'type' => "text", 'value' => "Ceci est un test" ],
+                'cle_3' => [ 'type' => "html", 'value' => "<ul><li>Pour</li><li>le</li><li>CMS</li></ul>" ],
+            ]
+            : [
+                'cle_1' => [ 'type' => "text", 'value' => "Okay" ],
+                'cle_2' => [ 'type' => "text", 'value' => "It's a test" ],
+                'cle_3' => [ 'type' => "html", 'value' => "<ul><li>For</li><li>this</li><li>CMS</li></ul>" ],
+                'cle_4' => [ 'type' => "html", 'value' => "<p>good ?</p>" ],
+            ];
+
+        echo json_encode([
+            'result' => true,
+            'msg'    => "",
+            'lang'   => $lang,
+            'keys'   => $keys,
+        ]);
+    });
+
+    $app->post('/traduction/update-translate', function() use ($app) {
+        $key   = $app->request->post('key');
+        $lang  = $app->request->post('lang');
+        $type  = $app->request->post('type');
+        $value = $app->request->post('value');
+
+        echo json_encode([
+            'result' => true,
+            'msg'    => ""
+        ]);
+    });
+
+
+    $app->post('/traduction/add-key', function() use ($app) {
+        $key = $app->request->post('new_key');
+
+        echo json_encode([
+            'result' => true,
+            'msg'    => "",
+        ]);
+    });
 });

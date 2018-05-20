@@ -452,11 +452,60 @@ $app->group('/groupmodule', function () use ($app)
         // Delete this column
         $one = \DB::for_table( "module_column" )
             ->find_one( $column_id );
+        $group_id = $one->module_column_module_group_id;
         $one->delete();
 
+        // Get columns of group for counting
+        $columns = \DB::for_table( "module_column" )
+            ->where_equal( "module_column_module_group_id", $group_id )
+            ->find_many();
+
+        $only_one_column = false;
+
+        // If only one column
+        if( count($columns) == 1 )
+        {
+            $only_one_column = true;
+            $column = $columns[0];
+
+            // get blocks in this column
+            $blocks = \DB::for_table( "module_column_block" )
+                ->where_equal( "module_column_block_module_column_id", $column->module_column_id )
+                ->order_by_asc( "module_column_block_order" )
+                ->find_many();
+
+            // if many blocks in this column
+            if( count($blocks) > 1 )
+            {
+                $main_block = $blocks[0];
+
+                // Foreach blocks without first block
+                for( $i = 1 ; $i < count($blocks) ; $i++ )
+                {
+
+                    // Get modules in this block
+                    $modules = \DB::for_table( "module" )
+                        ->where_equal( "module_module_column_block_id" , $blocks[$i]->module_column_block_id )
+                        ->find_many();
+
+                    if( $modules )
+                    {
+                        foreach( $modules as $mod )
+                        {
+                            $mod->module_module_column_block_id = $main_block->module_column_block_id;
+                            $mod->save();
+                        }
+                    }
+
+                    $blocks[$i]->delete();
+                }
+            }
+        }
+
         echo json_encode([
-            'result'    => true,
-            'msg'       => "",
+            'result'          => true,
+            'msg'             => "",
+            'only_one_column' => $only_one_column
         ]);
     });
 
