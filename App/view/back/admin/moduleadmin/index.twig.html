@@ -9,13 +9,7 @@
     </div>
 
 	{% if noInstall|length == 0 and contentRows|length == 0 %}
-		<div class="row">
-			<div class="col-md-12 title-alone">
-				<header class="panel-heading">
-					<h2 class="panel-title"><i class="fa fa-times-circle"></i> Il n'a aucun module de disponible</h2>
-				</header>
-			</div>
-		</div>
+		{% include 'form/generic/nocontent.twig' with {'msg':"Il n'a aucun module de disponible"} %}
 	{% endif %}
 
 	{% if contentRows|length > 0 %}
@@ -53,52 +47,7 @@
             </div>
         {% endfor %}
     </div>
-{#
-    {% for row in contentRows %}
-		<div class="row">
-			<div class="col-md-12">
-				<section class="panel mod">
-					<div class="panel-body mod">
-						<table class="table mb-none list-module">
-							<tbody>
-								<tr>
-									<td class="ico">
-										<i class="fa fa-{{ row.module_icon }}"></i>
-									</td>
-									<td class="name">
-										<a href="{{ siteUrl('admin/moduleadmin/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
-									</td>
-									<td class="text-right">
-										<div class="btn-group">
-											<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-bomb"></i> Actions <span class="caret"></span></button>
-											<ul class="dropdown-menu" role="menu">
-												<li><a href="{{ siteUrl('admin/moduleadmin/truncate/' ~  row.module_id ~ '/' ~ csrf_token) }}"></a></li>
-                                                {% if img[ row.module_id ] == true %}<li><a href="{{ siteUrl('admin/moduleadmin/image/' ~  row.module_id ~ '/' ~ csrf_token) }}"></a></li>{% endif %}
-											</ul>
-										</div>
-										{% if row.module_active == 0 %}
-											<a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
-										{% else %}
-											<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
-										{% endif %}
-										{% if row.module_default == 0 %}
-											<a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
-										{% else %}
-											<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
-										{% endif %}
 
-										<a class="btn btn-sm btn-info" href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}"><i class="fa fa-pencil"></i> Editer</a>
-										<a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.module_id }}" data-link="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" data-text="Êtes-vous sûr de vouloir désinstaller le module '{{ row.module_name }}' ?"><i class="fa fa-trash"></i> Désinstaller</a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</section>
-			</div>
-		</div>
-	{% endfor %}
-#}
 	{% if noInstall|length > 0 %}
         <div class="fancy-title title-bottom-border" style="margin-top: 30px;">
             <h3>Module{{ noInstall|length > 1 ? "s" : "" }} disponible{{ noInstall|length > 1 ? "s" : "" }}</h3>
