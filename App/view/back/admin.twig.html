@@ -14,6 +14,64 @@
                     <nav id="primary-menu">
                         <ul>
                             {% for group in menuTree %}
+                                {% if group.columns | length > 1 %}
+
+                                <li class="mega-menu sub-menu">
+                                    <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
+                                    <div class="mega-menu-content style-2 clearfix">
+                                        {%     if group.columns | length == 1 %} {% set class = "col-lg-12" %}
+                                        {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
+                                        {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
+                                        {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
+                                        {% else                               %} {% set class = "col-lg-2" %}
+                                        {% endif %}
+                                        {% for column in group.columns %}
+                                            <ul class="mega-menu-column {{ class }}">
+                                                {% for block in column.blocks %}
+                                                    <li class="mega-menu-title sub-menu">
+                                                        <a href="#" class="sf-with-ul"><div>{{ block.title }}</div></a>
+                                                        <ul>
+                                                            {% for module in block.modules %}
+                                                                <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+
+                                {% else %}
+
+                                    {% if group.columns | first .blocks | first .modules | length > 1 %}
+
+                                        <li class="sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
+                                            <div class="mega-menu-content style-2 clearfix">
+                                                <ul>
+                                                    {% for module in group.columns | first . blocks | first . modules %}
+                                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                    {% elseif group.columns | first .blocks | first .modules | length == 1 %}
+
+                                        <li>
+                                            <a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
+                                        </li>
+
+                                    {% else %}
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+
+
+
+                            {% for group in menuTree %}
                             {% if group.children|length > 1 %}
                                 <li>
                                     <a href="javascript:;">
