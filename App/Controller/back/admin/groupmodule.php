@@ -25,7 +25,7 @@ $app->group('/groupmodule', function () use ($app)
         $contentRows = $contentRows->order_by_asc('module_order')
                                    ->find_many();
 
-        $app->render('admin/groupmodule/module.twig.html', array( "contentRows" => $contentRows ));
+        $app->render('admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
     })->name('groupmodule_module_by_group');
 
@@ -72,7 +72,7 @@ $app->group('/groupmodule', function () use ($app)
         $contentRows = $contentRows->order_by_asc('module_order')
                                    ->find_many();
 
-        $app->render('admin/groupmodule/module.twig.html', array( "contentRows" => $contentRows ));
+        $app->render('admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
     })->name('groupmodule_module_by_group')->via('GET', 'POST');
 
@@ -103,22 +103,40 @@ $app->group('/groupmodule', function () use ($app)
                 }
             }
 
-            $module = \DB::for_table('module')
-                         ->where_equal('module_module_group_id' , $id)
-                         ->find_many();
-            if ( $module )
+            // Foreach column columns in group
+            $req_columns = \DB::for_table( "module_column" )
+                              ->where_equal( "module_column_module_group_id" , $id )
+                              ->find_many();
+            foreach ( $req_columns as $column )
             {
-                foreach( $module as $row )
+
+                // Foreach blocks in column
+                $req_blocks = \DB::for_table( "module_column_block" )
+                                 ->where_equal( "module_column_block_module_column_id" , $column->module_column_id )
+                                 ->find_many();
+                foreach ( $req_blocks as $block )
                 {
-                    $row->module_module_group_id = NULL;
-                    $row->save();
+
+                    // Foreach modules in block
+                    $req_modules = \DB::for_table( "module" )
+                                      ->where_equal( "module_module_column_block_id" , $block->module_column_block_id )
+                                      ->find_many();
+                    foreach ( $req_modules as $module )
+                    {
+                        $module->module_module_column_block_id = 0;
+                        $module->save();
+                    }
+
+                    $block->delete();
                 }
+
+                $column->delete();
             }
 
-            \App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name ) ;
+            \App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name );
 
-            $msg = "Le groupe de modules a bien été supprimé" ;
-            $ret = true ;
+            $msg = "Le groupe de modules a bien été supprimé";
+            $ret = true;
             $contentRow->delete();
         }
         else
@@ -208,7 +226,6 @@ $app->group('/groupmodule', function () use ($app)
         if ( $app->request->isPost() ) {
             $post = array(
                 "module_group_name" => $app->request->post('module_group_name'),
-                "module_group_icon" => $app->request->post('module_group_icon'),
                 "module_group_active" => $app->request->post('module_group_active')
             ) ;
 
@@ -222,20 +239,27 @@ $app->group('/groupmodule', function () use ($app)
                 $tabError['module_group_name'] = "Veuillez remplir ce champ" ;
             }
 
-            if ( $app->request->post('module_group_icon') == "" ) {
-                $error = true ;
-                $tabError['module_group_icon'] = "Veuillez remplir ce champ" ;
-            }
-
             if ( $error == false ) {
                 $contentRow->module_group_name 		= $app->request->post('module_group_name') ;
-                $contentRow->module_group_icon 		= $app->request->post('module_group_icon') ;
                 $contentRow->module_group_active 	= ( $app->request->post('module_group_active') == NULL ? 0 : 1 ) ;
                 if ( $add == true )
                 {
                     $contentRow->module_group_order = \DB::for_table('module_group')->max('module_group_order') + 1;
                 }
                 $contentRow->save() ;
+
+                if( $add == true )
+                {
+                    $prepColumn = \DB::for_table("module_column")->create();
+                    $prepColumn->module_column_module_group_id = $contentRow->module_group_id;
+                    $prepColumn->save();
+
+                    $prepBlock = \DB::for_table("module_column_block")->create();
+                    $prepBlock->module_column_block_module_column_id = $prepColumn->module_column_id;
+                    $prepBlock->module_column_block_title            = NULL;
+                    $prepBlock->module_column_block_order            = 1;
+                    $prepBlock->save();
+                }
 
                 \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 23 : 24 ) , $contentRow->module_group_name ) ;
 
@@ -248,61 +272,9 @@ $app->group('/groupmodule', function () use ($app)
             $post = $contentRow ;
         }
 
-        $blocks_list = [0];
-
-        // Get columns
-        $req_columns = \DB::for_table( "module_column" )
-            ->where_equal( "module_column_module_group_id", $contentRow->module_group_id )
-            ->find_many() ;
-        $columns = [];
-        foreach( $req_columns as $column )
-        {
-            $column = [
-                'id'     => $column->module_column_id,
-                'blocks' => []
-            ];
-
-            // Get column blocks
-            $req_block = \DB::for_table( "module_column_block" )
-                ->where_equal( "module_column_block_module_column_id", $column['id'] )
-                ->order_by_asc( "module_column_block_order" )
-                ->find_many() ;
-            foreach( $req_block as $block )
-            {
-                $block = [
-                    'id'    => $block->module_column_block_id,
-                    'title' => $block->module_column_block_title,
-                    'order' => $block->module_column_block_order,
-                ];
-
-                $blocks_list[] = $block['id'];
-                $column['blocks'][] = $block;
-            }
-
-            $columns[] = $column;
-        }
-
-        // Get modules
-        $req_modules = \DB::for_table('module')
-            ->where_in( "module_module_column_block_id", $blocks_list )
-            ->order_by_asc( "module_order" )
-            ->find_many();
-        $modules = [];
-        foreach( $req_modules as $module )
-        {
-            $modules[] = [
-                'id'    => $module->module_id,
-                'title' => $module->module_name,
-                'order' => $module->module_order,
-                'block' => $module->module_module_column_block_id,
-            ];
-        }
-
         $app->render('admin/groupmodule/edit.twig.html', array(
             "post"       => $post,
             "id"         => $id,
-            "columns"    => $columns,
-            "modules"    => $modules,
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
@@ -388,7 +360,78 @@ $app->group('/groupmodule', function () use ($app)
 
     });
 
+    $app->get('/menu(/:id)', function ($id = -1) use ($app)
+    {
+        $error 	  = false ;
+        $tabError = array() ;
 
+        $contentRow = \DB::for_table('module_group')
+                         ->where_equal('module_group_id' , $id)
+                         ->find_one();
+
+        if ( $id != -1 && !$contentRow ) {
+            $app->redirect( $app->config('admin.url') . '/admin/groupmodule');
+        }
+
+        $blocks_list = [0];
+
+        // Get columns
+        $req_columns = \DB::for_table( "module_column" )
+                          ->where_equal( "module_column_module_group_id", $contentRow->module_group_id )
+                          ->find_many() ;
+        $columns = [];
+        foreach( $req_columns as $column )
+        {
+            $column = [
+                'id'     => $column->module_column_id,
+                'blocks' => []
+            ];
+
+            // Get column blocks
+            $req_block = \DB::for_table( "module_column_block" )
+                            ->where_equal( "module_column_block_module_column_id", $column['id'] )
+                            ->order_by_asc( "module_column_block_order" )
+                            ->find_many() ;
+            foreach( $req_block as $block )
+            {
+                $block = [
+                    'id'    => $block->module_column_block_id,
+                    'title' => $block->module_column_block_title,
+                    'order' => $block->module_column_block_order,
+                ];
+
+                $blocks_list[] = $block['id'];
+                $column['blocks'][] = $block;
+            }
+
+            $columns[] = $column;
+        }
+
+        // Get modules
+        $req_modules = \DB::for_table('module')
+                          ->where_in( "module_module_column_block_id", $blocks_list )
+                          ->order_by_asc( "module_order" )
+                          ->find_many();
+        $modules = [];
+        foreach( $req_modules as $module )
+        {
+            $modules[] = [
+                'id'    => $module->module_id,
+                'title' => $module->module_name,
+                'order' => $module->module_order,
+                'block' => $module->module_module_column_block_id,
+            ];
+        }
+
+        $app->render('admin/groupmodule/menu.twig.html', array(
+            "id"         => $id,
+            "columns"    => $columns,
+            "modules"    => $modules,
+            "error"		 => ( $error === false ? "0" : "1" ),
+            "tabError"	 => json_encode( $tabError )
+        ));
+
+    })->name('groupmodule_menu');
 
     /*----------------------------------------------------------------------*/
     /*----------                                                  ----------*/
@@ -453,7 +496,6 @@ $app->group('/groupmodule', function () use ($app)
         $group_id = $one->module_column_module_group_id;
         $one->delete();
 
-<<<<<<< HEAD
         // Get columns of group for counting
         $columns = \DB::for_table( "module_column" )
             ->where_equal( "module_column_module_group_id", $group_id )
@@ -501,17 +543,10 @@ $app->group('/groupmodule', function () use ($app)
             }
         }
 
-        echo json_encode([
-            'result'          => true,
-            'msg'             => "",
-            'only_one_column' => $only_one_column
-        ]);
-=======
         \App\Kernel\Factory::getInstance()->Response()->printJSON([
             'result'    => true,
             'msg'       => "La colonne a bien été supprimée",
         ]) ;
->>>>>>> ca326576369269a267cfa13447d15feda1728717
     });
 
 
