@@ -91,9 +91,9 @@ INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`,
 (1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1),
 (1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1);
 
-INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, `user_group_redirect`) VALUES
-(1, 'Administrateurs', '/.+;/', '/admin/'),
-(2, 'Utilisateurs', '/.+;/', '/admin/');";
+INSERT INTO `user_group` (`user_group_id`, `user_group_name`) VALUES
+(1, 'Administrateurs'),
+(2, 'Utilisateurs');";
     }
 
     public function checkDatabase()
@@ -227,25 +227,34 @@ INSERT INTO `user_group` (`user_group_id`, `user_group_name`, `user_group_url`, 
                 "module_class_name" => $this->infoColumn( "VARCHAR" , "50" ),
                 "module_active" => $this->infoColumn( "TINYINT" , "255" ),
                 "module_icon" => $this->infoColumn( "VARCHAR" , "20" ),
-                "module_module_group_id" => $this->infoColumn( "INT" , "11" ),
+                "module_module_column_block_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "module_order" => $this->infoColumn( "INT" , "11" ),
                 "module_default" => $this->infoColumn( "TINYINT" , "1" ),
                 "module_priority" => $this->infoColumn( "FLOAT" ),
                 "module_index" => $this->infoColumn( "TINYINT" , "1" ),
                 "module_index_elmt" => $this->infoColumn( "TINYINT" , "1" )
             ],
-            "module_lang" => [
-                "module_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "module_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
-                "module_lang_module_id" => $this->infoColumn( "INT" , "11" ),
-                "module_lang_url" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
-                "module_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
-                "module_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
-            ],
+			"module_column" => [
+				"module_column_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"module_column_module_group_id" => $this->infoColumn( "INT" , "11" )
+			],
+			"module_column_block" => [
+				"module_column_block_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"module_column_block_module_column_id" => $this->infoColumn( "INT" , "11" ),
+				"module_column_block_order" => $this->infoColumn( "INT" , "11" ),
+				"module_column_block_title" => $this->infoColumn( "VARCHAR" , "100" , NULL , true )
+			],
+			"module_lang" => [
+				"module_lang_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"module_lang_lang_id" => $this->infoColumn( "INT" , "11" ),
+				"module_lang_module_id" => $this->infoColumn( "INT" , "11" ),
+				"module_lang_url" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+				"module_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+				"module_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
+			],
             "module_group" => [
                 "module_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "module_group_name" => $this->infoColumn( "VARCHAR" , "50" ),
-                "module_group_icon" => $this->infoColumn( "VARCHAR" , "15" ),
                 "module_group_order" => $this->infoColumn( "INT" , "11" ),
                 "module_group_active" => $this->infoColumn( "TINYINT" , "1" , '0' )
             ],

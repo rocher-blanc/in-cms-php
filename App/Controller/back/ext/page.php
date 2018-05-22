@@ -8,7 +8,9 @@ $app->group('/page', function () use ($app)
 								->order_by_asc('page_name')
 								->find_many();
         $content = [];
-        $content[0] = [ 'id' => 0 , 'page' => [] ];
+
+        if ( $contentRows ) $content[0] = [ 'id' => 0 , 'page' => [] ];
+
         $reqDomains = \DB::for_table('domain')
             ->select('domain_id')
             ->select('domain_name')
