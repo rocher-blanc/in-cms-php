@@ -6,7 +6,6 @@ defined('CONTROLLERS_PATH') || define('CONTROLLERS_PATH', APPLICATION_PATH . '/C
 defined('PROJECT_CONTROLLER_PATH') || define('PROJECT_CONTROLLER_PATH', MODULE_PATH . '/Controller/Front');
 defined('CACHE_PATH') || define('CACHE_PATH', _PATH_ . '/cache/front');
 defined('TEMPLATES_PATH') || define('TEMPLATES_PATH', APPLICATION_PATH . '/view/front/' . THEME );
-defined('TEMPLATES_COMMON_TECH_PATH') || define('TEMPLATES_COMMON_TECH_PATH', APPLICATION_PATH . '/view/front/Common' );
 defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/view/front' );
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Front');
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Front');

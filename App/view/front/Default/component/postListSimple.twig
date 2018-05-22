@@ -1,0 +1,23 @@
+{% if object|length > 0 %}
+<div id="posts">
+    {% for row in object %}
+        <li><a href="{{ row.url }}"><div></div></a></li>
+
+    <div class="entry clearfix">
+        <div class="entry-image">
+            <a href="images/blog/full/17.jpg" data-lightbox="image"><img class="image_fade" src="https://fakeimg.pl/800x100/" alt="Standard Post with Image"></a>
+        </div>
+        <div class="entry-title">
+            <h2><a href="blog-single.html">{{ row.title }}</a></h2>
+        </div>
+        <ul class="entry-meta clearfix">
+            <li><i class="icon-calendar3"></i> {{ row.date.complet }}</li>
+        </ul>
+        <div class="entry-content">
+            <p>{{ row.short_description }}</p>
+            <a href="{{ row.url }}" class="more-link">Read More</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

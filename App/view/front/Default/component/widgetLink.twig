@@ -1,0 +1,13 @@
+{% if object|length > 0 %}
+    <div class="widget widget_links clearfix">
+
+        <h4>{{ title }}</h4>
+        <ul>
+            {% for row in object %}
+                <li><a href="{{ row.url }}"><div>{{ row.title }}</div></a></li>
+            {% endfor %}
+        </ul>
+
+    </div>
+    <div class="widget clearfix">
+{% endif %}
