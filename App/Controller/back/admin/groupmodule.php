@@ -123,7 +123,7 @@ $app->group('/groupmodule', function () use ($app)
                                       ->find_many();
                     foreach ( $req_modules as $module )
                     {
-                        $module->module_module_column_block_id = 0;
+                        $module->module_module_column_block_id = NULL;
                         $module->save();
                     }
 
@@ -373,7 +373,7 @@ $app->group('/groupmodule', function () use ($app)
             $app->redirect( $app->config('admin.url') . '/admin/groupmodule');
         }
 
-        $blocks_list = [0];
+        $blocks_list = [];
 
         // Get columns
         $req_columns = \DB::for_table( "module_column" )
@@ -410,25 +410,38 @@ $app->group('/groupmodule', function () use ($app)
         // Get modules
         $req_modules = \DB::for_table('module')
                           ->where_in( "module_module_column_block_id", $blocks_list )
+//                          ->where_null( "module_module_column_block_id" )
                           ->order_by_asc( "module_order" )
                           ->find_many();
         $modules = [];
-        foreach( $req_modules as $module )
+        foreach( $req_modules as $module ) {
+            $modules[] = [
+                'id' => $module->module_id ,
+                'title' => $module->module_name ,
+                'order' => $module->module_order ,
+                'block' => $module->module_module_column_block_id ,
+            ];
+        }
+        $req_modules_noplace = \DB::for_table('module')
+                          ->where_null( "module_module_column_block_id" )
+                          ->order_by_asc( "module_order" )
+                          ->find_many();
+        foreach( $req_modules_noplace as $module )
         {
             $modules[] = [
                 'id'    => $module->module_id,
                 'title' => $module->module_name,
                 'order' => $module->module_order,
-                'block' => $module->module_module_column_block_id,
+                'block' => 0
             ];
         }
 
         $app->render('admin/groupmodule/menu.twig.html', array(
-            "id"         => $id,
-            "columns"    => $columns,
-            "modules"    => $modules,
-            "error"		 => ( $error === false ? "0" : "1" ),
-            "tabError"	 => json_encode( $tabError )
+            "id"           => $id,
+            "columns"      => $columns,
+            "arrayModules" => $modules,
+            "error"		   => ( $error === false ? "0" : "1" ),
+            "tabError"	   => json_encode( $tabError )
         ));
 
     })->name('groupmodule_menu');
@@ -481,7 +494,7 @@ $app->group('/groupmodule', function () use ($app)
                 {
                     foreach( $req_modules as $module )
                     {
-                        $module->module_module_column_block_id = 0;
+                        $module->module_module_column_block_id = NULL;
                         $module->save();
                     }
                 }
@@ -618,7 +631,7 @@ $app->group('/groupmodule', function () use ($app)
         {
             foreach( $req_modules as $module )
             {
-                $module->module_module_column_block_id = 0;
+                $module->module_module_column_block_id = NULL;
                 $module->save();
             }
         }
@@ -645,13 +658,20 @@ $app->group('/groupmodule', function () use ($app)
 
     $app->post('/order-module', function() use ($app) {
         $new_order = explode( ",", $app->request->post('new_order') );
+        $block_id = $app->request->post('block_id');
+
+        if( $block_id == 0 )
+        {
+            $block_id = NULL;
+        }
 
         $many = \DB::for_table( "module" )
             ->where_in( "module_id", $new_order )
             ->find_many();
 
+
         foreach( $many as $column ) {
-            $column->module_module_column_block_id = $app->request->post('block_id');
+            $column->module_module_column_block_id = $block_id;
             $column->module_order                  = array_search( $column->module_id, $new_order ) + 1;
             $column->save();
         }
