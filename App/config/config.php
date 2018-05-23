@@ -19,7 +19,6 @@ defined('WEBSERVICE_PROJECT_PATH') || define('WEBSERVICE_PROJECT_PATH', MODULE_P
 defined('TEMPLATES_COMMON_TECH_PATH') || define('TEMPLATES_COMMON_TECH_PATH', APPLICATION_PATH . '/view/front/Common' );
 defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
 
-
 /* COMMON */
 defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJECT_PATH . '/CustomClass/Common');
 defined('VIEW_PROJECT_COMMON_PATH') || define('VIEW_PROJECT_COMMON_PATH', PROJECT_PATH . '/view/common');

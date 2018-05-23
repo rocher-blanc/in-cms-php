@@ -1308,7 +1308,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function editAction()
     {
-        if ( $this->getEntity()->hasUrl() )
+		if ( $this->getEntity()->hasUrl() )
         {
             $seo = new \App\Kernel\Back\Seo;
             $seo->setElementId( $this->getId() );
@@ -1321,7 +1321,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
         {
-            $seo->update() ;
+			if ( $this->getEntity()->hasUrl() ) $seo->update() ;
             $rst = $this->pushData( false ) ;
             return $this->Factory()->Response()->printJSON( $rst ) ;
         }
