@@ -353,7 +353,7 @@ class Install
 
 		// Simple copy for a file
 		if (is_file($source)) {
-			return copy($source, $dest);
+			return self::copy($source, $dest);
 		}
 
 		// Make destination directory
@@ -370,7 +370,7 @@ class Install
 			}
 
 			// Deep copy directories
-			copyr("$source/$entry", "$dest/$entry");
+			self::copyr("$source/$entry", "$dest/$entry");
 		}
 
 		// Clean up
