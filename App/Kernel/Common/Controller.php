@@ -224,6 +224,7 @@ class Controller
 
         if ( $module->module_default == 1 ) $this->setMain();
         $this->setModule( $module ) ;
+        $this->setEntityId( $module->module_id ) ;
 
         if ( ! file_exists( ENTITY_PATH . '/' . $this->getEntityName() . '.php' ) )
         {

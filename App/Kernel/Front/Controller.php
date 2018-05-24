@@ -105,6 +105,7 @@ class Controller extends \App\Kernel\Common\Controller
         {
             return $this->Factory()->Response()->error("Impossible de charger l'entity") ;
         }
+		die;
     }
 
     public function init()
@@ -136,12 +137,12 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
-            $url = $this->getUrl( ($ct - 1) );
+			$url = $this->getUrl( ($ct - 1) );
         }
 
-        $result = \DB::for_table('seo')
+		$result = \DB::for_table('seo')
             ->select('seo_element_id')
-            ->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_url' => $url])
+			->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_url' => $url])
             ->find_one();
 
         if ( $result ) $this->setId( $result->seo_element_id );
@@ -246,7 +247,7 @@ class Controller extends \App\Kernel\Common\Controller
     protected function render( $template )
     {
         $this->checkTemplate( $template ) ;
-        return parent::render( $template ) ;
+        return parent::render( $this->getEntityName() . '/' . $template ) ;
     }
 
     protected function checkTemplate( $template )
@@ -257,7 +258,7 @@ class Controller extends \App\Kernel\Common\Controller
             mkdir( VIEW_PROJECT_PATH . '/' . $folder , 0755 );
         }
 
-        $file = $folder . '/' . $template . ".twig.html" ;
+        $file = $folder . '/' . $template . ".twig" ;
         if ( ! file_exists( VIEW_PROJECT_PATH . '/' . $file ) )
         {
             // On créer le fichier avec un template de base dedans (on met les variables dans le templates + extends layout)
@@ -371,6 +372,8 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getoneAction()
     {
+    	$this->loadId() ;
+
         $result = $this->getRepository()->findOne( $this->getId() );
 
         /* Si pas de retour, 404 */
@@ -386,7 +389,7 @@ class Controller extends \App\Kernel\Common\Controller
         if ( $this->getEntity()->hasUrl() ) $this->loadMeta();
 
         $this->setRender('element', $this->parseValue( $result ) );
-        $this->render('getone.twig.html');
+        $this->render('getone.twig');
     }
 
     protected function getallAction()
@@ -419,7 +422,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $this->loadMetaModule() ;
-        $this->render('getall.twig.html') ;
+        $this->render('getall.twig') ;
     }
 
     /* ************************************************** */
