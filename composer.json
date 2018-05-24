@@ -14,13 +14,9 @@
     "erusev/parsedown": "1.6.0",
     "abeautifulsite/simpleimage": "2.5.5",
     "blueimp/jquery-file-upload": "9.10.0",
-    "mrclay/minify": "2.2.1",
-    "phpoffice/phpexcel": "1.8.1",
     "facebook/graph-sdk" : "~5.0",
     "phpmailer/phpmailer" : "5.2.13",
     "jasongrimes/paginator" : "~1.0",
-    "phpdocumentor/phpdocumentor" : "2.*",
-
     "symfony/var-dumper": "3.0.*",
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master"
