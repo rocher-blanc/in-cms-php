@@ -175,8 +175,8 @@ $app->group('/parammodule', function () use ($app)
             if ( $app->request->isPost() )
             {
                 $one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
-                $one->module_index = ( $app->request->post('module_index') == NULL ? '0' : 1 ) ;
-                $one->module_index_elmt = ( $app->request->post('module_index_elmt') == NULL ? '0' : 1 ) ;
+                $one->module_index = $app->request->post('module_index') ;
+                $one->module_index_elmt = $app->request->post('module_index_elmt') ;
                 $one->save();
 
                 foreach( $lang as $l )

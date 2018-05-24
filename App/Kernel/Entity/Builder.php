@@ -183,7 +183,7 @@ class Builder extends Model
 
     public function isDependency()
     {
-        $this->_isDependency = true ;
+		$this->_isDependency = true ;
 
         $this->build('module_id' , true )->isModuleId();
         $this->build('element_id' , true )->isElementId();
@@ -446,10 +446,15 @@ class Builder extends Model
         return $this->_module_child_name;
     }
 
-    protected function getLast()
-    {
-        return $this->_last ;
-    }
+	protected function getLast()
+	{
+		return $this->_last ;
+	}
+
+	protected function getDepe()
+	{
+		return $this->_last ;
+	}
 
     public function getField()
     {

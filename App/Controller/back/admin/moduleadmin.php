@@ -6,9 +6,9 @@ $app->group('/moduleadmin', function () use ($app)
 	{
 
         $contentRows = \DB::for_table('module')
-								->order_by_asc('module_active')
-								->order_by_asc('module_name')
-								->find_many();
+						->order_by_asc('module_active')
+						->order_by_asc('module_name')
+						->find_many();
 
         $tab = [];
 
@@ -26,8 +26,8 @@ $app->group('/moduleadmin', function () use ($app)
         {
             foreach( $contentRows as $row )
             {
-                $entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
-                $img[ $row->module_id ] = $entity->hasImage();
+				$entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
+				$img[ $row->module_id ] = $entity->hasImage();
             }
         }
 
@@ -41,7 +41,13 @@ $app->group('/moduleadmin', function () use ($app)
                 $name = str_replace( ENTITY_PATH . "/" , '' , $file );
                 $name = str_replace( ".php" , '' , $name );
 
-                if ( ! array_key_exists( $name , $tab ) ) $list[] = $name ;
+                if ( ! array_key_exists( $name , $tab ) )
+				{
+					$entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
+					$entity->hasImage();
+
+					$list[] = $name ;
+				}
             }
         }
 
@@ -121,7 +127,7 @@ $app->group('/moduleadmin', function () use ($app)
         }
         else
         {
-            $app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+            $app->redirect( $app->config('admin.url') . '/admin/moduleadmin/edit/' . $contentRow->module_id );
         }
 
     })->name('moduleadmin_install');
