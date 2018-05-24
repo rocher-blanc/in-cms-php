@@ -104,17 +104,6 @@ class Install
         self::create( $file , $css ) ;
     }
 
-    protected static function minify()
-    {
-        self::minCSS( BOWER_PATH . "/cmsmedias/css/login.css" ) ;
-        self::minCSS( BOWER_PATH . "/cmsmedias/css/media.css" ) ;
-        self::minCSS( BOWER_PATH . "/cmsmedias/css/std.css" ) ;
-        self::minCSS( BOWER_PATH . "/cmsmedias/css/error.css" ) ;
-
-        self::minJS( BOWER_PATH . "/cmsmedias/js/init.js" ) ;
-        self::minJS( BOWER_PATH . "/cmsmedias/js/script.js" ) ;
-    }
-
     protected static function minCSS( $file )
     {
         $newname = str_replace( '.css' , '.min.css' , $file ) ;
@@ -316,18 +305,18 @@ class Install
             "web/assets",
             "web/assets/css",
             "web/assets/sass",
-            "web/assets/css/src",
-            "web/assets/css/dist",
             "web/assets/js",
-            "web/assets/js/src",
-            "web/assets/js/dist",
-            "web/assets/img"
+            "web/assets/img",
+            "web/assets/vendor",
+			"web/assets/vendor/cmsmedias"
         ] ;
 
         foreach( $folders as $folder )
         {
             if ( ! is_dir( _PATH_ . "/" . $folder ) ) mkdir( _PATH_ . "/" . $folder ) ;
         }
+
+        self::copyr( VENDOR_PATH . '/jweb/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
     }
 
     protected static function create( $nameFile , $content )
@@ -354,4 +343,38 @@ class Install
 
         return $content ;
     }
+
+    protected static function copyr( $source, $dest )
+	{
+		// Check for symlinks
+		if (is_link($source)) {
+			return symlink(readlink($source), $dest);
+		}
+
+		// Simple copy for a file
+		if (is_file($source)) {
+			return copy($source, $dest);
+		}
+
+		// Make destination directory
+		if (!is_dir($dest)) {
+			mkdir($dest);
+		}
+
+		// Loop through the folder
+		$dir = dir($source);
+		while (false !== $entry = $dir->read()) {
+			// Skip pointers
+			if ($entry == '.' || $entry == '..') {
+				continue;
+			}
+
+			// Deep copy directories
+			copyr("$source/$entry", "$dest/$entry");
+		}
+
+		// Clean up
+		$dir->close();
+		return true;
+	}
 }

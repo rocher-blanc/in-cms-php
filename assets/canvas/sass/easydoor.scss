@@ -1,0 +1,134 @@
+.searchButton {
+  button, a {
+    margin: 0;
+    width: 140px;
+  }
+
+  a {
+    margin-top: 5px;
+  }
+}
+
+.table-responsive {
+  .switch {
+    margin-top: 7px;
+
+    label {
+      margin: 0;
+    }
+  }
+}
+
+form {
+  position: relative;
+}
+
+.form-process {
+  background-image: none;
+  i {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    margin: -27px 0 0 -27px;
+    color: $jweb-blue;
+  }
+}
+
+.inline {
+  display: inline-block;
+}
+
+.table {
+  td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    vertical-align: middle;
+  }
+
+  thead {
+    th {
+      vertical-align: middle;
+    }
+  }
+
+  tr {
+    &.trSearch {
+      background-color: #efefef;
+    }
+  }
+}
+
+.actionLink {
+  a {
+    i {
+      font-size: 24px;
+    }
+  }
+}
+
+.ed_field {
+  .comment {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #999;
+  }
+}
+
+.sidenav {
+  li {
+    &.parent {
+      a {
+        background-color: $jweb-blue;
+        color: #fff;
+        border-color: rgba(0, 0, 0, 0.1) !important;
+      }
+    }
+  }
+}
+
+.newparentelement {
+  border: 1px dashed $jweb-blue;
+  background-color: #f9f9f9;
+
+  &.feature-box {
+    &.fbox-center {
+      .fbox-icon {
+        margin: 15px auto 15px;
+      }
+    }
+  }
+}
+
+.icon-asterisk {
+  color: $jweb-blue;
+}
+
+.turbolinks-progress-bar {
+  height: 2px;
+  background-image: linear-gradient(to left, #00afaf 0%, #164757 58%);
+}
+
+#toast-container {
+  right: 0px;
+  bottom: 0px;
+
+  & > div,
+  & > div:hover {
+    display: block;
+    opacity: 1;
+    box-shadow: none;
+    border-radius: 0;
+    margin-bottom: 0px;
+  }
+}
+
+.toast-progress {
+  height: 6px;
+}
+.toast-message {
+  padding: 4px 0;
+}
+.toast-success {
+  background-color: #00afaf;
+}
