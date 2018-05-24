@@ -353,7 +353,7 @@ class Install
 
 		// Simple copy for a file
 		if (is_file($source)) {
-			return self::copy($source, $dest);
+			return copy($source, $dest);
 		}
 
 		// Make destination directory
