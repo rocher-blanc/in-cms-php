@@ -125,59 +125,67 @@ class Menu
         }
 
         // COLUMNS
-        $req_column = \DB::for_table( "module_column" )
-            ->where_in( "module_column_module_group_id", $groups_id )
-            ->find_many();
-        foreach( $req_column as $column ) {
+        if( ! empty( $groups_id ) )
+        {
+            $req_column = \DB::for_table( "module_column" )
+                             ->where_in( "module_column_module_group_id" , $groups_id )
+                             ->find_many();
+            foreach ( $req_column as $column )
+            {
 
-            $columns_id[] = $column->module_column_id;
-            $columns[ $column->module_column_id ] = [
-                'id'     => $column->module_column_id,
-                'group'  => $column->module_column_module_group_id,
-                'blocks' => []
-            ];
+                $columns_id[] = $column->module_column_id;
+                $columns[ $column->module_column_id ] = [
+                    'id'     => $column->module_column_id ,
+                    'group'  => $column->module_column_module_group_id ,
+                    'blocks' => []
+                ];
 
-        }
+            }
 
-        // BLOCKS
-        $req_blocks = \DB::for_table( "module_column_block" )
-            ->where_in( "module_column_block_module_column_id", $columns_id )
-            ->order_by_asc( "module_column_block_order" )
-            ->find_many();
-        foreach( $req_blocks as $block ) {
+            // BLOCKS
+            $req_blocks = \DB::for_table( "module_column_block" )
+                             ->where_in( "module_column_block_module_column_id" , $columns_id )
+                             ->order_by_asc( "module_column_block_order" )
+                             ->find_many();
+            foreach ( $req_blocks as $block )
+            {
 
-            $blocks_id[] = $block->module_column_block_id;
-            $blocks[ $block->module_column_block_id ] = [
-                'id'      => $block->module_column_block_id,
-                'column'  => $block->module_column_block_module_column_id,
-                'title'   => $block->module_column_block_title,
-                'modules' => [],
-            ];
+                $blocks_id[] = $block->module_column_block_id;
+                $blocks[ $block->module_column_block_id ] = [
+                    'id' => $block->module_column_block_id ,
+                    'column' => $block->module_column_block_module_column_id ,
+                    'title' => $block->module_column_block_title ,
+                    'modules' => [] ,
+                ];
 
-        }
+            }
 
-        // MODULES
-        $req_modules = \DB::for_table( "module" )
-            ->where_in( "module_module_column_block_id", $blocks_id )
-            ->order_by_asc( "module_order" )
-            ->find_many();
-        foreach( $req_modules as $module ) {
+            // MODULES
+            $req_modules = \DB::for_table( "module" )
+                              ->where_in( "module_module_column_block_id" , $blocks_id )
+                              ->order_by_asc( "module_order" )
+                              ->find_many();
+            foreach ( $req_modules as $module )
+            {
 
-            $blocks[ $module->module_module_column_block_id ]['modules'][ $module->module_id ] = [
-                'title' => $module->module_name,
-                'url'   => $module->module_class_name
-            ];
+                $blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
+                    'title' => $module->module_name ,
+                    'url' => $module->module_class_name
+                ];
 
-        }
+            }
 
-        // Blocks
-        foreach( $blocks as $block ) {
-            $columns[ $block['column'] ]['blocks'][ $block['id'] ] = $block;
-        }
+            // Blocks
+            foreach ( $blocks as $block )
+            {
+                $columns[ $block[ 'column' ] ][ 'blocks' ][ $block[ 'id' ] ] = $block;
+            }
 
-        // Columns
-        foreach( $columns as $column ) {
-            $groups[ $column['group'] ]['columns'][ $column['id'] ] = $column;
+            // Columns
+            foreach ( $columns as $column )
+            {
+                $groups[ $column[ 'group' ] ][ 'columns' ][ $column[ 'id' ] ] = $column;
+            }
         }
 
 

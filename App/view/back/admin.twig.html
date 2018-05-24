@@ -23,7 +23,7 @@
                                         {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
                                         {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
                                         {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
-                                        {% else                               %} {% set class = "col-lg-2" %}
+                                        {% else                               %} {% set class = "col-5" %}
                                         {% endif %}
                                         {% for column in group.columns %}
                                             <ul class="mega-menu-column {{ class }}">
@@ -44,10 +44,12 @@
 
                                 {% else %}
 
-                                    {% if group.columns | first .blocks | first .modules | length > 1 %}
+                                    {% set modules = group.columns | first .blocks | first .modules %}
+
+                                    {% if modules | length > 1 %}
 
                                         <li class="sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
+                                            <a href="#" class="sf-with-ul">{{ group.name }}</a>
                                             <div class="mega-menu-content style-2 clearfix">
                                                 <ul>
                                                     {% for module in group.columns | first . blocks | first . modules %}
@@ -57,13 +59,12 @@
                                             </div>
                                         </li>
 
-                                    {% elseif group.columns | first .blocks | first .modules | length == 1 %}
+                                    {% elseif modules | length == 1 %}
 
                                         <li>
-                                            <a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
+                                            <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
                                         </li>
 
-                                    {% else %}
                                     {% endif %}
 
                                 {% endif %}

@@ -70,9 +70,10 @@ class Controller
     protected function setModule( $row )
     {
         $this->_module = new \stdClass;
-        $this->_module->icon = $row->module_icon ;
-        $this->_module->name = $row->module_name  ;
-        $this->_module->default = $row->module_default  ;
+        $this->_module->icon       = $row->module_icon ;
+        $this->_module->name       = $row->module_name  ;
+        $this->_module->class_name = $row->module_class_name  ;
+        $this->_module->default    = $row->module_default  ;
     }
 
     /* ************************************************** */
