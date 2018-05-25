@@ -39,8 +39,10 @@ listenTable = function() {
 
     /** GESTION DES DATE RANGE PICKER **/
     $('.daterange').daterangepicker({
-        "applyClass": "button button-rounded button-mini nomargin button-color",
-        "cancelClass": "button button-rounded button-mini nomargin button-light",
+        autoUpdateInput: false,
+        "applyClass": "button-color",
+        "cancelClass": "button-light",
+        "buttonClasses": "button button-rounded button-mini nomargin",
         "locale": {
             "format": "DD/MM/YYYY",
             "separator": " - ",
@@ -74,6 +76,14 @@ listenTable = function() {
             ],
             "firstDay": 1
         }
+    });
+
+    $(".daterange").on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    });
+
+    $(".daterange").on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
     });
 
     /** GESTION DES RECHERCHES **/
@@ -136,6 +146,8 @@ listenTable = function() {
             }
         });
     }
+
+    initSelect();
 };
 
 deleteElement = function( url ) {
