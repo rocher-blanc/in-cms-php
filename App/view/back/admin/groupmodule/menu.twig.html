@@ -9,17 +9,18 @@
 <div class="fancy-title title-dotted-border">
 	<h3>{{ title_block_page }}</h3>
 </div>
+
 <p>Cette section est accéssible uniquement par les développeurs du site</p>
 
 <form name="form" method="post" action="{{ siteUrl('admin/groupmodule/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
 	<div class="row show-grid">
-		<div class="col-sm-12 nopadding">
+		<div class="col-sm-12 nopadding noborder">
 			<table class="table" id="groupmodule-menu-table">
 				<tbody>
 				<tr>
-					<td class="col-fix">
+					<td class="col-fix noborder">
 						<div class="text-center">
 							<button type="button" class="ed-button button button-rounded button-green button-mini button-3d" id="groupmodule-button-addcolumn">
 								<i class="icon-plus"></i>
@@ -28,6 +29,7 @@
 						</div>
 						<div class="clear"></div>
 
+						{% if arrayModules|length > 0 %}
 						<h4 class="mt10">Modules disponibles</h4>
 						<div class="module-block" data-id="0">
 							<div class="module-block-content">
@@ -36,6 +38,7 @@
 								{% endfor %}
 							</div>
 						</div>
+						{% endif %}
 					</td>
 				</tr>
 				</tbody>

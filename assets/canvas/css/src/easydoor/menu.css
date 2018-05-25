@@ -42,7 +42,7 @@
 }
 .module-column {
     border: none !important;
-    border-right: 1px black solid !important;
+    border-right: 1px #fff solid !important;
     padding: 10px !important;
     vertical-align: top !important;
     padding-bottom: 40px !important;
@@ -54,6 +54,11 @@
     width: 100%;
     text-align: center;
 }
+
+.noborder {
+    border: 0;
+}
+
 .module-block.placeholder {
     height: 50px;
     margin-bottom: 20px;
@@ -79,13 +84,15 @@
 }
 .module-block-content.bordered {
     padding: 10px 10px 22px;
-    border: 1px blue dashed;
+    border: 1px #00afaf dashed;
+    border-radius: 3px;
 }
 .module-element {
     background: grey;
     color: black;
     padding: 8px 12px;
     margin: 0 0 8px !important;
+    overflow: hidden;
 }
 .placeholder {
     opacity: .5;
