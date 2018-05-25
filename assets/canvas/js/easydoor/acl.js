@@ -21,10 +21,10 @@ $(function() {
                 }
 
                 if ( link.hasClass('yes') ) {
-                    link.html('<i class="icon-remove-sign"></i>').removeClass('yes').addClass('no') ;
+                    link.html('<i class="icon-remove-sign"></i>').removeClass('yes').addClass('no').css('color', '#C02942') ;
                 }
                 else {
-                    link.html('<i class="icon-ok-sign"></i>').removeClass('no').addClass('yes') ;
+                    link.html('<i class="icon-ok-sign"></i>').removeClass('no').addClass('yes').css('color', '#59BA41') ;
                 }
             }
         });
