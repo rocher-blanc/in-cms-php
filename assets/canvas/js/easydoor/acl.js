@@ -7,8 +7,6 @@ $(function() {
         var right 	  	= $(this).data('right') ;
         var link	    = $(this);
 
-        $(this).html('...');
-
         $.ajax({
             url: siteurl + 'ext/group/right',
             type: "post",
