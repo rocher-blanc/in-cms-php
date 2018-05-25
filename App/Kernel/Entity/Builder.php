@@ -149,6 +149,12 @@ class Builder extends Model
      */
     protected $_field_reference ;
 
+    /*
+     * @int
+     * Variable qui gère le nombre d'element par page
+     */
+    protected $_pagination = NULL ;
+
     protected $forbidden_field = [
         'id',
         'parent_id',
@@ -410,9 +416,25 @@ class Builder extends Model
         $this->_module_parent_id_name = $name;
     }
 
+	/**
+	 * @param null $pagination
+	 */
+	public function setPagination( $pagination )
+	{
+		$this->_pagination = $pagination;
+	}
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+	/**
+	 * @return null
+	 */
+	public function getPagination()
+	{
+		return $this->_pagination;
+	}
 
     /*
      *

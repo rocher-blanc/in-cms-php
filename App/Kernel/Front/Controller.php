@@ -2,6 +2,10 @@
 
 namespace App\Kernel\Front;
 
+use JasonGrimes\Paginator;
+
+$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
 class Controller extends \App\Kernel\Common\Controller
 {
     /* ************************************************** */
@@ -366,9 +370,27 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-    /* ************************************************** */
-    /* *****************    ACTION    ******************* */
-    /* ************************************************** */
+	/* ************************************************** */
+	/* *****************  PAGINATION  ******************* */
+	/* ************************************************** */
+
+	protected function parsePagination(Paginator $p)
+	{
+		return [
+			'all' => $p->getPages(),
+			'url' => [
+				'previous' => $p->getPrevUrl(),
+				'next'     => $p->getNextUrl(),
+			],
+			'total' => $p->getTotalItems(),
+			'first' => $p->getPages()[0],
+			'last' => end( $p->getPages() )
+		];
+	}
+
+	/* ************************************************** */
+	/* *****************    ACTION    ******************* */
+	/* ************************************************** */
 
     protected function getoneAction()
     {
@@ -394,17 +416,35 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getallAction()
     {
-        if ( ! DEBUG )
-        {
-            $result = $this->getRepository()->lastUpdated();
-            if ( $result )
-            {
-                $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
-                $this->getApp()->lastModified( intval( $date->format('U') ) );
-            }
-        }
+		$currentPage = NULL ;
 
-        $all = $this->getRepository()->findAll();
+		if ( $this->getEntity()->getPagination() !== NULL )
+		{
+			$url = $this->getUrl();
+			if ( count( $url ) == 1 )
+			{
+				$currentPage = 1 ;
+			}
+			else
+			{
+				$currentPage = end( $url );
+			}
+
+			if ( $currentPage < 1 )
+			{
+				$currentPage = 1;
+			}
+
+			$totalItems = $this->getRepository()->count();
+			$itemsPerPage = $this->getEntity()->getPagination();
+			$urlPattern = $this->Factory()->Url()->module( $this->getEntityId() ) . '/(:num)';
+
+			$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
+			$this->setRender('pagination', $this->parsePagination( $paginator ) );
+		}
+
+		$all = $this->getRepository()->findAll( $currentPage );
 
         if ( $all )
         {
@@ -414,7 +454,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $elmts[] = $this->parseValue( $row );
             }
 
-            $this->setRender('arrayGetAll', $elmts );
+			$this->setRender('arrayGetAll', $elmts );
         }
         else
         {
@@ -613,14 +653,35 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function getComponent( $type , $request , $vars )
     {
-        $elmts = [] ;
+        $elmts 		= [] ;
+		$pagination = false ;
+
         switch( $type )
         {
             case "one" :
                 $result = $this->getRepository()->requestOne( $request );
                 break;
             case "all" :
-                $result = $this->getRepository()->requestAll( $request );
+				$currentPage = NULL ;
+
+				if ( $this->getEntity()->getPagination() !== NULL )
+				{
+					$url = $this->getUrl();
+
+					if ( count( $url ) == 1 )	$currentPage = 1 ;
+					else						$currentPage = end( $url );
+					if ( $currentPage < 1 )		$currentPage = 1;
+
+					$totalItems = $this->getRepository()->count();
+					$itemsPerPage = $this->getEntity()->getPagination();
+					$urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
+
+					$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
+					$pagination = $this->parsePagination( $paginator );
+				}
+
+                $result = $this->getRepository()->requestAll( $request , $currentPage );
                 break;
         }
 
@@ -663,7 +724,8 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge([
-            'object' => $elmts
+            'object' => $elmts,
+			'pagination' => $pagination
         ], $vars ));
     }
 

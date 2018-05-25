@@ -46,9 +46,17 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->getKit()->where_in( $idName , $tab )->find_many();
     }
 
-    public function findAll()
+    public function findAll( $currentPage = NULL )
     {
-        return $this->getKit()->find_many();
+    	$rst = $this->getKit() ;
+
+    	if ( $currentPage !== NULL )
+		{
+			$rst = $rst->limit( $this->getEntity()->getPagination() )
+					   ->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
+		}
+
+        return $rst->find_many();
     }
 
     public function findSiteMap( $field , $id )
@@ -176,15 +184,28 @@ class Repository extends \App\Kernel\Common\Repository
         return \DB::for_module( $this->getName() )->count();
     }
 
-    public function requestAll( $request )
+    public function requestAll( $request , $currentPage = NULL )
     {
-        return $this->request( $request )->find_many();
+    	$rst = $this->request( $request ) ;
+
+		if ( $currentPage !== NULL )
+		{
+			$rst = $rst->limit( $this->getEntity()->getPagination() )
+				->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
+		}
+
+		return $rst->find_many();
     }
 
-    public function requestOne( $request )
-    {
-        return $this->request( $request )->find_one();
-    }
+	public function requestOne( $request )
+	{
+		return $this->request( $request )->find_one();
+	}
+
+	public function requestCount( $request )
+	{
+		return $this->request( $request )->count();
+	}
 
     public function request( $request )
     {
