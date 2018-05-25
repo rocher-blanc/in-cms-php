@@ -41,16 +41,14 @@
             <div class="section nobg full-screen nopadding nomargin">
                 <div class="container-fluid vertical-middle divcenter clearfix">
 
-                    <div class="center">
-                        <img src="{{ asset('canvas/img/easyDOOR.png') }}" alt="easyDOOR">
-                    </div>
-
                     <div class="card divcenter noradius noborder" style="max-width: 400px; background-color: rgba(255,255,255,0.93);">
                         <div class="card-body" style="padding: 40px;">
                             <form id="login-form" name="login-form" class="nobottommargin" action="{{ siteUrl('secured/login') }}" method="post">
                                 <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
-                                <h3>Login to your Account</h3>
+                                <div class="center">
+                                    <img src="{{ asset('canvas/img/easyDOOR.png') }}" alt="easyDOOR">
+                                </div>
 
                                 <div class="col_full">
                                     <label for="login-form-username">Identifiant :</label>
@@ -63,7 +61,7 @@
                                 </div>
 
                                 <div class="col_full nobottommargin">
-                                    <button class="button button-3d button-black nomargin" id="login-form-submit" name="login-form-submit" value="login">Login</button>
+                                    <button class="button button-3d button-black nomargin" id="login-form-submit" name="login-form-submit" value="login">Connexion</button>
                                 </div>
                             </form>
                         </div>
@@ -79,10 +77,6 @@
     </section><!-- #content end -->
 
 </div><!-- #wrapper end -->
-
-<!-- Go To Top
-============================================= -->
-<div id="gotoTop" class="icon-angle-up"></div>
 
 <!-- External JavaScripts
 ============================================= -->
