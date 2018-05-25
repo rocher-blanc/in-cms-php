@@ -17,12 +17,16 @@
         <h3>{{ title_block_page }}</h3>
     </div>
     <div class="ed_field col_half">
+        <label>Nom (interne)</label>
+        <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
+    </div>
+    <div class="ed_field col_one_fourth">
         <label>Activé</label>
         {% include 'form/generic/switch.twig' with {'value':post.page_active, 'name':'page_active'} %}
     </div>
-    <div class="ed_field col_half col_last">
-        <label>Nom (interne)</label>
-        <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
+    <div class="ed_field col_one_fourth col_last">
+        <label>Indexé</label>
+        {% include 'form/generic/switch.twig' with {'value':post.page_index, 'name':'page_index'} %}
     </div>
     <div class="ed_field col_one_third">
         <label>URL</label>
@@ -60,7 +64,7 @@
             {% endif %}
         {% endfor %}
     </div>
-    <div class="ed_field col_one_third col_last">
+    <div class="ed_field col_one_third">
         <label>Méta description</label>
         {% for l in lang %}
             {% if lang|length > 1 %}
@@ -77,13 +81,9 @@
             {% endif %}
         {% endfor %}
     </div>
-    <div class="ed_field col_one_third">
+    <div class="ed_field col_one_third col_last">
         <label>Sitemap - Priority</label>
         <input type="text" id="page_priority" name="page_priority" class="form-control" value="{{ priority }}" />
-    </div>
-    <div class="ed_field col_one_third col_last">
-        <label>Indexé</label>
-        {% include 'form/generic/switch.twig' with {'value':post.page_index, 'name':'page_index'} %}
     </div>
     {% include 'form/generic/button.twig' %}
 

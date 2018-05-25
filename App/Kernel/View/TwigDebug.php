@@ -27,7 +27,7 @@ class TwigDebug extends \Twig_Extension
         {
             foreach( func_get_args() as $row )
             {
-                dump( $row , null , false , false ) ;
+                dump( $row ) ;
             }
         }
         return ob_get_clean();

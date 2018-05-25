@@ -46,17 +46,11 @@
                 {% endif %}
             </td>
             <td class="text-right">
-                {% if loop.index != 1 %}<a
-                    href="{{ siteUrl('admin/groupmodule/order/up/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"
-                    class="btn btn-sm btn-default"><i class="fa fa-arrow-up"></i></a>{% endif %}
-                {% if loop.index != contentRows|length %}<a
-                    href="{{ siteUrl('admin/groupmodule/order/down/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"
-                    class="btn btn-sm btn-default"><i class="fa fa-arrow-down"></i></a>{% endif %}
+                {% if loop.index != 1 %}<a href="{{ siteUrl('admin/groupmodule/order/up/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="icon-arrow-up2"></i></a>{% endif %}
+                {% if loop.index != contentRows|length %}<a href="{{ siteUrl('admin/groupmodule/order/down/' ~  row.module_group_id ~ '/' ~ csrf_token) }}"><i class="icon-arrow-down2"></i></a>{% endif %}
 
-                <a href="{{ siteUrl('admin/groupmodule/edit/' ~ row.module_group_id) }}"> <i class="icon-pencil"></i>
-                </a>
-                <a href="{{ siteUrl('admin/groupmodule/delete/' ~ row.module_group_id) }}" data-lightbox="ajax"><i
-                        class="icon-trash2"></i></a>
+                <a href="{{ siteUrl('admin/groupmodule/edit/' ~ row.module_group_id) }}"> <i class="icon-pencil"></i></a>
+                <a href="{{ siteUrl('admin/groupmodule/delete/' ~ row.module_group_id) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>
             </td>
         </tr>
         {% endfor %}

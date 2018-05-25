@@ -343,7 +343,9 @@ class Controller
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
                         "tab" 		=> $row->getTab(),
-                        "full" 		=> $row->isFull(),
+                        "class" 	=> $row->getData('classField'),
+                        "part" 		=> $row->getData('part'),
+                        "width" 	=> $row->getData('width'),
                         "comment"	=> $row->getComment(),
                         "required"	=> $row->isRequired(),
                         "error" 	=> $row->getError()

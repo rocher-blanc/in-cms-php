@@ -55,8 +55,8 @@
                     </td>
                     <td class="text-right">
                         {% if row.lang_status != 0 %}
-                            {% if loop.index != 1 %}<a href="{{ siteUrl('ext/langue/order/up/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-sm btn-default"><i class="icon-arrow-up2"></i></a>{% endif %}
-                            {% if row.lang_status != 1 %}<a href="{{ siteUrl('ext/langue/order/down/' ~  row.lang_id ~ '/' ~ csrf_token) }}" class="btn btn-sm btn-default"><i class="icon-arrow-down2"></i></a>{% endif %}
+                            {% if loop.index != 1 %}<a href="{{ siteUrl('ext/langue/order/up/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="icon-arrow-up2"></i></a>{% endif %}
+                            {% if row.lang_status != 1 %}<a href="{{ siteUrl('ext/langue/order/down/' ~  row.lang_id ~ '/' ~ csrf_token) }}"><i class="icon-arrow-down2"></i></a>{% endif %}
                         {% endif %}
 
                         <a href="{{ siteUrl('ext/langue/edit/' ~ row.lang_id) }}"><i class="icon-pencil"></i></a>

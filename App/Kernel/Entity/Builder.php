@@ -715,6 +715,7 @@ class Builder extends Model
         $field->setName( $name );
 
         $this->_field[ $name ] = $field;
+		$this->column( 1 , 2 ) ;
     }
 
     public function field()
@@ -742,7 +743,7 @@ class Builder extends Model
 
     protected function isVideo()
     {
-        $this->field()->setData( "SQL_VALUE" , 255 ) ;
+		$this->field()->setData( "SQL_VALUE" , 255 ) ;
         $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
         $this->field()->setData( "type" , "video" ) ;
         return $this ;
@@ -977,7 +978,7 @@ class Builder extends Model
 
     protected function full()
     {
-        $this->field()->setData( "full" , true ) ;
+        $this->column( 1 , 1 ) ;
         return $this ;
     }
 
@@ -1035,11 +1036,45 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function comment( $t )
-    {
-        $this->field()->setData( "comment" , $t ) ;
-        return $this ;
-    }
+	protected function comment( $t )
+	{
+		$this->field()->setData( "comment" , $t ) ;
+		return $this ;
+	}
+
+	protected function column( $part , $width )
+	{
+		if ( $part == $width / 2 )	$className = 'col_half' ;
+		else if ( $part == $width )	$className = 'col_full' ;
+		else 						$className = 'col_' . $this->convertNumber( $part ) . '_' . $this->convertNumber2( $width ) ;
+
+		$this->field()->setData( "classField" , $className ) ;
+		$this->field()->setData( "part" , $part ) ;
+		$this->field()->setData( "width" , $width ) ;
+		return $this ;
+	}
+
+	protected function convertNumber( $i )
+	{
+		switch( $i )
+		{
+			case '1' : return 'one'; break;
+			case '2' : return 'two'; break;
+			case '3' : return 'three'; break;
+			case '4' : return 'four'; break;
+			case '5' : return 'five'; break;
+		}
+	}
+
+	protected function convertNumber2( $i )
+	{
+		switch( $i )
+		{
+			case '3' : return 'third'; break;
+			case '4' : return 'fourth'; break;
+			case '5' : return 'fifth'; break;
+		}
+	}
 
     protected function twig( $t )
     {

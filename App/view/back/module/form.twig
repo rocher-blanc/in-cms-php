@@ -9,23 +9,24 @@
     {% for tab in tabs %}
         {% set counter = 0 %}
         <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}">
-            {% for c in field if c.tab == tab.key %}
-                {% if c.full != true %}
-                    {% set counter = counter + 1 %}
-                    {% if counter == 2 %}
-                        {% set classCol = 'col_half col_last' %}
-                        {% set counter = 0 %}
-                    {% else %}
-                        {% set classCol = 'col_half' %}
-                    {% endif %}
-                {% else %}
-                    {% set classCol = 'col_full' %}
+            {% set counter = 0 %}
+            {% set width = 0 %}
+            {% for c in field if c.tab == tab.key and c.type != 'hidden' %}
+                {% if width == 0 %}
+                    {% set width = c.width %}
                 {% endif %}
-                <div class="ed_field {{ classCol }}{% if c.error != '' %} error{% endif %}" id="field-{{ c.name }}">
+
+                {% set counter = counter + c.part %}
+
+                <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}" id="field-{{ c.name }}">
                     <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
                     {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
                     {{ c.Form_HTML }}
                 </div>
+                {% if width == counter %}
+                    {% set width = 0 %}
+                    {% set counter = 0 %}
+                {% endif %}
             {% endfor %}
 
             <div class="ed_field col_full">
@@ -37,3 +38,10 @@
         </div>
     {% endfor %}
 </form>
+
+{% if counter == 2 %}
+    {% set classCol = 'col_half col_last' %}
+    {% set counter = 0 %}
+{% else %}
+    {% set classCol = 'col_half' %}
+{% endif %}

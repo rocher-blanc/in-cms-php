@@ -5,6 +5,7 @@ $(function() {
     initCounterString();
     initDatePicker();
     initSelect();
+    initLink();
     deleteValueMedia();
 });
 
@@ -361,4 +362,45 @@ deleteValueMedia = function() {
         $(this).hide();
         $('#bloc_media_' + fieldid + ' .card-img-top').attr('src' , site + '/assets/vendor/cmsmedias/canvas/img/nophoto.png');
     });
+};
+
+/*
+#####################################################################################################################################
+#####################################################        LINK         ###########################################################
+#####################################################################################################################################
+*/
+
+initLink = function() {
+    if ( $('.input-link').length ) {
+        $(".dropdown-menu.link").on('click', 'li a', function(){
+            $( "#" + $(this).data('menu') ).html( $(this).text() + ' <span class="caret"></span>' );
+            $( "#" + $(this).data('hidden') ).val( $(this).text() );
+        });
+
+        $('.input-link').change(function() {
+            updateLink( $(this) );
+        });
+
+        $('.input-link').each(function() {
+            updateLink( $(this) );
+        });
+    }
+};
+
+updateLink = function( str ) {
+    if ( str.val().indexOf("https") !== -1 ) {
+        str.val(str.val().replace('https://', ''));
+        $( "#" + str.data('menu') ).html( 'https:// <span class="caret"></span>' );
+        $( "#" + str.data('hidden') ).val( 'https://' );
+    }
+
+    if ( str.val().indexOf("http") !== -1 ) {
+        str.val(str.val().replace('http://', ''));
+        $( "#" + str.data('menu') ).html( 'http:// <span class="caret"></span>' );
+        $( "#" + str.data('hidden') ).val( 'http://' );
+    }
+
+    if ( str.val().substr( str.val().length - 1, 1) == '/' ) {
+        str.val( str.val().substr(0, str.val().length - 1) );
+    }
 };

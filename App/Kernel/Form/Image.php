@@ -29,15 +29,13 @@ class Image extends \App\Kernel\Back\Form
 		$this->value = $value ;
 		
 		$this->_lib_js  = [
-			'jquery-file-upload/js/vendor/jquery.ui.widget.js',
-			'jquery-file-upload/js/jquery.iframe-transport.js',
-			'jquery-file-upload/js/jquery.fileupload.js',
-			'jcrop/js/jquery.Jcrop.min.js'
+			'cmsmedias/libs/jquery-file-upload/js/vendor/jquery.ui.widget.js',
+			'cmsmedias/libs/jquery-file-upload/js/jquery.iframe-transport.js',
+			'cmsmedias/libs/jquery-file-upload/js/jquery.fileupload.js'
 		];
 		
 		$this->_lib_css = [
-			'jquery-file-upload/css/jquery.fileupload.css',
-			'jcrop/css/jquery.Jcrop.min.css'
+			'cmsmedias/libs/jquery-file-upload/css/jquery.fileupload.css'
 		];
 		
 		if ( $this->hasValue() ) 
