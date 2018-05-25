@@ -98,9 +98,44 @@ listenTable = function() {
 
     }).addClass('submitReady');
 
+    /** GESTION DES RECHERCHES - BOUTON REINITIALISER **/
     $('.initsearch').click(function() {
         reloadTable();
     });
+
+    /** GESTION DE LA PAGINATION **/
+    $('.page-link').click(function() {
+        $('#page').val( $(this).data('page') );
+        $('#formSeach').submit();
+    });
+
+    /** GESTION DE L'ORDER **/
+    if ( $('.table-dnd').length ) {
+        $('.table-dnd').tableDnD({
+            onDragStart: function(table, row) {
+                $( "#" + $(row).data('tr') ).addClass('myDragClass');
+                var originalOrder = $.tableDnD.serialize();
+            },
+            dragHandle: '.orderTable',
+            onDragClass: 'myDragClass',
+            onDrop: function(table, row) {
+                var data   = $.tableDnD.serialize();
+                var module = $('#module4JS').val() ;
+
+                $.ajax({
+                    type : 'POST',
+                    data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + data,
+                    url : siteurl + "module/" + module + "/order/0/" + $("meta[name=token]").attr("content"),
+                    success: function(data){
+                        Notify(data.msg, data.result);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Notify(errorThrown, false);
+                    }
+                });
+            }
+        });
+    }
 };
 
 deleteElement = function( url ) {
