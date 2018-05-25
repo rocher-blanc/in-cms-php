@@ -1,0 +1,89 @@
+.menu-title-field {
+
+}
+
+.menu-title-field span,
+.menu-title-field input {
+    float: left;
+    display: block;
+    height: 40px;
+    line-height: 40px;
+}
+
+.menu-title-field span {
+    padding: 0 15px;
+    border-width: 1px;
+}
+
+.menu-title-field input {
+    border: 1px solid #ccc;
+    border-left: 0;
+    border-right: 0;
+    padding: 0 10px;
+}
+
+.menu-title-field span.move { background-color: #1265A8; color: #fff; cursor: move; }
+.menu-title-field span.valid { background-color: #59BA41; color: #fff; cursor: pointer; }
+.menu-title-field span.delete { background-color: #C02942; color: #fff; cursor: pointer; }
+
+#groupmodule-menu-table {
+    margin: 0;
+    display: table;
+    table-layout: fixed;
+}
+#groupmodule-menu-table td {
+    vertical-align: top;
+}
+#groupmodule-menu-table h4 {
+    margin: 20px 0 0 0;
+}
+.module-column {
+    border: none !important;
+    border-right: 1px black solid !important;
+    padding: 10px !important;
+    vertical-align: top !important;
+    padding-bottom: 40px !important;
+    position: relative !important;
+}
+.module-column-buttons {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+.module-block.placeholder {
+    height: 50px;
+    margin-bottom: 20px;
+}
+.module-block:not(:last-child) {
+    margin-bottom: 12px;
+}
+.module-block .row {
+    margin: 0;
+}
+.input-title {
+    border-right: none !important;
+}
+.module-block [class^=col-] {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+.module-block-content {
+    margin-top: 8px;
+    padding: 0 0 27px;
+    transition: all .3s;
+}
+.module-block-content.bordered {
+    padding: 10px 10px 22px;
+    border: 1px blue dashed;
+}
+.module-element {
+    background: grey;
+    color: black;
+    padding: 8px 12px;
+    margin: 0 0 8px !important;
+}
+.placeholder {
+    opacity: .5;
+}
