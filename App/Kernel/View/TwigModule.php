@@ -16,6 +16,16 @@ class TwigModule extends \Twig_Extension
         return \App\Kernel\Factory::getInstance() ;
     }
 
+    private function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
+
+    private function Lang()
+    {
+        return \App\Kernel\Lang::getInstance() ;
+    }
+
     public function getFunctions()
     {
        return array(
@@ -29,7 +39,13 @@ class TwigModule extends \Twig_Extension
     {
         if ( is_string( $request ) ) $request = [];
 
-        $Controller = \App\Kernel\Container::getInstance()->module( $module )->getController();
+        $replaceString = '' ;
+        $fullUrl = $this->Factory()->Url()->getFullUrl() ;
+        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
+        $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
+
+        $Controller = $this->Container()->module( $module )->getController();
+        $Controller->setUrl( explode('/',$url) );
         $Controller->setComponentName( $component );
 
         return $Controller->getComponent( $type , $request , $vars );
@@ -37,9 +53,7 @@ class TwigModule extends \Twig_Extension
 
     public function form( $module , $type = 'html' )
     {
-        $Controller = \App\Kernel\Container::getInstance()->module( $module )->getController();
-
-        return $Controller->getForm( $type );
+        return $this->Container()->module( $module )->getController()->getForm( $type );
     }
 
     public function parse( $field )
@@ -50,7 +64,7 @@ class TwigModule extends \Twig_Extension
             array_key_exists( 'name' , $field ) == true &&
             array_key_exists( 'module' , $field ) == true )
         {
-            return \App\Kernel\Container::getInstance()->module( $field['module'] )->getController()->subParse( $field );
+            return $this->Container()->module( $field['module'] )->getController()->subParse( $field );
         }
     }
 }

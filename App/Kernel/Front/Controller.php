@@ -4,8 +4,6 @@ namespace App\Kernel\Front;
 
 use JasonGrimes\Paginator;
 
-$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
 class Controller extends \App\Kernel\Common\Controller
 {
     /* ************************************************** */
@@ -668,12 +666,19 @@ class Controller extends \App\Kernel\Common\Controller
 					else						$currentPage = end( $url );
 					if ( $currentPage < 1 )		$currentPage = 1;
 
-					dump( $url );
-					dump( $currentPage );
+                    if ( ( count( $url ) == 3 or count( $url ) == 2 ) && is_numeric( end( $url ) ) )
+                    {
+                        $len = strlen( '/' . end( $url ) ) * -1 ;
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+                    }
+                    else
+                    {
+                        $urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
+                    }
 
 					$totalItems = $this->getRepository()->count();
 					$itemsPerPage = $this->getEntity()->getPagination();
-					$urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
+
 
 					$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 

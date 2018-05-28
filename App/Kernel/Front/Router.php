@@ -380,7 +380,6 @@ class Router
 
     protected function loadController( $class , $id_module , $element = false , $mp = false )
     {
-        $urlTab = $this->getUrl() ;
         $replaceString = '' ;
         $fullUrl = $this->Factory()->Url()->getFullUrl() ;
         if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
@@ -395,7 +394,6 @@ class Router
         {
             $this->urlElementModule( $mp , $url , $id_module );
         }
-
 
 		$this->getApp()->get(':page+', function ( $page = [] ) use ( $class , $url , $element )
         {
