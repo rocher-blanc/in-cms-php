@@ -135,13 +135,9 @@ class Controller extends \App\Kernel\Common\Controller
         {
             return false ;
         }
-        else if ( $ct <= 1 )
-        {
-            $url = $this->getUrl(0);
-        }
         else
         {
-			$url = $this->getUrl( ($ct - 1) );
+            $url = $this->getUrl(0);
         }
 
 		$result = \DB::for_table('seo')
@@ -666,11 +662,14 @@ class Controller extends \App\Kernel\Common\Controller
 
 				if ( $this->getEntity()->getPagination() !== NULL )
 				{
-					$url = $this->getUrl();
+                    $url = $this->getUrl();
 
 					if ( count( $url ) == 1 )	$currentPage = 1 ;
 					else						$currentPage = end( $url );
 					if ( $currentPage < 1 )		$currentPage = 1;
+
+					dump( $url );
+					dump( $currentPage );
 
 					$totalItems = $this->getRepository()->count();
 					$itemsPerPage = $this->getEntity()->getPagination();
