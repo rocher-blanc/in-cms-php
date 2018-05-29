@@ -27,6 +27,8 @@
                     {% set width = 0 %}
                     {% set counter = 0 %}
                 {% endif %}
+
+                {% if counter == width %}<div class="clearfix"></div>{% endif %}
             {% endfor %}
 
             <div class="ed_field col_full">
