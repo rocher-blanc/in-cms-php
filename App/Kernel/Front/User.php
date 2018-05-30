@@ -87,7 +87,12 @@ class User extends \App\Kernel\Common\User
 
     protected function getSessionName()
     {
-        return 'jcontent_user' ;
+        return 'easydoor_user' ;
+    }
+
+    protected function getProfileModule()
+    {
+        return NULL ;
     }
 
     public function getId()
@@ -135,8 +140,8 @@ class User extends \App\Kernel\Common\User
     {
         if ( self::$instance === NULL )
         {
-            if ( file_exists( CLASS_PROJECT_PATH . '/User.php' ) )  self::$instance = new \Project\CustomClass\Front\User;
-            else                                                    self::$instance = new User;
+            if ( file_exists( CLASS_PROJECT_PATH . '/User.php' ) )     self::$instance = new \Project\CustomClass\Front\User;
+            else                                                                self::$instance = new User;
         }
         return self::$instance ;
     }
@@ -144,6 +149,11 @@ class User extends \App\Kernel\Common\User
     /* ************************************************** */
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance() ;
+    }
 
     protected function CMS()
     {
@@ -180,7 +190,6 @@ class User extends \App\Kernel\Common\User
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
-            // die;
         }
         else
         {
@@ -201,7 +210,6 @@ class User extends \App\Kernel\Common\User
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( '' , true );
-            // die;
         }
         else
         {
@@ -477,7 +485,7 @@ class User extends \App\Kernel\Common\User
         $user->save();
 
         $this->setTmpId( $user->user_front_id ) ;
-        $this->addProfile();
+        if ( $this->getProfileModule() !== NULL ) $this->addProfile();
 
         if ( USER_ACTIVATION_MAIL )
         {
@@ -538,15 +546,12 @@ class User extends \App\Kernel\Common\User
 
     protected function addProfile()
     {
+        /*
         $profile = \DB::for_table('user_front_profile')->create();
         $profile->user_front_profile_user_front_id = $this->getTmpId();
         $profile = $this->addProfileOtherInformation( $profile ) ;
         $profile->save();
-    }
-
-    protected function addProfileOtherInformation( $profile )
-    {
-        return $profile ;
+        */
     }
 
     protected function checkRegister()
@@ -589,7 +594,22 @@ class User extends \App\Kernel\Common\User
         }
         else
         {
-            return true ;
+            if ( $this->getProfileModule() !== NULL )
+            {
+                $Module = $this->Container()->module( $this->getProfileModule() )->getController();
+                if ( ! $Module->checkForm() )
+                {
+                    return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
+                }
+                else
+                {
+                    return true ;
+                }
+            }
+            else
+            {
+                return true ;
+            }
         }
     }
 
@@ -649,12 +669,42 @@ class User extends \App\Kernel\Common\User
                 }
                 else
                 {
-                    return true ;
+                    if ( $this->getProfileModule() !== NULL )
+                    {
+                        $Module = $this->Container()->module( $this->getProfileModule() )->getController();
+                        if ( ! $Module->checkForm() )
+                        {
+                            return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
+                        }
+                        else
+                        {
+                            return true ;
+                        }
+                    }
+                    else
+                    {
+                        return true ;
+                    }
                 }
             }
             else
             {
-                return true ;
+                if ( $this->getProfileModule() !== NULL )
+                {
+                    $Module = $this->Container()->module( $this->getProfileModule() )->getController();
+                    if ( ! $Module->checkForm() )
+                    {
+                        return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
+                    }
+                    else
+                    {
+                        return true ;
+                    }
+                }
+                else
+                {
+                    return true ;
+                }
             }
         }
         else
@@ -678,7 +728,7 @@ class User extends \App\Kernel\Common\User
             }
             $user->save();
 
-            $this->updateProfile() ;
+            if ( $this->getProfileModule() !== NULL ) $this->updateProfile() ;
             $this->pushData();
 
             return $this->returnError( "user_update_successful" , true ) ;
@@ -687,14 +737,11 @@ class User extends \App\Kernel\Common\User
 
     protected function updateProfile()
     {
+        /*
         $profile = \DB::for_table('user_front_profile')->where_equal('user_front_profile_user_front_id', $this->getId())->find_one();
         $profile = $this->updateProfileOtherInformation( $profile ) ;
         $profile->save();
-    }
-
-    protected function updateProfileOtherInformation( $profile )
-    {
-        return $profile ;
+        */
     }
 
     ###################################################################################################################################
@@ -921,7 +968,6 @@ class User extends \App\Kernel\Common\User
     protected function pushData( $id = NULL )
     {
         $user = \DB::for_table('user_front')
-            ->left_outer_join('user_front_profile', ['user_front.user_front_id', '=', 'user_front_profile.user_front_profile_user_front_id'] )
             ->left_outer_join('user_front_group', ['user_front.user_front_user_front_group_id', '=', 'user_front_group.user_front_group_id'] )
             ->where_equal( 'user_front_id' , ( $id !== NULL ? $id : $_SESSION[ $this->getSessionName() ]['id'] ) )
             ->find_one();

@@ -372,7 +372,7 @@ class Controller
 
     // Check si tous les champs sont corrects
     // Appelée dans la fonction "pushData" et "listenForm"
-    protected function checkForm()
+    public function checkForm()
     {
         $this->_return = true ;
 
