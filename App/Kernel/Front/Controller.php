@@ -486,6 +486,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
         switch( $object['type'] )
         {
+            case 'hidden' :
             case 'select' :
                 return $this->getSelectValue( $object['module'] , $object['value'] ) ;
             break;
@@ -602,11 +603,15 @@ class Controller extends \App\Kernel\Common\Controller
                         $arrayElement[ $row->getName() ] = $tab;
                     }
                 }
-                else if ( $row->getType() == 'checkbox' or ( $row->isAssociated() && $row->getType() == 'select' ) )
-                {
-                    $arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
-                }
-                else if ( ! $row->isAssociated() && $row->getType() == 'select' )
+				else if ( $row->getName() == $this->getEntity()->getModuleParentIdName() )
+				{
+					$arrayElement['parent'] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
+				}
+				else if ( $row->getType() == 'checkbox' or ( $row->isAssociated() && $row->getType() == 'select' ) )
+				{
+					$arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
+				}
+				else if ( ! $row->isAssociated() && $row->getType() == 'select' )
                 {
                     $arrayElement[ $row->getName() ] = $row->getOption( $result->get( $row->getColumn() ) );
                 }
@@ -641,7 +646,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $arrayElement['url'].= $this->getModuleUrl() . $Seo->getUrl() ;
             }
         }
-        $arrayElement['lvl'] = $level ;
+
         return $arrayElement ;
     }
 
