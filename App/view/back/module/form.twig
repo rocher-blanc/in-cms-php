@@ -26,6 +26,7 @@
                 {% if width == counter %}
                     {% set width = 0 %}
                     {% set counter = 0 %}
+                    <div class="clearfix"></div>
                 {% endif %}
             {% endfor %}
 
@@ -38,10 +39,3 @@
         </div>
     {% endfor %}
 </form>
-
-{% if counter == 2 %}
-    {% set classCol = 'col_half col_last' %}
-    {% set counter = 0 %}
-{% else %}
-    {% set classCol = 'col_half' %}
-{% endif %}

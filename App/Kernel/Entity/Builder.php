@@ -158,6 +158,8 @@ class Builder extends Model
     protected $forbidden_field = [
         'id',
         'parent_id',
+        'parent',
+        'url',
         'element_module_parent_id',
         'module_id',
         'element_id',
@@ -681,6 +683,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "type" , "hidden" ) ;
         $this->field()->setData( "moduleParent" , true ) ;
+		$this->field()->setData( "object" , $this->getModuleParentName() ) ;
         $this->setModuleParentIdName( $this->field()->getName() ) ;
 
         return $this ;
