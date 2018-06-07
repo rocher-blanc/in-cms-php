@@ -628,6 +628,7 @@ class Builder extends Model
 		$this->build('isValid' , true )
 			->isBoolean()
 			->noFront()
+			->full()
 			->defaut(1)
 			->name('En ligne');
 
@@ -683,6 +684,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "type" , "hidden" ) ;
         $this->field()->setData( "moduleParent" , true ) ;
+        $this->field()->setData( "twig" , "parent" ) ;
 		$this->field()->setData( "object" , $this->getModuleParentName() ) ;
         $this->setModuleParentIdName( $this->field()->getName() ) ;
 

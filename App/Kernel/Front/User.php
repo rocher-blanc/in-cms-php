@@ -92,7 +92,8 @@ class User extends \App\Kernel\Common\User
 
     protected function getProfileModule()
     {
-        return NULL ;
+        if ( defined('MODULE_USER') )  return MODULE_USER ;
+        else								 return NULL ;
     }
 
     public function getId()

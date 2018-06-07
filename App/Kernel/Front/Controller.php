@@ -705,7 +705,8 @@ class Controller extends \App\Kernel\Common\Controller
                     {
                         if ( $field->hasTwigKey() )
                         {
-                            $elmts[ $field->getTwigKey() ] = $parse[ $field->getName() ];
+							if ( $field->getName() == $this->getEntity()->getModuleParentIdName() ) $elmts[ $field->getTwigKey() ] = $parse['parent'];
+							else																	$elmts[ $field->getTwigKey() ] = $parse[ $field->getName() ];
                         }
                     }
 
@@ -721,8 +722,9 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             if ( $field->hasTwigKey() )
                             {
-                                $elmts[ $i ][ $field->getTwigKey() ] = $parse[ $field->getName() ];
-                            }
+								if ( $field->getName() == $this->getEntity()->getModuleParentIdName() ) $elmts[ $i ][ $field->getTwigKey() ] = $parse['parent'];
+								else																	$elmts[ $i ][ $field->getTwigKey() ] = $parse[ $field->getName() ];
+							}
                         }
 
                         if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
