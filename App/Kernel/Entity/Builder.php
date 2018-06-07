@@ -156,13 +156,29 @@ class Builder extends Model
     protected $_pagination = NULL ;
 
     protected $forbidden_field = [
+		/* Gestion utilisateurs */
+		'user_login',
+		'user_password',
+		'user_password_confirm',
+
+		/* Gestion depedency */
+		'module_id',
+		'element_id',
+
+		/* Module front pour les utilisateurs */
+		'user_front_id',
+
+		/* Module parent */
+		'element_module_parent_id',
+
+		/* Element parent */
+		'parent_id',
+
+		/* Autres */
         'id',
-        'parent_id',
         'parent',
         'url',
-        'element_module_parent_id',
-        'module_id',
-        'element_id',
+		'order',
         'date_created',
         'date_last_updated',
         'date_updated',
@@ -619,7 +635,7 @@ class Builder extends Model
     /* ORDER */
     protected function enableOrder()
     {
-        $this->build('order')->isOrder();
+        $this->build('order' , true )->isOrder();
     }
 
 	/* VALIDATION */
@@ -643,7 +659,7 @@ class Builder extends Model
 	{
 		if ( ACTIVE_USER )
 		{
-			$this->build('isValid' , true )
+			$this->build('user_front_id' , true )
 				->isSelect()
 				->noFront()
 				->defaut(\App\Kernel\Front\User::getInstance()->getId())
@@ -654,9 +670,9 @@ class Builder extends Model
     /* PARENTS */
     protected function enableParent( $target )
     {
-        $this->build('parent_id' , true )
-            ->isSelect()
-            ->name('Parent');
+		$this->build('parent_id' , true )
+			->isSelect()
+			->name('Parent');
 
         $this->setParent() ;
         $this->setParentName( $this->field()->getName() ) ;
@@ -690,6 +706,21 @@ class Builder extends Model
 
         return $this ;
     }
+
+    protected function enableUserModule()
+	{
+		$this->build('user_login' , true )
+			->isText()
+			->name('Email');
+
+		$this->build('user_password' , true )
+			->isPassword()
+			->name('Mot de passe');
+
+		$this->build('user_password_confirm' , true )
+			->isPassword()
+			->name('Confirmer votre mot de passe');
+	}
 
     protected function isModuleId()
     {
