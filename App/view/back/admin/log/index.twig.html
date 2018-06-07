@@ -24,23 +24,24 @@
                         </div>
                         <div class="col-md-5 check">
                             <div class="form-group">
-                                <label class="col-md-2 control-label">Type</label>
-                                <div class="col-md-9">
+                                <label class="col-md-12 control-label">Type</label>
+
+                                <div class="col-md-12">
                                     <div class="form-check fleft">
                                         <input class="form-check-input" name="info" value="1" id="info" type="checkbox"{{ info == true ? " checked" : "" }}>
-                                        <label class="text-info form-check-label" for="info">
+                                        <label class="text-info form-check-label" style="padding-left: 5px;" for="info">
                                             <i class="icon-info-sign"></i> Information
                                         </label>
                                     </div>
                                     <div class="form-check fleft" style="margin-left: 10px;">
                                         <input class="form-check-input" value="1" id="danger" name="danger" type="checkbox"{{ danger == true ? " checked" : "" }}>
-                                        <label class="text-warning form-check-label" for="danger">
+                                        <label class="text-warning form-check-label" style="padding-left: 5px;" for="danger">
                                             <i class="icon-warning-sign"></i> Danger
                                         </label>
                                     </div>
                                     <div class="form-check fleft" style="margin-left: 10px;">
                                         <input class="form-check-input" value="1" id="alerte" name="alerte" type="checkbox"{{ alerte == true ? " checked" : "" }}>
-                                        <label class="text-alert form-check-label" for="alerte">
+                                        <label class="text-alert form-check-label" style="padding-left: 5px;" for="alerte">
                                             <i class="icon-remove-sign"></i> Alerte
                                         </label>
                                     </div>
