@@ -107,20 +107,23 @@ class DB extends ORM
         $sql = "" ;
         foreach( $fields as $field )
         {
-            if ( ! $field->hasLang() )
-            {
-                if ( ! array_key_exists( $field->getColumn() , $column ) && $field->getData('SQL_TYPE') !== NULL )
-                {
-                    $sql.= "ALTER TABLE `" . self::getTableName( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
-                }
-            }
-            else
-            {
-                if ( ! array_key_exists( $field->getColumn() , $columnLang ) && $field->getData('SQL_TYPE') !== NULL )
-                {
-                    $sql.= "ALTER TABLE `" . self::getTableNameLang( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
-                }
-            }
+            if ( $field->save() == true )
+			{
+				if ( ! $field->hasLang() )
+				{
+					if ( ! array_key_exists( $field->getColumn() , $column ) && $field->getData('SQL_TYPE') !== NULL )
+					{
+						$sql.= "ALTER TABLE `" . self::getTableName( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
+					}
+				}
+				else
+				{
+					if ( ! array_key_exists( $field->getColumn() , $columnLang ) && $field->getData('SQL_TYPE') !== NULL )
+					{
+						$sql.= "ALTER TABLE `" . self::getTableNameLang( $name ) . "` ADD " . self::createColumn( $field ). ";\n" ;
+					}
+				}
+			}
         }
 
         if ( ! empty( $sql ) ) self::get_db()->exec( $sql ) ;
@@ -132,7 +135,7 @@ class DB extends ORM
 
     public static function checkModuleTable( $mod , $haveLang , $fields )
     {
-        $isCreate = 0 ;
+		$isCreate = 0 ;
         $rst = self::for_table('')->raw_query("SHOW TABLES")->find_many();
         if ( $rst )
         {
@@ -233,11 +236,11 @@ class DB extends ORM
 
         foreach( $fields as $field )
         {
-            if ( $field->hasLang() == false && !empty( $field->getData('SQL_TYPE') ) )
+            if ( $field->hasLang() == false && $field->save() == true && !empty( $field->getData('SQL_TYPE') ) )
             {
                 $Tbl.= "\t" . self::createColumn( $field ). ",\n" ;
             }
-            else if ( $field->hasLang() == true )
+            else if ( $field->hasLang() == true && $field->save() == true )
             {
                 $haveLang = true ;
             }
@@ -248,7 +251,7 @@ class DB extends ORM
 
         /* *************************** MULTI-LANGUE *************************** */
 
-        if ( $haveLang = true )
+        if ( $haveLang == true )
         {
             $Tbl.= "CREATE TABLE IF NOT EXISTS `" . self::getTableNameLang( $module ) . "` (\n" ;
             $Tbl.= "\t`" . self::getIdLangName( $module ) . "` int(11) NOT NULL AUTO_INCREMENT,\n" ;
@@ -257,7 +260,7 @@ class DB extends ORM
 
             foreach( $fields as $field )
             {
-                if ( $field->hasLang() == true && !empty( $field->getData('SQL_TYPE') ) )
+                if ( $field->hasLang() == true && $field->save() == true && !empty( $field->getData('SQL_TYPE') ) )
                 {
                     $Tbl.= "\t" . self::createColumn( $field ) . ",\n" ;
                 }
@@ -265,9 +268,9 @@ class DB extends ORM
 
             $Tbl.= "\tPRIMARY KEY  (`" . self::getIdLangName( $module ) . "`)\n" ;
             $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
-
-            self::get_db()->exec( $Tbl ) ;
         }
+
+		self::get_db()->exec( $Tbl ) ;
     }
 
     public function truncate( $Tbl )

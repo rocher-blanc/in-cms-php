@@ -17,6 +17,7 @@ class User extends \App\Kernel\Common\User
     protected $group        = NULL;
     protected $facebook_url = NULL;
     protected $_var         = [];
+    protected $_error       = false;
 
     /* ************************************************** */
     /* ****************     ISER      ******************* */
@@ -101,7 +102,7 @@ class User extends \App\Kernel\Common\User
         return $this->id ;
     }
 
-    protected function getTmpId()
+    public function getTmpId()
     {
         return $this->tmpId ;
     }
@@ -186,8 +187,15 @@ class User extends \App\Kernel\Common\User
         return $_SERVER['REMOTE_ADDR'] ;
     }
 
+    public function hasError()
+	{
+		return $this->_error ;
+	}
+
     protected function returnError( $key , $result = false )
     {
+		if ( $result == false ) $this->_error = true ;
+
         if ( $this->isAjax() )
         {
             $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
@@ -486,7 +494,6 @@ class User extends \App\Kernel\Common\User
         $user->save();
 
         $this->setTmpId( $user->user_front_id ) ;
-        if ( $this->getProfileModule() !== NULL ) $this->addProfile();
 
         if ( USER_ACTIVATION_MAIL )
         {
@@ -545,17 +552,7 @@ class User extends \App\Kernel\Common\User
         return 0;
     }
 
-    protected function addProfile()
-    {
-        /*
-        $profile = \DB::for_table('user_front_profile')->create();
-        $profile->user_front_profile_user_front_id = $this->getTmpId();
-        $profile = $this->addProfileOtherInformation( $profile ) ;
-        $profile->save();
-        */
-    }
-
-    protected function checkRegister()
+    public function checkRegister()
     {
         /*
          * @POST
@@ -597,10 +594,14 @@ class User extends \App\Kernel\Common\User
         {
             if ( $this->getProfileModule() !== NULL )
             {
-                $Module = $this->Container()->module( $this->getProfileModule() )->getController();
+				$Module = $this->Container()->module( $this->getProfileModule() )->getController();
                 if ( ! $Module->checkForm() )
                 {
-                    return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
+					$Entity = $this->Container()->module( $this->getProfileModule() )->getEntity();
+					foreach( $Entity->getField() as $field )
+					{
+						if ( $field->getError() !== NULL ) return $this->returnError( $field->getFrontError() ) ;
+					}
                 }
                 else
                 {

@@ -202,8 +202,15 @@ class Form
 
     private function genField( $field , $lang = null , $flag = null )
     {
-        if ( $lang !== null )   $name = $field->getColumn() . "_" . $lang ;
-        else                    $name = $field->getColumn() ;
+        if ( $field->rename() )
+		{
+			if ( $lang !== null )   $name = $field->getColumn() . "_" . $lang ;
+			else                    $name = $field->getColumn() ;
+		}
+		else
+		{
+			$name = $field->getName() ;
+		}
 
         if ( $flag !== null ) $field->setData('flag' , $flag );
 

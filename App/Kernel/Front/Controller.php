@@ -757,7 +757,7 @@ class Controller extends \App\Kernel\Common\Controller
             'form' => $this->renderForm([
                 'field' => $form['field'],
                 'tabs' => $form['tabs'],
-                'route' => \App\Kernel\Http::getInstance()->getUrl(),
+                'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'id' => $form['id'],
                 'module' => $this->getEntityName(),
                 'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
@@ -825,11 +825,11 @@ class Controller extends \App\Kernel\Common\Controller
 
 						foreach( $this->getEntity()->getField() as $row )
 						{
-							if ( ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) ) && $add == true )
+							if ( $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
 							{
 								$content->set($row->getColumn(), $row->getDefault());
 							}
-							else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+							else if ( $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
 							{
 								$content->set($row->getColumn(), $row->getValue());
 							}

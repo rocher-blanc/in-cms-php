@@ -371,7 +371,7 @@ class Controller
 
 
     // Check si tous les champs sont corrects
-    // Appelée dans la fonction "pushData" et "listenForm"
+    // Appelée dans la fonction "pushData" ; "listenForm" ; "User::register" ; "User::update"
     public function checkForm()
     {
         $this->_return = true ;

@@ -170,6 +170,24 @@ class Field
     /* *****************     HASER    ******************* */
     /* ************************************************** */
 
+	public function force()
+	{
+		if ( $this->getData('force') === true ) 	return true ;
+		else									    	return false ;
+	}
+
+	public function save()
+	{
+		if ( $this->getData('nosave') === true ) 	return false ;
+		else									    	return true ;
+	}
+
+	public function rename()
+	{
+		if ( $this->getData('norename') === true ) 	return false ;
+		else									    	return true ;
+	}
+
     public function canUpdate()
     {
         if ( $this->getData('noUpdate') === true ) 	return false ;
@@ -316,14 +334,26 @@ class Field
         return $this->getData('type') ;
     }
 
-    public function getError()
-    {
-        return $this->getData('error');
-    }
+	public function getError()
+	{
+		return $this->getData('error');
+	}
+
+	public function getFrontError()
+	{
+		return $this->getData('front-error');
+	}
 
     public function getDefault()
     {
-        return $this->getData('defaut');
+        $rst = $this->getData('defaut');
+
+        if ( is_callable( $rst ) )
+		{
+			return $rst();
+		}
+
+        return $rst ;
     }
 
     public function getColumn()
@@ -388,6 +418,7 @@ class Field
                 if ( $this->isEmpty( $lang->url ) == true && $this->isRequired() == true )
                 {
                     $this->setError( $this->getData('notEmpty_msg') ) ;
+					$this->setData( 'front-error' , $this->getColumn() . '_empty' ) ;
                     $this->setValue( NULL , $lang->url ) ;
                     $return = false ;
                 }
@@ -395,11 +426,13 @@ class Field
         }
         else
         {
-            $this->setValue( $this->getApp()->request->post( $this->getColumn() ) ) ;
+            if ( $this->rename() )  $this->setValue( $this->getApp()->request->post( $this->getColumn() ) ) ;
+            else					$this->setValue( $this->getApp()->request->post( $this->getName() ) ) ;
 
             if ( $this->isEmpty() == true && $this->isRequired() == true )
             {
                 $this->setError( $this->getData('notEmpty_msg') ) ;
+				$this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
                 $this->setValue( NULL ) ;
                 $return = false ;
             }

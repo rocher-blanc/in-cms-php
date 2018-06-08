@@ -144,6 +144,12 @@ class Builder extends Model
     protected $_module_parent_id_name = '' ;
 
     /*
+     * @string
+     * Variable contenant le nom du champ stockant l'ID de l'utilisateur
+     */
+    protected $_user_id_name = 'user_front_id' ;
+
+    /*
      * @array
      * Variable contenant le ou les champs de références quand un autre module appel celui ci
      */
@@ -155,11 +161,20 @@ class Builder extends Model
      */
     protected $_pagination = NULL ;
 
+    /*
+     * @boolean
+     * Définit si le module est un module utilisateur
+     */
+    protected $_module_user = false ;
+
     protected $forbidden_field = [
 		/* Gestion utilisateurs */
 		'user_login',
+		'user_action',
 		'user_password',
 		'user_password_confirm',
+		'user_new_password',
+		'user_new_password_confirm',
 
 		/* Gestion depedency */
 		'module_id',
@@ -213,10 +228,15 @@ class Builder extends Model
         $this->build('element_id' , true )->isElementId();
     }
 
-    public function isChild()
-    {
-        return ( empty( $this->_module_parent_name ) ? false : true ) ;
-    }
+	public function isChild()
+	{
+		return ( empty( $this->_module_parent_name ) ? false : true ) ;
+	}
+
+	public function isModuleUser()
+	{
+		return $this->_module_user ;
+	}
 
     /* ************************************************** */
     /* *******************   HASER   ******************** */
@@ -276,7 +296,12 @@ class Builder extends Model
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
-    protected function setMultilang()
+	public function setModuleUser()
+	{
+		$this->_module_user = true ;
+	}
+
+	protected function setMultilang()
     {
         $this->_hasMultiLang = true ;
     }
@@ -546,10 +571,15 @@ class Builder extends Model
         return $this->_module_id_name ;
     }
 
-    public function getElementIdName()
-    {
-        return $this->_element_id_name ;
-    }
+	public function getElementIdName()
+	{
+		return $this->_element_id_name ;
+	}
+
+	public function getUsertIdName()
+	{
+		return $this->_user_id_name ;
+	}
 
     public function getParentTargetName()
     {
@@ -573,18 +603,21 @@ class Builder extends Model
         {
             foreach( $this->getField() as $row )
             {
-                if ( array_key_exists( $row->getTab() , $this->_tab ) )
-                {
-                    $tab[ $row->getTab() ] = $this->_tab[ $row->getTab() ];
-                }
-                else
-                {
-                    $tab[ $row->getTab() ] = [
-                        'name' => $row->getTab(),
-                        'icon' => 'icon-question',
-                        'key' => $row->getTab()
-                    ];
-                }
+                if ( $row->getType() != 'hidden' )
+				{
+					if ( array_key_exists( $row->getTab() , $this->_tab ) )
+					{
+						$tab[ $row->getTab() ] = $this->_tab[ $row->getTab() ];
+					}
+					else
+					{
+						$tab[ $row->getTab() ] = [
+							'name' => $row->getTab(),
+							'icon' => 'icon-question',
+							'key' => $row->getTab()
+						];
+					}
+				}
             }
         }
 
@@ -654,7 +687,7 @@ class Builder extends Model
 		$this->setValidationName( $this->field()->getName() ) ;
 	}
 
-	/* VALIDATION */
+	/* USER */
 	protected function enableUser()
 	{
 		if ( ACTIVE_USER )
@@ -662,8 +695,67 @@ class Builder extends Model
 			$this->build('user_front_id' , true )
 				->isSelect()
 				->noFront()
-				->defaut(\App\Kernel\Front\User::getInstance()->getId())
+				->defaut(function() {
+					return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+				} , true  )
 				->name('Utilisateur');
+		}
+	}
+
+	protected function getUserAction()
+	{
+		return ( \App\Kernel\Front\User::getInstance()->isLogged() ? 'update' : 'register' ) ;
+	}
+
+	protected function enableUserModule()
+	{
+		if ( ACTIVE_USER )
+		{
+			$this->enableUser() ;
+			$this->setModuleUser() ;
+
+			$this->build('user_action' , true )
+				->isHidden()
+				->noSave()
+				->noRename()
+				->defaut( $this->getUserAction() , true  );
+
+			$this->build('user_login' , true )
+				->isVarchar()
+				->noSave()
+				->noRename()
+				->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
+				->name('Email');
+
+			if ( \App\Kernel\Front\User::getInstance()->isLogged() )
+			{
+				$this->build('user_password' , true )
+					->isPassword()
+					->noRename()
+					->name('Ancien mot de passe');
+
+				$this->build('user_new_password' , true )
+					->isPassword()
+					->noRename()
+					->name('Nouveau mot de passe');
+
+				$this->build('user_new_password_confirm' , true )
+					->isPassword()
+					->noRename()
+					->name('Confirmer votre nouveau mot de passe');
+			}
+			else
+			{
+				$this->build('user_password' , true )
+					->isPassword()
+					->noRename()
+					->name('Mot de passe');
+
+				$this->build('user_password_confirm' , true )
+					->isPassword()
+					->noRename()
+					->name('Confirmer votre mot de passe');
+			}
 		}
 	}
 
@@ -706,21 +798,6 @@ class Builder extends Model
 
         return $this ;
     }
-
-    protected function enableUserModule()
-	{
-		$this->build('user_login' , true )
-			->isText()
-			->name('Email');
-
-		$this->build('user_password' , true )
-			->isPassword()
-			->name('Mot de passe');
-
-		$this->build('user_password_confirm' , true )
-			->isPassword()
-			->name('Confirmer votre mot de passe');
-	}
 
     protected function isModuleId()
     {
@@ -863,7 +940,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isHidden( $type , $size , $defaut )
+    protected function isHidden( $type = NULL , $size = NULL , $defaut = NULL )
     {
         $this->field()->setData( "SQL_VALUE" , $size ) ;
         $this->field()->setData( "SQL_TYPE" , $type ) ;
@@ -877,6 +954,13 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;
+        return $this ;
+    }
+
+    protected function isPassword()
+    {
+        $this->field()->setData( "type" , "password" ) ;
+        $this->noSave();
         return $this ;
     }
 
@@ -1088,9 +1172,10 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function defaut( $t = 0 )
+    protected function defaut( $t = 0  , $force = false )
     {
         $this->field()->setData( "defaut" , $t ) ;
+        $this->field()->setData( "force" , $force ) ;
         return $this ;
     }
 
@@ -1184,9 +1269,21 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function option( $val )
-    {
-        $this->field()->setData( "option" , $val ) ;
-        return $this ;
-    }
+	protected function option( $val )
+	{
+		$this->field()->setData( "option" , $val ) ;
+		return $this ;
+	}
+
+	protected function noSave()
+	{
+		$this->field()->setData( "nosave" , true ) ;
+		return $this ;
+	}
+
+	protected function noRename()
+	{
+		$this->field()->setData( "norename" , true ) ;
+		return $this ;
+	}
 }
