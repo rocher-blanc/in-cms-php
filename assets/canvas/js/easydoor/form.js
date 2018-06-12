@@ -21,16 +21,23 @@ checkBox = function() {
 
 checkImage = function() {
     if ( $('input[data-upload-image]').length ) {
-        $('input[data-upload-image]').fileinput({
-            mainClass: "input-group-md",
-            showUpload: true,
-
-            previewFileType: "image",
-            browseLabel: "Sélectionner une image",
-            browseIcon: "<i class=\"icon-picture\"></i> ",
-            removeClass: "btn btn-danger",
-            removeLabel: "Supprimer",
-            removeIcon: "<i class=\"icon-trash\"></i> ",
+        $('input[data-upload-image]').each(function(){
+            $(this).fileinput({
+                uploadUrl: "/ajax/upload.php?dir=" + $(this).attr('data-dir') + "&name=" + $(this).attr('name'),
+                mainClass: "input-group-md",
+                showUpload: true,
+                previewFileType: "image",
+                showUpload: false,
+                showCancel: false,
+                showRemove: true,
+                showProgress: false,
+                maxFileCount: 1,
+                browseLabel: "Sélectionner une image",
+                browseIcon: "<i class=\"icon-picture\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Supprimer",
+                removeIcon: "<i class=\"icon-trash\"></i> "
+            })
         });
     }
 };
