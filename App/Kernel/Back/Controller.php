@@ -946,12 +946,15 @@ class Controller extends \App\Kernel\Common\Controller
                         }
                     }
 
-                    // On ajoute les infos avec multi-langue
-                    foreach( $this->Lang()->getAll() as $lang )
-                    {
-                        $contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
-                        $contentLang[ $lang->url ]->save() ;
-                    }
+                    if ( $this->Lang()->count() > 1 )
+					{
+						// On ajoute les infos avec multi-langue
+						foreach( $this->Lang()->getAll() as $lang )
+						{
+							$contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
+							$contentLang[ $lang->url ]->save() ;
+						}
+					}
 
                     if ( $this->getApp()->request->post('submit') == "stay" )
                     {
