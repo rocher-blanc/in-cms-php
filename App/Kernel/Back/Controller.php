@@ -946,7 +946,7 @@ class Controller extends \App\Kernel\Common\Controller
                         }
                     }
 
-                    if ( $this->Lang()->count() > 1 )
+                    if ( $this->getEntity()->hasMultilang() )
 					{
 						// On ajoute les infos avec multi-langue
 						foreach( $this->Lang()->getAll() as $lang )
