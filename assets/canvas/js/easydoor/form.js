@@ -7,6 +7,7 @@ $(function() {
     initSelect();
     initLink();
     deleteValueMedia();
+    checkImage();
 });
 
 checkBox = function() {
@@ -14,6 +15,22 @@ checkBox = function() {
         $('select[data-plugin-selectPicker]').selectpicker({
             iconBase: '',
             tickIcon: 'icon-line-check'
+        });
+    }
+};
+
+checkImage = function() {
+    if ( $('select[data-upload-image]').length ) {
+        $('select[data-upload-image]').fileinput({
+            mainClass: "input-group-md",
+            showUpload: true,
+
+            previewFileType: "image",
+            browseLabel: "Sélectionner une image",
+            browseIcon: "<i class=\"icon-picture\"></i> ",
+            removeClass: "btn btn-danger",
+            removeLabel: "Supprimer",
+            removeIcon: "<i class=\"icon-trash\"></i> ",
         });
     }
 };

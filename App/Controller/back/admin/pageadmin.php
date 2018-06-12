@@ -112,13 +112,13 @@ $app->group('/pageadmin', function () use ($app)
 			if ($error == false)
 			{
 				$contentRow->page_name = $app->request->post('page_name');
-                $contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+                $contentRow->page_active = $app->request->post('page_active');
                 $contentRow->page_index = 1;
                 $contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : 0 );
 
                 if ( ACTIVE_USER )
                 {
-                    $contentRow->page_access_user = ($app->request->post('page_access_user') == NULL ? 0 : 1);
+                    $contentRow->page_access_user = $app->request->post('page_access_user');
                     $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
                 }
 				$contentRow->save();
@@ -257,7 +257,7 @@ $app->group('/pageadmin', function () use ($app)
 
 			if ($error == false) {
 				$contentRow->page_name = $app->request->post('page_name');
-				$contentRow->page_active = ($app->request->post('page_active') == NULL ? 0 : 1);
+				$contentRow->page_active = $app->request->post('page_active');
 				$contentRow->page_domain_id = $app->request->post('page_domain_id');
 
                 if ( ACTIVE_USER )

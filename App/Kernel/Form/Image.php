@@ -26,17 +26,9 @@ class Image extends \App\Kernel\Back\Form
 	
 	public function html( $field, $name, $value = NULL )
 	{
-		$this->value = $value ;
-		
-		$this->_lib_js  = [
-			'cmsmedias/libs/jquery-file-upload/js/vendor/jquery.ui.widget.js',
-			'cmsmedias/libs/jquery-file-upload/js/jquery.iframe-transport.js',
-			'cmsmedias/libs/jquery-file-upload/js/jquery.fileupload.js'
-		];
-		
-		$this->_lib_css = [
-			'cmsmedias/libs/jquery-file-upload/css/jquery.fileupload.css'
-		];
+		$this->value 	= $value ;
+		$this->_lib_js  = ['cmsmedias/canvas/js/components/bs-filestyle.js'];
+		$this->_lib_css = ['cmsmedias/canvas/css/src/components/bs-filestyle.css'];
 		
 		if ( $this->hasValue() ) 
 		{

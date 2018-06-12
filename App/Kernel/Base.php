@@ -93,7 +93,10 @@ INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`,
 
 INSERT INTO `user_group` (`user_group_id`, `user_group_name`) VALUES
 (1, 'Administrateurs'),
-(2, 'Utilisateurs');";
+(2, 'Utilisateurs');
+
+INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) VALUES 
+(1, 'Défaut');";
     }
 
     public function checkDatabase()

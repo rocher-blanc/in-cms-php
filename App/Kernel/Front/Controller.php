@@ -663,7 +663,7 @@ class Controller extends \App\Kernel\Common\Controller
             case "all" :
 				$currentPage = NULL ;
 
-				if ( $this->getEntity()->getPagination() !== NULL )
+				if ( $this->getEntity()->getPagination() !== NULL && array_key_exists("limit" , $request ) == false )
 				{
                     $url = $this->getUrl();
 
