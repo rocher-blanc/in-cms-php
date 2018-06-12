@@ -20,8 +20,8 @@ checkBox = function() {
 };
 
 checkImage = function() {
-    if ( $('select[data-upload-image]').length ) {
-        $('select[data-upload-image]').fileinput({
+    if ( $('input[data-upload-image]').length ) {
+        $('input[data-upload-image]').fileinput({
             mainClass: "input-group-md",
             showUpload: true,
 

@@ -362,10 +362,8 @@ class Kernel
             "cache/save/traduction" => false ,
             "web/uploads" => false ,
             "web/images" => false ,
-            "web/documents" => false ,
-            "web/assets/css/dist" => false ,
-            "web/assets/js/dist" => false
-        ] ;
+            "web/documents" => false
+		] ;
 
         foreach( $folders as $folder => $passFolder )
         {
