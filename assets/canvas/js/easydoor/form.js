@@ -28,6 +28,8 @@ checkImage = function() {
                 showUpload: false,
                 previewFileType: "image",
                 showUpload: false,
+                showCaption: false,
+                showPreview: false,
                 showCancel: false,
                 showRemove: true,
                 showProgress: false,
