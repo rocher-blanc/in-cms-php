@@ -25,7 +25,7 @@ checkImage = function() {
             $(this).fileinput({
                 uploadUrl: "/ajax/upload.php?dir=" + $(this).attr('data-dir') + "&name=" + $(this).attr('name'),
                 mainClass: "input-group-md",
-                showUpload: true,
+                showUpload: false,
                 previewFileType: "image",
                 showUpload: false,
                 showCancel: false,
