@@ -1,13 +1,3 @@
-/*!
- * FileInput French Translations
- *
- * This file must be loaded after 'fileinput.js'. Patterns in braces '{}', or
- * any HTML markup tags in the messages must not be converted or translated.
- *
- * @see http://github.com/kartik-v/bootstrap-fileinput
- *
- * NOTE: this file must be saved in UTF-8 encoding.
- */
 (function ($) {
     "use strict";
 
@@ -26,7 +16,7 @@
         msgCancelled: 'Annulé',
         msgPlaceholder: 'Sélectionner le(s) {files}...',
         msgZoomModalHeading: 'Aperçu détaillé',
-        msgFileRequired: 'Vous devez sélectionner un fichier �  uploader.',
+        msgFileRequired: 'Vous devez sélectionner un fichier à uploader.',
         msgSizeTooSmall: 'Le fichier "{name}" (<b>{size} KB</b>) est inférieur à la taille minimale de <b>{minSize} KB</b>.',
         msgSizeTooLarge: 'Le fichier "{name}" (<b>{size} Ko</b>) dépasse la taille maximale autorisée qui est de <b>{maxSize} Ko</b>.',
         msgFilesTooLess: 'Vous devez sélectionner au moins <b>{n}</b> {files} à transmettre.',
@@ -42,13 +32,13 @@
         msgFileTypes: {
             'image': 'image',
             'html': 'HTML',
-    'text': 'text',
-        'video': 'video',
-        'audio': 'audio',
-        'flash': 'flash',
-        'pdf': 'PDF',
-        'object': 'object'
-},
+            'text': 'text',
+            'video': 'video',
+            'audio': 'audio',
+            'flash': 'flash',
+            'pdf': 'PDF',
+            'object': 'object'
+    },
     msgUploadAborted: 'Le transfert du fichier a été interrompu',
         msgUploadThreshold: 'En cours...',
         msgUploadBegin: 'Initialisation...',

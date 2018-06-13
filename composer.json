@@ -17,7 +17,7 @@
     "facebook/graph-sdk" : "~5.0",
     "phpmailer/phpmailer" : "5.2.13",
     "jasongrimes/paginator" : "~1.0",
-    "symfony/var-dumper": "3.0.*",
+    "symfony/var-dumper": "~3.0",
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master"
   },

@@ -22,13 +22,14 @@ checkBox = function() {
 checkImage = function() {
     if ( $('input[data-upload-image]').length ) {
         $('input[data-upload-image]').each(function(){
+
             $(this).fileinput({
                 language: 'fr',
                 uploadUrl: "/ajax/upload.php?dir=" + $(this).attr('data-dir') + "&name=" + $(this).attr('name'),
                 mainClass: "input-group-md upload-image",
                 previewFileType: "image",
 
-                showUpload: true,
+                showUpload: false,
                 showCaption: true,
                 showPreview: false,
                 showCancel: false,
@@ -42,7 +43,7 @@ checkImage = function() {
                 removeClass: "button button-mini button-red",
                 removeLabel: "Supprimer",
                 removeIcon: "<i class=\"icon-trash\"></i> "
-            })
+            });
         });
     }
 };
