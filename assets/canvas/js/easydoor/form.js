@@ -23,26 +23,49 @@ checkImage = function() {
     if ( $('input[data-upload-image]').length ) {
         $('input[data-upload-image]').each(function(){
 
-            $(this).fileinput({
+            var $this = $(this);
+            var myForm = $this.closest('form');
+            var tvalue = $("meta[name=token]").attr("content") ;
+
+            $this.fileinput({
                 language: 'fr',
-                uploadUrl: "/ajax/upload.php?dir=" + $(this).attr('data-dir') + "&name=" + $(this).attr('name'),
+                uploadUrl: $this.data('uploadurl'),
                 mainClass: "input-group-md upload-image",
-                previewFileType: "image",
+
+                allowedFileExtensions: ["jpeg", "jpg", "png", "gif"],
+                uploadExtraData:{csrf_token:tvalue},
+
+                showCaption: true,
+                showRemove: true,
 
                 showUpload: false,
-                showCaption: true,
                 showPreview: false,
                 showCancel: false,
-                showRemove: true,
-                showProgress: true,
+                showProgress: false,
 
                 maxFileCount: 1,
+                autoReplace: true,
+
                 browseLabel: "Parcourir",
                 browseClass: "button button-mini button-rounded",
                 browseIcon: "<i class=\"icon-picture\"></i> ",
                 removeClass: "button button-mini button-red",
                 removeLabel: "Supprimer",
                 removeIcon: "<i class=\"icon-trash\"></i> "
+            }).on("filebatchselected", function(event, files) {
+                myForm.find('.form-process').fadeIn();
+                $this.fileinput("upload");
+            }).on("fileuploaded", function(event, files) {
+                $("#" + $this.data('fieldname')).val(files.response.id);
+                myForm.find('.form-process').fadeOut();
+                myForm.find('.kv-upload-progress').hide();
+            }).on('fileclear', function(event, id, index) {
+                $($this.attr('data-bdd')).val('');
+                myForm.find('.form-process').fadeOut();
+            }).on('fileerror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
+            }).on('filebatchuploaderror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
             });
         });
     }

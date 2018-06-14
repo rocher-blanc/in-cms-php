@@ -1019,11 +1019,7 @@ class Builder extends Model
         $this->setImage() ;
         $this->setImageField( $this->field()->getData("columnName") ) ;
 
-        $this->addAction("postupload") ;
-        $this->addAction("reloadmedia") ;
         $this->addAction("upload") ;
-        $this->addAction("postclick") ;
-        $this->addAction("media") ;
         $this->addAction("deletemedia") ;
 
         return $this ;

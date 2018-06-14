@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Back\Image;
+
 class Media extends \App\Kernel\Common\Media
 {
 	/* ************************************************** */
@@ -9,6 +11,7 @@ class Media extends \App\Kernel\Common\Media
 	/* ************************************************** */
 	
 	private $module_id = NULL ;
+	private $module_name = NULL ;
 	private $folder_name = NULL ;
 
 	/* ************************************************** */
@@ -20,6 +23,11 @@ class Media extends \App\Kernel\Common\Media
 		$this->module_id = $var ;
 	}
 
+	public function setModuleName( $var )
+	{
+		$this->module_name = $var ;
+	}
+
 	public function setFolder( $var )
 	{
 		$this->folder_name = $var ;
@@ -28,10 +36,15 @@ class Media extends \App\Kernel\Common\Media
 	/* ************************************************** */
 	/* ******************   GETTER   ******************** */
 	/* ************************************************** */
-	
+
 	public function getModuleId()
 	{
 		return $this->module_id ;
+	}
+
+	public function getModuleName()
+	{
+		return $this->module_name ;
 	}
 	
 	public function getFolder()
@@ -102,16 +115,41 @@ class Media extends \App\Kernel\Common\Media
 
 	public function upload( $path )
 	{
+		foreach( $_FILES as $key => $value )
+		{
+			$fieldName = $key ;
+		}
+
 		$upload_dir 	= $path . '/' ;
 		$upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
-		$upload_handler = new \App\Kernel\Back\Image([
-			'module_id' => $this->getModuleId(),
-            'upload_dir' => $upload_dir,
-            'upload_url' => $this->Factory()->Url()->get( $upload_url , true ),
-            'param_name' => 'files',
-            'min_width' => $this->getApp()->request->post('min_width'),
-            'min_height' => $this->getApp()->request->post('min_height')
+		$img = new Image([
+			'module_id'   => $this->getModuleId(),
+            'upload_dir'  => $upload_dir,
+            'upload_url'  => $this->Factory()->Url()->get( $upload_url , true ),
+            'param_name'  => $fieldName,
 		]);
+
+		$rst = $img->upload() ;
+
+		if ( $rst !== false )
+		{
+			$field = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity()->build( $fieldName )->field();
+			$this->setImageId( $rst->id ) ;
+			$this->getNameById() ;
+			$source = $this->rename();
+			$this->genThumb( 100 , 100 );
+
+			if ( $field->hasThumb() )
+			{
+				foreach( $field->getThumb() as $thumb )
+				{
+					// width, height
+					$this->genThumb( $thumb[0] , $thumb[1] ) ;
+				}
+			}
+		}
+
+		return $rst ;
 	}
 	
 	public function delete()

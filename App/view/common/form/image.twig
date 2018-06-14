@@ -29,8 +29,9 @@
     </div>
 </div>
 #}
-<input id="input-8" type="file" accept="image/*" data-upload-image class="file-loading" data-allowed-file-extensions='[]'>
+<input id="input-8" type="file" data-upload-image class="file-loading" data-fieldname="id_{{ name }}" data-uploadurl="{{ route( mod.name , 'upload' ) }}">
 <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
+
 {% if has_alt_img %}
     <div class="alt">
         {% for l in lang %}
