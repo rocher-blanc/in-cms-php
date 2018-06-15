@@ -22,7 +22,6 @@ checkBox = function() {
 checkImage = function() {
     if ( $('input[data-upload-image]').length ) {
         $('input[data-upload-image]').each(function(){
-
             var $this = $(this);
             var myForm = $this.closest('form');
             var tvalue = $("meta[name=token]").attr("content") ;
@@ -35,7 +34,7 @@ checkImage = function() {
                 allowedFileExtensions: ["jpeg", "jpg", "png", "gif"],
                 uploadExtraData:{csrf_token:tvalue},
 
-                showCaption: true,
+                showCaption: false,
                 showRemove: true,
 
                 showUpload: false,
@@ -45,11 +44,10 @@ checkImage = function() {
 
                 maxFileCount: 1,
                 autoReplace: true,
-
                 browseLabel: "Parcourir",
                 browseClass: "button button-mini button-rounded",
                 browseIcon: "<i class=\"icon-picture\"></i> ",
-                removeClass: "button button-mini button-red",
+                removeClass: "button button-mini button-rounded delete-img-" + $this.data('fieldname') + " button-red",
                 removeLabel: "Supprimer",
                 removeIcon: "<i class=\"icon-trash\"></i> "
             }).on("filebatchselected", function(event, files) {
@@ -57,8 +55,14 @@ checkImage = function() {
                 $this.fileinput("upload");
             }).on("fileuploaded", function(event, files) {
                 $("#" + $this.data('fieldname')).val(files.response.id);
+                $("#" + $this.data('imgname')).attr('src', files.response.mini);
                 myForm.find('.form-process').fadeOut();
                 myForm.find('.kv-upload-progress').hide();
+
+                $('.delete-img-' + $this.data('fieldname') ).click(function() {
+                    $("#" + $this.data('fieldname')).val('');
+                    $("#" + $this.data('imgname')).attr('src', $("#" + $this.data('imgname')).data('empty') );
+                });
             }).on('fileclear', function(event, id, index) {
                 $($this.attr('data-bdd')).val('');
                 myForm.find('.form-process').fadeOut();
@@ -66,6 +70,10 @@ checkImage = function() {
                 myForm.find('.form-process').fadeOut();
             }).on('filebatchuploaderror', function(event, id, index) {
                 myForm.find('.form-process').fadeOut();
+            }).on('filebeforedelete', function() {
+                console.log('test filebeforedelete');
+            }).on('filedeleted', function() {
+                console.log('test filedeleted');
             });
         });
     }

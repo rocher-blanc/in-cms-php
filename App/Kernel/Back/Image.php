@@ -37,6 +37,7 @@ class Image
 
 			$std = new \stdClass;
 			$std->id = $media->media_id;
+			$std->key = $media->media_id;
 			$std->field = $this->options['param_name'];
 
 			return $std;

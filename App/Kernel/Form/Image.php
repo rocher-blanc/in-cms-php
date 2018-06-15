@@ -56,12 +56,9 @@ class Image extends \App\Kernel\Back\Form
             'has_alt_img' => $field->getData('hasAltText'),
             'alt_img' => $alt_img,
             'lang' => \App\Kernel\Lang::getInstance()->getAll(),
-            'crop' => $this->getBlocCrop( $field , $value ),
-            'thumb' => $this->getBlocThumb( $field , $value ),
             'hasValue' => $this->hasValue(),
             'minWidth' => $this->min_width,
             'minHeight' => $this->min_height,
-            'hrefLink' => $this->Factory()->Url()->route( $field->getData('module') , 'media' ),
             'image' => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg') ),
             'value' => ( $this->validValue( $mini ) == true ? $value : '' ),
             'field_name' => $field->getName()

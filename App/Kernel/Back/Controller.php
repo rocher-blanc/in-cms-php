@@ -10,12 +10,11 @@ class Controller extends \App\Kernel\Common\Controller
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $_id_parent = [] ;
-    protected $_token = NULL ;
-    protected $_lang = NULL ;
-
-    protected $_msg = [] ;
-    protected $_options = [] ;
+	protected $_token 		= NULL ;
+	protected $_lang 		= NULL ;
+    protected $_id_parent 	= [] ;
+    protected $_msg 		= [] ;
+    protected $_options 	= [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */

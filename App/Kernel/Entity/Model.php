@@ -66,7 +66,7 @@ class Model
 		else			 return str_replace( WEB_PATH , '' , $path ) ;
 	}
     
-    protected function getClassName( $lower = true )
+    public function getClassName( $lower = true )
 	{
         $exp = explode( "\\" , get_class( $this ) ) ;
 		$content = $exp[ count( $exp ) - 1 ] ;
