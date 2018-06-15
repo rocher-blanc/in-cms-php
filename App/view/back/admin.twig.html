@@ -56,19 +56,13 @@
                                                 {% endfor %}
                                             </ul>
                                         </li>
-
                                     {% elseif modules | length == 1 %}
-
                                         <li>
                                             <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
                                         </li>
-
                                     {% endif %}
-
                                 {% endif %}
                             {% endfor %}
-
-
 
                             {% for group in menuTree %}
                                 {% if group.children|length > 1 %}
@@ -185,6 +179,30 @@
                                     </li>
                                 </ul>
                             </li>
+                            {% if active_newsletter == true %}
+                            <li>
+                                <a href="#">
+                                    <div>Newsletter</div>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
+                                            <div>Groupes d'abonnés</div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/newsletter_sender') }}">
+                                           <div>Expéditeurs</div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                                            <div>Campagnes</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
                             <li>
                                 <a target="_blank" href="{{ siteUrl('/',false) }}">
                                     <div>Voir mon site</div>

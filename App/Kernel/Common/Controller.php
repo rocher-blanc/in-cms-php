@@ -23,19 +23,38 @@ class Controller
 
     protected $_renderArray = [] ;
 
+    protected $_depedency_module = NULL ;
+    protected $_depedency_element = NULL ;
+
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
-    public function setRender( $key , $value )
+	/**
+	 * @param null $depedency_module
+	 */
+	public function setDepedencyModule( $depedency_module )
+	{
+		$this->_depedency_module = $depedency_module;
+	}
+
+	/**
+	 * @param null $depedency_element
+	 */
+	public function setDepedencyElement( $depedency_element )
+	{
+		$this->_depedency_element = $depedency_element;
+	}
+
+	public function setRender( $key , $value )
     {
         $this->_renderArray[ $key ] = $value ;
     }
 
-    public function setModuleUrl( $var )
-    {
-        $this->_url_module = $var ;
-    }
+	public function setModuleUrl( $var )
+	{
+		$this->_url_module = $var ;
+	}
 
     public function setMain()
     {
@@ -79,6 +98,22 @@ class Controller
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+	/**
+	 * @return null
+	 */
+	public function getDepedencyModule()
+	{
+		return $this->_depedency_module;
+	}
+
+	/**
+	 * @return null
+	 */
+	public function getDepedencyElement()
+	{
+		return $this->_depedency_element;
+	}
 
     public function getModuleUrl()
     {
@@ -323,10 +358,18 @@ class Controller
                     $opt = $this->getValueAssociated( $row , "array" , true );
                     $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
                 }
-                else if ( $row->isParentModule() )
-                {
-                    $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
-                }
+				else if ( $row->isParentModule() )
+				{
+					$this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
+				}
+				else if ( $row->getName() == $this->getEntity()->getElementIdName() )
+				{
+					$this->getEntity()->build( $row->getName() )->field()->setValue( $this->getDepedencyElement() ) ;
+				}
+				else if ( $row->getName() == $this->getEntity()->getModuleIdName() )
+				{
+					$this->getEntity()->build( $row->getName() )->field()->setValue( $this->getDepedencyModule() ) ;
+				}
             }
         }
 

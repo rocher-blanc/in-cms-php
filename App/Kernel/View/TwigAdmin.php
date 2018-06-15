@@ -16,14 +16,20 @@ class TwigAdmin extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
             new \Twig_SimpleFunction('route', array($this, 'route')),
+            new \Twig_SimpleFunction('dRoute', array($this, 'depedencyRoute')),
             new \Twig_SimpleFunction('asset', array($this, 'asset'))
         );
     }
 
-    public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
-    {
-        return \App\Kernel\Factory::getInstance()->Url()->route( $module , $type , $parent , $id , $token ) ;
-    }
+	public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
+	{
+		return \App\Kernel\Factory::getInstance()->Url()->route( $module , $type , $parent , $id , $token ) ;
+	}
+
+	public function depedencyRoute( $module , $action , $id , $id_module , $id_element = NULL )
+	{
+		return \App\Kernel\Factory::getInstance()->Url()->depedencyRoute( $module , $action , $id , $id_module , $id_element ) ;
+	}
 
     public function vendor( $url )
     {

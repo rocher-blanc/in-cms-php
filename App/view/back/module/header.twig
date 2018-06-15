@@ -14,7 +14,7 @@
     </ul>
 {% endif %}
 
-{% if menu != false %}
+{% if menu != false and depedency == false %}
 <input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
 <div class="ed-menu">
     <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>

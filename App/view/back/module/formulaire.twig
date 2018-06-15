@@ -1,4 +1,10 @@
-{% extends 'module.twig.html' %}
+{% if depedency == true %}
+    {% set extend = 'modal.twig' %}
+{% else %}
+    {% set extend = 'module.twig.html' %}
+{% endif %}
+
+{% extends extend %}
 
 {% block icon_page %}{{ mod.icon }}{% endblock %}
 {% block title_page %}{{ mod.title }}{% endblock %}
@@ -56,7 +62,7 @@
                 {% if depedencies|length > 0 %}
                     {% for dependency in depedencies %}
                         <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                            <a class="ed-button button button-rounded button-reveal button-large button-3d" data-lightbox="ajax" ><i class="icon-plus"></i><span>Ajouter</span></a>
+                            <a class="ed-button button button-rounded button-reveal button-large button-3d" data-lightbox="ajax" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}"><i class="icon-plus"></i><span>Ajouter</span></a>
                         </div>
                     {% endfor %}
                 {% endif %}

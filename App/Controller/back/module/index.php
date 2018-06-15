@@ -18,23 +18,44 @@ $app->map('/:entity/:action/id/:id(/:token)', function ( $entity , $action , $id
 
 $app->map('/:entity/:action(/:parent+(/id/:id(/:token)))', function ( $entity , $action , $parent = '' , $id = NULL , $token = NULL )
 {
-    if ( empty( $parent ) ) $parent = [];
-    else                    $parent = explode( '/' , $parent );
+	if ( empty( $parent ) ) $parent = [];
+	else                    $parent = explode( '/' , $parent );
 
-    $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
-    $Controller->setEntityName( $entity );
-    $Controller->setActionName( $action );
-    $Controller->setIdParent( $parent );
-    $Controller->setToken( $token );
-    $Controller->setId( $id );
-    $Controller->execute();
+	$Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
+	$Controller->setEntityName( $entity );
+	$Controller->setActionName( $action );
+	$Controller->setIdParent( $parent );
+	$Controller->setToken( $token );
+	$Controller->setId( $id );
+	$Controller->execute();
 
 })->conditions([
-    'action' => '[_a-zA-Z0-9]+',
-    'entity' => '[_a-zA-Z0-9]+',
-    'parent' => '[\/0-9]+',
-    'token' => '[a-zA-Z0-9]+',
-    'id' => '[0-9]+'
+	'action' => '[_a-zA-Z0-9]+',
+	'entity' => '[_a-zA-Z0-9]+',
+	'parent' => '[\/0-9]+',
+	'token' => '[a-zA-Z0-9]+',
+	'id' => '[0-9]+'
+])->via('GET', 'POST');
+
+$app->map('/:entity/:action/id/:id/depedency/:module(/:element)', function ( $entity , $action , $element , $module , $id = NULL )
+{
+	if ( empty( $parent ) ) $parent = [];
+	else                    $parent = explode( '/' , $parent );
+
+	$Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
+	$Controller->setEntityName( $entity );
+	$Controller->setActionName( $action );
+	$Controller->setDepedencyModule( $module );
+	$Controller->setDepedencyElement( $element );
+	$Controller->setId( $id );
+	$Controller->execute();
+
+})->conditions([
+	'action' => '[_a-zA-Z0-9]+',
+	'entity' => '[_a-zA-Z0-9]+',
+	'module' => '[0-9]+',
+	'element' => '[0-9]+',
+	'id' => '[0-9]+'
 ])->via('GET', 'POST');
 
 $app->map('/:entity(/:action(/:id(/:token(/:lang))))', function ( $entity , $action = "index" , $id = NULL , $token = NULL , $lang = NULL )

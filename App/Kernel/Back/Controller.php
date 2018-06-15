@@ -769,11 +769,13 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $this->getApp()->view()->appendData(array(
                 'mod' => array(
+                    'id'    => $this->getEntityId(),
                     'name'  => $this->getEntityName(),
                     'title' => $rst->module_name,
-                    'icon' => $rst->module_icon
+                    'icon'  => $rst->module_icon
                 ),
-                'action' => $this->getActionName()
+                'action'    => $this->getActionName(),
+                'depedency' => ( $this->getDepedencyModule() !== NULL ? true : false )
             ));
         }
 

@@ -273,24 +273,29 @@ class Url
         }
     }
 
-    public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
-    {
-        $route = '' ;
-        if ( !empty( $type ) )
-        {
-            $route.= '/' . $type ;
-            if ( $parent != '' )
-            {
-                if ( substr( $parent , 0 , 1 ) != '/' )
-                {
-                    $route.= '/' ;
-                }
-                $route.= $parent ;
-            }
-            if ( $id !== NULL ) $route.= '/id/' . $id ;
-            if ( $token !== NULL ) $route.= '/' . $token ;
-        }
+	public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
+	{
+		$route = '' ;
+		if ( !empty( $type ) )
+		{
+			$route.= '/' . $type ;
+			if ( $parent != '' )
+			{
+				if ( substr( $parent , 0 , 1 ) != '/' )
+				{
+					$route.= '/' ;
+				}
+				$route.= $parent ;
+			}
+			if ( $id !== NULL ) $route.= '/id/' . $id ;
+			if ( $token !== NULL ) $route.= '/' . $token ;
+		}
 
-        return $this->get( '/module/' . $module . $route ) ;
-    }
+		return $this->get( '/module/' . $module . $route ) ;
+	}
+
+	public function depedencyRoute( $module , $action , $id , $id_module , $id_element = NULL )
+	{
+		return $this->get( '/module/' . $module . '/' . $action . '/id/' . $id . '/depedency/' . $id_module . ( $id_element != NULL ? '/' . $id_element : '' ) ) ;
+	}
 }

@@ -576,7 +576,7 @@ class Builder extends Model
 		return $this->_element_id_name ;
 	}
 
-	public function getUsertIdName()
+	public function getUserIdName()
 	{
 		return $this->_user_id_name ;
 	}
