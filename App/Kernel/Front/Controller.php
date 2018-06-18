@@ -650,36 +650,36 @@ class Controller extends \App\Kernel\Common\Controller
         return $arrayElement ;
     }
 
-    public function getComponent( $type , $request , $vars )
-    {
-        $elmts 		= [] ;
+	public function getElementComponent( $type , $request )
+	{
+		$elmts 		= [] ;
 		$pagination = false ;
 
-        switch( $type )
-        {
-            case "one" :
-                $result = $this->getRepository()->requestOne( $request );
-                break;
-            case "all" :
+		switch( $type )
+		{
+			case "one" :
+				$result = $this->getRepository()->requestOne( $request );
+				break;
+			case "all" :
 				$currentPage = NULL ;
 
 				if ( $this->getEntity()->getPagination() !== NULL && array_key_exists("limit" , $request ) == false )
 				{
-                    $url = $this->getUrl();
+					$url = $this->getUrl();
 
 					if ( count( $url ) == 1 )	$currentPage = 1 ;
 					else						$currentPage = end( $url );
 					if ( $currentPage < 1 )		$currentPage = 1;
 
-                    if ( ( count( $url ) == 3 or count( $url ) == 2 ) && is_numeric( end( $url ) ) )
-                    {
-                        $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
-                    }
-                    else
-                    {
-                        $urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
-                    }
+					if ( ( count( $url ) == 3 or count( $url ) == 2 ) && is_numeric( end( $url ) ) )
+					{
+						$len = strlen( '/' . end( $url ) ) * -1 ;
+						$urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+					}
+					else
+					{
+						$urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
+					}
 
 					$totalItems = $this->getRepository()->count();
 					$itemsPerPage = $this->getEntity()->getPagination();
@@ -690,55 +690,60 @@ class Controller extends \App\Kernel\Common\Controller
 					$pagination = $this->parsePagination( $paginator );
 				}
 
-                $result = $this->getRepository()->requestAll( $request , $currentPage );
-                break;
-        }
+				$result = $this->getRepository()->requestAll( $request , $currentPage );
+				break;
+		}
 
-        if ( $result )
-        {
-            switch( $type )
-            {
-                case "one" :
-                    $parse = $this->parseValue( $result );
+		if ( $result )
+		{
+			switch( $type )
+			{
+				case "one" :
+					$parse = $this->parseValue( $result );
 
-                    foreach( $this->getEntity()->getField() as $field )
-                    {
-                        if ( $field->hasTwigKey() )
-                        {
+					foreach( $this->getEntity()->getField() as $field )
+					{
+						if ( $field->hasTwigKey() )
+						{
 							if ( $field->getName() == $this->getEntity()->getModuleParentIdName() ) $elmts[ $field->getTwigKey() ] = $parse['parent'];
 							else																	$elmts[ $field->getTwigKey() ] = $parse[ $field->getName() ];
-                        }
-                    }
+						}
+					}
 
-                    if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
-                break;
-                case "all" :
-                    $i = 0;
-                    foreach( $result as $row )
-                    {
-                        $parse = $this->parseValue( $row );
+					if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
+					break;
+				case "all" :
+					$i = 0;
+					foreach( $result as $row )
+					{
+						$parse = $this->parseValue( $row );
 
-                        foreach( $this->getEntity()->getField() as $field )
-                        {
-                            if ( $field->hasTwigKey() )
-                            {
+						foreach( $this->getEntity()->getField() as $field )
+						{
+							if ( $field->hasTwigKey() )
+							{
 								if ( $field->getName() == $this->getEntity()->getModuleParentIdName() ) $elmts[ $i ][ $field->getTwigKey() ] = $parse['parent'];
 								else																	$elmts[ $i ][ $field->getTwigKey() ] = $parse[ $field->getName() ];
 							}
-                        }
+						}
 
-                        if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
-                        $i++;
-                    }
-                break;
-            }
-        }
+						if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
+						$i++;
+					}
+					break;
+			}
+		}
 
-        return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge([
-            'object' => $elmts,
+		return [
+			'object' => $elmts,
 			'pagination' => $pagination
-        ], $vars ));
-    }
+		];
+	}
+
+	public function getComponent( $type , $request , $vars )
+	{
+		return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge( $this->getElementComponent( $type , $request ) , $vars ));
+	}
 
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
