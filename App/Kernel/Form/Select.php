@@ -28,10 +28,13 @@ class Select extends \App\Kernel\Back\Form
         }
         else
         {
-            foreach( $field->getData('option') as $key => $opt )
-            {
-                $select .= '<option value="' . $key . '"' . ( $key == $value ? ' selected' : '' ) . '>' . $opt . '</option>' ;
-            }
+			if ( !empty( $field->getData('option') ) )
+			{
+				foreach( $field->getData('option') as $key => $opt )
+				{
+					$select .= '<option value="' . $key . '"' . ( $key == $value ? ' selected' : '' ) . '>' . $opt . '</option>' ;
+				}
+			}
         }
 		
 		return '
