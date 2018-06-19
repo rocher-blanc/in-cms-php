@@ -13,6 +13,7 @@
     "j4mie/idiorm": "1.5.1",
     "abeautifulsite/simpleimage": "2.5.5",
     "facebook/graph-sdk" : "~5.0",
+    "phpoffice/phpspreadsheet": "~1.0",
     "phpmailer/phpmailer" : "5.2.13",
     "jasongrimes/paginator" : "~1.0",
     "symfony/var-dumper": "~3.0",

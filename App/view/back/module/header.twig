@@ -19,6 +19,9 @@
 <div class="ed-menu">
     <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
     <a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+    {% if menu != false %}<a href="{{ route( mod.name , 'export' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-outbox"></i>Exporter</a>{% endif %}
+    {% if menu != false %}<a href="{{ route( mod.name , 'import' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-inbox"></i>Importer</a>{% endif %}
+    {% if menu != false %}<a href="javascript:;" class="button button-mini"><i class="icon-magic"></i>Personnaliser</a>{% endif %}
 </div>
 <div class="divider divider-center ed-divider"><i class="{{ mod.icon }}"></i></div>
 {% endif %}

@@ -133,8 +133,9 @@ class Media extends \App\Kernel\Common\Media
 
 		if ( $rst !== false )
 		{
+            $fieldEntityName = $this->getApp()->request->post('field') ;
 			$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
-			$field = $entity->build( $fieldName )->field();
+			$field = $entity->build( $fieldEntityName )->field();
 			$this->setImageId( $rst->id ) ;
 			$this->getNameById() ;
 			$source = $this->rename();

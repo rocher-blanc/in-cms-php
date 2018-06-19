@@ -32,7 +32,10 @@ checkImage = function() {
                 mainClass: "input-group-md upload-image",
 
                 allowedFileExtensions: ["jpeg", "jpg", "png", "gif"],
-                uploadExtraData:{csrf_token:tvalue},
+                uploadExtraData:{
+                    field:$this.data('field'),
+                    csrf_token:tvalue
+                },
 
                 showCaption: false,
                 showRemove: true,
