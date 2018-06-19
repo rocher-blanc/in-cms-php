@@ -681,13 +681,10 @@ class Controller extends \App\Kernel\Common\Controller
 						$urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
 					}
 
-					$totalItems = $this->getRepository()->count();
-					$itemsPerPage = $this->getEntity()->getPagination();
-
-
-					$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
-					$pagination = $this->parsePagination( $paginator );
+                    $totalItems     = $this->getRepository()->requestCount( $request );
+					$itemsPerPage   = $this->getEntity()->getPagination();
+					$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+					$pagination     = $this->parsePagination( $paginator );
 				}
 
 				$result = $this->getRepository()->requestAll( $request , $currentPage );
