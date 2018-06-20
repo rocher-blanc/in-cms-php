@@ -830,22 +830,25 @@ class Controller extends \App\Kernel\Common\Controller
                             $content = $this->getRepository()->create();
                         }
 
-                        foreach( $this->Lang()->getAll() as $lang )
+                        if ( $this->getEntity()->hasMultilang() )
                         {
-                            if ( $this->getId() !== NULL )
+                            foreach( $this->Lang()->getAll() as $lang )
                             {
-                                $contentLang[ $lang->url ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
+                                if ( $this->getId() !== NULL )
+                                {
+                                    $contentLang[ $lang->url ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
 
-                                if ( ! $contentLang[ $lang->url ] )
+                                    if ( ! $contentLang[ $lang->url ] )
+                                    {
+                                        $contentLang[ $lang->url ] = $this->getRepository()->createLang();
+                                        $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
+                                    }
+                                }
+                                else
                                 {
                                     $contentLang[ $lang->url ] = $this->getRepository()->createLang();
                                     $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
                                 }
-                            }
-                            else
-                            {
-                                $contentLang[ $lang->url ] = $this->getRepository()->createLang();
-                                $contentLang[ $lang->url ]->set( \DB::getLangIdLangName( $this->getEntityName() ) , $lang->id ) ;
                             }
                         }
 
@@ -1127,6 +1130,7 @@ class Controller extends \App\Kernel\Common\Controller
             }
         }
 
+        $this->setRender( 'hasImage' , $this->getEntity()->hasImage() ) ;
         $this->setRender( 'content' , $tab ) ;
         $this->setRender( 'module' , $this->getModule() ) ;
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
