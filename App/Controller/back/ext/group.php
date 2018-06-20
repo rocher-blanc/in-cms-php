@@ -83,6 +83,7 @@ $app->group('/group', function () use ($app)
 		if ( $id != -1 ) {
 			$users = \DB::for_table('user')
 				->select('user_name')
+				->select('user_photo')
 				->select('user_id')
 				->where(array('user_group_id' => $id))
 				->find_many();

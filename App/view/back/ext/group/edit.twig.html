@@ -36,9 +36,20 @@
         </div>
         <div class="list-users">
             {% if users|length > 0 %}
+                <ul class="testimonials-grid grid-3 clearfix">
                 {% for user in users %}
-                    <a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}" class="user" title="{{ user.user_name }}"><i class="fa fa-user"></i>{{ user.user_name }}</a>
+                    <li>
+                        <div class="testimonial text-center">
+                            <div class="testi-image" style="margin:0 auto; float: none;">
+                                <a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}"><img src="{{ user.user_photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.user_photo , false ) }}" alt="{{ user.user_name }}"></a>
+                            </div>
+                            <div class="testi-meta">
+                                <a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}" class="user" title="{{ user.user_name }}">{{ user.user_name }}</a>
+                            </div>
+                        </div>
+                    </li>
                 {% endfor %}
+                </ul>
             {% else %}
               {% include 'form/generic/nocontent.twig' with {'msg':"Aucun administrateur n'est présent dans ce groupe"} %}
             {% endif %}
