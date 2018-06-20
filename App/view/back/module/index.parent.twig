@@ -8,13 +8,14 @@
             <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
                 <div class="image-presentation" style="background-image: url('https://fakeimg.pl/260x130/')"></div>
                 <h3>Ajouter un nouvel élément</h3>
-                <a class="button button-3d button-small button-rounded" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
+                <a class="button button-3d button-small button-rounded button-add" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
             </div>
         </div>
         {% for row in content %}
             <div class="col-md-2 nopadding element-parent">
                 <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                    <div class="image-presentation" style="background-image: url('https://fakeimg.pl/260x130/');"></div>
+                    <span class="top"><i class="icon-tags"></i> 254</span>
+                    <div class="image-presentation" style="background-image: url('{{ row.image }}');"></div>
                     <h3>{{ row.name }}</h3>
                     <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
                 </div>

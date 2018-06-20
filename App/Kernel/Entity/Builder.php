@@ -145,6 +145,13 @@ class Builder extends Model
 
     /*
      * @string
+     * Variable contenant le nom du champ de la premiere image dans le module
+     * Elle peut égalment être modifier
+     */
+    protected $_first_image_name = '' ;
+
+    /*
+     * @string
      * Variable contenant le nom du champ stockant l'ID de l'utilisateur
      */
     protected $_user_id_name = 'user_front_id' ;
@@ -396,6 +403,12 @@ class Builder extends Model
         return $this ;
     }
 
+    public function setFirstImageName( $name )
+    {
+        $this->_first_image_name = $name ;
+        return $this ;
+    }
+
     protected function setParentTarget( $name )
     {
         $this->_parent_target_name = $name ;
@@ -509,6 +522,11 @@ class Builder extends Model
     public function getModuleChildName()
     {
         return $this->_module_child_name;
+    }
+
+    public function getFirstImageName()
+    {
+        return $this->_first_image_name ;
     }
 
 	protected function getLast()
@@ -1018,6 +1036,11 @@ class Builder extends Model
         $this->Thumb( 260 , 130 );
         $this->Thumb( 100 , 100 );
 
+        if ( count( $this->getImageField() ) == 0 && empty( $this->getFirstImageName() ) )
+        {
+            $this->setFirstImageName( $this->field()->getName() );
+        }
+
         $this->setImage() ;
         $this->setImageField( $this->field()->getData("columnName") ) ;
 
@@ -1093,6 +1116,12 @@ class Builder extends Model
     protected function format( $name , $format )
     {
         $this->field()->setFormat( $name , $format ) ;
+        return $this ;
+    }
+
+    protected function isReference()
+    {
+        $this->setFirstImageName( $this->field()->getName() ) ;
         return $this ;
     }
 

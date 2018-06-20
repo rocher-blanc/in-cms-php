@@ -83,6 +83,12 @@ class Url
         return $base . '/' . ltrim($url, '/');
     }
 
+    public function image( $path , $front = false )
+    {
+        $path = "/" . str_replace( WEB_PATH , '' , IMAGE_PATH ) . "/" . $path ;
+        return $this->get( $path , $front );
+    }
+
     public function uniqModule( $url , $idlang , $id = NULL , $modeTEST = NULL )
     {
         $url = $this->encode( $url ) ;

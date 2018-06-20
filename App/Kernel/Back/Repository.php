@@ -205,6 +205,11 @@ class Repository extends \App\Kernel\Common\Repository
             $all = $all->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $module_element_parent_id );
         }
 
+        if ( $this->getEntity()->hasImage() )
+        {
+            $all = $all->select( $this->getEntity()->get( $this->getEntity()->getFirstImageName() )->fieldSql() );
+        }
+
         if ( $this->getEntity()->getFieldReference() )
         {
             foreach( $this->getEntity()->getFieldReference() as $ref )

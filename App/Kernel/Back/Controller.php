@@ -1126,6 +1126,15 @@ class Controller extends \App\Kernel\Common\Controller
                     $i++;
                 }
 
+                if ( $this->getEntity()->hasImage() )
+                {
+                    $media = new Media;
+                    $media->setImageId( $row->get( $this->getEntity()->get( $this->getEntity()->getFirstImageName() )->getColumn() ) );
+                    $media->getNameById();
+                    $std->image = $this->getEntity()->getFolder() . '/' . $media->getMini( $media->getImageName() , 't' , 260 , 130 ) ;
+                    $std->image = $this->Factory()->Url()->image( $std->image , true ) ;
+                }
+
                 $tab[] = $std ;
             }
         }

@@ -86,6 +86,26 @@ listenTable = function() {
         $(".daterange").on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });
+
+        if( $('#table-content [data-lightbox="ajax"]').length > 0 ) {
+            $('#table-content [data-lightbox="ajax"]').magnificPopup({
+                type: 'ajax',
+                closeBtnInside: false,
+                callbacks: {
+                    ajaxContentAdded: function(mfpResponse) {
+                        SEMICOLON.widget.loadFlexSlider();
+                        SEMICOLON.initialize.resizeVideos();
+                        SEMICOLON.widget.masonryThumbs();
+                    },
+                    open: function() {
+                        $('body').addClass('ohidden');
+                    },
+                    close: function() {
+                        $('body').removeClass('ohidden');
+                    }
+                }
+            });
+        }
     }
 
     /** GESTION DES RECHERCHES **/
@@ -179,6 +199,7 @@ reloadTable = function() {
         success: function(html) {
             $('#table-content').html( html ) ;
             listenTable();
+            SEMICOLON.initialize.lightbox();
         }
     });
 };
