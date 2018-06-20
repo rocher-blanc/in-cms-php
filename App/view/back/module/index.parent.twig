@@ -3,36 +3,45 @@
 </div>
 <div class="clearfix">
 
-    <div class="col-md-2">
-        <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-            <div class="fbox-icon">
-                <a href="{{ route( module.class_name , 'add' , uri_id_parent ) }}"><i class="icon-line-plus i-alt"></i></a>
+    {% if hasImage %}
+        <div class="col-md-2 nopadding element-parent">
+            <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+                <div class="image-presentation" style="background-image: url('https://fakeimg.pl/260x130/')"></div>
+                <h3>Ajouter un nouvel élément</h3>
+                <a class="button button-3d button-small button-rounded" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
             </div>
-            <h3 style="text-transform: none;">Ajouter un nouvel élément</h3>
         </div>
-    </div>
-
-    {% for row in content %}
-        <div class="col-md-2" style="border: 1px solid #ddd;">
+        {% for row in content %}
+            <div class="col-md-2 nopadding element-parent">
+                <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+                    <div class="image-presentation" style="background-image: url('https://fakeimg.pl/260x130/');"></div>
+                    <h3>{{ row.name }}</h3>
+                    <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-2">
             <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
                 <div class="fbox-icon">
-                    <a href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}"><i class="{{ module.icon }} i-alt"></i></a>
+                    <a href="{{ route( module.class_name , 'add' , uri_id_parent ) }}"><i class="icon-line-plus i-alt"></i></a>
                 </div>
-                <h3 style="text-transform: none;">{{ row.name }}</h3>
-                <a class="button button-3d button-small button-rounded">Sélectionner</a>
+                <h3 style="text-transform: none;">Ajouter un nouvel élément</h3>
             </div>
         </div>
-    {% endfor %}
 
-    {% for row in content %}
-        <div class="col-md-2 nopadding" style="border: 1px solid #ddd;">
-            <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                <div style="background: url('https://fakeimg.pl/260x130/') top center no-repeat; width: 100%; height: 130px; margin-bottom: 15px;"></div>
-                <h3 style="text-transform: none;">{{ row.name }}</h3>
-                <a class="button button-3d button-small button-rounded">Sélectionner</a>
+        {% for row in content %}
+            <div class="col-md-2" style="border: 1px solid #ddd;">
+                <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+                    <div class="fbox-icon">
+                        <a href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}"><i class="{{ module.icon }} i-alt"></i></a>
+                    </div>
+                    <h3 style="text-transform: none;">{{ row.name }}</h3>
+                    <a class="button button-3d button-small button-rounded">Sélectionner</a>
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 
     <div class="clear"></div>
 

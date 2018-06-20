@@ -1,6 +1,10 @@
 <?php
 
 $app->group('/modal', function () use ($app) {
+    $app->get('/help', function () use ($app) {
+        $app->render('modal/help.twig') ;
+    });
+
     $app->get('/confirm', function () use ($app) {
         $app->render('modal/confirm.twig.html') ;
     });

@@ -1015,6 +1015,8 @@ class Builder extends Model
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathImage(false) ) ;
         $this->field()->setData( "hasAltText" , true ) ;
+        $this->Thumb( 260 , 130 );
+        $this->Thumb( 100 , 100 );
 
         $this->setImage() ;
         $this->setImageField( $this->field()->getData("columnName") ) ;
