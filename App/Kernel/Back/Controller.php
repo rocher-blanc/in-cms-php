@@ -1116,8 +1116,9 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $content as $row )
             {
                 $std = new \stdClass;
-                $std->id   = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
-                $std->name = '' ;
+                $std->id        = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
+                $std->counter   = $this->Container()->module( $this->getEntity()->getModuleChildName() )->getRepository(true)->countWithParent( $std->id );
+                $std->name      = '' ;
 
                 $i = 0;
                 foreach( $this->getEntity()->getFieldReference() as $ref )

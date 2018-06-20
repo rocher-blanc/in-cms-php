@@ -30,7 +30,10 @@
             </div>
             <div class="ed_field col_half col_last" id="field-module_icon">
                 <label>Icône <span class="icon-asterisk"></span></label>
-                <input type="text" id="module_icon" name="module_icon" class="form-control" value="{{ post.module_icon }}" />
+                <div class="clear"></div>
+                <a href="mailto:content@easydoor.pro" class="button button-3d button-mini button-rounded">Sélectionner</a>
+                <input type="hidden" id="module_icon" name="module_icon" class="form-control" value="{{ post.module_icon }}" />
+                <div class="viewicon"><i class="{{ post.module_icon }}"></i></div>
             </div>
             {% include 'form/generic/button.twig' %}
         </div>

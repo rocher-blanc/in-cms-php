@@ -14,7 +14,7 @@
         {% for row in content %}
             <div class="col-md-2 nopadding element-parent">
                 <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                    <span class="top"><i class="icon-tags"></i> 254</span>
+                    <span class="top"><i class="icon-tags"></i> {{ row.counter }}</span>
                     <div class="image-presentation" style="background-image: url('{{ row.image }}');"></div>
                     <h3>{{ row.name }}</h3>
                     <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
