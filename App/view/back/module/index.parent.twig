@@ -38,7 +38,7 @@
                         <a href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}"><i class="{{ module.icon }} i-alt"></i></a>
                     </div>
                     <h3 style="text-transform: none;">{{ row.name }}</h3>
-                    <a class="button button-3d button-small button-rounded">Sélectionner</a>
+                    <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
                 </div>
             </div>
         {% endfor %}
