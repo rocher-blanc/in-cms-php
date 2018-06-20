@@ -529,9 +529,17 @@ form {
   padding-left: 0;
 }
 
+/* ************************************************ */
+/* Texte alternatif pour les images                 */
+/* ************************************************ */
+
 .alt {
   margin-top: 5px;
 }
+
+/* ************************************************ */
+/* Gestion de la sélection des parents              */
+/* ************************************************ */
 
 .element-parent {
   border: 1px solid #ddd;
@@ -564,6 +572,30 @@ form {
     background-color: $jweb-blue;
   }
 }
+
+/* ************************************************ */
+/* Gestion du menu header                           */
+/* ************************************************ */
+
+#header.full-header #primary-menu > ul {
+  padding-right: 0;
+}
+
+#primary-menu ul li.website > a {
+  background: $jweb-blue url('../../img/computer.png') center 30px no-repeat;
+  color: #fff;
+}
+
+.full-header #primary-menu ul li.website > a {
+  padding: 65px 15px 13px 15px;
+}
+.full-header.sticky-header #primary-menu ul li.website > a {
+  background-image: none;
+}
+
+/* ************************************************ */
+/* Patch des bootstrap multiselect                  */
+/* ************************************************ */
 
 .dropdown-item {
   display: block;
