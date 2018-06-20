@@ -187,7 +187,8 @@ class Auth extends \Slim\Middleware
 			'fname' 	 => $user->user_fname,
 			'photo' 	 => $user->user_photo,
 			'group_name' => $user->user_group_name,
-			'group_id' 	 => $user->user_group_id
+			'group_id' 	 => $user->user_group_id,
+			'admin' 	 => ( $user->user_group_id == 1 ? true : false )
         ];
 		
 		$this->app->view()->appendData([
