@@ -6,48 +6,85 @@
 {% set title_block_page = 'Modification de votre profil' %}
 
 {% block module %}
-<form name="form" method="post" action="{{ siteUrl('/secured/profile') }}" role="form" class="form-horizontal group-border-dashed">
+<form name="form" method="post" action="{{ siteUrl('/secured/profile') }}" class="form-vertical" enctype="multipart/form-data" accept-charset="utf-8">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
+
     <div class="fancy-title title-dotted-border">
         <h3>{{ title_block_page }}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="ed_field">
-                <label>Login</label>
-                <input type="text" id="user_name" name="user_name" class="form-control" value="{{ user.name }}" />
-            </div>
-            <div class="ed_field">
-                <label>Nom</label>
-                <input type="text" id="user_lname" name="user_lname" class="form-control" value="{{ user.lname }}" />
-            </div>
-            <div class="ed_field">
-                <label>Prénom</label>
-                <input type="text" id="user_fname" name="user_fname" class="form-control" value="{{ user.fname }}" />
-            </div>
-            <div class="ed_field">
-                <label>Ancien mot de passe</label>
-                <input type="password" id="last_password" name="last_password" class="form-control" value="" />
-            </div>
-            <div class="ed_field">
-                <label>Nouveau mot de passe</label>
-                <input type="password" id="password" name="password" class="form-control" value="" />
-            </div>
-            <div class="ed_field">
-                <label>Confirmer le nouveau mot de passe</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-control" value="" />
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <a id="btn_back" href="{{ siteUrl('/user') }}" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
+            <div class="col_one_third">
+                <div class="title-block">
+                    <h3><span>Informations personnelles</span></h3>
                 </div>
 
-                <div class="col-md-5 col-md-offset-5 text-right">
-                    <button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+                <div class="ed_field col_full">
+                    <label>Login <span class="icon-asterisk"></span></label>
+                    <input type="text" id="user_name" name="user_name" class="form-control" value="{{ user.name }}" />
+                </div>
+                <div class="ed_field col_full">
+                    <label>Nom</label>
+                    <input type="text" id="user_lname" name="user_lname" class="form-control" value="{{ user.lname }}" />
+                </div>
+                <div class="ed_field col_full">
+                    <label>Prénom</label>
+                    <input type="text" id="user_fname" name="user_fname" class="form-control" value="{{ user.fname }}" />
                 </div>
             </div>
+            <div class="col_one_third">
+                <div class="title-block">
+                    <h3><span>Modification du mot de passe</span></h3>
+                </div>
+
+                <div class="ed_field col_full">
+                    <label>Ancien mot de passe</label>
+                    <input type="password" id="last_password" name="last_password" class="form-control" value="" />
+                </div>
+                <div class="ed_field col_full">
+                    <label>Nouveau mot de passe</label>
+                    <input type="password" id="password" name="password" class="form-control" value="" />
+                </div>
+                <div class="ed_field col_full">
+                    <label>Confirmer le nouveau mot de passe</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="col_one_third col_last">
+                <div class="title-block">
+                    <h3><span>Image de profil</span></h3>
+                </div>
+
+                <div class="col_two_third">
+                    <div class="ed_field col_full avatar">
+                        <label>Uploader votre image de profil</label>
+                        <input value="{{ user.photo }}" name="photo" type="file" class="upload-photo file-loading" data-field="photo" data-uploadurl="{{ siteUrl( 'secured/upload' ) }}">
+                        <input id="photo" value="{{ user.photo }}" name="uphoto" type="hidden">
+                    </div>
+                </div>
+                <div class="col_one_third col_last">
+                    <div class="testi-image">
+                        <img id="avatarview" src="{{ user.photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.photo , false ) }}">
+                    </div>
+                </div>
+
+            </div>
+
+            {% include 'form/generic/button.twig' %}
         </div> 
     </div>
 </form>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('canvas/js/components/bs-filestyle.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/locales/fileinput/fr.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/profile.js') }}"></script>
 {% endblock %}

@@ -212,7 +212,7 @@
 
                         <div class="testimonial">
                             <div class="testi-image">
-                                <a href="{{ siteUrl('/secured/profile') }}"><img src="http://ed.clefsdor.vm13.easydoor.pro/thumbs/64-64-bw/files/images/Administrateur/gd_1524745123.jpg"></a>
+                                <a href="{{ siteUrl('/secured/profile') }}"><img src="{{ user.photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.photo , false ) }}"></a>
                             </div>
                             <div class="testi-content">
                                 <div class="testi-meta">

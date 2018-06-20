@@ -188,6 +188,7 @@ class Log
                 ->select('user_name')
                 ->select('user_fname')
                 ->select('user_lname')
+                ->select('user_photo')
                 ->where_equal('user_id',$this->_data->log_user_id)
                 ->find_one() ;
         }

@@ -362,11 +362,14 @@ class Kernel
             "cache/save/traduction" => false ,
             "web/uploads" => false ,
             "web/images" => false ,
+            "web/images/_avatar" => false ,
             "web/documents" => false
 		] ;
 
         foreach( $folders as $folder => $passFolder )
         {
+            if ( ! is_dir( _PATH_ . "/" . $folder ) ) @mkdir( _PATH_ . "/" . $folder ) ;
+
             if ( is_dir( _PATH_ . "/" . $folder ) )
             {
                 $result = @file_put_contents( _PATH_ . "/" . $folder . "/test.txt" , "Hello!" ) ;
@@ -374,7 +377,7 @@ class Kernel
                 if ( $result === false )
                 {
                     if ( @chmod( _PATH_ . "/" . $folder , 0777 ) === true ) $folders[ $folder ] = true ;
-                    else                                                    $pass = false ;
+                    else                                                                    $pass = false ;
                 }
                 else
                 {

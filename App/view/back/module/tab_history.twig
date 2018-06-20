@@ -13,7 +13,7 @@
                     <tr class="tr1" data-parent-id="none">
                         <td class="">{{ row.date }}</td>
                         <td style="vertical-align: middle">
-                            <img src="http://ed.clefsdor.vm13.easydoor.pro/thumbs/30-30/files/images/Administrateur/lisa-lueg_1517079968.png" style="border-radius: 50%" width="28" height="28">
+                            <img src="{{ row.user.user_photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( row.user.user_photo , false ) }}" style="border-radius: 50%" width="28" height="28">
                             {{ row.user.user_lname }} {{ row.user.user_fname }}
                         </td>
                         <td class="text-{% if row.type == 1 %}info{% elseif row.type == 2 %}warning{% elseif row.type == 3 %}alert{% endif %}" style="width: 10px; padding-right: 0;">
