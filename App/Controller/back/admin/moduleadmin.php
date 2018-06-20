@@ -70,7 +70,7 @@
 				$contentRow = DB::for_table('module')->create();
 				$contentRow->module_name 		= $name ;
 				$contentRow->module_class_name 	= $name ;
-				$contentRow->module_icon 		= "cloud" ;
+				$contentRow->module_icon 		= "icon-question" ;
 				$contentRow->module_active 		= 1 ;
 				$contentRow->save() ;
 

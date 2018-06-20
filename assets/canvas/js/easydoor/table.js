@@ -38,53 +38,55 @@ listenTable = function() {
     });
 
     /** GESTION DES DATE RANGE PICKER **/
-    $('.daterange').daterangepicker({
-        autoUpdateInput: false,
-        "applyClass": "button-color",
-        "cancelClass": "button-light",
-        "buttonClasses": "button button-rounded button-mini nomargin",
-        "locale": {
-            "format": "DD/MM/YYYY",
-            "separator": " - ",
-            "applyLabel": "Valider",
-            "cancelLabel": "Annuler",
-            "fromLabel": "De",
-            "toLabel": "à",
-            "customRangeLabel": "Custom",
-            "daysOfWeek": [
-                "Dim",
-                "Lun",
-                "Mar",
-                "Mer",
-                "Jeu",
-                "Ven",
-                "Sam"
-            ],
-            "monthNames": [
-                "Janvier",
-                "Février",
-                "Mars",
-                "Avril",
-                "Mai",
-                "Juin",
-                "Juillet",
-                "Août",
-                "Septembre",
-                "Octobre",
-                "Novembre",
-                "Décembre"
-            ],
-            "firstDay": 1
-        }
-    });
+    if ( $(".daterange").length ) {
+        $('.daterange').daterangepicker({
+            autoUpdateInput: false,
+            "applyClass": "button-color",
+            "cancelClass": "button-light",
+            "buttonClasses": "button button-rounded button-mini nomargin",
+            "locale": {
+                "format": "DD/MM/YYYY",
+                "separator": " - ",
+                "applyLabel": "Valider",
+                "cancelLabel": "Annuler",
+                "fromLabel": "De",
+                "toLabel": "à",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Dim",
+                    "Lun",
+                    "Mar",
+                    "Mer",
+                    "Jeu",
+                    "Ven",
+                    "Sam"
+                ],
+                "monthNames": [
+                    "Janvier",
+                    "Février",
+                    "Mars",
+                    "Avril",
+                    "Mai",
+                    "Juin",
+                    "Juillet",
+                    "Août",
+                    "Septembre",
+                    "Octobre",
+                    "Novembre",
+                    "Décembre"
+                ],
+                "firstDay": 1
+            }
+        });
 
-    $(".daterange").on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-    });
+        $(".daterange").on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
 
-    $(".daterange").on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
+        $(".daterange").on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    }
 
     /** GESTION DES RECHERCHES **/
     $('#formSeach').not('.submitReady').bind('submit', function(e) {

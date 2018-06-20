@@ -549,3 +549,54 @@ form {
     text-transform: none;
   }
 }
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: #007bff;
+}
+
+.dropdown-item.disabled, .dropdown-item:disabled {
+  color: #6c757d;
+  background-color: transparent;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-header {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  white-space: nowrap;
+}
+
+.bootstrap-select.btn-group.show-tick .dropdown-menu a.selected span.dropdown-item-inner span.check-mark {
+  margin: 0;
+}
+
+.bootstrap-select.btn-group .dropdown-menu a.dropdown-item {
+  padding: 6px;
+}
