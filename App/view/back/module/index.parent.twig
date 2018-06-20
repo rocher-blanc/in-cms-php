@@ -6,7 +6,7 @@
     {% if hasImage %}
         <div class="col-md-2 nopadding element-parent">
             <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                <div class="image-presentation" style="background-image: url('https://fakeimg.pl/260x130/')"></div>
+                <div class="image-presentation" style="background-image: url('{{ asset('canvas/img/plus-260.jpg') }}')"></div>
                 <h3>Ajouter un nouvel élément</h3>
                 <a class="button button-3d button-small button-rounded button-add" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
             </div>
