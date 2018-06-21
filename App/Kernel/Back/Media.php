@@ -142,7 +142,7 @@ class Media extends \App\Kernel\Common\Media
 
 			$rst->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletemedia/' . $rst->id );
 			$rst->caption = $source;
-			$rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->mini , true );
+			$rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
 			if ( $field->hasThumb() )
 			{

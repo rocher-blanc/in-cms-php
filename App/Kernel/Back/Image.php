@@ -18,11 +18,11 @@ class Image
 
     public function upload()
 	{
-		$name = basename($_FILES[ $this->options['param_name'] ]["name"]);
-		$ext = explode( '.' , $name );
-		$extension = end( $ext );
-		$name = basename( $name , '.' . $extension );
-		$name = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+		$name       = basename($_FILES[ $this->options['param_name'] ]["name"]);
+		$ext        = explode( '.' , $name );
+		$extension  = end( $ext );
+		$name       = basename( $name , '.' . $extension );
+		$name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
 		$rst = move_uploaded_file( $_FILES[ $this->options['param_name'] ]["tmp_name"] , $this->options['upload_dir'] . "/" . $name );
 
