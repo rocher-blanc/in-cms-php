@@ -16,11 +16,6 @@ class Repository extends \App\Kernel\Common\Repository
         return \DB::getTableName( $this->getName() ) ;
     }
 
-    public function getTblLang()
-    {
-        return \DB::getTableNameLang( $this->getName() ) ;
-    }
-
     public function findOne( $id )
     {
         /* Requete pour aller chercher les données */
