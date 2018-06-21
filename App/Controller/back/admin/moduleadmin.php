@@ -2,10 +2,16 @@
 
 	$app->group('/moduleadmin', function () use ($app)
 	{
-		$app->get('/', function () use ($app)
-		{
+        $app->get('/icon/:field', function ( $field ) use ($app)
+        {
+            $app->render('admin/moduleadmin/icon.twig', [
+                "field" => $field
+            ]);
+        });
 
-			$contentRows = \DB::for_table('module')
+        $app->get('/', function () use ($app)
+        {
+            $contentRows = \DB::for_table('module')
 				->order_by_asc('module_active')
 				->order_by_asc('module_name')
 				->find_many();

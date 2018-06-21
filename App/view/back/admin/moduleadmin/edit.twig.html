@@ -31,9 +31,9 @@
             <div class="ed_field col_half col_last" id="field-module_icon">
                 <label>Icône <span class="icon-asterisk"></span></label>
                 <div class="clear"></div>
-                <a href="mailto:content@easydoor.pro" class="button button-3d button-mini button-rounded">Sélectionner</a>
-                <input type="hidden" id="module_icon" name="module_icon" class="form-control" value="{{ post.module_icon }}" />
-                <div class="viewicon"><i class="{{ post.module_icon }}"></i></div>
+                <div class="viewicon" style="padding-left: 43px; font-size: 40px;"><i id="icon-module_icon" class="{{ post.module_icon }}"></i></div>
+                <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/icon/module_icon') }}" class="button button-3d button-mini button-rounded">Sélectionner</a>
+                <input type="hidden" id="module_icon" name="module_icon" value="{{ post.module_icon }}" />
             </div>
             {% include 'form/generic/button.twig' %}
         </div>
