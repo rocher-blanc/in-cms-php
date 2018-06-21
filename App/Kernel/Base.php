@@ -45,7 +45,6 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
 ('user', 'Administrateurs', 1, 1, 1, 0),
 ('group', 'Groupes d\'administrateurs', 1, 1, 1, 0),
 ('langue', 'Langues', 0, 1, 0, 0),
-('menu', 'Menu', 1, 1, 1, 0),
 ('page', 'Pages spéciales', 1, 1, 1, 0),
 ('parammodule', 'Modules', 0, 1, 0, 0),
 ('user_front', 'Utilisateurs', 1, 1, 1, 1),
