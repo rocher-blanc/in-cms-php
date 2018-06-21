@@ -306,85 +306,6 @@ class Controller extends \App\Kernel\Common\Controller
     /* ************         DELETE         ************** */
     /* ************************************************** */
 
-    protected function deleteOnMenu()
-    {
-        $ct = \DB::for_table('menu_element')
-            ->where(['menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
-            ->count();
-
-        if ( $ct > 0 )
-        {
-            $menus = \DB::for_table('menu')
-                ->select('menu_id')
-                ->find_many();
-
-            if ( $menus )
-            {
-                foreach( $menus as $menu )
-                {
-                    $elms = \DB::for_table('menu_element')
-                        ->where(['menu_element_menu_id' => $menu->menu_id , 'menu_element_value_id' => $this->getId() , 'menu_element_module_id' => $this->getEntityId()])
-                        ->find_many();
-
-                    if ( $elms )
-                    {
-                        foreach( $elms as $elm )
-                        {
-                            $this->deleteElementByParent( $elm->menu_element_id , $menu->menu_id ) ;
-                            $lang = \DB::for_table('menu_element_lang')
-                                ->where(['menu_element_lang_menu_element_id' => $elm->menu_element_id])
-                                ->delete_many();
-
-                            $parent_id = $elm->menu_element_parent_id ;
-
-                            $elm->delete();
-
-                            $brother = \DB::for_table('menu_element') ;
-                            if ( is_null( $parent_id ) )   $bother = $brother->where_null('menu_element_parent_id') ;
-                            else                           $bother = $brother->where_equal('menu_element_parent_id',$parent_id);
-
-                            $brother = $brother->where(['menu_element_menu_id' => $menu->menu_id])
-                                ->order_by_asc('menu_element_order')
-                                ->find_many();
-
-                            if ( $brother )
-                            {
-                                $index = 1;
-                                foreach( $brother as $row )
-                                {
-                                    $row->set('menu_element_order',$index);
-                                    $row->save();
-                                    $index++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    protected function deleteElementByParent( $idparent , $idmenu )
-    {
-        $contentRow = \DB::for_table('menu_element')
-            ->where(['menu_element_parent_id' => $idparent , 'menu_element_menu_id' => $idmenu])
-            ->find_many();
-
-        if ( $contentRow )
-        {
-            foreach( $contentRow as $row )
-            {
-                $this->deleteElementByParent( $row->menu_element_id , $idmenu ) ;
-
-                $lang = \DB::for_table('menu_element_lang')
-                    ->where(['menu_element_lang_menu_element_id' => $row->menu_element_id])
-                    ->delete_many();
-
-                $row->delete();
-            }
-        }
-    }
-
     protected function delete()
     {
         $result = $this->hookDeleteBefore() ;
@@ -398,7 +319,7 @@ class Controller extends \App\Kernel\Common\Controller
             ];
 
             $content = $this->getRepository()->findOne( $this->getId() );
-            $this->deleteOnMenu() ;
+
             if ( $content )
             {
                 if ( $this->getEntity()->hasMultiLang() )

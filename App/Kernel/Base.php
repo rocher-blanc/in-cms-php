@@ -27,8 +27,7 @@ class Base
 
     public function getTrigger()
     {
-        return str_replace("\r", "", 'CREATE TRIGGER `after_delete_menu_element` AFTER DELETE ON `menu_element` FOR EACH ROW BEGIN DELETE FROM menu_element_lang WHERE menu_element_lang_menu_element_id = old.menu_element_id; END;
-CREATE TRIGGER `after_delete_page` AFTER DELETE ON `page` FOR EACH ROW BEGIN DELETE FROM page_lang WHERE page_lang_page_id = old.page_id; END;
+        return str_replace("\r", "", 'CREATE TRIGGER `after_delete_page` AFTER DELETE ON `page` FOR EACH ROW BEGIN DELETE FROM page_lang WHERE page_lang_page_id = old.page_id; END;
 CREATE TRIGGER `after_delete_extension` AFTER DELETE ON `extension` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_extension_id = old.extension_id; END;
 CREATE TRIGGER `after_delete_module_group` AFTER DELETE ON `module_group` FOR EACH ROW BEGIN UPDATE module SET module_module_group_id = NULL WHERE module_module_group_id = old.module_group_id; END;
 CREATE TRIGGER `after_delete_module` AFTER DELETE ON `module` FOR EACH ROW BEGIN DELETE FROM param WHERE param_key = CONCAT(\'key_module_\',old.module_id); DELETE FROM module_lang WHERE module_lang_module_id = old.module_id; END;
