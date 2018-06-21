@@ -19,6 +19,11 @@ class Repository
         return \DB::getTableNameLang( $this->getName() ) ;
     }
 
+    public function getTbl()
+    {
+        return \DB::getTableName( $this->getName() ) ;
+    }
+
     public function getEntity()
     {
         return \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity() ;

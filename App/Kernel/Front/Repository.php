@@ -11,11 +11,6 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->_limit_get_all ;
     }
 
-    public function getTbl()
-    {
-        return \DB::getTableName( $this->getName() ) ;
-    }
-
     public function findOne( $id )
     {
         /* Requete pour aller chercher les données */
