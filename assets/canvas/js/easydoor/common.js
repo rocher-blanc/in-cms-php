@@ -2,12 +2,12 @@ var message = false;
 var d = document;
 
 $(function() {
-    checkboxSwitch();
+    checkboxSwitch('body');
 });
 
-checkboxSwitch = function() {
-    if ( $('.bt-switch').length ) {
-        $(".bt-switch").bootstrapSwitch();
+checkboxSwitch = function( base ) {
+    if ( $( base + ' .bt-switch').length ) {
+        $( base + " .bt-switch").bootstrapSwitch();
     }
 };
 
@@ -35,9 +35,9 @@ redirect = function( url ) {
     d.location.href = url ;
 };
 
-initSelect = function() {
-    if ( $("select[data-plugin-selectTwo]").length ) {
-        $("select[data-plugin-selectTwo]").select2({
+initSelect = function( base ) {
+    if ( $(base + " select[data-plugin-selectTwo]").length ) {
+        $(base + " select[data-plugin-selectTwo]").select2({
             "language": {
                 "noResults": function () {
                     return "Aucun résultat trouvé";

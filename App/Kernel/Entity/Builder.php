@@ -808,7 +808,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-        $this->field()->setData( "type" , "hidden" ) ;
+		$this->field()->setData( "type" , "hidden" ) ;
         $this->field()->setData( "moduleParent" , true ) ;
         $this->field()->setData( "twig" , "parent" ) ;
 		$this->field()->setData( "object" , $this->getModuleParentName() ) ;
@@ -821,7 +821,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-        $this->field()->setData( "noUpdate" , true ) ;
+		$this->field()->setData( "type" , "hidden" ) ;
         $this->setModuleIdName( $this->field()->getName() ) ;
 
         return $this ;
@@ -831,7 +831,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-        $this->field()->setData( "noUpdate" , true ) ;
+		$this->field()->setData( "type" , "hidden" ) ;
         $this->setElementIdName( $this->field()->getName() ) ;
 
         return $this ;

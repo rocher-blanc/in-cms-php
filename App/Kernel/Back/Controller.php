@@ -141,7 +141,7 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $this->isValidAction() == true )
             {
-                $method = $this->getMethodName() ;
+            	$method = $this->getMethodName() ;
                 $this->$method();
             }
         }

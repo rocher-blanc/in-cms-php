@@ -169,7 +169,7 @@ listenTable = function() {
         });
     }
 
-    initSelect();
+    initSelect('body');
 };
 
 deleteElement = function( url ) {
