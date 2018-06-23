@@ -85,6 +85,7 @@ class Model
 			"action" => array(
 				'index',
 				'table',
+                'import',
 				'add',
 				'edit',
 				'delete'

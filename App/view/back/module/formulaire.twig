@@ -63,7 +63,7 @@
                     {% for dependency in depedencies %}
                         <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
                             <a class="ed-button button button-rounded button-reveal button-3d" data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}"><i class="icon-plus"></i><span>Ajouter</span></a>
-                            <div class="depedencyContent" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
+                            <div class="depedencyContent table-responsive" id="table-content-{{ dependency.class }}" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -87,5 +87,9 @@
 {% block javascripts %}
     {{ cdn_js }}
     {{ js }}
+    {% if depedencies|length > 0 %}
+        <script src="{{ asset('libs/jquery.tablednd.js') }}"></script>
+        <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
+    {% endif %}
     <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
 {% endblock %}

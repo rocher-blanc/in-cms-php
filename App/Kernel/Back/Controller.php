@@ -688,6 +688,22 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $this->getOption('noAppend') == false )
         {
+            $alphas   = range('A', 'Z');
+            $tabField = [];
+            $i        = 0;
+
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->getTitle() != '' )
+                {
+                    $tabField[ $row->getName() ] = [
+                        'letter' => $alphas[$i],
+                        'title'  => $row->getTitle()
+                    ];
+                    $i++;
+                }
+            }
+
             $this->getApp()->view()->appendData(array(
                 'mod' => array(
                     'id'    => $this->getEntityId(),
@@ -696,6 +712,7 @@ class Controller extends \App\Kernel\Common\Controller
                     'icon'  => $rst->module_icon
                 ),
                 'action'    => $this->getActionName(),
+                'fields'    => $tabField,
                 'depedency' => ( $this->getDepedencyModule() !== NULL ? true : false )
             ));
         }
@@ -951,9 +968,10 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $this->getEntity()->getDependency() as $dependency )
             {
                 $depedencies[] = [
-                    'name' => $dependency['name'],
-                    'slug' => strtolower( $dependency['name'] ),
-                    'icon' => $dependency['icon'],
+                    'name'  => $dependency['name'],
+                    'class' => $dependency['class'],
+                    'slug'  => strtolower( $dependency['name'] ),
+                    'icon'  => $dependency['icon'],
                 ];
             }
         }
@@ -1171,6 +1189,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
         $counter = 0 ;
         $arrayParent = $this->getParentArray();
+        $this->setRender( 'isIndex' , true ) ;
 
         if ( $this->getEntity()->isChild() )
         {
@@ -1225,6 +1244,14 @@ class Controller extends \App\Kernel\Common\Controller
         else                                    $template = 'table' ;
 
         $this->render( $template . '.twig');
+    }
+
+    protected function importAction()
+    {
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+        $this->setRender( 'parentLine' , $this->getParentArray() ) ;
+
+        $this->render( 'import.twig');
     }
 
     protected function addAction()

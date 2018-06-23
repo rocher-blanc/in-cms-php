@@ -52,7 +52,8 @@ loadTable = function( className ) {
             type: 'GET',
             success: function(html) {
                 $div.html( html ) ;
-                //listenTable( base + ' .depedencyContent' );
+                listenFormTable( $div.attr('id') );
+                console.log($div.attr('id'));
             }
         });
     });

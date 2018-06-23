@@ -1,9 +1,5 @@
-$(function() {
-    listenTable();
-});
-
 listenFormTable = function( base ) {
-    $( base ).find('form.tableFormSeach').each(function() {
+    $( '#' + base ).find('form.tableFormSeach').each(function() {
         var $form = $(this);
 
         /** GESTION DES FILTRES DE RECHERCHE **/
@@ -121,8 +117,8 @@ listenFormTable = function( base ) {
                 url: $form.attr('action'),
                 data: $form.serialize(),
                 success: function(html) {
-                    $('#table-content').html( html ) ;
-                    listenTable();
+                    $( '#' + $form.data('container') ).html( html ) ;
+                    listenFormTable( base ) ;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     Notify(errorThrown, false);
@@ -130,61 +126,52 @@ listenFormTable = function( base ) {
             });
 
         }).addClass('submitReady');
-    });
-};
 
-listenTable = function( base ) {
-
-
-
-
-
-
-
-
-    /** GESTION DES RECHERCHES - BOUTON REINITIALISER **/
-    $(base + ' .initsearch').click(function() {
-        reloadTable();
-    });
-
-    /** GESTION DE LA PAGINATION **/
-    $('.page-link').click(function() {
-        $(base + ' .tablePage').val( $(this).data('page') );
-        $(base + ' .tableFormSeach').submit();
-    });
-
-    /** GESTION DE L'ORDER **/
-    if ( $(base + ' .table-dnd').length ) {
-        $(base + ' .table-dnd').tableDnD({
-            onDragStart: function(table, row) {
-                $( "#" + $(row).data('tr') ).addClass('myDragClass');
-                var originalOrder = $.tableDnD.serialize();
-            },
-            dragHandle: '.orderTable',
-            onDragClass: 'myDragClass',
-            onDrop: function(table, row) {
-                var data   = $.tableDnD.serialize();
-                var module = $('#module4JS').val() ;
-
-                $.ajax({
-                    type : 'POST',
-                    data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + data,
-                    url : siteurl + "module/" + module + "/order/0/" + $("meta[name=token]").attr("content"),
-                    success: function(data){
-                        Notify(data.msg, data.result);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Notify(errorThrown, false);
-                    }
-                });
-            }
+        /** GESTION DES RECHERCHES - BOUTON REINITIALISER **/
+        $form.find('.initsearch').click(function() {
+            reloadTable( $form , base );
         });
-    }
 
-    initSelect('body');
+        /** GESTION DE LA PAGINATION **/
+        $form.find('.page-link').click(function() {
+            $form.find('.tablePage').val( $(this).data('page') );
+            $form.submit();
+        });
+
+        /** GESTION DE L'ORDER **/
+        if ( $form.find('.table-dnd').length ) {
+            $form.find('.table-dnd').tableDnD({
+                onDragStart: function(table, row) {
+                    $( "#" + $(row).data('tr') ).addClass('myDragClass');
+                    var originalOrder = $.tableDnD.serialize();
+                },
+                dragHandle: '.orderTable',
+                onDragClass: 'myDragClass',
+                onDrop: function(table, row) {
+                    var data   = $.tableDnD.serialize();
+                    var module = $('#module4JS').val() ;
+
+                    $.ajax({
+                        type : 'POST',
+                        data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + data,
+                        url : siteurl + "module/" + module + "/order/0/" + $("meta[name=token]").attr("content"),
+                        success: function(data){
+                            Notify(data.msg, data.result);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            Notify(errorThrown, false);
+                        }
+                    });
+                }
+            });
+        }
+
+        /** GESTION DES SELECT **/
+        initSelect( '#' + base );
+    });
 };
 
-deleteElement = function( url ) {
+deleteElement = function( url , base ) {
     $.ajax({
         type: "POST",
         url: url,
@@ -194,7 +181,9 @@ deleteElement = function( url ) {
             Notify(data.msg, data.result);
 
             if(data.result == true) {
-                reloadTable();
+                $( '#' + base ).find('form.tableFormSeach').each(function() {
+                    reloadTable( $(this) , base );
+                });
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -204,13 +193,14 @@ deleteElement = function( url ) {
     });
 };
 
-reloadTable = function() {
+
+reloadTable = function( $form , base ) {
     $.ajax({
-        url: $('#url_table').val() ,
+        url: $form.attr('action') ,
         type: 'GET',
         success: function(html) {
-            $('#table-content').html( html ) ;
-            listenTable();
+            $( '#' + $form.data('container') ).html( html ) ;
+            listenFormTable( base ) ;
         }
     });
 };

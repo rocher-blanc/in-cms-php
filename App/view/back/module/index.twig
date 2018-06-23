@@ -4,8 +4,7 @@
 
 {% block module %}
     {% include 'module/header.twig' %}
-    <input type="hidden" name="url_table" id="url_table" value="{{ route( mod.name , 'table' , uri_id_parent ) }}">
-    <div class="table-responsive" id="table-content">
+    <div class="table-responsive" id="table-content-{{ mod.name }}">
         {{ table }}
     </div>
 {% endblock %}
@@ -24,4 +23,9 @@
     <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
     <script src="{{ asset('canvas/js/components/select-boxes.js') }}"></script>
     {% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
+    <script>
+        $(function() {
+            listenFormTable("table-content-{{ mod.name }}");
+        });
+    </script>
 {% endblock %}

@@ -665,6 +665,7 @@ class Builder extends Model
         {
             $rst = \DB::for_table('module')
                 ->select('module_icon')
+                ->select('module_class_name')
                 ->where(array('module_class_name' => $name , 'module_active' => 1))
                 ->find_one();
 
@@ -673,7 +674,8 @@ class Builder extends Model
                 $this->_hasDependency = true ;
                 $this->_dependency[] = [
                     'name' => $name,
-                    'icon' => $rst->module_icon
+                    'icon' => $rst->module_icon,
+                    'class' => $rst->module_class_name
                 ];
             }
         }

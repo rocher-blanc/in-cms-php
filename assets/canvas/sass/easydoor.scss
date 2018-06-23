@@ -530,6 +530,18 @@ form {
 }
 
 /* ************************************************ */
+/* Gestion du menu au dessus des modules            */
+/* ************************************************ */
+
+.ed-menu .dropdown-toogle {
+  margin-top: 3px;
+}
+
+.ed-menu .show {
+  display: inline-block !important;
+}
+
+/* ************************************************ */
 /* Texte alternatif pour les images                 */
 /* ************************************************ */
 

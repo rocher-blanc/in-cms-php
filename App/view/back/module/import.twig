@@ -1,0 +1,47 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Index' %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+    <div class="fancy-title title-dotted-border">
+        <h3>Import massif</h3>
+    </div>
+
+    <p>
+        Sed maximum est in amicitia parem esse inferiori. Saepe enim excellentiae quaedam sunt, qualis erat Scipionis in nostro, ut ita dicam, grege. Numquam se ille Philo, numquam Rupilio, numquam Mummio anteposuit, numquam inferioris ordinis amicis, Q. vero Maximum fratrem, egregium virum omnino, sibi nequaquam parem, quod is anteibat aetate, tamquam superiorem colebat suosque omnes per se posse esse ampliores volebat.
+    </p>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                {% for row in fields %}
+                    <th>{{ row.letter }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for row in fields %}
+                    <th>{{ row.titre }}</th>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <form>
+        <div class="ed_field col_half col_last text-center" style="margin:0 auto !important; float: none;">
+            <input name="fichier" type="file" class="upload file-loading" data-field="fichier" data-uploadurl="{{ route( mod.name , 'import' , uri_id_parent ) }}">
+        </div>
+    </form>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('canvas/js/components/bs-filestyle.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/locales/fileinput/fr.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/import.js') }}"></script>
+{% endblock %}
+
+{% block icon_page %}{{ mod.icon }}{% endblock %}
