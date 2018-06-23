@@ -86,6 +86,7 @@ class Model
 				'index',
 				'table',
                 'import',
+                'customization',
 				'add',
 				'edit',
 				'delete'

@@ -444,12 +444,34 @@ class Controller extends \App\Kernel\Common\Controller
     /* ************   TABLEAU DE GESTION   ************** */
     /* ************************************************** */
 
+    protected function getIndexField()
+    {
+        $tab = [];
+        //$tab[ $this->getEntity()->getIdName() ] = $this->getEntity()->getIdName();
+        //if ( $this->getEntity()->getValidationName() != '' ) $tab[ $this->getEntity()->getValidationName() ] = $this->getEntity()->getValidationName();
+
+        $rst = \DB::for_table('module_table')
+            ->where_equal('module_table_module_id' , $this->getEntityId() )
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $tab[ $row->module_table_field ] = $row->module_table_field ;
+            }
+        }
+
+        return $tab ;
+    }
+
     protected function generateTable()
     {
         $rightArray     = [] ;
         $thArray 	    = [] ;
         $tdArray 	    = [] ;
         $typeArray      = [] ;
+        $indexTable     = $this->getIndexField() ;
 
         $elmtPerPage = ( $this->getApp()->request->get('elmt_per_page') != '' ? $this->getApp()->request->get('elmt_per_page') : 25 ) ;
         $page        = ( $this->getApp()->request->get('page') != '' ? $this->getApp()->request->get('page') : 1 ) ;
@@ -489,7 +511,7 @@ class Controller extends \App\Kernel\Common\Controller
             // TH
             foreach( $this->getEntity()->getField() as $field )
             {
-                if ( $field->getData('index') == true )
+                if ( in_array( $field->getName() , $indexTable ) )
                 {
                     $arrayDate = [];
 
@@ -566,8 +588,10 @@ class Controller extends \App\Kernel\Common\Controller
                 {
                     foreach( $this->getEntity()->getField() as $field )
                     {
-                        if ( $field->getData('index') == true )
+                        if ( in_array( $field->getName() , $indexTable ) )
                         {
+                            $typeField = $field->getType() ;
+
                             if ( $field->getType() == "select" && $field->getData('option') !== NULL )
                             {
                                 $opt = $field->getData('option') ;
@@ -575,7 +599,8 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                             else if ( $field->getType() == "radio" && $field->getData('isBoolean') == true )
                             {
-                                $value = ( $row->get( $field->getColumn() ) == 1 ? "Oui" : "Non" ) ;
+                                $typeField = 'boolean' ;
+                                $value = $row->get( $field->getColumn() ) ;
                             }
                             else if ( $field->getType() == "date" )
                             {
@@ -598,11 +623,13 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $field->getData('unit') !== NULL && $field->getData('whereUnit') == "before" ) $value.= $field->getData('unit') . ' ' ;
                                 $value.= $row->get( $field->getColumn() ) ;
                                 if ( $field->getData('unit') !== NULL && $field->getData('whereUnit') == "after" ) $value.= ' ' . $field->getData('unit') ;
-
                             }
 
                             $typeArray[ $field->getName() ] = $field->getType() ;
-                            $tdArray[ $i ]['td'][ $field->getName() ] = $value ;
+                            $tdArray[ $i ]['td'][ $field->getName() ] = [
+                                'value' => $value,
+                                'type' => $typeField
+                            ];
                         }
                     }
 
@@ -645,6 +672,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
+        $this->setRender( 'validationName' , $this->getEntity()->getValidationName() ) ;
         $this->setRender( 'hasURL' , $this->getEntity()->hasURL() ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
@@ -692,13 +720,16 @@ class Controller extends \App\Kernel\Common\Controller
             $tabField = [];
             $i        = 0;
 
+            $fieldActive = $this->getIndexField() ;
+
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->getTitle() != '' )
+                if ( $row->getTitle() != '' && $row->getName() != $this->getEntity()->getValidationName() )
                 {
                     $tabField[ $row->getName() ] = [
                         'letter' => $alphas[$i],
-                        'title'  => $row->getTitle()
+                        'title'  => $row->getTitle(),
+                        'active'  => ( in_array( $row->getName() , $fieldActive ) ? true : false )
                     ];
                     $i++;
                 }
@@ -1181,6 +1212,30 @@ class Controller extends \App\Kernel\Common\Controller
         $this->render('parent.twig');
     }
 
+    /* ************************************************************** */
+    /* ******************   CUSTOMIZATION TABLE   ******************* */
+    /* ************************************************************** */
+
+    protected function updateCustomization()
+    {
+        if ( $this->getApp()->request->post('active') == 1 )
+        {
+            $table = \DB::for_table('module_table')->create();
+            $table->module_table_module_id = $this->getEntityId();
+            $table->module_table_field = $this->getApp()->request->post('field');
+            $table->save();
+        }
+        else
+        {
+            $table = \DB::for_table('module_table')
+                ->where_equal('module_table_module_id' , $this->getEntityId() )
+                ->where_equal('module_table_field' , $this->getApp()->request->post('field') )
+                ->find_one();
+
+            $table->delete();
+        }
+    }
+
     /* ************************************************** */
     /* ******************   ACTIONS   ******************* */
     /* ************************************************** */
@@ -1252,6 +1307,14 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'parentLine' , $this->getParentArray() ) ;
 
         $this->render( 'import.twig');
+    }
+
+    protected function customizationAction()
+    {
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $this->updateCustomization() ;
+        }
     }
 
     protected function addAction()
