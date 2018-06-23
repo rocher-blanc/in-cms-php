@@ -27,7 +27,7 @@
                 <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
             </button>
             <div class="dropdown-menu" data-action="{{ route( mod.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ mod.name }}">
-                {% for name, field in fields %}
+                {% for name, field in fields if field.table == true %}
                     <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
                 {% endfor %}
             </div>

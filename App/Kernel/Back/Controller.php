@@ -724,9 +724,10 @@ class Controller extends \App\Kernel\Common\Controller
 
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->getTitle() != '' && $row->getName() != $this->getEntity()->getValidationName() )
+                if ( $row->getTitle() != '' )
                 {
                     $tabField[ $row->getName() ] = [
+                        'table' => ( $row->getName() != $this->getEntity()->getValidationName() ? true : false ),
                         'letter' => $alphas[$i],
                         'title'  => $row->getTitle(),
                         'active'  => ( in_array( $row->getName() , $fieldActive ) ? true : false )
