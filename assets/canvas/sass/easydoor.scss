@@ -542,6 +542,10 @@ form {
 }
 
 /* ************************************************ */
+/* Gestion du menu au dessus des modules            */
+/* ************************************************ */
+
+/* ************************************************ */
 /* Texte alternatif pour les images                 */
 /* ************************************************ */
 
@@ -672,7 +676,7 @@ ul.docs-icons li span {
 .dropdown-item.active, .dropdown-item:active {
   color: #fff;
   text-decoration: none;
-  background-color: #007bff;
+  background-color: $jweb-blue;
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
