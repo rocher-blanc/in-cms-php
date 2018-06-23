@@ -51,7 +51,7 @@
                 </li>
             {% endif %}
         </ul>
-        <div class="tab-container" id="form-module">
+        <div class="tab-container" id="form-module-{{ mod.name }}">
             {{ form }}
             {% if id != '' %}
                 <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
@@ -62,7 +62,8 @@
                 {% if depedencies|length > 0 %}
                     {% for dependency in depedencies %}
                         <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                            <a class="ed-button button button-rounded button-reveal button-large button-3d" data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}"><i class="icon-plus"></i><span>Ajouter</span></a>
+                            <a class="ed-button button button-rounded button-reveal button-3d" data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}"><i class="icon-plus"></i><span>Ajouter</span></a>
+                            <div class="depedencyContent" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
                         </div>
                     {% endfor %}
                 {% endif %}

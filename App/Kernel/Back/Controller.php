@@ -1265,8 +1265,6 @@ class Controller extends \App\Kernel\Common\Controller
             return $this->Factory()->Response()->printJSON( $rst ) ;
         }
 
-        $depedencies = [];
-
         $this->loadDependencies() ;
         $this->generateForm( true ) ;
 

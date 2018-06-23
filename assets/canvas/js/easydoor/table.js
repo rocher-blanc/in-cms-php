@@ -2,148 +2,160 @@ $(function() {
     listenTable();
 });
 
-listenTable = function() {
-    /** GESTION DES FILTRES DE RECHERCHE **/
-    if ( $("a[data-filter]").length ) {
-        $("a[data-filter]").click(function(e) {
-            e.preventDefault();
-
-            $('#orderSearch').val( $(this).data('order') );
-            $('#bySearch').val( $(this).data('by') );
-            $('#formSeach').submit();
-        });
-    }
-
-    /** GESTION DES SWITCHS **/
-    $('.switch label').click(function() {
-        var checkbox = $(this).parent().find('.switch-toggle:checked');
-
-        if ( checkbox.length == 1 ) {
-            var url = $(this).parent().data('urldisable');
-        }
-        else {
-            var url = $(this).parent().data('urlenable');
-        }
-
-        $.ajax({
-            type: "GET",
-            url: url,
-            success: function(data){
-                Notify(data.msg, data.result);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                Notify(errorThrown, false);
-            }
-        });
-    });
-
-    /** GESTION DES DATE RANGE PICKER **/
-    if ( $(".daterange").length ) {
-        $('.daterange').daterangepicker({
-            autoUpdateInput: false,
-            "applyClass": "button-color",
-            "cancelClass": "button-light",
-            "buttonClasses": "button button-rounded button-mini nomargin",
-            "locale": {
-                "format": "DD/MM/YYYY",
-                "separator": " - ",
-                "applyLabel": "Valider",
-                "cancelLabel": "Annuler",
-                "fromLabel": "De",
-                "toLabel": "à",
-                "customRangeLabel": "Custom",
-                "daysOfWeek": [
-                    "Dim",
-                    "Lun",
-                    "Mar",
-                    "Mer",
-                    "Jeu",
-                    "Ven",
-                    "Sam"
-                ],
-                "monthNames": [
-                    "Janvier",
-                    "Février",
-                    "Mars",
-                    "Avril",
-                    "Mai",
-                    "Juin",
-                    "Juillet",
-                    "Août",
-                    "Septembre",
-                    "Octobre",
-                    "Novembre",
-                    "Décembre"
-                ],
-                "firstDay": 1
-            }
-        });
-
-        $(".daterange").on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-        });
-
-        $(".daterange").on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
-        });
-
-        if( $('#table-content [data-lightbox="ajax"]').length > 0 ) {
-            $('#table-content [data-lightbox="ajax"]').magnificPopup({
-                type: 'ajax',
-                closeBtnInside: false,
-                callbacks: {
-                    ajaxContentAdded: function(mfpResponse) {
-                        SEMICOLON.widget.loadFlexSlider();
-                        SEMICOLON.initialize.resizeVideos();
-                        SEMICOLON.widget.masonryThumbs();
-                    },
-                    open: function() {
-                        $('body').addClass('ohidden');
-                    },
-                    close: function() {
-                        $('body').removeClass('ohidden');
-                    }
-                }
-            });
-        }
-    }
-
-    /** GESTION DES RECHERCHES **/
-    $('#formSeach').not('.submitReady').bind('submit', function(e) {
+listenFormTable = function( base ) {
+    $( base ).find('form.tableFormSeach').each(function() {
         var $form = $(this);
 
-        e.preventDefault();
-        e.stopPropagation();
+        /** GESTION DES FILTRES DE RECHERCHE **/
+        if ( $form.find("a[data-filter]").length ) {
+            $form.find("a[data-filter]").click(function(e) {
+                e.preventDefault();
 
-        $.ajax({
-            type: $form.attr('method'),
-            url: $form.attr('action'),
-            data: $form.serialize(),
-            success: function(html) {
-                $('#table-content').html( html ) ;
-                listenTable();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                Notify(errorThrown, false);
+                $form.find('.tableOrderSearch').val( $(this).data('order') );
+                $form.find('.tableBySearch').val( $(this).data('by') );
+                $form.submit();
+            });
+        }
+
+        /** GESTION DES SWITCHS **/
+        $form.find('.switch label').click(function() {
+            var checkbox = $(this).parent().find('.switch-toggle:checked');
+
+            if ( checkbox.length == 1 ) {
+                var url = $(this).parent().data('urldisable');
             }
+            else {
+                var url = $(this).parent().data('urlenable');
+            }
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function(data){
+                    Notify(data.msg, data.result);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
         });
 
-    }).addClass('submitReady');
+        /** GESTION DES DATE RANGE PICKER **/
+        if ( $form.find('.daterange').length ) {
+            $form.find('.daterange').daterangepicker({
+                autoUpdateInput: false,
+                "applyClass": "button-color",
+                "cancelClass": "button-light",
+                "buttonClasses": "button button-rounded button-mini nomargin",
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Valider",
+                    "cancelLabel": "Annuler",
+                    "fromLabel": "De",
+                    "toLabel": "à",
+                    "customRangeLabel": "Custom",
+                    "daysOfWeek": [
+                        "Dim",
+                        "Lun",
+                        "Mar",
+                        "Mer",
+                        "Jeu",
+                        "Ven",
+                        "Sam"
+                    ],
+                    "monthNames": [
+                        "Janvier",
+                        "Février",
+                        "Mars",
+                        "Avril",
+                        "Mai",
+                        "Juin",
+                        "Juillet",
+                        "Août",
+                        "Septembre",
+                        "Octobre",
+                        "Novembre",
+                        "Décembre"
+                    ],
+                    "firstDay": 1
+                }
+            });
+
+            $form.find('.daterange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            });
+
+            $form.find('.daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+
+            if( $form.find('[data-lightbox="ajax"]').length > 0 ) {
+                $form.find('[data-lightbox="ajax"]').magnificPopup({
+                    type: 'ajax',
+                    closeBtnInside: false,
+                    callbacks: {
+                        ajaxContentAdded: function(mfpResponse) {
+                            SEMICOLON.widget.loadFlexSlider();
+                            SEMICOLON.initialize.resizeVideos();
+                            SEMICOLON.widget.masonryThumbs();
+                        },
+                        open: function() {
+                            $('body').addClass('ohidden');
+                        },
+                        close: function() {
+                            $('body').removeClass('ohidden');
+                        }
+                    }
+                });
+            }
+        }
+
+        /** GESTION DES RECHERCHES **/
+        $form.not('.submitReady').bind('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: $form.serialize(),
+                success: function(html) {
+                    $('#table-content').html( html ) ;
+                    listenTable();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
+
+        }).addClass('submitReady');
+    });
+};
+
+listenTable = function( base ) {
+
+
+
+
+
+
+
 
     /** GESTION DES RECHERCHES - BOUTON REINITIALISER **/
-    $('.initsearch').click(function() {
+    $(base + ' .initsearch').click(function() {
         reloadTable();
     });
 
     /** GESTION DE LA PAGINATION **/
     $('.page-link').click(function() {
-        $('#page').val( $(this).data('page') );
-        $('#formSeach').submit();
+        $(base + ' .tablePage').val( $(this).data('page') );
+        $(base + ' .tableFormSeach').submit();
     });
 
     /** GESTION DE L'ORDER **/
-    if ( $('.table-dnd').length ) {
-        $('.table-dnd').tableDnD({
+    if ( $(base + ' .table-dnd').length ) {
+        $(base + ' .table-dnd').tableDnD({
             onDragStart: function(table, row) {
                 $( "#" + $(row).data('tr') ).addClass('myDragClass');
                 var originalOrder = $.tableDnD.serialize();
@@ -199,7 +211,6 @@ reloadTable = function() {
         success: function(html) {
             $('#table-content').html( html ) ;
             listenTable();
-            SEMICOLON.initialize.lightbox();
         }
     });
 };

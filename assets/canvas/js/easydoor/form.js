@@ -3,7 +3,6 @@ $(function() {
 });
 
 init = function( base ) {
-    console.log( base );
     checkEditor( base );
     checkForm( base );
     checkBox( base );
@@ -14,6 +13,7 @@ init = function( base ) {
     deleteValueMedia( base );
     checkImage( base );
     modalDepedency();
+    tableDepedency( base );
 };
 
 modalDepedency = function () {
@@ -38,6 +38,24 @@ modalDepedency = function () {
             }
         });
     }
+};
+
+tableDepedency = function( base ) {
+    loadTable( base + ' .depedencyContent' );
+};
+
+loadTable = function( className ) {
+    $( className ).each(function() {
+        var $div = $(this);
+        $.ajax({
+            url: $div.data('table') ,
+            type: 'GET',
+            success: function(html) {
+                $div.html( html ) ;
+                //listenTable( base + ' .depedencyContent' );
+            }
+        });
+    });
 };
 
 checkBox = function( base ) {
@@ -114,12 +132,13 @@ checkImage = function(base) {
 
 checkForm = function(base) {
     $(base + ' form').not('.submitReady').bind('submit', function(e) {
-        if ( $('.form-process').length ) {
-            $('.form-process').show();
+        var $form = $(this);
+        var mod = $form.data('slug');
+        if ( $(base + ' .'+mod+'-form-process').length ) {
+            $(base + ' .'+mod+'-form-process').show();
         }
 
-        $('.ed_field').removeClass('error');
-        var $form = $(this);
+        $(base + ' .ed_field').removeClass('error');
         var serialize = $form.serialize();
 
         e.preventDefault();
@@ -131,7 +150,14 @@ checkForm = function(base) {
             data: serialize,
             success: function(data) {
                 if(data.result == true && data.url != '') {
-                    redirect( data.url );
+                    if ( $form.data('depedency') == true ) {
+                        $.magnificPopup.close();
+                        Notify(data.msg, data.result);
+                        loadTable( '#tabs-' + $form.data('slug') + ' .depedencyContent' );
+                    }
+                    else {
+                        redirect( data.url );
+                    }
                 }
                 else {
                     Notify(data.msg, data.result);
@@ -153,13 +179,13 @@ checkForm = function(base) {
                     }
                 }
 
-                if ( $('.form-process').length ) {
-                    $('.form-process').hide();
+                if ( $(base + ' .'+mod+'-form-process').length ) {
+                    $(base + ' .'+mod+'-form-process').hide();
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 Notify(errorThrown, false);
-                $('.form-process').hide();
+                $(base + ' .'+mod+'-form-process').hide();
             }
         });
 
