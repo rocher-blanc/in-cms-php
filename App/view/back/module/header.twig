@@ -26,9 +26,9 @@
             <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" data-action="{{ route( mod.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ mod.name }}">
                 {% for name, field in fields %}
-                    <a class="dropdown-item" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
+                    <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
                 {% endfor %}
             </div>
         </div>

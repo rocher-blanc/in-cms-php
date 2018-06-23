@@ -3,12 +3,6 @@ var d = document;
 
 $(function() {
     checkboxSwitch('body');
-
-    $('.dropdown-menu .dropdown-item').click(function(e) {
-        e.stopPropagation();
-        $(this).removeClass('active').addClass('active');
-        //$('.dropdown-toggle').dropdown('toggle');
-    });
 });
 
 checkboxSwitch = function( base ) {

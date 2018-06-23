@@ -259,6 +259,11 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "module_group_order" => $this->infoColumn( "INT" , "11" ),
                 "module_group_active" => $this->infoColumn( "TINYINT" , "1" , '0' )
             ],
+            "module_table" => [
+                "module_table_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "module_table_field" => $this->infoColumn( "VARCHAR" , "50" ),
+                "module_table_module_id" => $this->infoColumn( "INT" , "11" ),
+            ],
             "newsletter_sender" => [
                 "newsletter_sender_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "newsletter_sender_name" => $this->infoColumn( "VARCHAR" , "50" ),

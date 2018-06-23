@@ -1,3 +1,37 @@
+$(function() {
+    tableCustomization();
+});
+
+tableCustomization = function() {
+    $('.dropdown-menu .dropdown-item').click(function(e) {
+        var $link = $(this);
+        var $parent = $link.parent();
+        var urlCustomization = $parent.data('action') ;
+        var active = 1;
+
+        e.stopPropagation();
+        if ( $link.hasClass('active') ) {
+            $link.removeClass('active');
+            active = 0;
+        }
+        else {
+            $link.addClass('active');
+        }
+
+        $.ajax({
+            type: "POST",
+            url: urlCustomization,
+            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&field=' + $link.data('name') + '&active=' + active,
+            success: function(data){
+                reloadTable( $( '#' + $parent.data('table') ).find('form.tableFormSeach') , $parent.data('table') )
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                Notify(errorThrown, false);
+            }
+        });
+    });
+};
+
 listenFormTable = function( base ) {
     $( '#' + base ).find('form.tableFormSeach').each(function() {
         var $form = $(this);
