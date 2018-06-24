@@ -54,10 +54,10 @@
 									<input type="text" class="form-control form-control-sm daterange" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
 								{% elseif thvalue.type == 'number' %}
 									<div class="input-group searchNumber">
-										<input type="number" class="form-control form-control-sm" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+										<input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
 									</div>
-									<div class="input-group scdline">
-										<input type="number" class="form-control form-control-sm" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+									<div class="input-group" style="margin-top: 2px;">
+										<input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
 									</div>
 								{% elseif thvalue.type == 'select' %}
 									<select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>

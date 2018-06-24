@@ -716,25 +716,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $this->getOption('noAppend') == false )
         {
-            $alphas   = range('A', 'Z');
-            $tabField = [];
-            $i        = 0;
 
-            $fieldActive = $this->getIndexField() ;
-
-            foreach( $this->getEntity()->getField() as $row )
-            {
-                if ( $row->getTitle() != '' )
-                {
-                    $tabField[ $row->getName() ] = [
-                        'table' => ( $row->getName() != $this->getEntity()->getValidationName() ? true : false ),
-                        'letter' => $alphas[$i],
-                        'title'  => $row->getTitle(),
-                        'active'  => ( in_array( $row->getName() , $fieldActive ) ? true : false )
-                    ];
-                    $i++;
-                }
-            }
 
             $this->getApp()->view()->appendData(array(
                 'mod' => array(
@@ -744,12 +726,37 @@ class Controller extends \App\Kernel\Common\Controller
                     'icon'  => $rst->module_icon
                 ),
                 'action'    => $this->getActionName(),
-                'fields'    => $tabField,
+                'fields'    => $this->getImportFiled(),
                 'depedency' => ( $this->getDepedencyModule() !== NULL ? true : false )
             ));
         }
 
         $this->setEntityId( $rst->module_id ) ;
+    }
+
+    public function getImportFiled()
+    {
+        $alphas   = range('A', 'Z');
+        $tabField = [];
+        $i        = 0;
+
+        $fieldActive = $this->getIndexField() ;
+
+        foreach( $this->getEntity()->getField() as $row )
+        {
+            if ( $row->getTitle() != '' )
+            {
+                $tabField[ $row->getName() ] = [
+                    'table' => ( $row->getName() != $this->getEntity()->getValidationName() ? true : false ),
+                    'letter' => $alphas[$i],
+                    'title'  => $row->getTitle(),
+                    'active'  => ( in_array( $row->getName() , $fieldActive ) ? true : false )
+                ];
+                $i++;
+            }
+        }
+
+        return $tabField ;
     }
 
     protected function checkToken()
@@ -1304,10 +1311,19 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function importAction()
     {
-        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
-        $this->setRender( 'parentLine' , $this->getParentArray() ) ;
+        if ( $this->getApp()->request->isPost() )
+        {
+            $import = new Import;
+            $import->setFields( $this->getImportFiled() );
+            $import->upload();
+        }
+        else
+        {
+            $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+            $this->setRender( 'parentLine' , $this->getParentArray() ) ;
 
-        $this->render( 'import.twig');
+            $this->render( 'import.twig');
+        }
     }
 
     protected function customizationAction()

@@ -2,7 +2,6 @@ $(function() {
     if ( $('.upload').length ) {
         $('.upload').each(function(){
             var $this = $(this);
-            var myForm = $this.closest('form');
             var tvalue = $("meta[name=token]").attr("content") ;
 
             $this.fileinput({
@@ -10,7 +9,6 @@ $(function() {
                 uploadUrl: $this.data('uploadurl'),
                 mainClass: "input-group-md upload-image",
 
-                allowedFileExtensions: ["jpeg", "jpg", "png", "gif"],
                 uploadExtraData:{
                     field:$this.data('field'),
                     csrf_token:tvalue

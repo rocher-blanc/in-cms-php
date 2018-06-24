@@ -27,9 +27,9 @@
         </tbody>
     </table>
 
-    <form>
+    <form enctype="multipart/form-data" accept-charset="utf-8" method="post" action="{{ route( mod.name , 'import' , uri_id_parent ) }}">
         <div class="ed_field col_half col_last text-center" style="margin:0 auto !important; float: none;">
-            <input name="fichier" type="file" class="upload file-loading" data-field="fichier" data-uploadurl="{{ route( mod.name , 'import' , uri_id_parent ) }}">
+            <input name="importfile" type="file" class="upload file-loading" data-field="importfile" data-uploadurl="{{ route( mod.name , 'import' , uri_id_parent ) }}">
         </div>
     </form>
 {% endblock %}
