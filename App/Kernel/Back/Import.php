@@ -16,16 +16,26 @@ class Import
     protected $file ;
     protected $fields ;
 
-    /* ************************************************** */
-    /* ****************   CONSTRUCT   ******************* */
-    /* ************************************************** */
+	/* ************************************************** */
+	/* ****************   CONSTRUCT   ******************* */
+	/* ************************************************** */
 
-    public function __construct()
-    {
+	public function __construct()
+	{
 
-    }
+	}
 
-    /* ************************************************** */
+
+	/* ************************************************** */
+	/* ****************     TOOLS     ******************* */
+	/* ************************************************** */
+
+	public function Container()
+	{
+		return \App\Kernel\Container::getInstance();
+	}
+
+	/* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
@@ -79,6 +89,10 @@ class Import
         {
             return $this->parse();
         }
+        else
+		{
+			return false ;
+		}
     }
 
     protected function getFileArray()
@@ -94,22 +108,19 @@ class Import
     protected function parse()
     {
         $tab = $this->getFileArray() ;
-        $tab = $this->convertArray( $tab ) ;
-
-        dump( $tab );
+        return $this->convertArray( $tab ) ;
     }
 
     protected function convertArray( array $array )
     {
         $newTab     = [];
         $arrayField = $this->getArrayField() ;
-        $i          = 0;
 
-        foreach( $array as $line )
+        foreach( $array as $number => $line )
         {
             foreach( $line as $letter => $value )
             {
-                $newTab[ $i ][ $arrayField[ $letter ] ] = $value ;
+				$newTab[ $number ][ $arrayField[ $letter ] ] = $value ;
             }
         }
 

@@ -113,6 +113,47 @@ class Media extends \App\Kernel\Common\Media
 		else			return false ;
 	}
 
+	protected function create( $nameFile , $content )
+	{
+		$fp = fopen( $nameFile , 'w+' ) ;
+		$rst = fwrite( $fp , $content ) ;
+		fclose( $fp ) ;
+
+		return $rst ;
+	}
+
+	public function createByUrl( $uri , $fieldName )
+	{
+		$content  = file_get_contents( $uri );
+		$size     = getimagesize( $uri );
+		$fileName = end( explode( '/' , $uri ) );
+		$this->create( UPLOAD_PATH . "/" . $fileName , $content ) ;
+
+		$media = \DB::for_table('media')->create() ;
+		$media->media_name 		= $fileName;
+		$media->media_size 		= 0;
+		$media->media_type 		= $size['mime'];
+		$media->media_module_id = $this->getModuleId();
+		$media->save() ;
+
+		$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
+		$field = $entity->build( $fieldName )->field();
+		$this->setImageId( $media->media_id ) ;
+		$this->getNameById() ;
+		$source = $this->rename();
+
+		if ( $field->hasThumb() )
+		{
+			foreach( $field->getThumb() as $thumb )
+			{
+				// width, height
+				$this->genThumb( $thumb[0] , $thumb[1] ) ;
+			}
+		}
+
+		return $media->media_id;
+	}
+
 	public function upload( $path )
 	{
 		foreach( $_FILES as $key => $value )
@@ -133,7 +174,7 @@ class Media extends \App\Kernel\Common\Media
 
 		if ( $rst !== false )
 		{
-            $fieldEntityName = $this->getApp()->request->post('field') ;
+			$fieldEntityName = $this->getApp()->request->post('field') ;
 			$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
 			$field = $entity->build( $fieldEntityName )->field();
 			$this->setImageId( $rst->id ) ;
@@ -206,7 +247,7 @@ class Media extends \App\Kernel\Common\Media
 			$name = $this->updateName( $this->getImageName() ) ;
 			
 			if ( file_exists( $path . $name ) ) $exist = true ;
-			else							    $exist = false ;
+			else							    		 $exist = false ;
 			
 			if ( $exist == true )
 			{

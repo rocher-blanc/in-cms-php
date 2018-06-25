@@ -15,7 +15,7 @@ $(function() {
                 },
 
                 showCaption: false,
-                showRemove: false,
+                showRemove: true,
 
                 showUpload: false,
                 showPreview: false,
@@ -30,8 +30,15 @@ $(function() {
             }).on("filebatchselected", function(event, files) {
                 $this.fileinput("upload");
             }).on("fileuploaded", function(event, files) {
-                $('#photo').val(files.response.name);
-                $('#avatarview').attr('src',files.response.url);
+                console.log('test');
+                console.log( files );
+                console.log( files.response );
+                if ( files.response.error == true ) {
+                    $('#errorImport').html(files.response.message);
+                }
+                else {
+                    redirect( $this.data('redirect') );
+                }
             });
         });
     }

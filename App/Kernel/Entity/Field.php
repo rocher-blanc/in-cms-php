@@ -401,9 +401,121 @@ class Field
         return \App\Kernel\Message::getInstance() ;
     }
 
-    /* ************************************************** */
-    /* ****************   FUNCTIONS   ******************* */
-    /* ************************************************** */
+	/* ************************************************** */
+	/* ****************    IMPORT     ******************* */
+	/* ************************************************** */
+
+	public function checkImport( $value )
+	{
+		$this->setValue( $value ) ;
+
+		if ( $this->isEmpty() == true && $this->isRequired() == true )
+		{
+			$this->setError( $this->getData('notEmpty_msg') ) ;
+			$this->setValue( NULL ) ;
+
+			return false ;
+		}
+		else
+		{
+			return $this->formatImportIsValid();
+		}
+	}
+
+	protected function formatImportIsValid()
+	{
+		switch( $this->getType() )
+		{
+			case "number" :
+				if ( is_numeric( $this->getValue() ) )
+				{
+					return true ;
+				}
+				else
+				{
+					$this->setError("Le champ doit être un entier") ;
+					return false ;
+				}
+			break;
+			case "radio" :
+				if ( $this->getData('isBoolean') == true )
+				{
+					if ( $this->getValue() == 1 or $this->getValue() == 0 )
+					{
+						return true ;
+					}
+					else
+					{
+						$this->setError("Le champ doit contenir 0 ou 1") ;
+						return false ;
+					}
+				}
+				else
+				{
+					return true ;
+				}
+			break;
+			case "image" :
+				$size = getimagesize( $this->getValue() );
+				$rst  = (strtolower( substr( $size['mime'] , 0, 5 ) ) == 'image' ? true : false );
+
+				if ( ! $rst )
+				{
+					$this->setError("Le champ doit être une URL d'image correct") ;
+				}
+
+				return $rst ;
+			break;
+			default :
+				return true ;
+			break;
+		}
+	}
+
+	public function parseWithImport( $value , $mId , $mName )
+	{
+		switch( $this->getType() )
+		{
+			case "date" :
+				if ( strpos( $value , ' ' ) !== false )
+				{
+					$exp = explode( ' ' , $value );
+					$date = $exp[1];
+				}
+
+				if ( preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $date, $matches) )
+				{
+					$this->setValue( $date ) ;
+				}
+				else if( preg_match("/^(\d{2})\/(\d{2})\/(\d{4})$/", $date, $matches) )
+				{
+					list( $d, $m, $y ) = explode( '/' , $date );
+					$this->setValue("$y-$m-$d") ;
+				}
+			break;
+			case "image" :
+				if ( $this->isEmpty() == true )
+				{
+					$this->clearValue() ;
+				}
+				else
+				{
+					$Media = new \App\Kernel\Back\Media;
+					$Media->setModuleName( $mName );
+					$Media->setModuleId( $mId );
+					$Media->setFolder( \App\Kernel\Container::getInstance()->module( $mName )->getEntity()->getFolder() );
+					$this->setValue( $Media->createByUrl( $value , $this->getName() ) );
+				}
+			break;
+			default :
+				$this->setValue( $value ) ;
+			break;
+		}
+	}
+
+	/* ************************************************** */
+	/* ****************   FUNCTIONS   ******************* */
+	/* ************************************************** */
 
     public function checkEmpty()
     {

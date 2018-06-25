@@ -1254,11 +1254,17 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function tab( $t )
-    {
-        $this->field()->setData( "tab" , $t ) ;
-        return $this ;
-    }
+	protected function tab( $t )
+	{
+		$this->field()->setData( "tab" , $t ) ;
+		return $this ;
+	}
+
+	protected function group( $t )
+	{
+		$this->field()->setData( "group" , $t ) ;
+		return $this ;
+	}
 
     protected function unit( $unit , $where )
     {
@@ -1292,9 +1298,9 @@ class Builder extends Model
         return $this ;
     }
 
+    // DEPRECIATED
     protected function viewOnIndex()
     {
-        $this->field()->setData( "index" , true ) ;
         return $this ;
     }
 

@@ -768,9 +768,9 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     /* Fonction appelée par "add" & "update" */
-    protected function pushData( $add = true )
+    protected function pushData( $add = true , $noCheck = false )
     {
-        if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
+		if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
         else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
 
         $result = $this->$hookBeforeCheck();
@@ -783,7 +783,10 @@ class Controller extends \App\Kernel\Common\Controller
                 'result' => false
             ];
 
-            if ( $this->checkForm() )
+            if ( $noCheck ) $check = true ;
+            else			$check = $this->checkForm() ;
+
+            if ( $check )
             {
                 if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
                 else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
@@ -871,7 +874,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                         foreach( $this->getEntity()->getField() as $nameField => $field )
                         {
-                            if ( $field->getType() == "image" && $field->getData('hasAltText') == true )
+                            if ( $field->getType() == "image" && $field->getData('hasAltText') == true && $noCheck == false )
                             {
                                 foreach( $this->Lang()->getAll() as $lang )
                                 {
@@ -1315,7 +1318,58 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $import = new Import;
             $import->setFields( $this->getImportFiled() );
-            $import->upload();
+            $rst = $import->upload();
+
+			$error    = false ;
+			$errorMsg = '' ;
+
+            if ( $rst !== false )
+			{
+				foreach( $rst as $lineNumber => $arrayValue )
+				{
+					foreach( $this->getEntity()->getField() as $field )
+					{
+						$return = $field->checkImport( $arrayValue[ $field->getName() ] );
+
+						if ( $return === false )
+						{
+							$errorMsg.= "Ligne $lineNumber: " . $field->getError() . "\n";
+							$error = true ;
+						}
+					}
+				}
+
+				if ( $error === false )
+				{
+					foreach( $rst as $lineNumber => $arrayValue )
+					{
+						foreach( $this->getEntity()->getField() as $field )
+						{
+							$this->getEntity()->get( $field->getName() )->parseWithImport( $arrayValue[ $field->getName() ] , $this->getEntityId() , $this->getEntityName() );
+						}
+
+						if ( $this->getEntity()->isChild() )
+						{
+							$this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->parseWithImport( end( $this->getIdParent() ) , $this->getEntityId() , $this->getEntityName() );
+						}
+
+						$return = $this->pushData(true , true );
+
+						foreach( $this->getEntity()->getField() as $field )
+						{
+							$this->getEntity()->get( $field->getName() )->clearValue();
+						}
+					}
+				}
+			}
+
+			$std = new \stdClass;
+			$std->error 	= $error;
+            $std->message 	= $errorMsg;
+			$std->id 		= 1;
+			$std->key 		= 1;
+
+			$this->Factory()->Response()->printJSON($std);
         }
         else
         {
