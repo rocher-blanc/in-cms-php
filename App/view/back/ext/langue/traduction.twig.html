@@ -1,5 +1,10 @@
 {% extends 'module.twig.html' %}
 
+{% block meta %}
+    {{ parent() }}
+    <meta name="isadmin" content="{{ user.admin ? 1 : 0}}" />
+{% endblock %}
+
 {% block title_page %}Langues{% endblock %}
 {% set this_page = 'Traduction' %}
 
@@ -9,29 +14,54 @@
     </div>
 
     <div class="panel-body">
+
         <div class="hot-container">
             <div id="handsontable">
+                <div>
+                    <div class="col_three_fourth">
+                        {% if user.admin == 1 %}
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
+                                </div>
+                                <button class="button add-key">Ajouter une clé de traduction</button>
+                            </div>
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </div>
+                    <div class="col_one_fourth col_last">
+                        <select class="form-control translate-lang-select">
+                            <option value="">Afficher une langue</option>
+                            {% for row in contentRows %}
+                                <option value="{{ row.locale }}">{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
                 <table class="table table-striped table-hover table-border" id="translate-table">
                     <thead>
-                        <tr>
-                            <th width="300px">
-                                <input type="text" id="search-key" class="form-control" placeholder="Rechercher" />
-                            </th>
-                            <th width="220px">
-                                <select class="form-control translate-lang-select">
-                                    <option value="">Ajouter une langue</option>
-                                    {% for row in contentRows %}
-                                    <option value="{{ row.lang_id }}">{{ row.lang_display }}</option>
-                                    {% endfor %}
-                                </select>
-                            </th>
-                        </tr>
+                    <tr>
+                        <th width="300px">
+                            <input type="text" id="search-key" class="form-control" placeholder="Rechercher" />
+                        </th>
+                    </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
                 <div>
-                    <button class="button" id="add-key">Ajouter une clé de traduction</button>
+                    {% if user.admin == 1 %}
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
+                            </div>
+                            <button class="button add-key">Ajouter une clé de traduction</button>
+                        </div>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -39,406 +69,17 @@
 {% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('css/handsontable.css') }}" />
-<link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/wysiwyg/summernote.css') }}" />
-<style>
-	#translate-table {
-		margin: 0;
-		display: table;
-		table-layout: fixed;
-	}
-	.highlight-translate {
-		background: rgba(22, 71, 87, .1);
-	}
-
-	.translate-cell pre {
-		font-family: inherit !important;
-		font-size: inherit !important;
-		margin: 0;
-	}
-	.translate-cell ul, .translate-cell ol {
-		padding-left: 30px;
-		margin-bottom: 20px;
-	}
-	.translate-cell a {
-		color: initial !important;
-	}
-</style>
+    <link rel="stylesheet" href="{{ asset('css/handsontable.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/wysiwyg/summernote.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/easydoor/traduction.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ asset('libs/handsontable.min.js') }}"></script>
-	<script src="{{ asset('js/handsontable.js') }}"></script>
-
-	<script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote.min.js') }}"></script>,
-	<script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote-image-attributes.js') }}"></script>,
-	<script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/lang/summernote-fr-FR.js') }}"></script>
-
-	<script type="text/javascript">
-		$(function() {
-
-            $(".translate-cell").dblclick(function() {
-                editCell( this );
-            });
-
-			addLang( $(".translate-lang-select").find("option").eq(1).val() );
-
-
-            $("#search-key").on('input', function() {
-                var key = $(this).val().trim().toLowerCase();
-                var $table = $("#translate-table");
-                var $tbody = $table.find("tbody");
-
-                $tbody.find(".highlight-translate").removeClass("highlight-translate");
-
-                if( key.length === 0 ) {
-                    $tbody.find("tr").show();
-				}
-				else {
-                    $tbody.find("tr").each(function(index, tr) {
-                        $(tr).hide();
-
-                        $(tr).find("td").each(function(i, td) {
-                            if( $(td).text().toLowerCase().indexOf(key) > -1 ) {
-                                $(td).addClass("highlight-translate");
-                                $(tr).show();
-							}
-						});
-					});
-				}
-			});
-
-
-            $("#add-key").click(function () {
-				var key = prompt("Clé ?")
-				if( key.trim().length > 0 ) {
-				    key = key.trim().replace(/ /g, '_').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-				    addKey( key, "text" );
-
-				    var data = {
-				        new_key: key
-					};
-				    data = addCSRF(data);
-
-                    $.ajax({
-                        url     : '/admin-site/ext/langue/traduction/add-key',
-                        data    : data,
-                        method  : "POST",
-                        dataType: 'json',
-                        success: function (response) {}
-                    });
-				}
-            });
-
-
-            $(".translate-lang-select").change(function() {
-				var value = $(".translate-lang-select").val();
-                if( value !== "" ) {
-                    addLang(value);
-                    $(".translate-lang-select").val("").trigger("click");
-				}
-			});
-
-        });
-
-
-        var addCSRF = function( values ) {
-            values['{{ csrf_key }}'] = "{{ csrf_token }}";
-            return values;
-        };
-
-
-		var editCell = function( cell ) {
-            var $cell       = $(cell);
-            var type        = $cell.attr("data-type");
-            var $content    = $cell.find(".content");
-            var $editor     = $cell.find(".editor");
-
-            if( $editor.html().trim().length === 0 ) {
-                $content.hide();
-
-                var $save = $("<button>")
-                    .attr("type", "button")
-					.addClass("ed-button button button-rounded button-reveal button-green button-mini button-3d")
-					.append( $("<i>").addClass("icon-line-check") )
-					.append( $("<span>").text("Enregistrer") )
-                    .click( function() { saveCell(cell); } )
-                    .appendTo($editor);
-
-                var $cancel = $("<button>")
-                    .attr("type", "button")
-                    .addClass("ed-button button button-rounded button-reveal button-red button-mini button-3d")
-                    .append( $("<i>").addClass("icon-line-cross") )
-                    .append( $("<span>").text("Annuler") )
-                    .click( function() { cancelCell(cell); } )
-                    .appendTo($editor);
-
-                if( type === "text" ) {
-                    var $htmlBtn = $("<button>")
-                        .attr("type", "button")
-						.addClass("toHTML")
-                        .addClass("ed-button button button-rounded button-reveal button-yellow button-mini button-3d")
-                        .append( $("<i>").addClass("icon-code") )
-                        .append( $("<span>").text("Ajouter du HTML") )
-                        .click( function() { setToHTML( $(this).parents(".translate-cell") ) } )
-                        .appendTo($editor);
-				}
-
-                $("<br>").appendTo($editor);
-
-                var $textarea = $("<textarea>")
-					.addClass("form-control")
-					.attr("rows", 3)
-                    .val( $content.find("pre").eq(0).html() )
-					.appendTo($editor)
-                    .focus();
-
-                if( type === "html" ) {
-                    setWysiwyg($textarea);
-                }
-			}
-		};
-
-
-		var setToHTML = function( cell ) {
-            var $cell       = $(cell);
-            var $editor     = $cell.find(".editor");
-
-            $cell.parents("tr").find("td").attr("data-type", "html");
-
-
-            $cell.find(".toHTML").remove();
-            setWysiwyg( $editor.find("textarea") );
-		};
-
-
-		var saveCell = function( cell ) {
-            var $cell       = $(cell);
-            var $content    = $cell.find(".content");
-            var $editor     = $cell.find(".editor");
-
-            var value = $editor.find("textarea").val();
-
-            $content.show()
-				.find("pre").eq(0).html( value );
-            $editor.html("");
-
-            var data = {
-                key   : $cell.parents("tr").find("td").eq(0).text(),
-                lang  : $cell.attr("data-lang"),
-                type  : $cell.attr("data-type"),
-                value : value
-            };
-            data = addCSRF(data);
-
-            $.ajax({
-                url     : '/admin-site/ext/langue/traduction/update-translate',
-                data    : data,
-                method  : "POST",
-                dataType: 'json',
-                success: function (response) {}
-            });
-		};
-
-
-		var cancelCell = function( cell ) {
-            var $cell       = $(cell);
-            var $content    = $cell.find(".content");
-            var $editor     = $cell.find(".editor");
-
-            $content.show();
-            $editor.html("");
-		};
-
-
-		var setWysiwyg = function( element ) {
-            $(element).summernote({
-                lang: 'fr-FR',
-                toolbar: [
-//                    ['hx', ['style']],
-                    ['style', ['bold', 'italic', 'underline', 'strikethrough', /*'color'*/]],
-                    ['clear', ['clear']],
-                    ['para', ['ul', 'ol'/*, 'paragraph'*/]],
-                    ['insert', ['link'/*, 'picture', 'video'*/]],
-                    ['view', [/*'fullscreen', */'codeview']],
-                    ['misc', ['print']],
-                ],
-//                popover: {
-//                    image: [
-//                        ['custom', ['imageAttributes']],
-//                        ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-//                        ['float', ['floatLeft', 'floatRight', 'floatNone']],
-//                        ['remove', ['removeMedia']]
-//                    ],
-//                },
-//                imageAttributes:{
-//                    imageDialogLayout:'default', // default|horizontal
-//                    icon:'<i class="note-icon-pencil"/>',
-//                    removeEmpty:false // true = remove attributes | false = leave empty if present
-//                },
-//                displayFields:{
-//                    imageBasic:true,  // show/hide Title, Source, Alt fields
-//                    imageExtra:false, // show/hide Alt, Class, Style, Role fields
-//                    linkBasic:true,   // show/hide URL and Target fields for link
-//                    linkExtra:false   // show/hide Class, Rel, Role fields for link
-//                },
-                onCreateLink : function(linkUrl) {
-                    var has_protocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
-                    var is_mailto = /^mailto\:/.test(linkUrl);
-                    var is_relative = /^\//.test(linkUrl);
-
-                    if (!has_protocol && !is_mailto) {
-                        return "{{ host }}" + linkUrl;
-                    }
-                    else {
-                        return linkUrl;
-                    }
-                },
-//                callbacks: {
-//                    onImageUpload: function (files) {
-//                        let form_data = new FormData();
-//                        let file = files[0];
-//                        form_data.append('filewysiwyg', file);
-//                        let $this = $(this);
-//                        $.ajax({
-//                            url: "/ajax/wysiwyg.php?dir=" + $this.attr('data-dir'),
-//                            data: form_data,
-//                            type: "POST",
-//                            cache: false,
-//                            contentType: false,
-//                            processData: false,
-//                            success: function (data) {
-//                                $this.summernote("insertImage", data);
-//                            }
-//                        });
-//                    }
-//                }
-            });
-		};
-
-
-		var addLang = function( lang_id ) {
-            requestGetLang( lang_id );
-		};
-
-
-		var addLangColumn = function( lang_id, title ) {
-			var $table = $("#translate-table");
-			var $thead = $table.find("thead");
-			var $tbody = $table.find("tbody");
-
-			// Add in thead
-			var $thead_tr = $thead.find("tr").eq(0);
-			var $thead_th_last = $thead_tr.find("th").last();
-
-			var th = $("<th>")
-				.attr("data-lang", lang_id)
-				.text( title )
-				.appendTo( $thead_tr )
-				.insertBefore( $thead_th_last );
-
-			// Add in tbody
-			$tbody.find("tr").each( function(index, tr) {
-                var key = $(tr).find("td").attr("data-key");
-                var $td_last = $(tr).find("td").last();
-
-                createCell( key, lang_id, "text", "" )
-                    .appendTo( tr )
-                    .insertBefore( $td_last );
-			});
-		};
-
-
-		var addKey = function( key, type ) {
-		    $tbody = $("#translate-table tbody");
-		    var $tr = $("<tr>")
-				.appendTo( $tbody);
-
-		    var $td = $("<td>")
-				.append(
-				    $("<strong>").text( key )
-				)
-				.appendTo($tr);
-
-		    var lang_number = $("#translate-table thead tr").eq(0).find("th").length - 2;
-		    for( var i=0; i<lang_number; i++ ) {
-		        var this_lang = $("#translate-table thead tr").eq(0).find("th").eq(i+1).attr("data-lang");
-                createCell( key, this_lang, type, "" )
-                    .dblclick( function() {  editCell(this)  } )
-                    .appendTo($tr);
-			}
-
-            var $td = $("<td>")
-                .appendTo($tr);
-		};
-
-
-		var setTranslate = function( key, lang, type, content ) {
-            var $table = $("#translate-table");
-            var $tbody = $table.find("tbody");
-
-            var finded = false;
-
-            $tbody.find("tr").each( function(index, tr) {
-				if( $(tr).find("td").eq(0).text().trim().toLowerCase() === key ) {
-				    var $cell = $(tr).find("td[data-lang="+ lang +"]");
-
-				    if( type === "html" ) {
-                        setToHTML( $cell );
-					}
-
-                    $cell.find(".content pre").html(content);
-					finded = true;
-				    return true;
-				}
-			});
-
-            if( ! finded ) {
-                addKey( key, type );
-                setTranslate( key, lang, type, content );
-            }
-		};
-
-
-		var createCell = function( key, lang, type, content ) {
-            return $("<td>")
-                .addClass("translate-cell")
-                .attr("data-lang", lang)
-                .attr("data-type", type)
-                .append(  $("<div>").addClass("content").append(  $("<pre>").html( content )  )  )
-                .append(  $("<div>").addClass("editor")                                          )
-                .dblclick( function() {  editCell(this)  } )
-		};
-
-
-		var addTranslate = function( key, lang_id ) {
-
-		};
-
-
-		var requestGetLang = function( lang_id ) {
-		    var data = {
-		        lang_id : lang_id
-			};
-		    data = addCSRF(data);
-
-            $.ajax({
-                url     : '/admin-site/ext/langue/traduction/get-lang',
-                data    : data,
-                method  : "POST",
-                dataType: 'json',
-                success: function (response) {
-
-                    addLangColumn( response.lang.id, response.lang.title );
-
-                    for( key in response.keys ) {
-                        var value = response.keys[key];
-
-                        setTranslate( key.toLowerCase(), response.lang.id, value.type, value.value );
-					}
-                }
-            });
-		}
-	</script>
-
+    <script src="{{ asset('libs/handsontable.min.js') }}"></script>
+    <script src="{{ asset('js/handsontable.js') }}"></script>
+
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote.min.js') }}"></script>,
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote-image-attributes.js') }}"></script>,
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/lang/summernote-fr-FR.js') }}"></script>
+    <script src="{{ vendor('cmsmedias/canvas/js/easydoor/traduction.js') }}"></script>
 {% endblock %}

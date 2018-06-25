@@ -1,0 +1,50 @@
+#translate-table {
+    margin: 0;
+    display: table;
+    table-layout: fixed;
+}
+.highlight-translate {
+    background: rgba(22, 71, 87, .1);
+}
+
+.translate-cell pre {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    margin: 0;
+}
+.translate-cell ul, .translate-cell ol {
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+.translate-cell a {
+    color: initial !important;
+}
+
+pre {
+    position: relative;
+    white-space: pre-wrap;
+    padding: 0;
+    background: none;
+    border: none;
+    /*max-height: 250px;*/
+    /*overflow: hidden;*/
+}
+
+.td-key {
+    vertical-align: top !important;
+}
+.td-key .btn-delete {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: -1;
+    padding: 0 8px !important;
+    transition: all .7s;
+}
+.td-key .btn-delete i {
+    margin: 0 !important;
+}
+.td-key:hover .btn-delete {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 1;
+}

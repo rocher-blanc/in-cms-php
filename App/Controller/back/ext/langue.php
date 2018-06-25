@@ -13,20 +13,6 @@ $app->group('/langue', function () use ($app)
     })->name('langue_index');
 
 
-    $app->get('/traduction', function () use ($app) {
-
-        $contentRows = \DB::for_table('lang')
-            ->where_not_equal('lang_status',0)
-            ->order_by_desc('lang_status')
-            ->find_many();
-
-        $app->render('ext/langue/traduction.twig.html', [
-            "contentRows" => $contentRows
-        ]);
-
-    })->name('langue_traduction');
-
-
     $app->post('/import', function () use ($app) {
         $upload_dir 	= UPLOAD_PATH . '/' ;
         $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
@@ -425,26 +411,36 @@ $app->group('/langue', function () use ($app)
     })->name('langue_disactive');
 
 
+    $app->get('/traduction', function () use ($app) {
+
+        $contentRows = \App\Kernel\Lang::getInstance()->getAll();
+
+        $app->render('ext/langue/traduction.twig.html', [
+            "contentRows" => $contentRows
+        ]);
+
+    })->name('langue_traduction');
 
     $app->post('/traduction/get-lang', function() use ($app) {
-        $lang_id = $app->request->post('lang_id');
+        $lang = $this->getApp()->request->post('lang_locale');
+        $className = "\Project\Lang\\" . strtoupper( $lang ) ;
+        $class     = new $className ;
+        $arrayTrad = $class->getVar();
 
-        $lang = $lang_id == 1
-            ? [ 'id' => 1, 'title' => "Français" ]
-            : [ 'id' => 2, 'title' => "Anglais" ];
+        ksort( $arrayTrad );
+        $keys = [];
 
-        $keys = $lang_id == 1
-            ? [
-                'cle_1' => [ 'type' => "text", 'value' => "Ok" ],
-                'cle_2' => [ 'type' => "text", 'value' => "Ceci est un test" ],
-                'cle_3' => [ 'type' => "html", 'value' => "<ul><li>Pour</li><li>le</li><li>CMS</li></ul>" ],
-            ]
-            : [
-                'cle_1' => [ 'type' => "text", 'value' => "Okay" ],
-                'cle_2' => [ 'type' => "text", 'value' => "It's a test" ],
-                'cle_3' => [ 'type' => "html", 'value' => "<ul><li>For</li><li>this</li><li>CMS</li></ul>" ],
-                'cle_4' => [ 'type' => "html", 'value' => "<p>good ?</p>" ],
-            ];
+        foreach( $arrayTrad as $key => $value ) {
+            if( !empty($key) )
+            {
+                $keys[$key] = [
+                    'type'  => "text", //html
+                    'value' => $value
+                ];
+            }
+        }
+
+        $lang = [ 'id' => 1, 'locale' => $lang, 'title' => "Français" ];
 
         echo json_encode([
             'result' => true,
@@ -456,23 +452,117 @@ $app->group('/langue', function () use ($app)
 
     $app->post('/traduction/update-translate', function() use ($app) {
         $key   = $app->request->post('key');
-        $lang  = $app->request->post('lang');
+        $lang  = $this->getApp()->request->post('lang');
         $type  = $app->request->post('type');
         $value = $app->request->post('value');
 
+        $className = "\Project\Lang\\" . strtoupper( $lang ) ;
+        $class     = new $className ;
+        $arrayTrad = $class->getVar();
+
+        ksort( $arrayTrad );
+
+        $arrayTrad[$key] = $value;
+
+        $src = "<"."?php\n";
+        $src.= "namespace Project\Lang;\n";
+        $src.= "class " . strtoupper( $lang ) . " extends \App\Kernel\Front\LanguageModel {\n";
+        $src.= "\tprotected $"."a = [\n";
+        foreach( $arrayTrad as $key => $value )
+        {
+            $value = trim( $value );
+            $value = str_replace( '"', '\"', $value );
+            if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+        }
+        $src.= "\t];\n";
+        $src.= "}\n";
+
+        if ( ! empty( $lang ) )
+        {
+            \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
+        }
+
         echo json_encode([
             'result' => true,
-            'msg'    => ""
+            'msg'    => "Le texte a été mis à jour."
         ]);
     });
 
-
     $app->post('/traduction/add-key', function() use ($app) {
-        $key = $app->request->post('new_key');
+        $new_key = $app->request->post('new_key');
+
+        $langs = \App\Kernel\Lang::getInstance()->getAll();
+        foreach( $langs as $lang )
+        {
+            $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
+            $class     = new $className ;
+            $arrayTrad = $class->getVar();
+
+            $arrayTrad[$new_key] = "";
+
+            ksort( $arrayTrad );
+
+            $src = "<"."?php\n";
+            $src.= "namespace Project\Lang;\n";
+            $src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+            $src.= "\tprotected $"."a = [\n";
+            foreach( $arrayTrad as $key => $value )
+            {
+                $value = trim( $value );
+                $value = str_replace( '"', '\"', $value );
+                if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+            }
+            $src.= "\t];\n";
+            $src.= "}\n";
+
+            if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
+        }
 
         echo json_encode([
             'result' => true,
             'msg'    => "",
+        ]);
+    });
+
+    $app->get('/traduction/remove-key/:key', function( $key ) use ($app) {
+        $app->render('ext/langue/delete-key.twig.html', [
+            'key' => $key
+        ]);
+    });
+
+    $app->post('/traduction/remove-key-action', function() use ($app) {
+        $key_name = $app->request->post('key');
+
+        $langs = \App\Kernel\Lang::getInstance()->getAll();
+        foreach( $langs as $lang )
+        {
+            $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
+            $class     = new $className ;
+            $arrayTrad = $class->getVar();
+
+            unset( $arrayTrad[$key_name] );
+
+            ksort( $arrayTrad );
+
+            $src = "<"."?php\n";
+            $src.= "namespace Project\Lang;\n";
+            $src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+            $src.= "\tprotected $"."a = [\n";
+            foreach( $arrayTrad as $key => $value )
+            {
+                $value = trim( $value );
+                $value = str_replace( '"', '\"', $value );
+                if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+            }
+            $src.= "\t];\n";
+            $src.= "}\n";
+
+            if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
+        }
+
+        echo json_encode([
+            'result' => true,
+            'msg'    => "La clé a été supprimée",
         ]);
     });
 });
