@@ -48,7 +48,7 @@
                                     <input type="hidden" value="{{ page }}" name="page" class="tablePage" />
 									<input type="hidden" value="1" name="search" />
 								{% endif %}
-								{% if thvalue.type == 'text' or thvalue.type == 'hidden' %}
+								{% if thvalue.type == 'textarea' or thvalue.type == 'text' or thvalue.type == 'hidden' %}
 									<input type="text" class="form-control form-control-sm" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
 								{% elseif thvalue.type == 'date' %}
 									<input type="text" class="form-control form-control-sm daterange" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />

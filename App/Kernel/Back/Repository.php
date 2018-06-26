@@ -99,7 +99,7 @@ class Repository extends \App\Kernel\Common\Repository
 
         foreach( $fields as $field )
         {
-            if ( ( $field['type'] == 'text' or $field['type'] == 'hidden' ) && !empty( $field['value'] ) )
+            if ( ( $field['type'] == 'textarea' or $field['type'] == 'text' or $field['type'] == 'hidden' ) && !empty( $field['value'] ) )
             {
                 $content = $content->where_like( $this->getEntity()->get( $field['name'] )->fieldSql() , '%' . $field['value'] . '%' ) ;
             }

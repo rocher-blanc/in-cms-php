@@ -563,7 +563,7 @@ class Controller extends \App\Kernel\Common\Controller
                 }
             }
 
-            $count   = $this->getRepository()->countTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
+            $count = $this->getRepository()->countTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
 
             if ( $count < $offset )
             {
