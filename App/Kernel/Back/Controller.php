@@ -83,15 +83,28 @@ class Controller extends \App\Kernel\Common\Controller
         return $this->_lang ;
     }
 
+    protected function getMessage( $key = NULL )
+    {
+        if ( $key === NULL ) return $this->_msg ;
+        else				 return $this->_msg[ $key ] ;
+    }
+
+    /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
     protected function Log()
     {
         return Log::getInstance() ;
     }
 
-    protected function getMessage( $key = NULL )
+    /* ************************************************** */
+    /* ******************    ISER    ******************** */
+    /* ************************************************** */
+
+    protected function isDepedency()
     {
-        if ( $key === NULL ) return $this->_msg ;
-        else				 return $this->_msg[ $key ] ;
+        return ( $this->getDepedencyModule() !== NULL ? true : false );
     }
 
     /* ***************************************************** */
@@ -669,6 +682,9 @@ class Controller extends \App\Kernel\Common\Controller
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
         }
 
+        $this->setRender( 'depedency' , $this->isDepedency() ) ;
+        $this->setRender( 'dModule' , $this->getDepedencyModule() ) ;
+        $this->setRender( 'dElement' , $this->getDepedencyElement() ) ;
         $this->setRender( 'page' , $page ) ;
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
@@ -728,7 +744,7 @@ class Controller extends \App\Kernel\Common\Controller
                 ),
                 'action'    => $this->getActionName(),
                 'fields'    => $this->getImportFiled(),
-                'depedency' => ( $this->getDepedencyModule() !== NULL ? true : false )
+                'depedency' => $this->isDepedency()
             ));
         }
 
@@ -1001,10 +1017,10 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     /* ************************************************** */
-    /* ******************  DEPENDENCY  ****************** */
+    /* ******************  DEPEDENCY  ****************** */
     /* ************************************************** */
 
-    protected function loadDependencies()
+    protected function loadDepedencies()
     {
         if ( $this->getEntity()->hasDependency() )
         {
@@ -1398,7 +1414,7 @@ class Controller extends \App\Kernel\Common\Controller
             return $this->Factory()->Response()->printJSON( $rst ) ;
         }
 
-        $this->loadDependencies() ;
+        $this->loadDepedencies() ;
         $this->generateForm() ;
 
         $arrayParent = $this->getParentArray();
@@ -1428,7 +1444,7 @@ class Controller extends \App\Kernel\Common\Controller
             return $this->Factory()->Response()->printJSON( $rst ) ;
         }
 
-        $this->loadDependencies() ;
+        $this->loadDepedencies() ;
         $this->generateForm( true ) ;
 
         $arrayParent = $this->getParentArray();

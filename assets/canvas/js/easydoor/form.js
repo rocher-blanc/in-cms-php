@@ -12,13 +12,13 @@ init = function( base ) {
     initLink( base );
     deleteValueMedia( base );
     checkImage( base );
-    modalDepedency();
+    modalDepedency('body');
     tableDepedency( base );
 };
 
-modalDepedency = function () {
-    if( $('a[data-modal="true"]').length > 0 ) {
-        $('a[data-modal="true"]').magnificPopup({
+modalDepedency = function ( base ) {
+    if( $(base).find('a[data-modal="true"]').length > 0 ) {
+        $(base).find('a[data-modal="true"]').magnificPopup({
             type: 'ajax',
             closeBtnInside: false,
             callbacks: {
@@ -28,6 +28,10 @@ modalDepedency = function () {
                     SEMICOLON.widget.masonryThumbs();
                     init('#myModal1');
                     checkboxSwitch('#myModal1');
+                    if ( $('#myModal1 .tab-nav a').length ) {
+                        $('#myModal1 .tab-nav a:first').tab('show');
+                        console.log($('#myModal1 .tab-nav a'));
+                    }
                 },
                 open: function() {
                     $('body').addClass('ohidden');
@@ -53,7 +57,7 @@ loadTable = function( className ) {
             success: function(html) {
                 $div.html( html ) ;
                 listenFormTable( $div.attr('id') );
-                console.log($div.attr('id'));
+                modalDepedency('#' + $div.attr('id'));
             }
         });
     });

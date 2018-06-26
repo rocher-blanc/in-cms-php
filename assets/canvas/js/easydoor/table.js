@@ -120,25 +120,26 @@ listenFormTable = function( base ) {
                 $(this).val('');
             });
 
-            if( $form.find('[data-lightbox="ajax"]').length > 0 ) {
-                $form.find('[data-lightbox="ajax"]').magnificPopup({
-                    type: 'ajax',
-                    closeBtnInside: false,
-                    callbacks: {
-                        ajaxContentAdded: function(mfpResponse) {
-                            SEMICOLON.widget.loadFlexSlider();
-                            SEMICOLON.initialize.resizeVideos();
-                            SEMICOLON.widget.masonryThumbs();
-                        },
-                        open: function() {
-                            $('body').addClass('ohidden');
-                        },
-                        close: function() {
-                            $('body').removeClass('ohidden');
-                        }
+        }
+
+        if( $form.find('[data-lightbox="ajax"]').length > 0 ) {
+            $form.find('[data-lightbox="ajax"]').magnificPopup({
+                type: 'ajax',
+                closeBtnInside: false,
+                callbacks: {
+                    ajaxContentAdded: function(mfpResponse) {
+                        SEMICOLON.widget.loadFlexSlider();
+                        SEMICOLON.initialize.resizeVideos();
+                        SEMICOLON.widget.masonryThumbs();
+                    },
+                    open: function() {
+                        $('body').addClass('ohidden');
+                    },
+                    close: function() {
+                        $('body').removeClass('ohidden');
                     }
-                });
-            }
+                }
+            });
         }
 
         /** GESTION DES RECHERCHES **/

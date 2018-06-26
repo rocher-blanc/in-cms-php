@@ -121,7 +121,14 @@
                         {% endif %}
 						<td class="text-right actionLink" style="vertical-align: middle;">
 			                {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
-                            {% if right.edit == true %}<a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>{% endif %}
+                            {% if right.edit == true %}
+                                {% if depedency %}
+                                    <a href="{{ dRoute( mod.name , 'edit' , dElement , dModule , content.id ) }}"data-modal="true"><i class="icon-pencil"></i></a>
+                                {% else %}
+                                    <a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>
+
+                                {% endif %}
+                            {% endif %}
 							{% if right.delete == true %}<a href="{{ route( mod.name , 'delete' , '' , content.id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>{% endif %}
 						</td>
 					</tr>
