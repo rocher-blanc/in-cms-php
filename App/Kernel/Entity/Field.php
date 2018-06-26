@@ -482,6 +482,10 @@ class Field
 					$exp = explode( ' ' , $value );
 					$date = $exp[1];
 				}
+				else
+                {
+                    $date = $value;
+                }
 
 				if ( preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $date, $matches) )
 				{

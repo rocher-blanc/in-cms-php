@@ -1,6 +1,6 @@
 $(function() {
-    if ( $('.upload').length ) {
-        $('.upload').each(function(){
+    if ( $('.upload-import').length ) {
+        $('.upload-import').each(function(){
             var $this = $(this);
             var tvalue = $("meta[name=token]").attr("content") ;
 
@@ -15,7 +15,7 @@ $(function() {
                 },
 
                 showCaption: false,
-                showRemove: true,
+                showRemove: false,
 
                 showUpload: false,
                 showPreview: false,
@@ -30,10 +30,7 @@ $(function() {
             }).on("filebatchselected", function(event, files) {
                 $this.fileinput("upload");
             }).on("fileuploaded", function(event, files) {
-                console.log('test');
-                console.log( files );
-                console.log( files.response );
-                if ( files.response.error == true ) {
+                if ( files.response.result == false ) {
                     $('#errorImport').html(files.response.message);
                 }
                 else {
