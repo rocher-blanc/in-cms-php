@@ -62,7 +62,19 @@
                 {% if depedencies|length > 0 %}
                     {% for dependency in depedencies %}
                         <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                            <a class="ed-button button button-rounded button-reveal button-3d" data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}"><i class="icon-plus"></i><span>Ajouter</span></a>
+                            <div class="ed-menu bottommargin-sm">
+                                <a data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+                                <div class="btn-group">
+                                    <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu" data-action="{{ route( dependency.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ dependency.name }}">
+                                        {% for name, field in dependency.fields if field.table == true %}
+                                            <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="depedencyContent table-responsive" id="table-content-{{ dependency.class }}" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
                         </div>
                     {% endfor %}

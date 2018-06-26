@@ -1007,13 +1007,14 @@ class Controller extends \App\Kernel\Common\Controller
     {
         if ( $this->getEntity()->hasDependency() )
         {
-            foreach( $this->getEntity()->getDependency() as $dependency )
+            foreach( $this->getEntity()->getDependency() as $depedency )
             {
                 $depedencies[] = [
-                    'name'  => $dependency['name'],
-                    'class' => $dependency['class'],
-                    'slug'  => strtolower( $dependency['name'] ),
-                    'icon'  => $dependency['icon'],
+                    'name'   => $depedency['name'],
+                    'class'  => $depedency['class'],
+                    'slug'   => strtolower( $depedency['name'] ),
+                    'icon'   => $depedency['icon'],
+                    'fields' => $this->Container()->module( $depedency['name'] )->getController(true)->getImportFiled()
                 ];
             }
         }
@@ -1364,7 +1365,7 @@ class Controller extends \App\Kernel\Common\Controller
 			}
 
 			$std = new \stdClass;
-			$std->error 	= $error;
+			$std->result 	= ( ! $error );
             $std->message 	= $errorMsg;
 			$std->id 		= 1;
 			$std->key 		= 1;
