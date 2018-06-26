@@ -112,6 +112,11 @@ class Repository extends \App\Kernel\Common\Repository
             {
                 $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );
             }
+            else if ( $field['type'] == 'radio' && !empty( $field['value'] ) )
+            {
+                if ( $field['value'] == -1 ) $field['value'] = 0;
+                $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );
+            }
             else if ( $field['type'] == 'number' )
             {
                 if ( ! empty( $field['value_start'] ) )

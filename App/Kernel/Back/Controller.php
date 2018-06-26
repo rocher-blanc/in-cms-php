@@ -552,6 +552,7 @@ class Controller extends \App\Kernel\Common\Controller
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
                         'type' => $field->getType(),
+                        'boolean' => $field->getData('isBoolean'),
                         'options' => $option
                     ], $arrayDate);
 

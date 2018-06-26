@@ -60,12 +60,18 @@
 										<input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
 									</div>
 								{% elseif thvalue.type == 'select' %}
-									<select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
-										<option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- Aucune sélection -----</option>
-										{% for key,value in thvalue.options %}
-											<option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
-										{% endfor %}
-									</select>
+                                    <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
+                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- Aucune sélection -----</option>
+                                        {% for key,value in thvalue.options %}
+                                            <option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% elseif thvalue.type == 'radio' and thvalue.boolean == true %}
+                                    <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
+                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>Tous</option>
+                                        <option value="1"{{ thvalue.value == '1' ? ' selected' : '' }}>Oui</option>
+                                        <option value="-1"{{ thvalue.value == '-1' ? ' selected' : '' }}>Non</option>
+                                    </select>
                                 {% endif %}
 							</td>
 						{% endfor %}
