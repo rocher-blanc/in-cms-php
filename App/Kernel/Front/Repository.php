@@ -209,13 +209,24 @@ class Repository extends \App\Kernel\Common\Repository
                 {
                     case "id" :
                         $rst->where_id_is( $rqt );
-                        break;
+                    break;
 					case "parent" :
 						$rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
-						break;
-					case "limit" :
-						$rst->limit( $rqt )->offset(0);
-						break;
+                    break;
+                    case "limit" :
+                        $rst->limit( $rqt )->offset(0);
+                    break;
+                    case "order" :
+                        list( $key , $by ) = explode( ":" , $rqt );
+                        if ( $by == 'asc' )
+                        {
+                            $rst->order_by_asc( $this->field( $key ) );
+                        }
+                        else if ( $by == 'desc' )
+                        {
+                            $rst->order_by_desc( $this->field( $key ) );
+                        }
+                    break;
 					case "where" :
                         $exp = explode( ";" , $rqt );
 
