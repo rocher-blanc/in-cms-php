@@ -456,7 +456,7 @@ class Field
 				}
 			break;
 			case "image" :
-			    if ( file_exists( $this->getValue() ) )
+			    if ( @file_get_contents( $this->getValue() ) !== false )
                 {
                     $size = getimagesize( $this->getValue() );
                     $rst  = (strtolower( substr( $size['mime'] , 0, 5 ) ) == 'image' ? true : false );
@@ -464,14 +464,18 @@ class Field
                     if ( ! $rst )
                     {
                         $this->setError("Le champ doit être une URL d'image correct") ;
+                        return false ;
+                    }
+                    else
+                    {
+                        return true ;
                     }
                 }
                 else
                 {
-                    $rst = false ;
+                    $this->setError("L'image \"" . $this->getValue() . "\" n'existe pas") ;
+                    return false ;
                 }
-
-				return $rst ;
 			break;
 			default :
 				return true ;
