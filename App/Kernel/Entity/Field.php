@@ -488,7 +488,7 @@ class Field
 		switch( $this->getType() )
 		{
 			case "date" :
-				if ( strpos( $value , ' ' ) !== false )
+			    if ( strpos( $value , ' ' ) !== false )
 				{
 					$exp = explode( ' ' , $value );
 					$date = $exp[1];
@@ -502,25 +502,36 @@ class Field
 				{
 					$this->setValue( $date ) ;
 				}
-				else if( preg_match("/^(\d{2})\/(\d{2})\/(\d{4})$/", $date, $matches) )
-				{
-					list( $d, $m, $y ) = explode( '/' , $date );
-					$this->setValue("$y-$m-$d") ;
-				}
+                else if( preg_match("/^(\d{2})\/(\d{2})\/(\d{4})$/", $date, $matches) )
+                {
+                    list( $d, $m, $y ) = explode( '/' , $date );
+                    $this->setValue("$y-$m-$d") ;
+                }
+                else if( preg_match("/^(\d{1})\/(\d{2})\/(\d{4})$/", $date, $matches) )
+                {
+                    list( $d, $m, $y ) = explode( '/' , $date );
+                    $this->setValue("$y-$m-0$d") ;
+                }
+                else if( preg_match("/^(\d{2})\/(\d{1})\/(\d{4})$/", $date, $matches) )
+                {
+                    list( $d, $m, $y ) = explode( '/' , $date );
+                    $this->setValue("$y-0$m-$d") ;
+                }
+                else if( preg_match("/^(\d{1})\/(\d{1})\/(\d{4})$/", $date, $matches) )
+                {
+                    list( $d, $m, $y ) = explode( '/' , $date );
+                    $this->setValue("$y-0$m-0$d") ;
+                }
 			break;
 			case "image" :
-				if ( $this->isEmpty() == true )
-				{
-					$this->clearValue() ;
-				}
-				else
-				{
-					$Media = new \App\Kernel\Back\Media;
-					$Media->setModuleName( $mName );
-					$Media->setModuleId( $mId );
-					$Media->setFolder( \App\Kernel\Container::getInstance()->module( $mName )->getEntity()->getFolder() );
-					$this->setValue( $Media->createByUrl( $value , $this->getName() ) );
-				}
+			    if ( !empty( $value ) )
+			    {
+                    $Media = new \App\Kernel\Back\Media;
+                    $Media->setModuleName( $mName );
+                    $Media->setModuleId( $mId );
+                    $Media->setFolder( \App\Kernel\Container::getInstance()->module( $mName )->getEntity()->getFolder() );
+                    $this->setValue( $Media->createByUrl( $value , $this->getName() ) );
+                }
 			break;
 			default :
 				$this->setValue( $value ) ;

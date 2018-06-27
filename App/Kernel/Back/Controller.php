@@ -959,7 +959,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                     if ( $this->getApp()->request->post('submit') == "stay" )
                     {
-                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , $token ) ;
+                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , '' ) ;
                     }
                     else
                     {
@@ -1332,6 +1332,8 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function importAction()
     {
+        set_time_limit(0);
+
         if ( $this->getApp()->request->isPost() )
         {
             $import = new Import;
@@ -1359,19 +1361,26 @@ class Controller extends \App\Kernel\Common\Controller
 
 				if ( $error === false )
 				{
-					foreach( $rst as $lineNumber => $arrayValue )
+				    foreach( $rst as $lineNumber => $arrayValue )
 					{
-						foreach( $this->getEntity()->getField() as $field )
-						{
-							$this->getEntity()->get( $field->getName() )->parseWithImport( $arrayValue[ $field->getName() ] , $this->getEntityId() , $this->getEntityName() );
-						}
+                        foreach( $this->getEntity()->getField() as $field )
+                        {
+                            $this->getEntity()->get( $field->getName() )->parseWithImport( $arrayValue[ $field->getName() ] , $this->getEntityId() , $this->getEntityName() );
+                        }
 
 						if ( $this->getEntity()->isChild() )
 						{
-							$this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->parseWithImport( end( $this->getIdParent() ) , $this->getEntityId() , $this->getEntityName() );
+                            $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->parseWithImport( end( $this->getIdParent() ) , $this->getEntityId() , $this->getEntityName() );
 						}
 
-						$return = $this->pushData(true , true );
+						$a = [];
+                        foreach( $this->getEntity()->getField() as $field )
+                        {
+                            $a[ $field->getName() ] = $field->getValue();
+                        }
+
+                        $return = $this->pushData(true , true );
+                        $this->setId(NULL);
 
 						foreach( $this->getEntity()->getField() as $field )
 						{
