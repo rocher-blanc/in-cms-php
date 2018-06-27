@@ -456,13 +456,20 @@ class Field
 				}
 			break;
 			case "image" :
-				$size = getimagesize( $this->getValue() );
-				$rst  = (strtolower( substr( $size['mime'] , 0, 5 ) ) == 'image' ? true : false );
+			    if ( file_exists( $this->getValue() ) )
+                {
+                    $size = getimagesize( $this->getValue() );
+                    $rst  = (strtolower( substr( $size['mime'] , 0, 5 ) ) == 'image' ? true : false );
 
-				if ( ! $rst )
-				{
-					$this->setError("Le champ doit être une URL d'image correct") ;
-				}
+                    if ( ! $rst )
+                    {
+                        $this->setError("Le champ doit être une URL d'image correct") ;
+                    }
+                }
+                else
+                {
+                    $rst = false ;
+                }
 
 				return $rst ;
 			break;
