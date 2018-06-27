@@ -1392,7 +1392,7 @@ class Controller extends \App\Kernel\Common\Controller
 
 			$std = new \stdClass;
 			$std->result 	= ( ! $error );
-            $std->message 	= $errorMsg;
+            $std->message 	= nl2br( $errorMsg );
 			$std->id 		= 1;
 			$std->key 		= 1;
 
