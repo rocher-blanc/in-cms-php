@@ -1,5 +1,48 @@
 {% extends 'layout.twig.html' %}
 
+{% macro parametre(class) %}
+<a href="#" class="{{ class }}"><div>Paramètres</div></a>
+<ul>
+    <li>
+        <a href="{{ siteUrl('/ext/page') }}">
+            Pages
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/parammodule') }}">
+            Modules
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/user') }}">
+            Administrateurs
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/group') }}">
+            Groupes d'administrateurs
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/langue') }}">
+            Langues
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/metadata') }}">
+            Métadonnées
+        </a>
+    </li>
+    <li>
+        <a href="{{ siteUrl('/ext/microdata') }}">
+            Microdata
+        </a>
+    </li>
+</ul>
+{% endmacro parametre %}
+
+{% import _self as menu %}
+
 {% block contenu %}
     <div id="wrapper" class="clearfix">
         <header id="header" class="full-header">
@@ -90,119 +133,127 @@
                                     {% endfor %}
                                 {% endif %}
                             {% endfor %}
-                            <li>
-                                <a href="#">
-                                    Paramètres
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/page') }}">
-                                            Pages
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/parammodule') }}">
-                                            Modules
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/user') }}">
-                                            Administrateurs
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/group') }}">
-                                            Groupes d'administrateurs
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/langue') }}">
-                                            Langues
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/metadata') }}">
-                                            Métadonnées
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/microdata') }}">
-                                            Microdata
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div>Développeur</div>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/moduleadmin') }}">
-                                            <div>Modules</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/domain') }}">
-                                            <div>Domaines</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/pageadmin') }}">
-                                            <div>Pages</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/groupmodule') }}">
-                                            <div>Menu d'administration</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/performance') }}">
-                                            <div>Performances</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/log') }}">
-                                            <div>Journal d'événements</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/maintenance') }}">
-                                            <div>Maintenance</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/admin/security') }}">
-                                            <div>Sécurité</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            {% if active_newsletter == true %}
-                            <li>
-                                <a href="#">
-                                    <div>Newsletter</div>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
-                                            <div>Groupes d'abonnés</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/newsletter_sender') }}">
-                                           <div>Expéditeurs</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
-                                            <div>Campagnes</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+
+                            {% if active_newsletter == false and user.admin == false and active_user == false %}
+                                <li>
+                                    {{ menu.parametre('') }}
+                                </li>
+                            {% else %}
+                                <li class="mega-menu sub-menu">
+                                    <a href="#" class="sf-with-ul"><div>easyDOOR</div></a>
+                                    <div class="mega-menu-content style-2 clearfix">
+
+                                        {% if active_newsletter == true %}
+                                        <ul class="mega-menu-column col-lg-3">
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
+                                                            <div>Groupes d'abonnés</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/ext/newsletter_sender') }}">
+                                                            <div>Expéditeurs</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                                                            <div>Campagnes</div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        {% endif %}
+
+                                        <ul class="mega-menu-column col-lg-3">
+                                            <li class="mega-menu-title sub-menu">
+                                                {{ menu.parametre('sf-with-ul') }}
+                                            </li>
+                                        </ul>
+
+                                        {% if active_user == true %}
+                                        <ul class="mega-menu-column col-lg-3">
+
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Utilisateurs</div></a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/ext/user_front') }}">
+                                                            <div>Utilisateurs</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/ext/user_front_group') }}">
+                                                            <div>Groupes d'utilisateurs</div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                        {% endif %}
+
+                                        {% if user.admin == true %}
+                                        <ul class="mega-menu-column col-lg-3">
+
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Développeur</div></a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/moduleadmin') }}">
+                                                            <div>Modules</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/domain') }}">
+                                                            <div>Domaines</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/pageadmin') }}">
+                                                            <div>Pages</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/groupmodule') }}">
+                                                            <div>Menu d'administration</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/performance') }}">
+                                                            <div>Performances</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/log') }}">
+                                                            <div>Journal d'événements</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/maintenance') }}">
+                                                            <div>Maintenance</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/admin/security') }}">
+                                                            <div>Sécurité</div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                        {% endif %}
+
+                                    </div>
+                                </li>
                             {% endif %}
+
+
+
                             <li class="website">
                                 <a target="_blank" href="{{ siteUrl('/',false) }}">
                                     <div>Voir mon site</div>
