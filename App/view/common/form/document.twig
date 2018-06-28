@@ -1,0 +1,28 @@
+<div class="list-document">
+    <ul class="nomargin">
+        {% for doc in docs %}
+        <li>
+            <i class="fa fa-file{{ doc.ico.class }}-o" style="color: {{ doc.ico.color }}"></i> {{ doc.name }} <i class="icon-trash fright"></i>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="text-right">
+    <input id="upload_{{ name }}" value="{{ image }}" type="file" data-upload-document class="file-loading" data-fieldname="id_{{ name }}" data-imgname="source_{{ field_name }}" data-field="{{ field_name }}" data-uploadurl="{{ route( mod.name , 'uploaddocument' ) }}">
+</div>
+
+<style>
+    .list-document {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border: 1px dashed #aaa;
+    }
+
+    .list-document li {
+        list-style: none;
+        display: block;
+        padding: 3px 10px;
+        margin-bottom: 2px;
+        background-color: #fff;
+    }
+</style>

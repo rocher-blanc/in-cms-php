@@ -24,22 +24,34 @@ class Document extends \App\Kernel\Back\Form
 	public function html( $field, $name, $value = NULL )
 	{
 		$this->value = $value ;
-		
+
 		$this->_lib_js  = [
-			'jquery-file-upload/js/vendor/jquery.ui.widget.js',
-			'jquery-file-upload/js/jquery.iframe-transport.js',
-			'jquery-file-upload/js/jquery.fileupload.js'
+			'cmsmedias/canvas/js/components/bs-filestyle.js',
+			'cmsmedias/canvas/js/easydoor/locales/fileinput/fr.js',
 		];
-		
-		$this->_lib_css = [
-			'jquery-file-upload/css/jquery.fileupload.css'
-		];
+		$this->_lib_css = ['cmsmedias/canvas/css/src/components/bs-filestyle.css'];
 		
 		if ( $this->hasValue() ) 
 		{
 			$this->_doc->setDocumentId( $value );
             $this->_doc->getNameById();
 		}
+
+		for( $i=1; $i<=5; $i++)
+		{
+			$ico = $this->_doc->getIcon( "truc$i.pdf" );
+			$tab[$i] = [
+				'name' => "truc$i.pdf",
+				'ico' => $ico,
+			];
+		}
+
+		return $this->View()->fetch( 'form/document.twig' , [
+			'name' => $name,
+			'docs' => $tab,
+			'field_name' => $field->getName()
+		]);
+/*
 
 		$html = '
 		<div id="bloc_doc_id_' . $name . '" data-nodoc="' . \App\Kernel\Message::getInstance()->get("no_document") . '">
@@ -65,6 +77,6 @@ class Document extends \App\Kernel\Back\Form
 				</a>
 		</div>' ;
 	
-		return $html;
+		return $html;*/
 	}
 }

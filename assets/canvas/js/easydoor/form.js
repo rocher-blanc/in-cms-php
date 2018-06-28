@@ -12,6 +12,7 @@ init = function( base ) {
     initLink( base );
     deleteValueMedia( base );
     checkImage( base );
+    checkDocument( base );
     modalDepedency('body');
     tableDepedency( base );
 };
@@ -135,6 +136,57 @@ checkImage = function(base) {
     }
 };
 
+checkDocument = function(base) {
+    if ( $(base + ' input[data-upload-document]').length ) {
+        $(base + ' input[data-upload-document]').each(function(){
+            var $this = $(this);
+            var myForm = $this.closest('form');
+            var tvalue = $("meta[name=token]").attr("content") ;
+
+            $this.fileinput({
+                language: 'fr',
+                uploadUrl: $this.data('uploadurl'),
+                mainClass: "input-group-md upload-image",
+
+                uploadExtraData:{
+                    field:$this.data('field'),
+                    csrf_token:tvalue
+                },
+
+                showCaption: false,
+                showRemove: false,
+
+                showUpload: false,
+                showPreview: false,
+                showCancel: false,
+                showProgress: false,
+
+                maxFileCount: 20,
+                browseLabel: "Parcourir",
+                browseClass: "button button-mini button-rounded",
+                browseIcon: "<i class=\"icon-file\"></i> ",
+            }).on("filebatchselected", function(event, files) {
+                myForm.find('.form-process').fadeIn();
+                $this.fileinput("upload");
+            }).on("fileuploaded", function(event, files) {
+                myForm.find('.form-process').fadeOut();
+                myForm.find('.kv-upload-progress').hide();
+            }).on('fileclear', function(event, id, index) {
+                $($this.attr('data-bdd')).val('');
+                myForm.find('.form-process').fadeOut();
+            }).on('fileerror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
+            }).on('filebatchuploaderror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
+            }).on('filebeforedelete', function() {
+                console.log('test filebeforedelete');
+            }).on('filedeleted', function() {
+                console.log('test filedeleted');
+            });
+        });
+    }
+};
+0
 checkForm = function(base) {
     $(base + ' form').not('.submitReady').bind('submit', function(e) {
         var $form = $(this);
@@ -145,6 +197,8 @@ checkForm = function(base) {
 
         $(base + ' .ed_field').removeClass('error');
         var serialize = $form.serialize();
+        //            data: $('#form-module form.submitReady').serialize(),
+
 
         e.preventDefault();
         e.stopPropagation();

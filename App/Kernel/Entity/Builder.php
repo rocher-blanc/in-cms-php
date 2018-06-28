@@ -943,11 +943,7 @@ class Builder extends Model
         $this->setDocument() ;
         $this->setDocumentField( $this->field()->getData("columnName") ) ;
 
-        $this->addAction("doc_newupload") ;
-        $this->addAction("doc_postupload") ;
-        $this->addAction("doc_upload") ;
-        $this->addAction("doc_postclick") ;
-        $this->addAction("document") ;
+        $this->addAction("uploaddocument") ;
         $this->addAction("deletedocument") ;
 
         return $this ;

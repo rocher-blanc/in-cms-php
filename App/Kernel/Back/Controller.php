@@ -1588,44 +1588,6 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************   DOCUMENT   ******************* */
     /* ************************************************** */
 
-    protected function documentAction()
-    {
-        $Doc = new \App\Kernel\Back\Document;
-        $Doc->setModuleId( $this->getEntityId() ) ;
-
-        $documents = $Doc->getAll() ;
-        if ( $documents )
-        {
-            $rqt = \DB::for_module( $this->getEntityName() );
-            $fieldDoc = $this->getEntity()->getDocumentField() ;
-            foreach( $fieldDoc as $field )
-            {
-                $rqt = $rqt->select( $field );
-            }
-            $rqt = $rqt->find_many();
-
-            if ( $rqt )
-            {
-                foreach( $rqt as $row )
-                {
-                    foreach( $fieldDoc as $field )
-                    {
-                        if ( array_key_exists( $row->get( $field ) , $documents ) ) $documents[ $row->get( $field ) ]->document_delete = false ;
-                    }
-                }
-            }
-
-            $this->setRender( 'documents' , $documents ) ;
-            $this->setRender( 'path' , $this->getEntity()->getPathDocument(false) ) ;
-            $this->render('document/index.twig.html') ;
-        }
-        else
-        {
-            $this->setRender( 'noDocument' , true ) ;
-            $this->doc_newuploadAction() ;
-        }
-    }
-
     protected function deletedocumentAction()
     {
         $this->checkToken() ;
@@ -1663,65 +1625,11 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-    protected function doc_uploadAction()
+    protected function uploaddocumentAction()
     {
         $Doc = new \App\Kernel\Back\Document;
         $Doc->setModuleId( $this->getEntityId() ) ;
         $Doc->upload( UPLOAD_PATH ) ;
-    }
-
-    protected function doc_newuploadAction()
-    {
-        $this->render('document/upload.twig.html') ;
-    }
-
-    protected function doc_postuploadAction()
-    {
-        $field = $this->getEntity()->build( $this->getApp()->request->post('field') )->field();
-        $result = json_decode( $this->getApp()->request->post('data') ) ;
-
-        if ( $result )
-        {
-            foreach( $result as $row )
-            {
-                $this->parsePostDocument( $row->id , $this->getApp()->request->post('field') ) ;
-            }
-        }
-    }
-
-    protected function doc_postclickAction()
-    {
-        $Doc = new \App\Kernel\Back\Document;
-        $Doc->setDocumentId( $this->getApp()->request->post('dataid') );
-        $Doc->getNameById();
-
-        $this->parsePostDocument( $Doc->getDocumentId() , $this->getApp()->request->post('field') , false ) ;
-    }
-
-    protected function parsePostDocument( $idFile , $fieldName , $upload = true )
-    {
-        $field = $this->getEntity()->build( $fieldName )->field();
-        $Doc = new \App\Kernel\Back\Document;
-        $Doc->setModuleId( $this->getEntityId() ) ;
-        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
-        $Doc->setDocumentId( $idFile ) ;
-        $Doc->getNameById() ;
-        $Doc->rename();
-
-        $json[] = [
-            'key' => "source_" . $field->getName(),
-            'name' => $Doc->getDocumentName(),
-            'ico' => $Doc->getIcon( $Doc->getDocumentName() ),
-        ];
-
-        $this->getApp()->contentType('application/json');
-        echo json_encode([
-            'id' => [
-                'key' => 'id_' . $field->getColumn() ,
-                'value' => $Doc->getDocumentId()
-            ],
-            'files' => $json
-        ]) ;
     }
 
     /* ************************************************** */
