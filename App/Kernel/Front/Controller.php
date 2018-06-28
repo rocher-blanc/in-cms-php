@@ -680,7 +680,7 @@ class Controller extends \App\Kernel\Common\Controller
 					}
 					else
 					{
-						$urlPattern = $this->Factory()->Url()->getFullUrl() . '/(:num)';
+						$urlPattern = $this->Factory()->Url()->getFullUrl() . '/page/(:num)';
 					}
 
                     $totalItems     = $this->getRepository()->requestCount( $request );

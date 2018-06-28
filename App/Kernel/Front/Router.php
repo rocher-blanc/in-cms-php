@@ -352,7 +352,7 @@ class Router
     {
         $url = $this->getUrl( $this->getOffset() + 1 );
 
-        if ( $url === NULL ) return -1;
+        if ( $url === NULL or $url == 'page' ) return -1;
 
         $ct = \DB::for_table('module')
             ->left_outer_join('seo', array('seo.seo_module_id', '=', 'module.module_id'))
@@ -440,7 +440,7 @@ class Router
 
     protected function displayModule()
     {
-        $result = \DB::for_table('module')
+		$result = \DB::for_table('module')
             ->select('module.module_class_name')
             ->select('module.module_id')
             ->left_outer_join('module_lang', array('module.module_id', '=', 'module_lang.module_lang_module_id'))
@@ -451,7 +451,10 @@ class Router
         $urlTab = $this->getUrl() ;
         $ct     = count( $urlTab ) ;
 
-        if ( $ct == 1 && $result or ( $ct == 2 && $this->Lang()->count() > 1 ) )
+		$max = 1;
+        if ( $this->Lang()->count() > 1 ) $max = 2;
+
+        if ( ( $ct == $max or $this->getUrl( ( $this->Lang()->count() > 1 ? 2 : 1 ) ) == 'page' ) && $result )
         {
             $element = false ;
         }

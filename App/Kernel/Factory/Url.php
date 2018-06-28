@@ -100,7 +100,7 @@ class Url
         }
 
         $ct = $ct->count();
-        if ( $ct == 0 && $this->uniqSeo( $url , $idlang ) === true && $thiq->uniqPage( $url , $idlang ) === true )
+        if ( $ct == 0 && $this->uniqSeo( $url , $idlang ) === true && $this->uniqPage( $url , $idlang ) === true )
         {
             return $url ;
         }
@@ -123,6 +123,7 @@ class Url
     public function uniq( $url , $idlang )
     {
         $url = $this->encode( $url ) ;
+        if ( $url == 'page' ) $url.= '1' ;
         $source = $url ;
         $exist = true ;
         $i = 1;
