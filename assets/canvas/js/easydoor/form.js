@@ -196,8 +196,9 @@ checkForm = function(base) {
         }
 
         $(base + ' .ed_field').removeClass('error');
-        var serialize = $form.serialize();
-        //            data: $('#form-module form.submitReady').serialize(),
+        var serialize = $(base + ' form.submitReady').serialize();
+        //var serialize = $form.serialize();
+        //            data: ,
 
 
         e.preventDefault();
