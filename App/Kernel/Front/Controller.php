@@ -684,7 +684,10 @@ class Controller extends \App\Kernel\Common\Controller
 					}
 
                     $totalItems     = $this->getRepository()->requestCount( $request );
-					$itemsPerPage   = $this->getEntity()->getPagination();
+
+					if ( array_key_exists('pagination' , $request ) )	$itemsPerPage   = $request['pagination'];
+					else													$itemsPerPage   = $this->getEntity()->getPagination();
+
 					$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 					$pagination     = $this->parsePagination( $paginator );
 				}

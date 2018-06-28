@@ -180,8 +180,12 @@ class Repository extends \App\Kernel\Common\Repository
 
 		if ( $currentPage !== NULL )
 		{
-			$rst = $rst->limit( $this->getEntity()->getPagination() )
-				->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
+			$pagination = $this->getEntity()->getPagination();
+
+			if ( array_key_exists('pagination' , $request ) ) $pagination = $request['pagination'];
+
+			$rst = $rst->limit( $pagination )
+				->offset( ( $pagination * $currentPage ) - $pagination );
 		}
 
 		return $rst->find_many();
