@@ -346,6 +346,11 @@ form {
       border: 1px solid #C02942;
     }
   }
+
+  .select2-container {
+    width: 100% !important;
+    margin-top:-2px !important;
+  }
 }
 
 .fancy-title.title-bottom-border h1, .fancy-title.title-bottom-border h2, .fancy-title.title-bottom-border h3, .fancy-title.title-bottom-border h4, .fancy-title.title-bottom-border h5, .fancy-title.title-bottom-border h6 {
