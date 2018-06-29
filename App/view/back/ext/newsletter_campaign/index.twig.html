@@ -4,6 +4,8 @@
 {% set this_page = 'Gestion' %}
 
 {% block module %}
+<div id="topolcontent"></div>
+{#
 <div class="row">
 	<div class="col-md-4">
 		<div class="box lighty bg-success">
@@ -63,16 +65,54 @@
 			</div>
 		</section>
 	</div>
-</div>
+</div>#}
 {% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ vendor('magnific-popup/dist/magnific-popup.css') }}" />
-<link rel="stylesheet" href="{{ vendor('pnotify/dist/pnotify.css') }}" />
-<link rel="stylesheet" href="{{ vendor('cmsmedias/css/box.css') }}" />
+<style>
+	#topolcontent {
+		height: 700px;
+	}
+
+	#leftPane {
+		background-color: pink;
+	}
+</style>
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ vendor('magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
-	<script src="{{ vendor('pnotify/dist/pnotify.js') }}"></script>
+<script>
+
+	$(function() {
+		// Plugin Settings
+        var TOPOL_OPTIONS = {
+            id: "#topolcontent",
+            authorize: {
+                apiKey: "DCSCyS2S1STYFy0EpQJByYkLSIl8eCetqNJ6Awh79Ykk4Qh0WymMJsTqZYLW",
+                userId: "easydoor",
+            },
+            templateId: 1
+        };
+
+// Plugin Start
+        !function(t){var e=document.createElement("iframe");e.width="100%",e.height="100%",e.frameBorder="0",e.id="topolio-plugin",e.src="https://d5aoblv5p04cg.cloudfront.net/editor/plugin/index.html",document.querySelectorAll(t.id)[0].appendChild(e),e.addEventListener("load",function(){e.contentWindow.postMessage({action:"START",data:JSON.parse(JSON.stringify(t))},"*")}),window.addEventListener("message",function(e){var n=JSON.parse(e.data);"callback"==n.type&&"function"==typeof t[n.action]&&t[n.action](n.data)})}(TOPOL_OPTIONS);
+	});
+
+    $(function() {
+        $('#topolio-plugin').change(function() {
+            console.log('topolio-plugin');
+            $this = $('#topolio-plugin').contents();
+
+            console.log($this.find('body').html('tttttttttttt'));
+        });
+
+        setTimeout(function(){
+            var iframe = document.getElementById( "topolio-plugin" );
+            var content = iframe.contentDocument || iframe.contentWindow.document;
+            console.log( content );
+            var $body = $(content).find("body");
+            console.log( $body );
+        }, 5000);
+    });
+</script>
 {% endblock %}
