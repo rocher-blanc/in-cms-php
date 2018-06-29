@@ -17,6 +17,12 @@ class Builder extends Model
     protected $_tab = [] ;
 
     /*
+     * @array
+     * Variable contenant tous les groupes
+     */
+    protected $_group = [] ;
+
+    /*
      * @string
      * Variable contenant le nom du dernier champ construit
      */
@@ -614,34 +620,6 @@ class Builder extends Model
         return $this->_folder_name ;
     }
 
-    public function getTabs()
-    {
-        $tab = [];
-        if ( ! empty( $this->getField() ) )
-        {
-            foreach( $this->getField() as $row )
-            {
-                if ( $row->getType() != 'hidden' )
-				{
-					if ( array_key_exists( $row->getTab() , $this->_tab ) )
-					{
-						$tab[ $row->getTab() ] = $this->_tab[ $row->getTab() ];
-					}
-					else
-					{
-						$tab[ $row->getTab() ] = [
-							'name' => $row->getTab(),
-							'icon' => 'icon-question',
-							'key' => $row->getTab()
-						];
-					}
-				}
-            }
-        }
-
-        return $tab ;
-    }
-
     /* ************************************************** */
     /* *****************   TABULATIONS   **************** */
     /* ************************************************** */
@@ -651,6 +629,64 @@ class Builder extends Model
         $this->_tab[ $key ] = [
             'name' => $name,
             'icon' => $icon,
+            'key' => $key
+        ];
+    }
+
+    public function getTabs()
+    {
+        $tab = [];
+        if ( ! empty( $this->getField() ) )
+        {
+            foreach( $this->getField() as $row )
+            {
+                if ( $row->getType() != 'hidden' )
+                {
+                    if ( ! array_key_exists( $row->getTab() , $tab ) )
+                    {
+                        if ( array_key_exists( $row->getTab() , $this->_tab ) )
+                        {
+                            $tab[ $row->getTab() ] = $this->_tab[ $row->getTab() ];
+                        }
+                        else
+                        {
+                            $tab[ $row->getTab() ] = [
+                                'name' => $row->getTab(),
+                                'icon' => 'icon-question',
+                                'key' => $row->getTab()
+                            ];
+                        }
+                    }
+
+                    if ( $row->getGroup() !== NULL )
+                    {
+                        if ( array_key_exists( $row->getGroup() , $this->_group ) )
+                        {
+                            $tab[ $row->getTab() ]['group'][ $row->getGroup() ] = $this->_group[ $row->getGroup() ];
+                        }
+                        else
+                        {
+                            $tab[ $row->getTab() ]['group'][ $row->getGroup() ] = [
+                                'name' => $row->getGroup(),
+                                'key' => $row->getGroup()
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $tab ;
+    }
+
+    /* ************************************************** */
+    /* *****************     GROUPES     **************** */
+    /* ************************************************** */
+
+    public function addGroup( $key , $name )
+    {
+        $this->_group[ $key ] = [
+            'name' => $name,
             'key' => $key
         ];
     }

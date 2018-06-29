@@ -386,6 +386,7 @@ class Controller
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
                         "tab" 		=> $row->getTab(),
+                        "group" 	=> $row->getGroup(),
                         "class" 	=> $row->getData('classField'),
                         "part" 		=> $row->getData('part'),
                         "width" 	=> $row->getData('width'),

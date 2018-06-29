@@ -265,6 +265,11 @@ class Field
         return $this->getData('tab') ;
     }
 
+    public function getGroup()
+    {
+        return $this->getData('group') ;
+    }
+
     public function getThumb()
     {
         return $this->getData('thumb') ;
