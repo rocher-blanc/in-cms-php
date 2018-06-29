@@ -1,28 +1,13 @@
 <div class="list-document">
-    <ul class="nomargin">
+    <ul class="nomargin" id="list_doc_{{ name }}">
         {% for doc in docs %}
-        <li>
-            <i class="fa fa-file{{ doc.ico.class }}-o" style="color: {{ doc.ico.color }}"></i> {{ doc.name }} <i class="icon-trash fright"></i>
+        <li id="document_{{ doc.id }}">
+            <i class="fa fa-file{{ doc.ico.class }}-o" style="color: {{ doc.ico.color }}"></i> {{ doc.name }} <i class="icon-trash fright deletedoc" data-id="{{ doc.id }}" data-field="{{ field_name }}" data-url="{{ route( mod.name , 'deletedocument' , '' , doc.id ) }}"></i>
+            <input type="hidden" name="{{ name }}[]" value="{{ doc.id }}">
         </li>
         {% endfor %}
     </ul>
 </div>
 <div class="text-right">
-    <input id="upload_{{ name }}" value="{{ image }}" type="file" data-upload-document class="file-loading" data-fieldname="id_{{ name }}" data-imgname="source_{{ field_name }}" data-field="{{ field_name }}" data-uploadurl="{{ route( mod.name , 'uploaddocument' ) }}">
+    <input id="upload_{{ name }}" value="{{ image }}" type="file" data-upload-document class="file-loading" multiple data-field="{{ field_name }}__upload" data-hidden="{{ name }}" data-fieldname="{{ field_name }}" name="{{ field_name }}__upload[]" data-uploadurl="{{ route( mod.name , 'uploaddocument' ) }}">
 </div>
-
-<style>
-    .list-document {
-        background-color: #f4f4f4;
-        padding: 10px;
-        border: 1px dashed #aaa;
-    }
-
-    .list-document li {
-        list-style: none;
-        display: block;
-        padding: 3px 10px;
-        margin-bottom: 2px;
-        background-color: #fff;
-    }
-</style>

@@ -9,20 +9,39 @@ class Document extends \App\Kernel\Common\Document
     /* ************************************************** */
 
     private $module_id = NULL ;
+	private $module_name = NULL ;
 
-    public function setModuleId( $var )
+	/* ************************************************** */
+	/* ******************   SETTER   ******************** */
+	/* ************************************************** */
+
+	public function setModuleId( $var )
     {
         $this->module_id = $var ;
     }
 
-    /* ************************************************** */
-    /* ******************   GETTER   ******************** */
-    /* ************************************************** */
+	public function setModuleName( $var )
+	{
+		$this->module_name = $var ;
+	}
+
+	/* ************************************************** */
+	/* ******************   GETTER   ******************** */
+	/* ************************************************** */
 
     public function getModuleId()
     {
         return $this->module_id ;
     }
+
+	public function getModuleName()
+	{
+		return $this->module_name ;
+	}
+
+	/* ************************************************** */
+	/* ******************   TOOLS    ******************** */
+	/* ************************************************** */
 
     protected function Factory()
     {
@@ -33,6 +52,11 @@ class Document extends \App\Kernel\Common\Document
     {
         return \Slim\Slim::getInstance() ;
     }
+
+    protected function post( $key )
+	{
+		return $this->getApp()->request->post( $key );
+	}
 
     /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
@@ -142,13 +166,47 @@ class Document extends \App\Kernel\Common\Document
 
     public function upload( $path )
     {
-        $upload_dir 	= $path . '/' ;
-        $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
-        $upload_handler = new \App\Kernel\Back\DocumentUpload([
-            'module_id' => $this->getModuleId(),
-            'upload_dir' => $upload_dir,
-            'upload_url' => $this->Factory()->Url()->get( $upload_url , true ),
-            'param_name' => 'files'
-        ]);
+    	$ct  = count( $_FILES[ $this->post('field') ]["name"] );
+    	$tab = [];
+
+    	for( $i = 0; $i <= $ct; $i ++ )
+		{
+			$name       = basename($_FILES[ $this->post('field') ]["name"][$i]);
+			$ext        = explode( '.' , $name );
+			$extension  = end( $ext );
+			$name       = basename( $name , '.' . $extension );
+			$name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+
+			$rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , $path . '/' . $name );
+
+			if ( $rst !== false )
+			{
+				$document = \DB::for_table('document')->create() ;
+				$document->document_name 		= $name;
+				$document->document_size 		= $_FILES[ $this->post('field') ]["size"][$i];
+				$document->document_type 		= $_FILES[ $this->post('field') ]["type"][$i];
+				$document->document_module_id 	= $this->getModuleId();
+				$document->save() ;
+
+				$std = new \stdClass;
+				$std->id = $document->document_id;
+				$std->field = $this->post('field');
+
+				$fieldEntityName = $std->field ;
+				$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
+				$this->setDocumentId( $std->id ) ;
+				$this->getNameById() ;
+				$source = $this->rename();
+
+				$std->name = $this->getDocumentName();
+				$std->ico  = $this->getIcon( $this->getDocumentName() );
+				$std->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletedocument/id/' . $std->id );
+
+				$tab[] = $std ;
+			}
+		}
+
+		return $tab ;
+
     }
 }

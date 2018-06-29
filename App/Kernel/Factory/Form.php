@@ -124,7 +124,7 @@ class Form
         {
             foreach( $this->_lib_css as $row )
             {
-                if ( !empty( $row ) ) $html.= '<link rel="stylesheet" href="' . $this->site( $row ) . ( DEBUG ? '?' . time() : '' ) . '" />' . "\n" ;
+                if ( !empty( $row ) ) $html.= '<link rel="stylesheet" href="' . $this->site( $row ) . '" />' . "\n" ;
             }
         }
         return $html ;
@@ -137,7 +137,7 @@ class Form
         {
             foreach( $this->_lib_js as $row )
             {
-                if ( !empty( $row ) ) $html.= '<script type="text/javascript" src="' . $this->site( $row ) . ( DEBUG ? '?' . time() : '' ) . '"></script>' . "\n" ;
+                if ( !empty( $row ) ) $html.= '<script type="text/javascript" src="' . $this->site( $row ) . '"></script>' . "\n" ;
             }
         }
         return $html ;

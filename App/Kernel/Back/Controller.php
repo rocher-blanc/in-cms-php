@@ -331,7 +331,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'result' => false
             ];
 
-            $content = $this->getRepository()->findOne( $this->getId() );
+			$content = $this->getRepository()->findOne( $this->getId() );
 
             if ( $content )
             {
@@ -1538,7 +1538,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function uploadAction()
     {
-        $Media = new \App\Kernel\Back\Media;
+        $Media = new Media;
         $Media->setModuleId( $this->getEntityId() ) ;
         $Media->setModuleName( $this->getEntityName() ) ;
 		$Media->setFolder( $this->getEntity()->getFolder() ) ;
@@ -1551,7 +1551,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
         $this->checkToken() ;
 
-        $Media = new \App\Kernel\Back\Media;
+        $Media = new Media;
         $Media->setModuleId( $this->getEntityId() ) ;
         $Media->setImageId( $this->getId() );
         $Media->setFolder( $this->getEntity()->getFolder() ) ;
@@ -1590,9 +1590,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function deletedocumentAction()
     {
-        $this->checkToken() ;
-
-        $Doc = new \App\Kernel\Back\Document;
+        $Doc = new Document;
         $Doc->setModuleId( $this->getEntityId() ) ;
         $Doc->setDocumentId( $this->getId() );
         $Doc->setFolder( $this->getEntity()->getFolder() ) ;
@@ -1604,6 +1602,22 @@ class Controller extends \App\Kernel\Common\Controller
             {
                 if ( $docs[ $this->getId() ]->document_delete == true )
                 {
+					$content = $this->getRepository()->findOne( $this->getApp()->request->post('element') );
+					$file = $content->get( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() );
+					$exp = explode( ',' , $file );
+
+					if ( $exp )
+					{
+						if ( ( $key = array_search( $this->getId(), $exp ) ) !== false )
+						{
+							unset( $exp[ $key ] );
+							$result = implode( ',' , $exp );
+
+							$content->set( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() , $result );
+							$content->save();
+						}
+					}
+
                     $rst = $Doc->delete();
 
                     if ( $rst ) $this->Factory()->Response()->returnJSON( $this->m("deletedocument_success") , true ) ;
@@ -1627,9 +1641,13 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function uploaddocumentAction()
     {
-        $Doc = new \App\Kernel\Back\Document;
-        $Doc->setModuleId( $this->getEntityId() ) ;
-        $Doc->upload( UPLOAD_PATH ) ;
+        $Doc = new Document;
+		$Doc->setModuleId( $this->getEntityId() ) ;
+		$Doc->setModuleName( $this->getEntityName() ) ;
+		$Doc->setFolder( $this->getEntity()->getFolder() ) ;
+		$rst = $Doc->upload( UPLOAD_PATH ) ;
+
+		return $this->Factory()->Response()->printJSON( $rst ) ;
     }
 
     /* ************************************************** */

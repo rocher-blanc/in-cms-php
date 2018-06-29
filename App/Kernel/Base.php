@@ -164,10 +164,17 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
     public function getInformationColumn()
     {
         return [
-            "domain" => [
-                "domain_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "domain_name" => $this->infoColumn( "VARCHAR" , "255" )
-            ],
+			"document" => [
+				"document_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"document_name" => $this->infoColumn( "VARCHAR" , "255" ),
+				"document_size" => $this->infoColumn( "INT" , "11" ),
+				"document_type" => $this->infoColumn( "VARCHAR" , "50" ),
+				"document_module_id" => $this->infoColumn( "INT" , "11" )
+			],
+			"domain" => [
+				"domain_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"domain_name" => $this->infoColumn( "VARCHAR" , "255" )
+			],
             "extension" => [
                 "extension_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "extension_name" => $this->infoColumn( "VARCHAR" , "100" ),

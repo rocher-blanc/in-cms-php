@@ -138,10 +138,13 @@ checkImage = function(base) {
 
 checkDocument = function(base) {
     if ( $(base + ' input[data-upload-document]').length ) {
+        checkDeleteDocument();
+
         $(base + ' input[data-upload-document]').each(function(){
             var $this = $(this);
             var myForm = $this.closest('form');
             var tvalue = $("meta[name=token]").attr("content") ;
+            var fieldname = $this.data('hidden') ;
 
             $this.fileinput({
                 language: 'fr',
@@ -161,16 +164,23 @@ checkDocument = function(base) {
                 showCancel: false,
                 showProgress: false,
 
-                maxFileCount: 20,
+                maxFileCount: 100,
+                uploadAsync: false,
                 browseLabel: "Parcourir",
                 browseClass: "button button-mini button-rounded",
                 browseIcon: "<i class=\"icon-file\"></i> ",
             }).on("filebatchselected", function(event, files) {
                 myForm.find('.form-process').fadeIn();
                 $this.fileinput("upload");
-            }).on("fileuploaded", function(event, files) {
-                myForm.find('.form-process').fadeOut();
+            }).on("filebatchuploadsuccess", function(event, files) {
                 myForm.find('.kv-upload-progress').hide();
+
+                $(files.response).each(function(index, data) {
+                    $('<li id="document_'+data.id+'"><i class="fa fa-file'+data.ico.class+'-o" style="color: '+data.ico.color+'"></i> '+data.name+' <i style="cursor: pointer;" class="icon-trash fright deletedoc" data-id="'+data.id+'" data-field="'+$this.data('fieldname')+'" data-url="'+data.url+'"></i><input type="hidden" name="'+fieldname+'[]" value="'+data.id+'"></li>').appendTo( $('#list_doc_' + fieldname) );
+                });
+
+                checkDeleteDocument();
+                myForm.find('.form-process').fadeOut();
             }).on('fileclear', function(event, id, index) {
                 $($this.attr('data-bdd')).val('');
                 myForm.find('.form-process').fadeOut();
@@ -186,7 +196,24 @@ checkDocument = function(base) {
         });
     }
 };
-0
+
+checkDeleteDocument = function() {
+    $('.deletedoc').not('.deleteReady').click(function() {
+        var $this = $(this);
+
+        $.ajax({
+            url: $this.data('url'),
+            type: "post",
+            dataType: 'json',
+            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&element=' + $('#id_element').val() + '&field=' + $this.data('field'),
+            success: function( json ) {
+                $('#document_' + $this.data('id') ).remove();
+                Notify(json.msg, json.result);
+            }
+        });
+    }).addClass('deleteReady');
+};
+
 checkForm = function(base) {
     $(base + ' form').not('.submitReady').bind('submit', function(e) {
         var $form = $(this);
@@ -198,8 +225,6 @@ checkForm = function(base) {
         $(base + ' .ed_field').removeClass('error');
         var serialize = $(base + ' form.submitReady').serialize();
         //var serialize = $form.serialize();
-        //            data: ,
-
 
         e.preventDefault();
         e.stopPropagation();
@@ -380,7 +405,7 @@ uploadImage = function(base) {
                         url: $(this).data('postaction'),
                         type: "post",
                         dataType: 'json',
-                        data: "csrf_token=" + token + "&field=" + $(this).data('field') + '&data=' + JSON.stringify(data._response.result.files),
+                        data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + "&field=" + $(this).data('field') + '&data=' + JSON.stringify(data._response.result.files),
                         success: function( json ) {
                             parseJsonMedia( json ) ;
                         }
@@ -402,7 +427,7 @@ uploadImage = function(base) {
                 url: $(this).data('postaction'),
                 type: "POST",
                 dataType: 'json',
-                data: "csrf_token=" + token + "&field=" + $('#fileupload').data('field') + '&dataid=' + $(this).data('id'),
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + "&field=" + $('#fileupload').data('field') + '&dataid=' + $(this).data('id'),
                 success: function( json ) {
                     parseJsonMedia( json ) ;
                 }

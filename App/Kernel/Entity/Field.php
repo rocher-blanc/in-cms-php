@@ -587,14 +587,17 @@ class Field
                     $return = false ;
                 }
             }
-
-            if ( $this->getType() == 'link' )
-            {
-                if ( $this->getValue() != '' )
-                {
-                    $this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
-                }
-            }
+			else if ( $this->getType() == 'link' )
+			{
+				if ( $this->getValue() != '' )
+				{
+					$this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
+				}
+			}
+			else if ( $this->getType() == 'document' )
+			{
+				$this->setValue( implode( ',' , $this->getValue() ) ) ;
+			}
 
             if ( $this->isParent() == true && $this->getValue() == '' )
             {
