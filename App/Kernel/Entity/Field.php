@@ -23,6 +23,25 @@ class Field
     }
 
     /* ************************************************** */
+    /* ****************    TOOLS      ******************* */
+    /* ************************************************** */
+
+    protected function Lang()
+    {
+        return \App\Kernel\Lang::getInstance() ;
+    }
+
+    protected function getApp()
+    {
+        return \Slim\Slim::getInstance() ;
+    }
+
+    protected function Message()
+    {
+        return \App\Kernel\Message::getInstance() ;
+    }
+
+    /* ************************************************** */
     /* ****************    SETTER     ******************* */
     /* ************************************************** */
 
@@ -354,11 +373,23 @@ class Field
         $rst = $this->getData('defaut');
 
         if ( is_callable( $rst ) )
-		{
-			return $rst();
-		}
+        {
+            return $rst();
+        }
 
         return $rst ;
+    }
+
+    public function show( &$content )
+    {
+        $rst = $this->getData('showIf');
+
+        if ( is_callable( $rst ) )
+        {
+            return $rst( $content );
+        }
+
+        return true;
     }
 
     public function getColumn()
@@ -391,24 +422,9 @@ class Field
         return $this->name ;
     }
 
-    protected function Lang()
-    {
-        return \App\Kernel\Lang::getInstance() ;
-    }
-
-    protected function getApp()
-    {
-        return \Slim\Slim::getInstance() ;
-    }
-
-    protected function Message()
-    {
-        return \App\Kernel\Message::getInstance() ;
-    }
-
-	/* ************************************************** */
-	/* ****************    IMPORT     ******************* */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* ****************    IMPORT     ******************* */
+    /* ************************************************** */
 
 	public function checkImport( $value )
 	{

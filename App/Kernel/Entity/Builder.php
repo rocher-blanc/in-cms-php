@@ -629,7 +629,8 @@ class Builder extends Model
         $this->_tab[ $key ] = [
             'name' => $name,
             'icon' => $icon,
-            'key' => $key
+            'key'  => $key,
+            'show' => false
         ];
     }
 
@@ -653,7 +654,8 @@ class Builder extends Model
                             $tab[ $row->getTab() ] = [
                                 'name' => $row->getTab(),
                                 'icon' => 'icon-question',
-                                'key' => $row->getTab()
+                                'key'  => $row->getTab(),
+                                'show' => false
                             ];
                         }
                     }
@@ -668,7 +670,8 @@ class Builder extends Model
                         {
                             $tab[ $row->getTab() ]['group'][ $row->getGroup() ] = [
                                 'name' => $row->getGroup(),
-                                'key' => $row->getGroup()
+                                'key'  => $row->getGroup(),
+                                'show' => false
                             ];
                         }
                     }
@@ -687,7 +690,8 @@ class Builder extends Model
     {
         $this->_group[ $key ] = [
             'name' => $name,
-            'key' => $key
+            'key'  => $key,
+            'show' => false
         ];
     }
 
@@ -1240,11 +1244,17 @@ class Builder extends Model
         return $this ;
     }
 
-	protected function comment( $t )
-	{
-		$this->field()->setData( "comment" , $t ) ;
-		return $this ;
-	}
+    protected function showIf( callable $result )
+    {
+        $this->field()->setData( "showIf" , $result ) ;
+        return $this ;
+    }
+
+    protected function comment( $t )
+    {
+        $this->field()->setData( "comment" , $t ) ;
+        return $this ;
+    }
 
 	protected function column( $part , $width )
 	{

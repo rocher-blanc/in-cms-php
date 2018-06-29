@@ -288,6 +288,8 @@ class Controller
         $form->setModuleId( $this->getEntityId() );
         $form->setElementId( $this->getId() );
 
+        $contentShow = new \stdClass;
+
         if ( $value == true )
         {
             $content = $this->getRepository()->findOne( $this->getId() );
@@ -295,6 +297,17 @@ class Controller
             if ( ! $content )
             {
                 return false ;
+            }
+            else
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->hasLang() == false )
+                    {
+                        $name = $row->getName() ;
+                        $contentShow->$name = $content->get( $row->getColumn() );
+                    }
+                }
             }
 
             if ( $this->getEntity()->hasMultiLang() )
@@ -373,6 +386,8 @@ class Controller
             }
         }
 
+        $arrayTab = $this->getEntity()->getTabs() ;
+
         $arrayField = [] ;
         if ( !empty( $this->getEntity()->getField() ) )
         {
@@ -380,12 +395,25 @@ class Controller
             {
                 if ( $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
                 {
+                    $show = $row->show( $contentShow ) ;
+
+                    if ( $show == true )
+                    {
+                        $arrayTab[ $row->getTab() ]['show'] = true ;
+
+                        if ( $row->getGroup() !== NULL )
+                        {
+                            $arrayTab[ $row->getTab() ]['group'][ $row->getGroup() ]['show'] = true ;
+                        }
+                    }
+
                     $arrayField[] = [
                         "name"      => $row->getName(),
                         "Form_HTML" => $form->genHTML( $row ),
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),
                         "tab" 		=> $row->getTab(),
+                        "show" 		=> $show,
                         "group" 	=> $row->getGroup(),
                         "class" 	=> $row->getData('classField'),
                         "part" 		=> $row->getData('part'),
@@ -397,8 +425,6 @@ class Controller
                 }
             }
         }
-
-        $arrayTab = $this->getEntity()->getTabs() ;
 
         return [
             'field' => $arrayField,

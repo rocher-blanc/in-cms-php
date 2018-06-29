@@ -1,3 +1,12 @@
+{% macro field(c, counter, width) %}
+    <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}{% if c.show == false %} hide{% endif %}" id="field-{{ c.name }}">
+        <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
+        {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
+        {{ c.Form_HTML }}
+    </div>
+{% endmacro field %}
+{% import _self as form %}
+
 <form method="post" action="{{ route }}" data-depedency="{{ depedency ? "true" : "false" }}" data-slug="{{ mod.name|lower }}" class="form-vertical nomargin" enctype="multipart/form-data" accept-charset="utf-8">
     <div class="{{ mod.name|lower }}-form-process form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}"/>
@@ -8,7 +17,7 @@
 
     {% for tab in tabs %}
         {% set counter = 0 %}
-        <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}">
+        <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
             {% set counter = 0 %}
             {% set width = 0 %}
             {% for c in field if c.tab == tab.key and c.type != 'hidden' and not c.group %}
@@ -18,11 +27,8 @@
 
                 {% set counter = counter + c.part %}
 
-                <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}" id="field-{{ c.name }}">
-                    <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
-                    {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
-                    {{ c.Form_HTML }}
-                </div>
+                {{ form.field(c, counter, width) }}
+
                 {% if width == counter %}
                     {% set width = 0 %}
                     {% set counter = 0 %}
@@ -38,7 +44,7 @@
 
                     {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
                         {% if loop.first %}
-                            <div class="fancy-title title-double-border title-center topmargin-sm"><h4><span>{{ group.name}}</span></h4></div>
+                            <div class="fancy-title title-double-border title-center topmargin-sm{{ group.show == false ? ' hide' : '' }}" id="group_form_{{ group.key }}"><h4><span>{{ group.name}}</span></h4></div>
                         {% endif %}
 
                         {% if width == 0 %}
@@ -47,11 +53,8 @@
 
                         {% set counter = counter + c.part %}
 
-                        <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}" id="field-{{ c.name }}">
-                            <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
-                            {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
-                            {{ c.Form_HTML }}
-                        </div>
+                        {{ form.field(c, counter, width) }}
+
                         {% if width == counter %}
                             {% set width = 0 %}
                             {% set counter = 0 %}
@@ -62,12 +65,7 @@
                 {% endfor %}
             {% endif %}
 
-            <div class="ed_field col_full">
-                <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
-            </div>
-            <div class="ed_field col_full">
-                <p class="ed-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
-            </div>
+            {% include 'form/generic/button.twig' %}
         </div>
     {% endfor %}
 </form>
