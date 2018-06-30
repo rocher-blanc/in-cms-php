@@ -89,7 +89,7 @@ class Field
     public function setFormat( $name , $value )
     {
         if ( $this->getData('dateFormat') !== NULL )	$data = $this->getData('dateFormat');
-        else											$data = [] ;
+        else											    $data = [] ;
 
         $data[ $name ] = $value;
         $this->setData( "dateFormat" , $data );
@@ -98,7 +98,7 @@ class Field
     public function setCrop( Array $tab )
     {
         if ( $this->getData('crop') !== NULL )	$data = $this->getData('crop');
-        else									$data = [] ;
+        else									    $data = [] ;
 
         $data[] = $tab;
         $this->setData( "crop" , $data );
@@ -107,7 +107,7 @@ class Field
     public function setThumb( Array $tab )
     {
         if ( $this->getData('thumb') !== NULL )	$data = $this->getData('thumb');
-        else									$data = [] ;
+        else									    $data = [] ;
 
         $data[] = $tab;
         $this->setData( "thumb" , $data );
@@ -120,25 +120,25 @@ class Field
     public function isURL()
     {
         if ( $this->getData('isURL') === true ) 	return true ;
-        else										return false ;
+        else										    return false ;
     }
 
     public function isRequired()
     {
         if ( $this->getData('notEmpty') === true ) 	return true ;
-        else										return false ;
+        else										    return false ;
     }
 
     public function isSearch()
     {
         if ( $this->getData('search') === true ) 	return true ;
-        else										return false ;
+        else										    return false ;
     }
 
     public function isParent()
     {
         if ( $this->getData('parent') === true ) 	return true ;
-        else										return false ;
+        else										    return false ;
     }
 
     public function isFull()
@@ -150,7 +150,7 @@ class Field
     public function isOrder()
     {
         if ( $this->getData('order') === true ) 	return true ;
-        else										return false ;
+        else										    return false ;
     }
 
     public function isParentModule()
@@ -210,13 +210,13 @@ class Field
     public function canUpdate()
     {
         if ( $this->getData('noUpdate') === true ) 	return false ;
-        else									    return true ;
+        else									        return true ;
     }
 
     public function hasLang()
     {
         if ( $this->getData('lang') === true ) 	return true ;
-        else									return false ;
+        else									    return false ;
     }
 
     public function hasTwigKey()
@@ -228,19 +228,19 @@ class Field
     public function hasThumb()
     {
         if ( $this->getData('thumb') !== NULL ) return true ;
-        else									return false ;
+        else									    return false ;
     }
 
     public function hasCrop()
     {
         if ( $this->getData('crop') !== NULL ) 	return true ;
-        else									return false ;
+        else									    return false ;
     }
 
     public function hasFormat()
     {
         if ( $this->getData('dateFormat') !== NULL ) 	return true ;
-        else											return false ;
+        else											    return false ;
     }
 
     public function hasOption()
@@ -252,7 +252,13 @@ class Field
     public function hasOffeset()
     {
         if ( $this->getData('noOffset') === NULL ) 	return true ;
-        else									    return false ;
+        else									        return false ;
+    }
+
+    public function hasCondition()
+    {
+        if ( $this->getData('showIf') === NULL ) 	return false ;
+        else									        return true ;
     }
 
     /* ************************************************** */

@@ -7,7 +7,7 @@
 {% endmacro field %}
 {% import _self as form %}
 
-<form method="post" action="{{ route }}" data-depedency="{{ depedency ? "true" : "false" }}" data-slug="{{ mod.name|lower }}" class="form-vertical nomargin" enctype="multipart/form-data" accept-charset="utf-8">
+<form method="post" action="{{ route }}" data-depedency="{{ depedency ? "true" : "false" }}" data-route-condition="{{ route( mod.name , 'show' , uri_id_parent , id , csrf_token ) }}" data-condition="{{ condition ? "true" : "false" }}" data-slug="{{ mod.name|lower }}" class="form-vertical nomargin" enctype="multipart/form-data" accept-charset="utf-8">
     <div class="{{ mod.name|lower }}-form-process form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}"/>
     <input type="hidden" name="id_element" id="id_element" value="{{ id != NULL ? id : '-1' }}" />

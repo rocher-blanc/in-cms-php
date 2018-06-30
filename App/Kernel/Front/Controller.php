@@ -118,6 +118,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->getEntity()->removeAction('edit');
         $this->getEntity()->removeAction('delete');
         $this->getEntity()->removeAction('import');
+        $this->getEntity()->removeAction('show');
         $this->getEntity()->removeAction('customization');
 
         if ( $this->getEntity()->hasUrl() )

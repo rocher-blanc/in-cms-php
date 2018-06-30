@@ -228,6 +228,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'js' , $form['js'] ) ;
 
         $this->setRender( 'tabs' , $form['tabs'] ) ;
+        $this->setRender( 'condition' , $form['condition'] ) ;
 
         $this->setRender( 'form' , $this->renderForm([
             'field' => $form['field'],

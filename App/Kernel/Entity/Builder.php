@@ -624,13 +624,14 @@ class Builder extends Model
     /* *****************   TABULATIONS   **************** */
     /* ************************************************** */
 
-    public function addTab( $key , $name , $icon )
+    public function addTab( $key , $name , $icon , $showIF = NULL )
     {
         $this->_tab[ $key ] = [
-            'name' => $name,
-            'icon' => $icon,
-            'key'  => $key,
-            'show' => false
+            'name'   => $name,
+            'icon'   => $icon,
+            'key'    => $key,
+            'show'   => false,
+            'showIF' => $showIF
         ];
     }
 
@@ -686,12 +687,13 @@ class Builder extends Model
     /* *****************     GROUPES     **************** */
     /* ************************************************** */
 
-    public function addGroup( $key , $name )
+    public function addGroup( $key , $name , $showIF = NULL )
     {
         $this->_group[ $key ] = [
-            'name' => $name,
-            'key'  => $key,
-            'show' => false
+            'name'   => $name,
+            'key'    => $key,
+            'show'   => false,
+            'showIF' => $showIF
         ];
     }
 
@@ -1247,6 +1249,7 @@ class Builder extends Model
     protected function showIf( callable $result )
     {
         $this->field()->setData( "showIf" , $result ) ;
+        $this->addAction("show") ;
         return $this ;
     }
 

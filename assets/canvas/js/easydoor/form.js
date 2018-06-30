@@ -275,6 +275,33 @@ checkForm = function(base) {
         });
 
     }).addClass('submitReady');
+
+    $(base + ' form.submitReady[data-condition="true"]').not('.conditionReady').each(function() {
+        var $this = $(this);
+        var route = $this.data('route-condition');
+
+        $this.find('select').change(function() {
+            var serialize = $this.serialize();
+            $.ajax({
+                url: route,
+                type: 'POST',
+                data: serialize,
+                success: function(data) {
+                    if ( data.fields.length ) {
+                        $.each(data.fields, function(i, elt) {
+                            var field = $("[name='"+ elt.name+"']").closest('.ed_field');
+                            if ( elt.show == true ) {
+                                field.removeClass('hide').show();
+                            }
+                            else {
+                                field.hide();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }).addClass('conditionReady');
 };
 
 initDatePicker = function(base) {

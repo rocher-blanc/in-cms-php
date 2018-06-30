@@ -386,15 +386,21 @@ class Controller
             }
         }
 
-        $arrayTab = $this->getEntity()->getTabs() ;
-
+        $arrayTab   = $this->getEntity()->getTabs() ;
+        $condition  = false ;
         $arrayField = [] ;
+
         if ( !empty( $this->getEntity()->getField() ) )
         {
             foreach( $this->getEntity()->getField() as $row )
             {
                 if ( $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
                 {
+                    if ( $row->hasCondition() )
+                    {
+                        $condition = true ;
+                    }
+
                     $show = $row->show( $contentShow ) ;
 
                     if ( $show == true )
@@ -427,18 +433,17 @@ class Controller
         }
 
         return [
-            'field' => $arrayField,
-            'tabs' => $arrayTab,
+            'condition'  => $condition,
+            'field'      => $arrayField,
+            'tabs'       => $arrayTab,
             'route_type' => ( $value == false ? 'add' : 'edit' ),
-            'id' => $this->getId(),
-            'cdn_css' => $form->getCdnCSS(),
-            'cdn_js' => $form->getCdnJS(),
-            'css' => $form->getLibCSS(),
-            'js' => $form->getLibJS()
+            'id'         => $this->getId(),
+            'cdn_css'    => $form->getCdnCSS(),
+            'cdn_js'     => $form->getCdnJS(),
+            'css'        => $form->getLibCSS(),
+            'js'         => $form->getLibJS()
         ];
     }
-
-
 
     // Check si tous les champs sont corrects
     // Appelée dans la fonction "pushData" ; "listenForm" ; "User::register" ; "User::update"
@@ -492,4 +497,68 @@ class Controller
     /*  **** VALIDATION **** */
     protected function hookEnableAfter() { return true; }
     protected function hookDisableAfter() { return true; }
+
+    /* ***************************************************** */
+    /* ******************    SHOW IF    ******************** */
+    /* ***************************************************** */
+
+    protected function convertPost()
+    {
+        $contentShow = $this->getApp()->request->post();
+        $std         = new \stdClass;
+        $prefix      = \DB::getColumnName( '' , $this->getEntityName() );
+
+
+        foreach( $contentShow as $key => $value )
+        {
+            $cle = str_replace( $prefix , '' , $key );
+            $std->$cle = $value ;
+        }
+
+        return $std ;
+    }
+
+    /* ***************************************************** */
+    /* ******************    ACTIONS    ******************** */
+    /* ***************************************************** */
+
+    public function showAction()
+    {
+        $arrayTab    = $this->getEntity()->getTabs() ;
+        $arrayField  = [] ;
+        $contentShow = $this->convertPost();
+
+        if ( !empty( $this->getEntity()->getField() ) )
+        {
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
+                {
+                    $show = $row->show( $contentShow ) ;
+
+                    if ( $show == true )
+                    {
+                        $arrayTab[ $row->getTab() ]['show'] = true ;
+
+                        if ( $row->getGroup() !== NULL )
+                        {
+                            $arrayTab[ $row->getTab() ]['group'][ $row->getGroup() ]['show'] = true ;
+                        }
+                    }
+
+                    $arrayField[] = [
+                        "name" => $row->getColumn(),
+                        "show" => $show
+                    ];
+                }
+            }
+        }
+
+        $result = [
+            'tabs'   => $arrayTab,
+            'fields' => $arrayField
+        ];
+
+        $this->Factory()->Response()->printJSON( $result );
+    }
 }
