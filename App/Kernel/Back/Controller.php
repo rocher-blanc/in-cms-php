@@ -233,6 +233,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'form' , $this->renderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
+            'condition' => $form['condition'],
             'uri_id_parent' => $this->getUriParent(),
             'route' => $this->Factory()->Url()->route( $this->getEntityName() , ( $value == false ? 'add' : 'edit' ) , $this->getUriParent() , $form['id'] ),
             'id' => $form['id']

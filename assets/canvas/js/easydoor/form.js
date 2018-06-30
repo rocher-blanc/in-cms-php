@@ -279,14 +279,51 @@ checkForm = function(base) {
     $(base + ' form.submitReady[data-condition="true"]').not('.conditionReady').each(function() {
         var $this = $(this);
         var route = $this.data('route-condition');
+        var mod = $this.data('slug');
 
         $this.find('select').change(function() {
+            if ( $(base + ' .'+mod+'-form-process').length ) {
+                $(base + ' .'+mod+'-form-process').show();
+            }
             var serialize = $this.serialize();
             $.ajax({
                 url: route,
                 type: 'POST',
                 data: serialize,
                 success: function(data) {
+                    if ( $(base + ' .'+mod+'-form-process').length ) {
+                        $(base + ' .'+mod+'-form-process').hide();
+                    }
+
+                    if ( data.fields.length ) {
+                        $.each(data.fields, function(i, elt) {
+                            var field = $("[name='"+ elt.name+"']").closest('.ed_field');
+                            if ( elt.show == true ) {
+                                field.removeClass('hide').show();
+                            }
+                            else {
+                                field.hide();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $this.find('.bootstrap-switch').on('switchChange.bootstrapSwitch', function (e, data) {
+            if ( $(base + ' .'+mod+'-form-process').length ) {
+                $(base + ' .'+mod+'-form-process').show();
+            }
+            var serialize = $this.serialize();
+            $.ajax({
+                url: route,
+                type: 'POST',
+                data: serialize,
+                success: function(data) {
+                    if ( $(base + ' .'+mod+'-form-process').length ) {
+                        $(base + ' .'+mod+'-form-process').hide();
+                    }
+
                     if ( data.fields.length ) {
                         $.each(data.fields, function(i, elt) {
                             var field = $("[name='"+ elt.name+"']").closest('.ed_field');
