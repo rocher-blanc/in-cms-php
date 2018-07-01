@@ -412,6 +412,11 @@ class Controller
                             $arrayTab[ $row->getTab() ]['group'][ $row->getGroup() ]['show'] = true ;
                         }
                     }
+                    else
+                    {
+                        $name = $row->getName() ;
+                        $contentShow->$name = NULL;
+                    }
 
                     $arrayField[] = [
                         "name"      => $row->getName(),
@@ -449,14 +454,21 @@ class Controller
     // Appelée dans la fonction "pushData" ; "listenForm" ; "User::register" ; "User::update"
     public function checkForm()
     {
+        $arrayShow = $this->getShow(true);
+
         $this->_return = true ;
 
         if ( !empty( $this->getEntity()->getField() ) )
         {
             foreach( $this->getEntity()->getField() as $row )
             {
-                $rst = $this->field( $row->getName() )->checkEmpty() ;
-                if ( $rst == false ) $this->_return = false ;
+                if ( $arrayShow['fields'][ $row->getName() ]['show'] == true )
+                {
+                    if ( $this->field( $row->getName() )->checkEmpty() == false )
+                    {
+                        $this->_return = false ;
+                    }
+                }
             }
 
             if ( $this->_return == true )
@@ -518,11 +530,7 @@ class Controller
         return $std ;
     }
 
-    /* ***************************************************** */
-    /* ******************    ACTIONS    ******************** */
-    /* ***************************************************** */
-
-    public function showAction()
+    protected function getShow( $naming = false )
     {
         $arrayTab    = $this->getEntity()->getTabs() ;
         $arrayField  = [] ;
@@ -545,20 +553,63 @@ class Controller
                             $arrayTab[ $row->getTab() ]['group'][ $row->getGroup() ]['show'] = true ;
                         }
                     }
+                    else
+                    {
+                        $name = $row->getName() ;
+                        $contentShow->$name = NULL;
+                    }
 
-                    $arrayField[] = [
-                        "name" => $row->getColumn(),
-                        "show" => $show
-                    ];
+                    if ( $naming == false )
+                    {
+                        $arrayField[] = [
+                            "name" => $row->getColumn(),
+                            "show" => $show
+                        ];
+                    }
+                    else
+                    {
+                        $arrayField[ $row->getName() ] = [
+                            "name" => $row->getColumn(),
+                            "show" => $show
+                        ];
+                    }
                 }
             }
         }
 
-        $result = [
-            'tabs'   => $arrayTab,
+        $newArrayTab = [];
+
+        if ( $arrayTab )
+        {
+            foreach( $arrayTab as $tab )
+            {
+                $data = [];
+                if ( $tab['group'] )
+                {
+                    foreach( $tab['group'] as $grp )
+                    {
+                        $data[] = $grp;
+                    }
+
+                    $tab['group'] = $data;
+                }
+
+                $newArrayTab[] = $tab ;
+            }
+        }
+
+        return [
+            'tabs'   => $newArrayTab,
             'fields' => $arrayField
         ];
+    }
 
-        $this->Factory()->Response()->printJSON( $result );
+    /* ***************************************************** */
+    /* ******************    ACTIONS    ******************** */
+    /* ***************************************************** */
+
+    public function showAction()
+    {
+        return $this->Factory()->Response()->printJSON( $this->getShow() );
     }
 }

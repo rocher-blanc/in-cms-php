@@ -282,63 +282,70 @@ checkForm = function(base) {
         var mod = $this.data('slug');
 
         $this.find('select').change(function() {
-            if ( $(base + ' .'+mod+'-form-process').length ) {
-                $(base + ' .'+mod+'-form-process').show();
-            }
-            var serialize = $this.serialize();
-            $.ajax({
-                url: route,
-                type: 'POST',
-                data: serialize,
-                success: function(data) {
-                    if ( $(base + ' .'+mod+'-form-process').length ) {
-                        $(base + ' .'+mod+'-form-process').hide();
-                    }
-
-                    if ( data.fields.length ) {
-                        $.each(data.fields, function(i, elt) {
-                            var field = $("[name='"+ elt.name+"']").closest('.ed_field');
-                            if ( elt.show == true ) {
-                                field.removeClass('hide').show();
-                            }
-                            else {
-                                field.hide();
-                            }
-                        });
-                    }
-                }
-            });
+            refreshShowIf( base , mod , route , $this );
         });
 
         $this.find('.bootstrap-switch').on('switchChange.bootstrapSwitch', function (e, data) {
+            refreshShowIf( base , mod , route , $this );
+        });
+    }).addClass('conditionReady');
+};
+
+refreshShowIf = function( base , mod , route , $this ) {
+    if ( $(base + ' .'+mod+'-form-process').length ) {
+        $(base + ' .'+mod+'-form-process').show();
+    }
+    var serialize = $this.serialize();
+    $.ajax({
+        url: route,
+        type: 'POST',
+        data: serialize,
+        success: function(data) {
             if ( $(base + ' .'+mod+'-form-process').length ) {
-                $(base + ' .'+mod+'-form-process').show();
+                $(base + ' .'+mod+'-form-process').hide();
             }
-            var serialize = $this.serialize();
-            $.ajax({
-                url: route,
-                type: 'POST',
-                data: serialize,
-                success: function(data) {
-                    if ( $(base + ' .'+mod+'-form-process').length ) {
-                        $(base + ' .'+mod+'-form-process').hide();
+
+
+            if ( data.tabs.length ) {
+                $.each(data.tabs, function(i, tab) {
+                    var elttab = $('#tabs-' + tab.key );
+                    var linktab = $('#tabs-link-' + tab.key );
+                    if ( tab.show == true ) {
+                        elttab.removeClass('hide').show();
+                        linktab.removeClass('hide').show();
+                    }
+                    else {
+                        elttab.hide();
+                        linktab.hide();
                     }
 
-                    if ( data.fields.length ) {
-                        $.each(data.fields, function(i, elt) {
-                            var field = $("[name='"+ elt.name+"']").closest('.ed_field');
-                            if ( elt.show == true ) {
-                                field.removeClass('hide').show();
+                    if ( tab.group.length ) {
+                        $.each(tab.group, function(i, group) {
+                            var eltgrp = $('#group_form_' + group.key );
+                            if ( group.show == true ) {
+                                eltgrp.removeClass('hide').show();
                             }
                             else {
-                                field.hide();
+                                eltgrp.hide();
                             }
                         });
                     }
-                }
-            });
-        });
-    }).addClass('conditionReady');
+                });
+            }
+
+            if ( data.fields.length ) {
+                $.each(data.fields, function(i, elt) {
+                    var field = $("[name='"+ elt.name+"']").closest('.ed_field');
+                    if ( elt.show == true ) {
+                        field.removeClass('hide').show();
+                    }
+                    else {
+                        field.hide();
+                    }
+                });
+            }
+        }
+    });
 };
 
 initDatePicker = function(base) {
