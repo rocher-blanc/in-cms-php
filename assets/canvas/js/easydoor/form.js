@@ -308,14 +308,11 @@ refreshShowIf = function( base , mod , route , $this ) {
 
             if ( data.tabs.length ) {
                 $.each(data.tabs, function(i, tab) {
-                    var elttab = $('#tabs-' + tab.key );
                     var linktab = $('#tabs-link-' + tab.key );
                     if ( tab.show == true ) {
-                        elttab.removeClass('hide').show();
                         linktab.removeClass('hide').show();
                     }
                     else {
-                        elttab.hide();
                         linktab.hide();
                     }
 

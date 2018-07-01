@@ -588,10 +588,15 @@ class Controller
                 {
                     foreach( $tab['group'] as $grp )
                     {
+                        unset( $grp['showIF'] );
+                        unset( $grp['name'] );
                         $data[] = $grp;
                     }
 
                     $tab['group'] = $data;
+                    unset( $tab['showIF'] );
+                    unset( $tab['icon'] );
+                    unset( $tab['name'] );
                 }
 
                 $newArrayTab[] = $tab ;
