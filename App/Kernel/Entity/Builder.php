@@ -627,6 +627,7 @@ class Builder extends Model
     public function addTab( $key , $name , $icon , $showIF = NULL )
     {
         $this->_tab[ $key ] = [
+            'group'  => [],
             'name'   => $name,
             'icon'   => $icon,
             'key'    => $key,

@@ -386,7 +386,7 @@ class Controller
             }
         }
 
-        $arrayTab   = $this->getEntity()->getTabs() ;
+        $shows      = $this->getShow( true , $contentShow );
         $condition  = false ;
         $arrayField = [] ;
 
@@ -401,22 +401,7 @@ class Controller
                         $condition = true ;
                     }
 
-                    $show = $row->show( $contentShow ) ;
-
-                    if ( $show == true )
-                    {
-                        $arrayTab[ $row->getTab() ]['show'] = true ;
-
-                        if ( $row->getGroup() !== NULL )
-                        {
-                            $arrayTab[ $row->getTab() ]['group'][ $row->getGroup() ]['show'] = true ;
-                        }
-                    }
-                    else
-                    {
-                        $name = $row->getName() ;
-                        $contentShow->$name = NULL;
-                    }
+                    $show = $shows['fields'][ $row->getName() ]['show'] ;
 
                     $arrayField[] = [
                         "name"      => $row->getName(),
@@ -440,7 +425,7 @@ class Controller
         return [
             'condition'  => $condition,
             'field'      => $arrayField,
-            'tabs'       => $arrayTab,
+            'tabs'       => $shows['tabs'],
             'route_type' => ( $value == false ? 'add' : 'edit' ),
             'id'         => $this->getId(),
             'cdn_css'    => $form->getCdnCSS(),
@@ -530,11 +515,15 @@ class Controller
         return $std ;
     }
 
-    protected function getShow( $naming = false )
+    protected function getShow( $naming = false , $content = NULL )
     {
-        $arrayTab    = $this->getEntity()->getTabs() ;
-        $arrayField  = [] ;
-        $contentShow = $this->convertPost();
+        if ( $content === NULL ) $contentShow = $this->convertPost();
+        else                     $contentShow = $content ;
+
+        $arrayTab      = $this->getEntity()->getTabs() ;
+        $arrayField    = [] ;
+        $newArrayTab   = [];
+        $newArrayField = [];
 
         if ( !empty( $this->getEntity()->getField() ) )
         {
@@ -559,25 +548,64 @@ class Controller
                         $contentShow->$name = NULL;
                     }
 
-                    if ( $naming == false )
+                    $arrayField[ $row->getName() ] = [
+                        "name" => $row->getColumn(),
+                        "show" => $show
+                    ];
+                }
+            }
+        }
+
+        foreach( $arrayTab as $keyTab => $tab )
+        {
+            if ( is_callable( $tab['showIF'] ) )
+            {
+                $function = $tab['showIF'];
+                $show = $function( $contentShow ) ;
+
+                if ( $show == false )
+                {
+                    $arrayTab[ $keyTab ]['show'] = false ;
+
+                    if ( !empty( $this->getEntity()->getField() ) )
                     {
-                        $arrayField[] = [
-                            "name" => $row->getColumn(),
-                            "show" => $show
-                        ];
+                        foreach( $this->getEntity()->getField() as $row )
+                        {
+                            if ( $row->getTab() == $tab['key'] && $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
+                            {
+                                $name = $row->getName() ;
+                                $contentShow->$name = NULL;
+
+                                $arrayField[ $row->getName() ] = [
+                                    "name" => $row->getColumn(),
+                                    "show" => false
+                                ];
+                            }
+                        }
                     }
-                    else
+
+                    if ( ! empty( $tab['group'] ) )
                     {
-                        $arrayField[ $row->getName() ] = [
-                            "name" => $row->getColumn(),
-                            "show" => $show
-                        ];
+                        foreach( $tab['group'] as $keyGrp => $grp )
+                        {
+                            $arrayTab[ $keyTab ]['group'][ $keyGrp ]['show'] = false ;
+                        }
                     }
                 }
             }
         }
 
-        $newArrayTab = [];
+        if ( $naming == false )
+        {
+            foreach( $arrayField as $field )
+            {
+                $newArrayField[] = $field ;
+            }
+        }
+        else
+        {
+            $newArrayField = $arrayField;
+        }
 
         if ( $arrayTab )
         {
@@ -589,14 +617,11 @@ class Controller
                     foreach( $tab['group'] as $grp )
                     {
                         unset( $grp['showIF'] );
-                        unset( $grp['name'] );
                         $data[] = $grp;
                     }
 
                     $tab['group'] = $data;
                     unset( $tab['showIF'] );
-                    unset( $tab['icon'] );
-                    unset( $tab['name'] );
                 }
 
                 $newArrayTab[] = $tab ;
@@ -605,7 +630,7 @@ class Controller
 
         return [
             'tabs'   => $newArrayTab,
-            'fields' => $arrayField
+            'fields' => $newArrayField
         ];
     }
 
