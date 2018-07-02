@@ -592,7 +592,93 @@ class Controller
                         }
                     }
                 }
+                else
+				{
+					// on check les showif des groupes
+					if ( !empty( $tab['group'] ) )
+					{
+						$ctGrpHide = 0;
+						$ctGrp     = count( $tab['group'] );
+
+						foreach( $tab['group'] as $keyGrp => $grp )
+						{
+							if ( is_callable( $grp['showIF'] ) )
+							{
+								$function = $grp['showIF'];
+								$show = $function( $contentShow ) ;
+
+								if ( $show == false )
+								{
+									$ctGrpHide++;
+									$arrayTab[ $keyTab ][ 'group' ][ $keyGrp ][ 'show' ] = false;
+
+									if ( ! empty( $this->getEntity()->getField() ) )
+									{
+										foreach ( $this->getEntity()->getField() as $row )
+										{
+											if ( $row->getGroup() == $grp[ 'key' ] && $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
+											{
+												$name = $row->getName();
+												$contentShow->$name = NULL;
+
+												$arrayField[ $row->getName() ] = [ "name" => $row->getColumn() , "show" => false ];
+											}
+										}
+									}
+								}
+							}
+						}
+
+						if ( $ctGrpHide == $ctGrp )
+						{
+							$arrayTab[ $keyTab ]['show'] = false ;
+						}
+					}
+				}
             }
+            else
+			{
+				// on check les showif des groupes
+				if ( !empty( $tab['group'] ) )
+				{
+					$ctGrpHide = 0;
+					$ctGrp     = count( $tab['group'] );
+
+					foreach( $tab['group'] as $keyGrp => $grp )
+					{
+						if ( is_callable( $grp['showIF'] ) )
+						{
+							$function = $grp['showIF'];
+							$show = $function( $contentShow ) ;
+
+							if ( $show == false )
+							{
+								$ctGrpHide++;
+								$arrayTab[ $keyTab ][ 'group' ][ $keyGrp ][ 'show' ] = false;
+
+								if ( ! empty( $this->getEntity()->getField() ) )
+								{
+									foreach ( $this->getEntity()->getField() as $row )
+									{
+										if ( $row->getGroup() == $grp[ 'key' ] && $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL )
+										{
+											$name = $row->getName();
+											$contentShow->$name = NULL;
+
+											$arrayField[ $row->getName() ] = [ "name" => $row->getColumn() , "show" => false ];
+										}
+									}
+								}
+							}
+						}
+					}
+
+					if ( $ctGrpHide == $ctGrp )
+					{
+						$arrayTab[ $keyTab ]['show'] = false ;
+					}
+				}
+			}
         }
 
         if ( $naming == false )

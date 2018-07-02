@@ -702,9 +702,15 @@ class Builder extends Model
     /* ****************   DEPEDENCY   ******************* */
     /* ************************************************** */
 
-    public function addDependency( $name )
+    public function addDependency( $name , $showIF = NULL )
     {
-        if ( ! in_array( $name , $this->_dependency ) )
+    	$pass = true ;
+    	if ( is_callable( $showIF ) )
+		{
+			$pass = $showIF();
+		}
+
+        if ( ! in_array( $name , $this->_dependency ) && $pass === true )
         {
             $rst = \DB::for_table('module')
                 ->select('module_icon')
