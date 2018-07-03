@@ -590,6 +590,14 @@ form {
 }
 
 /* ************************************************ */
+/* Correction d'un bug lors du clic sur le menu http*/
+/* ************************************************ */
+
+.input-group-btn.show {
+  display: table-cell !important;
+}
+
+/* ************************************************ */
 /* Gestion de la sélection des parents              */
 /* ************************************************ */
 
