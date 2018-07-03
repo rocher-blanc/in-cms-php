@@ -128,7 +128,7 @@
                                     <a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>
                                 {% endif %}
                             {% endif %}
-							{% if right.delete == true %}<a href="{{ route( mod.name , 'delete' , '' , content.id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>{% endif %}
+                            {% if right.delete == true and mod.canDelete == true %}<a href="{{ route( mod.name , 'delete' , '' , content.id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>{% endif %}
 						</td>
 					</tr>
 				{% endfor %}
