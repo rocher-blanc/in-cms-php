@@ -98,14 +98,42 @@ class Controller extends \App\Kernel\Common\Controller
         return Log::getInstance() ;
     }
 
-    /* ************************************************** */
-    /* ******************    ISER    ******************** */
-    /* ************************************************** */
+	/* ************************************************** */
+	/* ******************    ISER    ******************** */
+	/* ************************************************** */
 
-    protected function isDepedency()
-    {
-        return ( $this->getDepedencyModule() !== NULL ? true : false );
-    }
+	protected function isDepedency()
+	{
+		return ( $this->getDepedencyModule() !== NULL ? true : false );
+	}
+
+	/* ************************************************** */
+	/* ******************    CANER    ******************* */
+	/* ************************************************** */
+
+	protected function canCreate()
+	{
+		if ( $this->getEntity()->getMaxElement() == 0 )
+		{
+			return true ;
+		}
+		else if ( $this->getEntity()->isChild() == true && $this->getEntity()->getMaxElement() > $this->getRepository()->countWithParent( end( $this->getIdParent() ) ) )
+		{
+			return true;
+		}
+		else if ( $this->getEntity()->isChild() == false && $this->getEntity()->getMaxElement() > $this->getRepository()->count() )
+		{
+			return true;
+		}
+		else if ( $this->isDepedency() == true && $this->getEntity()->getMaxElement() > $this->getRepository()->countWithDepedencyElement( $this->getDepedencyModule() , $this->getDepedencyElement() ) )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
     /* ***************************************************** */
     /* ******************   CONTAINER   ******************** */
@@ -225,7 +253,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'cdn_js' , $form['cdn_js'] ) ;
 
         $this->setRender( 'css' , $form['css'] ) ;
-        $this->setRender( 'js' , $form['js'] ) ;
+		$this->setRender( 'js' , $form['js'] ) ;
 
         $this->setRender( 'tabs' , $form['tabs'] ) ;
         $this->setRender( 'condition' , $form['condition'] ) ;
@@ -323,15 +351,24 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function delete()
     {
-        $result = $this->hookDeleteBefore() ;
+        if ( $this->getEntity()->canDelete() == false )
+		{
+			return [
+				'msg' => 'La suppression n\'est pas autorisé sur ce module',
+				'url' => '',
+				'result' => false
+			];
+		}
+
+    	$result = $this->hookDeleteBefore() ;
 
         if ( $result === true )
         {
             $result = [
-                'msg' => '',
-                'url' => '',
-                'result' => false
-            ];
+				'msg' => '',
+				'url' => '',
+				'result' => false
+			];
 
 			$content = $this->getRepository()->findOne( $this->getId() );
 
@@ -737,17 +774,19 @@ class Controller extends \App\Kernel\Common\Controller
         {
 
 
-            $this->getApp()->view()->appendData(array(
-                'mod' => array(
-                    'id'    => $this->getEntityId(),
-                    'name'  => $this->getEntityName(),
-                    'title' => $rst->module_name,
-                    'icon'  => $rst->module_icon
-                ),
+            $this->getApp()->view()->appendData([
+                'mod' => [
+                    'id'    	=> $this->getEntityId(),
+                    'name'  	=> $this->getEntityName(),
+                    'title' 	=> $rst->module_name,
+                    'icon'  	=> $rst->module_icon,
+					'canCreate' => $this->canCreate(),
+					'canDelete' => $this->getEntity()->canDelete()
+				],
                 'action'    => $this->getActionName(),
                 'fields'    => $this->getImportFiled(),
                 'depedency' => $this->isDepedency()
-            ));
+			]);
         }
 
         $this->setEntityId( $rst->module_id ) ;

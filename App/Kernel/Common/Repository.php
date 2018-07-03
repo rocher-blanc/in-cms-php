@@ -33,4 +33,9 @@ class Repository
     {
         return \DB::for_module( $this->getName() )->create();
     }
+
+	public function count()
+	{
+		return \DB::for_module( $this->getName() )->count();
+	}
 }

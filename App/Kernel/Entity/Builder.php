@@ -180,6 +180,20 @@ class Builder extends Model
      */
     protected $_module_user = false ;
 
+    /*
+     * @boolean
+     * Désactive la suppression
+     */
+    protected $_delete = true ;
+
+    /*
+     * @int
+     * Définit le nombre maximum d'element dans un module
+     * Si ce nombre est attient, l'ajout devient impossible
+     * Par défaut, le nombre est à 0, ce qui vaut à illimité
+     */
+    protected $_max_element = 0;
+
     protected $forbidden_field = [
 		/* Gestion utilisateurs */
 		'user_login',
@@ -308,6 +322,14 @@ class Builder extends Model
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
+
+	/**
+	 * @param int $max_element
+	 */
+	public function setMaxElement( int $max_element )
+	{
+		$this->_max_element = $max_element;
+	}
 
 	public function setModuleUser()
 	{
@@ -491,6 +513,14 @@ class Builder extends Model
     /* ************************************************** */
 
 	/**
+	 * @return int
+	 */
+	public function getMaxElement(): int
+	{
+		return $this->_max_element;
+	}
+
+	/**
 	 * @return null
 	 */
 	public function getPagination()
@@ -620,9 +650,26 @@ class Builder extends Model
         return $this->_folder_name ;
     }
 
-    /* ************************************************** */
-    /* *****************   TABULATIONS   **************** */
-    /* ************************************************** */
+	/* ************************************************** */
+	/* *****************     DELETE      **************** */
+	/* ************************************************** */
+
+	/*
+	 * Désactivation de la suppression
+	 */
+	public function disableDelete()
+	{
+		$this->_delete = false ;
+	}
+
+	public function canDelete()
+	{
+		return $this->_delete ;
+	}
+
+	/* ************************************************** */
+	/* *****************   TABULATIONS   **************** */
+	/* ************************************************** */
 
     public function addTab( $key , $name , $icon , $showIF = NULL )
     {

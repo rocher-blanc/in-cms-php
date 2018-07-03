@@ -229,10 +229,18 @@ class Repository extends \App\Kernel\Common\Repository
         return $all->find_many();
     }
 
-    public function countWithParent( $parent_id )
-    {
-        return \DB::for_module( $this->getName() )
-            ->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $parent_id )
-            ->count();
-    }
+	public function countWithParent( $parent_id )
+	{
+		return \DB::for_module( $this->getName() )
+			->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $parent_id )
+			->count();
+	}
+
+	public function countWithDepedencyElement( $module , $element )
+	{
+		return \DB::for_module( $this->getName() )
+			->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->fieldSql() , $module )
+			->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $element )
+			->count();
+	}
 }

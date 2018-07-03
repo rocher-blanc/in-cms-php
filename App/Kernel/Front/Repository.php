@@ -169,11 +169,6 @@ class Repository extends \App\Kernel\Common\Repository
             ->find_many();
     }
 
-    public function count()
-    {
-        return \DB::for_module( $this->getName() )->count();
-    }
-
     public function requestAll( $request , $currentPage = NULL )
     {
     	$rst = $this->request( $request ) ;

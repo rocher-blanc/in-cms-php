@@ -17,84 +17,90 @@
 
 {% block module %}
     {% include 'module/header.twig' %}
-    <div class="ed_element formulaire tabs tabs-bordered tabs-tb clearfix" data-active="1">
-        <ul class="tab-nav clearfix">
-            {% set first = false %}
-            {% for tab in tabs %}
-                {% if first == false and tab.show == true %}
-                    {% set first = true %}
-                    <li class="ui-tabs-active" id="tabs-link-{{ tab.key }}">
-                {% elseif tab.show == false %}
-                    <li class="hide" id="tabs-link-{{ tab.key }}">
-                {% else %}
-                    <li id="tabs-link-{{ tab.key }}">
-                {% endif %}
-                    <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}">
-                        <i class="{{ tab.icon }}"></i> {{ tab.name }}
-                    </a>
-                </li>
-            {% endfor %}
-
-            {% if seo == true and id != '' %}
-                <li>
-                    <a href="#tabs-seo" id="onglet-seo">
-                        <i class="icon-unlink"></i> Référencement
-                    </a>
-                </li>
-            {% endif %}
-            {% if depedencies|length > 0 and id != '' %}
-                {% for dependency in depedencies %}
-                    <li>
-                        <a href="#tabs-{{ dependency.slug }}" id="onglet-{{ dependency.slug }}">
-                            <i class="{{ dependency.icon }}"></i> {{ dependency.name }}
+    {% if mod.canCreate == false and action == 'add' %}
+        <div class="style-msg alertmsg">
+            <div class="sb-msg"><i class="icon-warning-sign"></i><strong>Attention!</strong> Une limite d'élément a été fixé, il est impossible d'ajouter de nouveaux éléments.</div>
+        </div>
+    {% else %}
+        <div class="ed_element formulaire tabs tabs-bordered tabs-tb clearfix" data-active="1">
+            <ul class="tab-nav clearfix">
+                {% set first = false %}
+                {% for tab in tabs %}
+                    {% if first == false and tab.show == true %}
+                        {% set first = true %}
+                        <li class="ui-tabs-active" id="tabs-link-{{ tab.key }}">
+                    {% elseif tab.show == false %}
+                        <li class="hide" id="tabs-link-{{ tab.key }}">
+                    {% else %}
+                        <li id="tabs-link-{{ tab.key }}">
+                    {% endif %}
+                        <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}">
+                            <i class="{{ tab.icon }}"></i> {{ tab.name }} {{ action }}
                         </a>
                     </li>
                 {% endfor %}
-            {% endif %}
-            {% if id != '' %}
-                <li>
-                    <a href="#tabs-history" id="onglet-history">
-                        <i class="icon-time"></i> Historique
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-        <div class="tab-container" id="form-module-{{ mod.name }}">
-            {{ form }}
-            {% if id != '' %}
-                <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
-                    {% include 'module/tab_history.twig' %}
-                </div>
-            {% endif %}
-            {% if id != '' %}
-                {% if depedencies|length > 0 %}
+
+                {% if seo == true and id != '' %}
+                    <li>
+                        <a href="#tabs-seo" id="onglet-seo">
+                            <i class="icon-unlink"></i> Référencement
+                        </a>
+                    </li>
+                {% endif %}
+                {% if depedencies|length > 0 and id != '' %}
                     {% for dependency in depedencies %}
-                        <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
-                            <div class="ed-menu bottommargin-sm">
-                                <a data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
-                                <div class="btn-group">
-                                    <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
-                                    </button>
-                                    <div class="dropdown-menu" data-action="{{ route( dependency.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ dependency.name }}">
-                                        {% for name, field in dependency.fields if field.table == true %}
-                                            <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="depedencyContent table-responsive" id="table-content-{{ dependency.class }}" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
-                        </div>
+                        <li>
+                            <a href="#tabs-{{ dependency.slug }}" id="onglet-{{ dependency.slug }}">
+                                <i class="{{ dependency.icon }}"></i> {{ dependency.name }}
+                            </a>
+                        </li>
                     {% endfor %}
                 {% endif %}
-            {% endif %}
-            {% if seo == true and id != '' %}
-            <div class="tab-content clearfix" id="tabs-seo" data-onglet="onglet-seo">
-                {% include 'module/tab_seo.twig' %}
+                {% if id != '' %}
+                    <li>
+                        <a href="#tabs-history" id="onglet-history">
+                            <i class="icon-time"></i> Historique
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <div class="tab-container" id="form-module-{{ mod.name }}">
+                {{ form }}
+                {% if id != '' %}
+                    <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
+                        {% include 'module/tab_history.twig' %}
+                    </div>
+                {% endif %}
+                {% if id != '' %}
+                    {% if depedencies|length > 0 %}
+                        {% for dependency in depedencies %}
+                            <div class="tab-content clearfix" id="tabs-{{ dependency.slug }}" data-onglet="onglet-{{ dependency.slug }}">
+                                <div class="ed-menu bottommargin-sm">
+                                    <a data-modal="true" href="{{ dRoute(dependency.name , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+                                    <div class="btn-group">
+                                        <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-action="{{ route( dependency.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ dependency.name }}">
+                                            {% for name, field in dependency.fields if field.table == true %}
+                                                <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="depedencyContent table-responsive" id="table-content-{{ dependency.class }}" data-table="{{ dRoute(dependency.name , 'table' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+                {% if seo == true and id != '' %}
+                <div class="tab-content clearfix" id="tabs-seo" data-onglet="onglet-seo">
+                    {% include 'module/tab_seo.twig' %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
-    </div>
+    {% endif %}
 {% endblock %}
 
 {% block stylesheets %}
