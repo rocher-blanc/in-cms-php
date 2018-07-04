@@ -5,7 +5,7 @@
             <p class="nobottommargin">Attention, la suppression est définitive et ne pourra en aucun cas être restaurée.</p>
         </div>
         <div class="section center nomargin" style="padding: 30px;">
-            {% if right.delete == true and mod.canDelete == true %}<a href="#" class="button" onClick="deleteElement('{{ route( mod.name , 'delete' , '' , id , csrf_token ) }}','table-content-{{ mod.name }}');"><i class="icon-ok"></i> Oui</a>{% endif %}
+            <a href="#" class="button" onClick="deleteElement('{{ route( mod.name , 'delete' , '' , id , csrf_token ) }}','table-content-{{ mod.name }}');"><i class="icon-ok"></i> Oui</a>
             <a href="#" class="button button-red" onClick="$.magnificPopup.close();return false;"><i class="icon-remove"></i> Non</a>
         </div>
     </div>
