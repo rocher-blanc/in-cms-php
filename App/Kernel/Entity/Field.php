@@ -621,7 +621,7 @@ class Field
 					$this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
 				}
 			}
-			else if ( $this->getType() == 'document' )
+			else if ( $this->getType() == 'document' && is_array( $this->getValue() ) && !empty( $this->getValue() ) )
 			{
 				$this->setValue( implode( ',' , $this->getValue() ) ) ;
 			}
