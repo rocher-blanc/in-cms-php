@@ -198,7 +198,10 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function request( $request )
     {
-        $rst = $this->getKit(false ) ;
+        $order = true ;
+        if ( array_key_exists( 'order' , $request ) ) $order = false ;
+
+        $rst = $this->getKit($order ) ;
 
         if ( ! empty( $request ) )
         {
