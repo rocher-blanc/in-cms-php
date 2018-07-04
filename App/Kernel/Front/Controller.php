@@ -417,26 +417,17 @@ class Controller extends \App\Kernel\Common\Controller
 
 		if ( $this->getEntity()->getPagination() !== NULL )
 		{
-			$url = $this->getUrl();
-			if ( count( $url ) == 1 )
-			{
-				$currentPage = 1 ;
-			}
-			else
-			{
-				$currentPage = end( $url );
-			}
+            $url = $this->getUrl();
 
-			if ( $currentPage < 1 )
-			{
-				$currentPage = 1;
-			}
+            if ( count( $url ) == 1 )	$currentPage = 1 ;
+            else						$currentPage = end( $url );
+            if ( $currentPage < 1 )		$currentPage = 1;
 
-			$totalItems = $this->getRepository()->count();
-			$itemsPerPage = $this->getEntity()->getPagination();
-			$urlPattern = $this->Factory()->Url()->module( $this->getEntityId() ) . '/(:num)';
 
-			$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+			$totalItems     = $this->getRepository()->count();
+			$itemsPerPage   = $this->getEntity()->getPagination();
+			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/(:num)';
+			$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 
 			$this->setRender('pagination', $this->parsePagination( $paginator ) );
 		}
@@ -674,7 +665,7 @@ class Controller extends \App\Kernel\Common\Controller
 					else						$currentPage = end( $url );
 					if ( $currentPage < 1 )		$currentPage = 1;
 
-					if ( ( count( $url ) == 3 or count( $url ) == 2 ) && is_numeric( end( $url ) ) )
+                    if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
 					{
 						$len = strlen( '/' . end( $url ) ) * -1 ;
 						$urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
