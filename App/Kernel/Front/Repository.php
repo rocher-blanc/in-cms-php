@@ -201,7 +201,7 @@ class Repository extends \App\Kernel\Common\Repository
         $order = true ;
         if ( array_key_exists( 'order' , $request ) ) $order = false ;
 
-        $rst = $this->getKit($order ) ;
+        $rst = $this->getKit( $order ) ;
 
         if ( ! empty( $request ) )
         {
