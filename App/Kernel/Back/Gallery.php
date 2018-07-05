@@ -11,7 +11,6 @@ class Gallery extends \App\Kernel\Common\Gallery
     protected $image_size = 0;
     protected $order = [];
     protected $thumb = [];
-    protected $crop  = [];
 
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
@@ -26,15 +25,6 @@ class Gallery extends \App\Kernel\Common\Gallery
     {
         $this->order = $var;
     }
-
-    public function setCrop( $width , $height )
-    {
-        $this->crop[ $width . "x" . $height ] = [
-            'w' => $width,
-            'h' => $height,
-        ];
-    }
-
     public function setThumb( $width , $height )
     {
         $this->thumb[ $width . "x" . $height ] = [
@@ -60,11 +50,6 @@ class Gallery extends \App\Kernel\Common\Gallery
     public function getThumb()
     {
         return $this->thumb ;
-    }
-
-    public function getCrop()
-    {
-        return $this->crop ;
     }
 
     /* ************************************************** */
@@ -101,70 +86,56 @@ class Gallery extends \App\Kernel\Common\Gallery
 
     public function add()
     {
-        $this->setImageName( $this->getNewFilename() );
-        if ( $this->move() )
-        {
-            $this->genThumb( 100 , 100 );
+        $path = IMAGE_PATH . '/' . $this->getFolder() ;
 
-            if ( ! empty( $this->getThumb() ) )
-            {
-                foreach( $this->getThumb() as $thb )
-                {
-                    $this->genThumb( $thb['w'] , $thb['h'] );
-                }
-            }
+        $ct  = count( $_FILES[ $this->post('field') ]["name"] );
+        $tab = [];
 
-            if ( ! empty( $this->getCrop() ) )
-            {
-                foreach( $this->getCrop() as $crp )
-                {
-                    $this->genDefaultCrop( $crp['w'] , $crp['h'] );
-                }
-            }
-
-            $gallery = \DB::for_table('gallery')->create();
-            $gallery->gallery_name = $this->getImageName();
-            $gallery->gallery_type = $_FILES['file']['type'];
-            $gallery->gallery_size = $_FILES['file']['size'];
-            $gallery->gallery_module_id = $this->getModuleId();
-            $gallery->gallery_element_id = $this->getElementId();
-            $gallery->gallery_field = $this->getField();
-            $gallery->gallery_position = 9999;
-            $gallery->save();
-
-            $this->setImageId( $gallery->gallery_id );
-            $this->setSize( $_FILES['file']['size'] );
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public function crop()
-    {
-        $row = \DB::for_table('gallery')
-            ->select('gallery_name')
-            ->select('gallery_id')
-            ->where_equal( 'gallery_id' , $this->getImageId() )
+        $module = \DB::for_table('module')
+            ->select('module_class_name')
+            ->where(array('module_id' => $this->getModuleId()))
             ->find_one();
 
-        $this->setImageName( $row->gallery_name );
+        for( $i = 0; $i <= $ct; $i ++ )
+        {
+            $this->setImageName( $this->getNewFilename( $_FILES[ $this->post('field') ]["name"][$i] ) );
+            if ( $this->move( $_FILES[ $this->post('field') ]["tmp_name"][$i]) )
+            {
+                $this->genThumb( 100 , 100 );
 
-        $x  = $this->CMS()->request()->post('crop_x') ;
-        $y  = $this->CMS()->request()->post('crop_y') ;
-        $x2 = $this->CMS()->request()->post('crop_x2') ;
-        $y2 = $this->CMS()->request()->post('crop_y2') ;
+                if ( ! empty( $this->getThumb() ) )
+                {
+                    foreach( $this->getThumb() as $thb )
+                    {
+                        $this->genThumb( $thb['w'] , $thb['h'] );
+                    }
+                }
 
-        $imageName  = $this->CMS()->request()->post('imageName') ;
-        $image  	= $this->CMS()->request()->post('image') ;
-        $width  	= $this->CMS()->request()->post('crop_width') ;
-        $height  	= $this->CMS()->request()->post('crop_height') ;
+                $gallery = \DB::for_table('gallery')->create();
+                $gallery->gallery_name = $this->getImageName();
+                $gallery->gallery_type = $_FILES[ $this->post('field') ]['type'][$i];
+                $gallery->gallery_size = $_FILES[ $this->post('field') ]['size'][$i];
+                $gallery->gallery_module_id = $this->getModuleId();
+                $gallery->gallery_element_id = $this->getElementId();
+                $gallery->gallery_field = $this->getField();
+                $gallery->gallery_position = 9999;
+                $gallery->save();
 
-        $img = new \abeautifulsite\SimpleImage( IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
-        $img->crop($x, $y, $x2, $y2)->resize( $width , $height )->save( IMAGE_PATH . '/' . $this->getFolder() . '/c/' . $this->updateName( $this->getImageName() , $width . "x" . $height ) );
+                $this->setImageId( $gallery->gallery_id );
+                $this->setSize( $_FILES['file']['size'] );
+
+                $std             = new \stdClass;
+                $std->id         = $gallery->gallery_id;
+                $std->field      = $this->post('field');
+                $std->name       = $this->getImageName();
+                $std->url        = $this->Factory()->Url()->get('module/' . $module->module_class_name . '/deletegallery');
+                $std->image100   = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' . $this->getMini( $gallery->gallery_name , 100 , 100 ) ;;
+
+                $tab[] = $std ;
+            }
+        }
+
+        return $tab ;
     }
 
     public function deleteElement()
@@ -237,9 +208,9 @@ class Gallery extends \App\Kernel\Common\Gallery
         return $tab ;
     }
 
-    protected function move()
+    protected function move( $tmp_name )
     {
-        return move_uploaded_file( $_FILES['file']['tmp_name'] , IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
+        return move_uploaded_file( $tmp_name , IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
     }
 
     protected function genDefaultCrop( $width , $height )
@@ -281,9 +252,9 @@ class Gallery extends \App\Kernel\Common\Gallery
         return $name ;
     }
 
-    protected function getNewFilename()
+    protected function getNewFilename( $name )
     {
-        $filename = $this->updateName( $_FILES['file']['name'] ) ;
+        $filename = $this->updateName( $name ) ;
         $path     = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
         $img      = $path . $filename ;
 
@@ -318,7 +289,7 @@ class Gallery extends \App\Kernel\Common\Gallery
             ->select('gallery_id')
             ->select('gallery_element_id')
             ->where_equal( 'gallery_module_id' , $this->getModuleId() )
-            ->where_equal( 'gallery_element_id' , 0 )
+            ->where_equal( 'gallery_element_id' , -1 )
             ->where_equal( 'gallery_field' , $this->getField() )
             ->order_by_asc('gallery_position')
             ->find_many();

@@ -13,6 +13,7 @@ init = function( base ) {
     deleteValueMedia( base );
     checkImage( base );
     checkDocument( base );
+    checkGallery( base );
     modalDepedency('body');
     tableDepedency( base );
 };
@@ -195,6 +196,117 @@ checkDocument = function(base) {
             });
         });
     }
+};
+
+checkGallery = function(base) {
+    if ( $(base + ' input[data-upload-gallery]').length ) {
+        checkDeleteGallery();
+
+        $(base + ' input[data-upload-gallery]').each(function(){
+            var $this = $(this);
+            var myForm = $this.closest('form');
+            var tvalue = $("meta[name=token]").attr("content") ;
+            var fieldname = $this.data('hidden') ;
+
+            $('#list_gallery_' + fieldname).sortable({
+                items: "div:not(.btn-bar)",
+                handle: '.movegallery',
+                update: function( event, ui ) {
+                    var arraySort = $(this).sortable('toArray');
+                    $.ajax({
+                        url: $('#list_gallery_' + fieldname).data('sortable-url'),
+                        type: "post",
+                        data: {
+                            csrf_token:tvalue,
+                            field: $this.data('fieldname'),
+                            id: $('#id_element').val(),
+                            order: arraySort
+                        }
+                    });
+                }
+            });
+
+            $this.fileinput({
+                language: 'fr',
+                uploadUrl: $this.data('uploadurl'),
+                mainClass: "input-group-md upload-image",
+
+                uploadExtraData:{
+                    id:$('#id_element').val(),
+                    field:$this.data('field'),
+                    fieldname:$this.data('fieldname'),
+                    csrf_token:tvalue
+                },
+
+                showCaption: false,
+                showRemove: false,
+
+                showUpload: false,
+                showPreview: false,
+                showCancel: false,
+                showProgress: false,
+
+                maxFileCount: 100,
+                uploadAsync: false,
+                browseLabel: "Parcourir",
+                browseClass: "button button-mini button-rounded",
+                browseIcon: "<i class=\"icon-file\"></i> ",
+            }).on("filebatchselected", function(event, files) {
+                myForm.find('.form-process').fadeIn();
+                $this.fileinput("upload");
+            }).on("filebatchuploadsuccess", function(event, files) {
+                myForm.find('.kv-upload-progress').hide();
+
+                $('#list_gallery_' + fieldname).find('.clear').remove();
+                
+                $(files.response).each(function(index, data) {
+                    $('<div class="mini-img" id="gallery-'+data.id+'">\n' +
+                        '    <img src="'+data.image100+'"/>\n' +
+                        '    <div class="btn-bar"><i class="icon-trash deletegallery" data-url="'+data.url+'" data-image-id="'+data.id+'"></i>&nbsp;&nbsp;<i class="icon-move movegallery"></i></div>\n' +
+                        '</div>').appendTo( $('#list_gallery_' + fieldname) );
+                });
+
+                $('<div class="clear"></div>').appendTo( $('#list_gallery_' + fieldname) );
+
+                checkDeleteGallery();
+
+                myForm.find('.form-process').fadeOut();
+            }).on('fileclear', function(event, id, index) {
+                $($this.attr('data-bdd')).val('');
+                myForm.find('.form-process').fadeOut();
+            }).on('fileerror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
+            }).on('filebatchuploaderror', function(event, id, index) {
+                myForm.find('.form-process').fadeOut();
+            }).on('filebeforedelete', function() {
+                console.log('test filebeforedelete');
+            }).on('filedeleted', function() {
+                console.log('test filedeleted');
+            });
+        });
+    }
+};
+
+checkDeleteGallery = function() {
+    $('.deletegallery').not('.deleteGalleryReady').click(function() {
+        var $this = $(this);
+
+        $this.parent().parent().fadeOut(400, function() {
+            $this.parent().parent().remove();
+        });
+
+        $.ajax({
+            url: $this.data('url'),
+            type: "post",
+            dataType: 'json',
+            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + "&id=" + $this.data('image-id'),
+            success: function( json ) {
+
+            }
+        });
+
+
+    }).addClass('deleteGalleryReady');
 };
 
 checkDeleteDocument = function() {

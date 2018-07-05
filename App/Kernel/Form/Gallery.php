@@ -12,20 +12,14 @@ class Gallery extends \App\Kernel\Back\Form
         $this->value = $value ;
 
         $this->_lib_js  = [
-            'dropzone/dist/min/dropzone.min.js',
-            'jcrop/js/jquery.Jcrop.min.js',
-            'cmsmedias/js/jgallery.js'
+            'cmsmedias/canvas/js/components/bs-filestyle.js',
+            'cmsmedias/canvas/js/easydoor/locales/fileinput/fr.js',
+            'cmsmedias/libs/jquery-ui.min.js',
         ];
-
-        $this->_lib_css = [
-            'dropzone/dist/min/basic.min.css',
-            'dropzone/dist/min/dropzone.min.css',
-            'jcrop/css/jquery.Jcrop.min.css',
-            'cmsmedias/css/jgallery.css'
-        ];
+        $this->_lib_css = ['cmsmedias/canvas/css/src/components/bs-filestyle.css'];
 
         $Gal = new \App\Kernel\Back\Gallery;
-        $Gal->setElementId( ( $value == '' ? 0 : $value ) );
+        $Gal->setElementId( ( $value == '' ? -1 : $value ) );
         $Gal->setModuleId( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getController(true)->getEntityId() );
         $Gal->setField( $field->getName() );
         $Gal->setFolder( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getEntity()->getFolder() );

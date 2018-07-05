@@ -1169,12 +1169,9 @@ class Builder extends Model
         $this->setGallery() ;
         $this->setGalleryField( $this->field()->getColumn() ) ;
 
-        $this->addAction("jgallery") ;
-        $this->addAction("jgallery_upload") ;
-        $this->addAction("jgallery_delete") ;
-        $this->addAction("jgallery_crop") ;
-        $this->addAction("jgallery_cropost") ;
-        $this->addAction("jgallery_order") ;
+        $this->addAction("uploadgallery") ;
+        $this->addAction("deletegallery") ;
+        $this->addAction("ordergallery") ;
 
         return $this ;
     }

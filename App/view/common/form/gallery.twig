@@ -1,23 +1,18 @@
-<input type="hidden" value="{{ value }}" name="{{ name }}" id="id_element_dropzone" />
-<input type="hidden" value="{{ field_name }}" name="field_dropzone" id="field_dropzone" />
-<div id="gallery_{{ field_name }}" class="blockGallery" data-crop="{{ hasCrop ? '1' : '0' }}" data-value="{{ value }}" data-url="{{ siteUrl('/module/' ~ module ~ '/jgallery_order') }}" data-field="{{ field_name }}">
-    <a class="btn btn-info btnAdd" data-jgallery data-field="{{ field_name }}" data-fieldid="id_{{ name }}" href="{{ siteUrl('/module/' ~ module ~ '/jgallery') }}">
-        <i class="fa fa-plus"></i> Ajouter
-    </a>
-    {% if rst|length > 0 %}
-        {% for key, img in rst %}
-            <div class="mini-img" id="gallery-{{ key }}">
-                <img src="{{ img['100x100'] }}"/>
-                <div class="btn-bar">
-                    <a href="{{ siteUrl('/module/' ~ module ~ '/jgallery_delete') }}" class="delete" data-image-id="{{ key }}"><i class="fa fa-trash"></i></a>&nbsp;&nbsp;
-                    <i class="fa fa-arrows move"></i>&nbsp;&nbsp;
-                    {% if hasCrop %}
-                        <a href="{{ siteUrl('/module/' ~ module ~ '/jgallery_crop') }}" class="crop" data-field="{{ field_name }}" data-image-id="{{ key }}"><i class="fa fa-crop"></i></a>&nbsp;&nbsp;
-                    {% endif %}
-                    <i class="fa fa-info-circle" data-toggle="tooltip" title="{{ img.size }} | {{ img.name }}"></i>
+<div class="list-gallery">
+    <ul class="nomargin" id="list_gallery_{{ name }}" data-sortable-url="{{ route( mod.name , 'ordergallery' ) }}">
+        {% if rst|length > 0 %}
+            {% for key, img in rst %}
+                <div class="mini-img" id="gallery-{{ key }}">
+                    <img src="{{ img['100x100'] }}"/>
+                    <div class="btn-bar">
+                        <i class="icon-trash deletegallery" data-url="{{ route( mod.name , 'deletegallery' ) }}" data-image-id="{{ key }}"></i>&nbsp;&nbsp;<i class="icon-move movegallery"></i>&nbsp;&nbsp;
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    {% endif %}
-    <div class="clearGallery"></div>
+            {% endfor %}
+            <div class="clear"></div>
+        {% endif %}
+    </ul>
+</div>
+<div class="text-right">
+    <input id="upload_{{ name }}" value="{{ image }}" type="file" data-upload-gallery class="file-loading" multiple data-field="{{ field_name }}__upload" data-hidden="{{ name }}" data-fieldname="{{ field_name }}" name="{{ field_name }}__upload[]" data-uploadurl="{{ route( mod.name , 'uploadgallery' ) }}">
 </div>

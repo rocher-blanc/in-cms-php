@@ -207,6 +207,5 @@ class Document extends \App\Kernel\Common\Document
 		}
 
 		return $tab ;
-
     }
 }

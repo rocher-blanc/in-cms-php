@@ -569,6 +569,36 @@ form {
 }
 
 /* ************************************************ */
+/* Gestion des galeries                            */
+/* ************************************************ */
+
+.list-gallery {
+  background-color: #f4f4f4;
+  padding: 10px 10px 0 10px;
+  border: 1px dashed #aaa;
+
+  .mini-img {
+    float: left;
+    margin: 0 10px 10px 0;
+    background-color: #fff;
+    padding: 1px;
+    border: 1px solid $theme-color;
+
+    .btn-bar {
+      text-align: center;
+
+      i.deletegallery {
+        cursor: pointer;
+      }
+
+      i.movegallery {
+        cursor: move;
+      }
+    }
+  }
+}
+
+/* ************************************************ */
 /* Correction bug CSS multi-langue                  */
 /* ************************************************ */
 

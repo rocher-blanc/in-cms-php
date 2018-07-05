@@ -114,6 +114,16 @@ class Gallery
         return \App\Kernel\CMS::getInstance() ;
     }
 
+    protected function getApp()
+    {
+        return \Slim\Slim::getInstance() ;
+    }
+
+    protected function post( $key )
+    {
+        return $this->getApp()->request->post( $key );
+    }
+
     /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
