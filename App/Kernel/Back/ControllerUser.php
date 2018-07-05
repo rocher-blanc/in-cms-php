@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Kernel\Front;
+namespace App\Kernel\Back;
 
 class ControllerUser extends Controller
 {

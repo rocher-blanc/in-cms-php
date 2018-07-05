@@ -50,6 +50,7 @@ class Loader
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\CsrfGuard( $this->kernel->config('token') ));
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Auth);
         $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Guard);
+        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\User);
 
         #########################################################
         /* ****************   Extensions   ******************* */

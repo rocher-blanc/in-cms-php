@@ -808,13 +808,16 @@ class Builder extends Model
 	{
 		if ( ACTIVE_USER )
 		{
+			/*
 			$this->build('user_front_id' , true )
 				->isSelect()
 				->noFront()
+                ->group('connexion')
 				->defaut(function() {
 					return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
 				} , true  )
 				->name('Utilisateur');
+			*/
 		}
 	}
 
@@ -827,17 +830,21 @@ class Builder extends Model
 	{
 		if ( ACTIVE_USER )
 		{
+		    $this->addGroup('connexion' , 'Informations de connexion');
 			$this->enableUser() ;
 			$this->setModuleUser() ;
 
 			$this->build('user_action' , true )
 				->isHidden()
+                ->group('connexion')
 				->noSave()
 				->noRename()
 				->defaut( $this->getUserAction() , true  );
 
 			$this->build('user_login' , true )
 				->isVarchar()
+                ->group('connexion')
+                ->notEmpty('login')
 				->noSave()
 				->noRename()
 				->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
@@ -847,16 +854,19 @@ class Builder extends Model
 			{
 				$this->build('user_password' , true )
 					->isPassword()
+                    ->group('connexion')
 					->noRename()
 					->name('Ancien mot de passe');
 
 				$this->build('user_new_password' , true )
 					->isPassword()
+                    ->group('connexion')
 					->noRename()
 					->name('Nouveau mot de passe');
 
 				$this->build('user_new_password_confirm' , true )
 					->isPassword()
+                    ->group('connexion')
 					->noRename()
 					->name('Confirmer votre nouveau mot de passe');
 			}
@@ -864,11 +874,15 @@ class Builder extends Model
 			{
 				$this->build('user_password' , true )
 					->isPassword()
+                    ->group('connexion')
+                    ->notEmpty('user_password')
 					->noRename()
 					->name('Mot de passe');
 
 				$this->build('user_password_confirm' , true )
 					->isPassword()
+                    ->group('connexion')
+                    ->notEmpty('user_password_confirm')
 					->noRename()
 					->name('Confirmer votre mot de passe');
 			}

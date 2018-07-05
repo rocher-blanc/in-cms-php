@@ -9,6 +9,11 @@ class User extends \App\Kernel\Common\User
     /* ****************     ISER      ******************* */
     /* ************************************************** */
 
+    public function isLogged()
+    {
+        return false;
+    }
+
     /* ************************************************** */
     /* ****************    SETTER     ******************* */
     /* ************************************************** */
@@ -30,4 +35,20 @@ class User extends \App\Kernel\Common\User
     /* ************************************************** */
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
+
+
+
+    protected function returnError( $key , $result = false )
+    {
+        if ( $result == false ) $this->_error = true ;
+
+        if ( $this->isAjax() )
+        {
+            $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+        }
+        else
+        {
+            return $result ;
+        }
+    }
 }

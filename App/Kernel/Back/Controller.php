@@ -1461,7 +1461,9 @@ class Controller extends \App\Kernel\Common\Controller
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
         {
             $rst = $this->pushData() ;
-            return $this->Factory()->Response()->printJSON( $rst ) ;
+
+            if ( is_array( $rst ) ) return $this->Factory()->Response()->printJSON( $rst ) ;
+            else                    return ;
         }
 
         $this->loadDepedencies() ;
@@ -1491,7 +1493,9 @@ class Controller extends \App\Kernel\Common\Controller
         {
 			if ( $this->getEntity()->hasUrl() ) $seo->update() ;
             $rst = $this->pushData( false ) ;
-            return $this->Factory()->Response()->printJSON( $rst ) ;
+
+            if ( is_array( $rst ) ) return $this->Factory()->Response()->printJSON( $rst ) ;
+            else                    return ;
         }
 
         $this->loadDepedencies() ;
