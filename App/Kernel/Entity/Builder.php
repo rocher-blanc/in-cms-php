@@ -1044,8 +1044,8 @@ class Builder extends Model
 
     protected function isDocument()
     {
-        $this->field()->setData( "SQL_VALUE" , 11 ) ;
-        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "SQL_VALUE" , "255" ) ;
+        $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
         $this->field()->setData( "type" , "document" ) ;
         $this->field()->setData( "module" , $this->getClassName(false) ) ;
         $this->field()->setData( "folder" , $this->getPathDocument(false) ) ;

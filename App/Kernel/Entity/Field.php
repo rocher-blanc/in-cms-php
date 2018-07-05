@@ -626,12 +626,6 @@ class Field
 				$this->setValue( implode( ',' , $this->getValue() ) ) ;
 			}
 
-			if ( $this->getType() == 'document' )
-            {
-                dump( $this->getValue() );
-                die;
-            }
-
             if ( $this->isParent() == true && $this->getValue() == '' )
             {
                 $this->setValue( NULL ) ;
