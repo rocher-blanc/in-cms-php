@@ -16,6 +16,7 @@ init = function( base ) {
     checkGallery( base );
     modalDepedency('body');
     tableDepedency( base );
+    checkVideo( base );
 };
 
 modalDepedency = function ( base ) {
@@ -177,7 +178,18 @@ checkDocument = function(base) {
                 myForm.find('.kv-upload-progress').hide();
 
                 $(files.response).each(function(index, data) {
-                    $('<li id="document_'+data.id+'"><i class="fa fa-file'+data.ico.class+'-o" style="color: '+data.ico.color+'"></i> '+data.name+' <i style="cursor: pointer;" class="icon-trash fright deletedoc" data-id="'+data.id+'" data-field="'+$this.data('fieldname')+'" data-url="'+data.url+'"></i><input type="hidden" name="'+fieldname+'[]" value="'+data.id+'"></li>').appendTo( $('#list_doc_' + fieldname) );
+                    $('<li id="document_{{ doc.id }}">\n' +
+                        '            <div class="input-group">\n' +
+                        '                <span class="input-group-addon">\n' +
+                        '                    <i class="fa fa-file'+data.ico.class+'-o" title="'+data.name+'" style="cursor: help;"></i>\n' +
+                        '                </span>\n' +
+                        '                <input type="hidden" name="'+fieldname+'['+data.id+']" value="'+data.id+'">\n' +
+                        '                <input type="text" placeholder="'+data.name+'" class="form-control" name="'+fieldname+'_alt['+data.id+']" id="id_'+fieldname+'_alt['+data.id+']" value="" />\n' +
+                        '                <span class="input-group-addon">\n' +
+                        '                    <i class="icon-trash fright deletedoc" data-id="'+data.id+'" data-field="'+$this.data('fieldname')+'" data-url="'+data.url+'"></i>\n' +
+                        '                </span>\n' +
+                        '            </div>\n' +
+                        '        </li>').appendTo( $('#list_doc_' + fieldname) );
                 });
 
                 checkDeleteDocument();
@@ -719,3 +731,61 @@ updateLink = function( str ) {
         str.val( str.val().substr(0, str.val().length - 1) );
     }
 };
+
+/*
+#####################################################################################################################################
+#####################################################        VIDEO         ##########################################################
+#####################################################################################################################################
+*/
+
+getVideoID = function(url) {
+    if(url.indexOf('?') != -1 ) {
+        var query = decodeURI(url).split('?')[1];
+        var params = query.split('&');
+        for(var i=0,l = params.length;i<l;i++)
+            if(params[i].indexOf('v=') === 0)
+                return params[i].replace('v=','');
+    }
+    else if (url.indexOf('youtu.be') != -1) {
+        return decodeURI(url).split('youtu.be/')[1];
+    }
+    else if (url.indexOf('vimeo.com/') != -1) {
+        return decodeURI(url).split('vimeo.com/')[1];
+    }
+    else if (url.indexOf('dai.ly/') != -1) {
+        return decodeURI(url).split('dai.ly/')[1];
+    }
+    return null;
+};
+
+checkVideo = function( base ) {
+    if ( $( base ).find("input[data-video]").length ) {
+        $( base ).find('input[data-video]').each(function() {
+            $(this).change(function() {
+                var url = $(this).val();
+                var video_id = getVideoID(url);
+                var video_div = "#video_" + $(this).attr("id");
+
+                if (video_id != null) {
+                    if (url.indexOf('vimeo.com/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + video_id + '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+                    }
+                    else if (url.indexOf('dai.ly/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.dailymotion.com/embed/video/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    else {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.youtube.com/embed/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    $(video_div).show();
+                }
+                else {
+                    $(video_div).html("Aucune vidéo");
+                }
+            });
+            if ($(this).val() != "")
+            {
+                $(this).trigger("change");
+            }
+        });
+    }
+}

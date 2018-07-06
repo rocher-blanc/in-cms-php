@@ -8,7 +8,7 @@ class Document extends \App\Kernel\Common\Document
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    private $module_id = NULL ;
+    private $module_id   = NULL ;
 	private $module_name = NULL ;
 
 	/* ************************************************** */
@@ -34,10 +34,10 @@ class Document extends \App\Kernel\Common\Document
         return $this->module_id ;
     }
 
-	public function getModuleName()
-	{
-		return $this->module_name ;
-	}
+    public function getModuleName()
+    {
+        return $this->module_name ;
+    }
 
 	/* ************************************************** */
 	/* ******************   TOOLS    ******************** */
@@ -141,6 +141,25 @@ class Document extends \App\Kernel\Common\Document
         $name = $this->Factory()->Url()->encode( $this->getDocumentId() . "-" . $name ) . "." . $ext ;
 
         return $name ;
+    }
+
+    public function updateAlt()
+    {
+        $rst = \DB::for_table('document')
+            ->where_id_is( $this->getDocumentId() )
+            ->find_one();
+
+        if ( $rst )
+        {
+            $rst->document_title = $this->getAltText();
+            $rst->save();
+
+            return true ;
+        }
+        else
+        {
+            return false ;
+        }
     }
 
     public function rename()

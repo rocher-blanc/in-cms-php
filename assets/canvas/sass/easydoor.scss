@@ -560,7 +560,6 @@ form {
     display: block;
     padding: 3px 10px;
     margin-bottom: 2px;
-    background-color: #fff;
 
     .deletedoc {
       cursor: pointer;
@@ -609,6 +608,21 @@ form {
   p { margin-bottom: 15px !important; }
   ul { padding-left: 40px !important; }
   a { color: #00AFAF !important; }
+}
+
+/* ************************************************ */
+/* Gestion des champs isVideo                       */
+/* ************************************************ */
+
+.jvideo {
+  .preview {
+    border: 1px solid #c0ccd3;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #c0ccd3;
+  }
 }
 
 /* ************************************************ */

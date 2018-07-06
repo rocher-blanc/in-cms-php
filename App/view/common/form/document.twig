@@ -2,8 +2,16 @@
     <ul class="nomargin" id="list_doc_{{ name }}">
         {% for doc in docs %}
         <li id="document_{{ doc.id }}">
-            <i class="fa fa-file{{ doc.ico.class }}-o" style="color: {{ doc.ico.color }}"></i> {{ doc.name }} <i class="icon-trash fright deletedoc" data-id="{{ doc.id }}" data-field="{{ field_name }}" data-url="{{ route( mod.name , 'deletedocument' , '' , doc.id ) }}"></i>
-            <input type="hidden" name="{{ name }}[]" value="{{ doc.id }}">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-file{{ doc.ico.class }}-o" title="{{ doc.name }}" style="cursor: help;"></i>
+                </span>
+                <input type="hidden" name="{{ name }}[{{ doc.id }}]" value="{{ doc.id }}">
+                <input type="text" placeholder="{{ doc.name }}" class="form-control" name="{{ name }}_alt[{{ doc.id }}]" id="id_{{ column }}_alt[{{ doc.id }}]" value="{{ doc.title }}" />
+                <span class="input-group-addon">
+                    <i class="icon-trash fright deletedoc" data-id="{{ doc.id }}" data-field="{{ field_name }}" data-url="{{ route( mod.name , 'deletedocument' , '' , doc.id ) }}"></i>
+                </span>
+            </div>
         </li>
         {% endfor %}
     </ul>

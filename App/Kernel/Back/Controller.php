@@ -951,12 +951,27 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                             else if ( $field->getType() == "gallery" && $add == true )
                             {
-                                // On met a jour les 0
+                                // On met a jour les -1
                                 $Gallery = new \App\Kernel\Back\Gallery;
                                 $Gallery->setElementId( $this->getId() );
                                 $Gallery->setField( $field->getName() );
                                 $Gallery->setModuleId( $this->getEntityId() );
                                 $Gallery->updateZero();
+                            }
+                            else if ( $field->getType() == "document" )
+                            {
+                                $post = $this->getApp()->request->post($field->getColumn() . '_alt' ) ;
+
+                                if ( !empty( $post ) )
+                                {
+                                    foreach( $post as $id_document => $text )
+                                    {
+                                        $Doc = new \App\Kernel\Back\Document;
+                                        $Doc->setDocumentId( $id_document );
+                                        $Doc->setAltText( ( empty( $text ) ? NULL : $text ) );
+                                        $Doc->updateAlt();
+                                    }
+                                }
                             }
                         }
 

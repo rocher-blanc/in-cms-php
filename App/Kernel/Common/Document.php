@@ -8,9 +8,10 @@ class Document
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $document_id = NULL ;
-    protected $document_name = NULL ;
-    protected $folder_name = NULL ;
+    protected $document_id      = NULL ;
+    protected $document_name    = NULL ;
+    protected $folder_name      = NULL ;
+    protected $alt              = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -37,6 +38,11 @@ class Document
         $this->folder_name = $var ;
     }
 
+    public function setAltText( $var )
+    {
+        $this->alt = $var ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -54,6 +60,11 @@ class Document
     public function getFolder()
     {
         return $this->folder_name ;
+    }
+
+    public function getAltText()
+    {
+        return $this->alt ;
     }
 
     /* ************************************************** */
@@ -144,12 +155,14 @@ class Document
     {
         $rst = \DB::for_table('document')
             ->select('document_name')
+            ->select('document_title')
             ->where_equal( 'document_id' , $this->getDocumentId() )
             ->find_one();
 
         if ( $rst )
         {
             $this->setDocumentName( $rst->document_name ) ;
+            $this->setAltText( $rst->document_title ) ;
         }
 
         if ( $rst )	return true ;

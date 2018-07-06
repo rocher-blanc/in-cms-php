@@ -167,6 +167,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
 			"document" => [
 				"document_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
 				"document_name" => $this->infoColumn( "VARCHAR" , "255" ),
+				"document_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
 				"document_size" => $this->infoColumn( "INT" , "11" ),
 				"document_type" => $this->infoColumn( "VARCHAR" , "50" ),
 				"document_module_id" => $this->infoColumn( "INT" , "11" )

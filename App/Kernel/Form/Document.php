@@ -46,9 +46,10 @@ class Document extends \App\Kernel\Back\Form
 					$ico = $this->_doc->getIcon( $this->_doc->getDocumentName() );
 
 					$tab[ $row ] = [
-						'name' => $this->_doc->getDocumentName(),
-						'id'   => $row,
-						'ico'  => $ico
+						'name'  => $this->_doc->getDocumentName(),
+						'title' => $this->_doc->getAltText(),
+						'id'    => $row,
+						'ico'   => $ico
 					];
 				}
 			}
