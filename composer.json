@@ -19,7 +19,7 @@
     "symfony/var-dumper": "~3.0",
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master",
-    "guzzlehttp/guzzle": "~3.0"
+    "guzzlehttp/guzzle": "^6.1"
   },
   "authors": [
     {

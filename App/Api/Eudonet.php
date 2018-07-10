@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-use GuzzleHttp\Client;
+use Guzzle\Http\Client;
 
 class Eudonet
 {
@@ -11,7 +11,9 @@ class Eudonet
     /* ************************************************** */
 
     private $token = '' ;
-    private $headers = [] ;
+    private $headers = [
+        'Content-Type' => "application/json"
+    ];
     private static $instance = NULL ;
 
     /* ************************************************** */
@@ -23,6 +25,9 @@ class Eudonet
         $this->client = new Client([
             'base_uri' => 'https://xrm3.eudonet.com/EudoAPI/',
         ]);
+        $this->client->setDefaultHeaders( $this->headers );
+
+        $this->getToken();
     }
 
     /* ************************************************** */
@@ -75,18 +80,14 @@ class Eudonet
         $type = strtolower( $type );
         try
         {
-            $authResponse = $this->client->$type( $route , $route . "authent                                                                                                                                                             icate" , [
-                'headers' => array_merge([
-                    'Content-Type' => "application/json" ,
-                ], $this->headers ),
+            $authResponse = $this->client->$type( $route , $this->headers , [
                 'json' => $params
-            ] );
+            ]);
 
             return json_decode($authResponse->getBody(), true);
         } catch ( Exception $e )
         {
             dump( $e );
         }
-
     }
 }
