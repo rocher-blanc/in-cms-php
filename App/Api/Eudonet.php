@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 
 class Eudonet
 {
@@ -25,7 +25,6 @@ class Eudonet
         $this->client = new Client([
             'base_uri' => 'https://xrm3.eudonet.com/EudoAPI/',
         ]);
-        $this->client->setDefaultHeaders( $this->headers );
 
         $this->getToken();
     }
@@ -59,13 +58,13 @@ class Eudonet
     private function getToken()
     {
         $rst = $this->request("post" , 'Authenticate/Token' , [
-            "SubscriberLogin" => EUDO_SUBSCRIBER_LOGIN,
-            "SubscriberPassword" => EUDO_SUBSCRIBER_PASSWORD,
-            "BaseName" => EUDO_BASE_NAME,
-            "UserLogin" => EUDO_USER_LOGIN,
-            "UserPassword" => EUDO_USER_PASSWORD,
-            "UserLang" => EUDO_USER_LANG,
-            "ProductName" => EUDO_PRODUCT_NAME
+            "SubscriberLogin"       => EUDO_SUBSCRIBER_LOGIN,
+            "SubscriberPassword"    => EUDO_SUBSCRIBER_PASSWORD,
+            "BaseName"              => EUDO_BASE_NAME,
+            "UserLogin"             => EUDO_USER_LOGIN,
+            "UserPassword"          => EUDO_USER_PASSWORD,
+            "UserLang"              => EUDO_USER_LANG,
+            "ProductName"           => EUDO_PRODUCT_NAME
         ]);
 
         dump( $rst );
@@ -80,7 +79,7 @@ class Eudonet
         $type = strtolower( $type );
         try
         {
-            $authResponse = $this->client->$type( $route , $this->headers , [
+            $authResponse = $this->client->$type( $route , [
                 'json' => $params
             ]);
 
