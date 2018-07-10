@@ -38,4 +38,9 @@ class Repository
 	{
 		return \DB::for_module( $this->getName() )->count();
 	}
+
+    public function findAllForSelect( $target , $alias , $parentName )
+    {
+        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName ) ;
+    }
 }
