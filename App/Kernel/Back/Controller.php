@@ -268,35 +268,6 @@ class Controller extends \App\Kernel\Common\Controller
         ])) ;
     }
 
-    public function getElementForAssociation( $name , $returnType = NULL )
-    {
-        $alias      = 'titre' ;
-        $target     = $this->getEntity()->get( $name );
-        $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
-
-        switch( $returnType )
-        {
-            case "array" :
-                $tab = [];
-
-                if ( $content )
-                {
-                    foreach( $content as $row )
-                    {
-                        $tab[ $row->id ] = $row->get( $alias );
-                    }
-                }
-
-                return $tab ;
-                break;
-            default :
-                if ( $this->getEntity()->hasParent() ) $content = $this->getTreeParent( $content , $alias ) ;
-                break;
-        }
-
-        return $content ;
-    }
-
     // Pour les checkbox dans le même module (systeme de table d'association)
     protected function getAssocValue( $nameField )
     {

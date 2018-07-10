@@ -302,6 +302,35 @@ class Controller
         }
     }
 
+    public function getElementForAssociation( $name , $returnType = NULL )
+    {
+        $alias      = 'titre' ;
+        $target     = $this->getEntity()->get( $name );
+        $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+
+        switch( $returnType )
+        {
+            case "array" :
+                $tab = [];
+
+                if ( $content )
+                {
+                    foreach( $content as $row )
+                    {
+                        $tab[ $row->id ] = $row->get( $alias );
+                    }
+                }
+
+                return $tab ;
+                break;
+            default :
+                if ( $this->getEntity()->hasParent() ) $content = $this->getTreeParent( $content , $alias ) ;
+                break;
+        }
+
+        return $content ;
+    }
+
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
     /* ************************************************** */
