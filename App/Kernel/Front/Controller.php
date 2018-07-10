@@ -468,14 +468,6 @@ class Controller extends \App\Kernel\Common\Controller
         ];
     }
 
-    protected function getSelectValue( $module , $value )
-    {
-        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
-
-        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
-        else            return NULL ;
-    }
-
     public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();

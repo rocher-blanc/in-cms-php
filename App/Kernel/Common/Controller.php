@@ -349,6 +349,14 @@ class Controller
         }
     }
 
+    protected function getSelectValue( $module , $value )
+    {
+        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
+
+        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
+        else            return NULL ;
+    }
+
     protected function renderForm( $values )
     {
         $View = $this->Container()->newClass('App\Kernel\View');
