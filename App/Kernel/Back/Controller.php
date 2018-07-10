@@ -268,33 +268,6 @@ class Controller extends \App\Kernel\Common\Controller
         ])) ;
     }
 
-    // Systeme de many / one TO many / one
-    protected function getValueAssociated( $row , $returnType = NULL , $form = false )
-    {
-        $Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
-
-        if ( $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
-        {
-            $this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
-            $this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
-            $this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
-
-            if ( $form ) $returnType = NULL ;
-        }
-
-        if ( $Controller === false )
-        {
-            $this->Factory()->Response()->error("L'objet '" . $row->getObject() . "' dans le champ '" . $row->getTitle() . "' est impossible à charger");
-        }
-        else
-        {
-            $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType ) ;
-
-            unset( $Controller );
-            return $tab ;
-        }
-    }
-
     public function getElementForAssociation( $name , $returnType = NULL )
     {
         $alias      = 'titre' ;
