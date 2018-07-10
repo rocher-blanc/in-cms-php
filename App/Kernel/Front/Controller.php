@@ -476,20 +476,6 @@ class Controller extends \App\Kernel\Common\Controller
         else            return NULL ;
     }
 
-    public function subParse( $object )
-    {
-        switch( $object['type'] )
-        {
-            case 'hidden' :
-            case 'select' :
-                return $this->getSelectValue( $object['module'] , $object['value'] ) ;
-            break;
-            case 'checkbox' :
-                return $this->getAssocValue( $object['module'] , $object['name'] , $object['value'] ) ;
-            break;
-        }
-    }
-
     public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
