@@ -468,6 +468,28 @@ class Controller extends \App\Kernel\Common\Controller
         ];
     }
 
+    protected function getSelectValue( $module , $value )
+    {
+        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
+
+        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
+        else            return NULL ;
+    }
+
+    public function subParse( $object )
+    {
+        switch( $object['type'] )
+        {
+            case 'hidden' :
+            case 'select' :
+                return $this->getSelectValue( $object['module'] , $object['value'] ) ;
+            break;
+            case 'checkbox' :
+                return $this->getAssocValue( $object['module'] , $object['name'] , $object['value'] ) ;
+            break;
+        }
+    }
+
     public function parseValue( $result )
     {
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();

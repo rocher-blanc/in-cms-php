@@ -335,28 +335,6 @@ class Controller
     /* ******************   FORMER   ******************** */
     /* ************************************************** */
 
-    public function subParse( $object )
-    {
-        switch( $object['type'] )
-        {
-            case 'hidden' :
-            case 'select' :
-                return $this->getSelectValue( $object['module'] , $object['value'] ) ;
-                break;
-            case 'checkbox' :
-                return $this->getAssocValue( $object['module'] , $object['name'] , $object['value'] ) ;
-                break;
-        }
-    }
-
-    protected function getSelectValue( $module , $value )
-    {
-        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
-
-        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
-        else            return NULL ;
-    }
-
     protected function renderForm( $values )
     {
         $View = $this->Container()->newClass('App\Kernel\View');
