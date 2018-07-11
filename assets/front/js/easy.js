@@ -81,6 +81,7 @@ checkForm = function(base) {
                 }
             }
         });
+        return false;
     }).addClass('submitReady');
 
     $(base + ' form.submitReady[data-condition="true"]').not('.conditionReady').each(function() {
