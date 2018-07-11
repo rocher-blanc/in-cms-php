@@ -59,11 +59,11 @@ checkForm = function(base) {
                         $.each(data.fields, function( index, value ) {
                             $('#field-' + value.field).addClass('error');
 
-                            if ( $('#field-' + data.field).find('input[type=text]').length ) {
-                                $('#field-' + data.field).find('input[type=text]').addClass('error');
+                            if ( $('#field-' + value.field).find('input[type=text]').length ) {
+                                $('#field-' + value.field).find('input[type=text]').addClass('error');
                             }
-                            else if ( $('#field-' + data.field).find('textarea').length ) {
-                                $('#field-' + data.field).find('textarea').addClass('error');
+                            else if ( $('#field-' + value.field).find('textarea').length ) {
+                                $('#field-' + value.field).find('textarea').addClass('error');
                             }
                         });
                     }
