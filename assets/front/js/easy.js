@@ -32,6 +32,8 @@ checkForm = function(base) {
         e.preventDefault();
         e.stopPropagation();
 
+        $(base + ' form.ajax').find('.error').removeClass('error');
+
         $.ajax({
             type: $form.attr('method'),
             url: $form.attr('action'),
@@ -56,6 +58,13 @@ checkForm = function(base) {
                     if ( data.fields ) {
                         $.each(data.fields, function( index, value ) {
                             $('#field-' + value.field).addClass('error');
+
+                            if ( $('#field-' + data.field).find('input[type=text]').length ) {
+                                $('#field-' + data.field).find('input[type=text]').addClass('error');
+                            }
+                            else if ( $('#field-' + data.field).find('textarea').length ) {
+                                $('#field-' + data.field).find('textarea').addClass('error');
+                            }
                         });
                     }
                 }
