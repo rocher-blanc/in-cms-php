@@ -59,9 +59,9 @@ class Repository extends \App\Kernel\Common\Repository
         \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
-    public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id , $offset , $limit )
+    public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id , $offset , $limit , $DepedencyModule = NULL , $DepedencyElement = NULL )
     {
-        $content = $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id );
+        $content = $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement );
 
         if ( $limit != 0 )
         {
@@ -71,12 +71,12 @@ class Repository extends \App\Kernel\Common\Repository
         return $content->find_many();
     }
 
-    public function countTableIndex( $order , $by , $fields , $module_element_parent_id )
+    public function countTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
     {
-        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )->count();
+        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement )->count();
     }
 
-    public function requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )
+    public function requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
     {
         $content = \DB::for_module( $this->getName() );
 
@@ -133,8 +133,8 @@ class Repository extends \App\Kernel\Common\Repository
 
         if ( $this->getEntity()->hasDependency() )
         {
-            $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->fieldSql() , $this->getEntity()->getDepedencyModule() )
-                               ->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $this->getEntity()->getDepedencyElement() );
+            $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->fieldSql() , $DepedencyModule )
+                               ->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $DepedencyElement );
         }
 
         if ( $order === NULL && $by === NULL or ( $by != 'desc' && $by != 'asc' ) )

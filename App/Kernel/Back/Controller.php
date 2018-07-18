@@ -560,7 +560,7 @@ class Controller extends \App\Kernel\Common\Controller
                 }
             }
 
-            $count = $this->getRepository()->countTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) ) ;
+            $count = $this->getRepository()->countTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
 
             if ( $count < $offset )
             {
@@ -568,7 +568,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $offset = 0;
             }
 
-            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage ) ;
+            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
 
             if ( $content )
             {
