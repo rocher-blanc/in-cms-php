@@ -590,7 +590,7 @@ class Controller extends \App\Kernel\Common\Controller
                         foreach( $exp as $rep )
                         {
                             $Doc = new \App\Kernel\Front\Document;
-                            $Doc->setDocumentId( $result->get( $row->getColumn() ) );
+                            $Doc->setDocumentId( $rep );
                             $Doc->getNameById();
 
                             $tab = [];
