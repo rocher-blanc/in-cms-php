@@ -73,7 +73,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function countTableIndex( $order , $by , $fields , $module_element_parent_id )
     {
-        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )->count();;
+        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )->count();
     }
 
     public function requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id )
@@ -129,6 +129,12 @@ class Repository extends \App\Kernel\Common\Repository
         if ( $module_element_parent_id !== NULL && $this->getEntity()->isChild() )
         {
             $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $module_element_parent_id );
+        }
+
+        if ( $this->getEntity()->hasDependency() )
+        {
+            $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->fieldSql() , $this->getEntity()->getDepedencyModule() )
+                               ->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $this->getEntity()->getDepedencyElement() );
         }
 
         if ( $order === NULL && $by === NULL or ( $by != 'desc' && $by != 'asc' ) )
