@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="8e24dc9d-3b44-4c52-8069-24b0cfadf1cc" name="VPS1 - IFEC (project level)" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www/vendor/jweb/cms">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

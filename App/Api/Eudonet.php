@@ -67,19 +67,113 @@ class Eudonet
             "ProductName"           => EUDO_PRODUCT_NAME
         ]);
 
-        dump( $rst );
+        if ( $rst['ResultInfos']['Success'] == true )
+        {
+            dump( $rst['ResultData']['Token'] );
+            $this->headers['x-auth'] = $rst['ResultData']['Token'] ;
+        }
+    }
+
+    /* ************************************************** */
+    /* ****************       ONE      ****************** */
+    /* ************************************************** */
+
+    public function one( $tablId , $id )
+    {
+        $tab = [];
+        $rst = $this->request("get" , 'Search/' . $tablId . '/' . $id );
+
+        if ( $rst['ResultInfos']['Success'] == true )
+        {
+            if ( $rst['ResultData']['Rows'][0]['Fields'] )
+            {
+                foreach( $rst['ResultData']['Rows'][0]['Fields'] as $row )
+                {
+                    $tab[ $row['DescId'] ] = $row['DbValue'] ;
+                }
+            }
+        }
+
+        return $tab ;
+    }
+
+    /* ************************************************** */
+    /* ****************       ADD      ****************** */
+    /* ************************************************** */
+
+    public function add( $tablId , $params )
+    {
+        $infos = [];
+
+        if ( ! empty( $params ) )
+        {
+            foreach( $params as $descId => $value )
+            {
+                $infos['Fields'][] = [
+                    "DescId" => $descId,
+                    "Value"  => $value
+                ];
+            }
+        }
+
+        $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
+
+        return $rst['ResultInfos']['Success'] ;
+    }
+
+    /* ************************************************** */
+    /* ****************     UPDATE     ****************** */
+    /* ************************************************** */
+
+    public function update( $tablId , $id , $params )
+    {
+        $infos = [];
+
+        if ( ! empty( $params ) )
+        {
+            foreach( $params as $descId => $value )
+            {
+                $infos['Fields'][] = [
+                    "DescId" => $descId,
+                    "Value"  => $value
+                ];
+            }
+        }
+
+        $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos );
+
+        return $rst['ResultInfos']['Success'] ;
+    }
+
+    /* ************************************************** */
+    /* ****************     DELETE     ****************** */
+    /* ************************************************** */
+
+    public function delete( $tablId , $id )
+    {
+
+    }
+
+    /* ************************************************** */
+    /* ****************     IMAGE     ****************** */
+    /* ************************************************** */
+
+    public function image( $tablId , $id )
+    {
+
     }
 
     /* ************************************************** */
     /* ****************     REQUEST    ****************** */
     /* ************************************************** */
 
-    private function request( $type , $route , $params )
+    private function request( $type , $route , $params = [] )
     {
         $type = strtolower( $type );
         try
         {
             $authResponse = $this->client->$type( $route , [
+                'headers' => $this->headers,
                 'json' => $params
             ]);
 

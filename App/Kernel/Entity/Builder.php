@@ -808,7 +808,6 @@ class Builder extends Model
 	{
 		if ( ACTIVE_USER )
 		{
-			/*
 			$this->build('user_front_id' , true )
 				->isSelect()
 				->noFront()
@@ -817,7 +816,6 @@ class Builder extends Model
 					return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
 				} , true  )
 				->name('Utilisateur');
-			*/
 		}
 	}
 
@@ -831,8 +829,13 @@ class Builder extends Model
 		if ( ACTIVE_USER )
 		{
 		    $this->addGroup('connexion' , 'Informations de connexion');
-			$this->enableUser() ;
 			$this->setModuleUser() ;
+
+            $this->build('user_front_id' , true )
+                ->isHidden()
+                ->defaut(function() {
+                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+                } , true  );
 
 			$this->build('user_action' , true )
 				->isHidden()

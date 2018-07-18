@@ -579,24 +579,29 @@ class Controller extends \App\Kernel\Common\Controller
                 }
                 else if ( $row->getType() == 'document' )
                 {
-                    if ( $result->get( $row->getColumn() ) == 0 )
+                    if ( $result->get( $row->getColumn() ) == '' )
                     {
                         $arrayElement[ $row->getName() ] = [];
                     }
                     else
                     {
-                        $Doc = new \App\Kernel\Front\Document;
-                        $Doc->setDocumentId( $result->get( $row->getColumn() ) );
-                        $Doc->getNameById();
+                        $exp = explode(',' , $result->get( $row->getColumn() ) );
 
-                        $tab = [];
+                        foreach( $exp as $rep )
+                        {
+                            $Doc = new \App\Kernel\Front\Document;
+                            $Doc->setDocumentId( $result->get( $row->getColumn() ) );
+                            $Doc->getNameById();
 
-                        $tab['url']   = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
-                        $tab['icon']  = $Doc->getIcon( $Doc->getDocumentName() );
-                        $tab['name']  = $Doc->getDocumentName();
-                        $tab['title'] = $Doc->getAltText();
+                            $tab = [];
 
-                        $arrayElement[ $row->getName() ] = $tab;
+                            $tab['url']   = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
+                            $tab['icon']  = $Doc->getIcon( $Doc->getDocumentName() );
+                            $tab['name']  = $Doc->getDocumentName();
+                            $tab['title'] = $Doc->getAltText();
+
+                            $arrayElement[ $row->getName() ][] = $tab;
+                        }
                     }
                 }
 				else if ( $row->getName() == $this->getEntity()->getModuleParentIdName() )
@@ -856,11 +861,11 @@ class Controller extends \App\Kernel\Common\Controller
 
 						foreach( $this->getEntity()->getField() as $nameField => $field )
 						{
-							if ($field->getType() == "checkbox")
+							if ( $field->getType() == "checkbox" )
 							{
 								$this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
 							}
-							else if ($field->getType() == "gallery" && $add == true)
+							else if ( $field->getType() == "gallery" && $add == true )
 							{
 								// On met a jour les 0
 								$Gallery = new \App\Kernel\Back\Gallery;
@@ -871,7 +876,7 @@ class Controller extends \App\Kernel\Common\Controller
 							}
 						}
 
-						if ($this->getEntity()->hasUrl() && $add == true)
+						if ( $this->getEntity()->hasUrl() && $add == true )
 						{
 							$seo = new \App\Kernel\Back\Seo;
 							$seo->setElementId($this->getId());
@@ -882,6 +887,11 @@ class Controller extends \App\Kernel\Common\Controller
 						}
 					}
 
+                    if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
+                    else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
+
+                    $this->$hookAfterCheck();
+
 					foreach ($this->getEntity()->getField() as $nameField => $field)
 					{
 						$this->field( $field->getname() )->clearValue();
@@ -890,11 +900,6 @@ class Controller extends \App\Kernel\Common\Controller
 					$this->Factory()->Response()->flash( $result['msg'] , true );
 
 					$result['result'] = true;
-
-					if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
-					else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
-
-					$this->$hookAfterCheck();
 				}
 				else
 				{
