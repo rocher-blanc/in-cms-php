@@ -131,7 +131,7 @@ class Repository extends \App\Kernel\Common\Repository
             $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $module_element_parent_id );
         }
 
-        if ( $this->getEntity()->hasDependency() )
+        if ( $DepedencyModule !== NULL && $DepedencyElement !== NULL )
         {
             $content = $content->where_equal( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->fieldSql() , $DepedencyModule )
                                ->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $DepedencyElement );
