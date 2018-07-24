@@ -118,7 +118,7 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
 
-        return $rst['ResultInfos']['Success'] ;
+        return $rst ;
     }
 
     /* ************************************************** */
@@ -142,7 +142,7 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos );
 
-        return $rst['ResultInfos']['Success'] ;
+        return $rst ;
     }
 
     /* ************************************************** */

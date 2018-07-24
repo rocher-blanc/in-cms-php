@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="{{ asset('canvas/css/src/animate.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('canvas/css/src/magnific-popup.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-switches.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('canvas/css/src/components/select-boxes.css') }}" type="text/css" />
         {{ block('stylesheets') }}
         <link rel="stylesheet" href="{{ asset('canvas/css/src/style.css') }}" type="text/css" />
 
@@ -37,6 +38,7 @@
         <script src="{{ asset('canvas/js/functions.js') }}"></script>
         <script src="{{ asset('canvas/js/components/bs-switches.js') }}"></script>
         <script src="{{ asset('canvas/js/easydoor/common.js') }}"></script>
+        <script src="{{ asset('canvas/js/components/select-boxes.js') }}"></script>
         {% if (flash.__result == true or flash.__result == false) and flash.__msg != '' %}
             <script>
                 Notify("{{flash.__msg}}", {{flash.__result == true ? 'true' : 'false' }});
