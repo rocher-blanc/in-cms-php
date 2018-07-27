@@ -195,32 +195,32 @@ class Builder extends Model
     protected $_max_element = 0;
 
     protected $forbidden_field = [
-		/* Gestion utilisateurs */
-		'user_login',
-		'user_action',
-		'user_password',
-		'user_password_confirm',
-		'user_new_password',
-		'user_new_password_confirm',
+        /* Gestion utilisateurs */
+        'user_login',
+        'user_action',
+        'user_password',
+        'user_password_confirm',
+        'user_new_password',
+        'user_new_password_confirm',
 
-		/* Gestion depedency */
-		'module_id',
-		'element_id',
+        /* Gestion depedency */
+        'module_id',
+        'element_id',
 
-		/* Module front pour les utilisateurs */
-		'user_front_id',
+        /* Module front pour les utilisateurs */
+        'user_front_id',
 
-		/* Module parent */
-		'element_module_parent_id',
+        /* Module parent */
+        'element_module_parent_id',
 
-		/* Element parent */
-		'parent_id',
+        /* Element parent */
+        'parent_id',
 
-		/* Autres */
+        /* Autres */
         'id',
         'parent',
         'url',
-		'order',
+        'order',
         'date_created',
         'date_last_updated',
         'date_updated',
@@ -249,21 +249,21 @@ class Builder extends Model
 
     public function isDependency()
     {
-		$this->_isDependency = true ;
+        $this->_isDependency = true ;
 
         $this->build('module_id' , true )->isModuleId();
         $this->build('element_id' , true )->isElementId();
     }
 
-	public function isChild()
-	{
-		return ( empty( $this->_module_parent_name ) ? false : true ) ;
-	}
+    public function isChild()
+    {
+        return ( empty( $this->_module_parent_name ) ? false : true ) ;
+    }
 
-	public function isModuleUser()
-	{
-		return $this->_module_user ;
-	}
+    public function isModuleUser()
+    {
+        return $this->_module_user ;
+    }
 
     /* ************************************************** */
     /* *******************   HASER   ******************** */
@@ -323,20 +323,20 @@ class Builder extends Model
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
-	/**
-	 * @param int $max_element
-	 */
-	public function setMaxElement( int $max_element )
-	{
-		$this->_max_element = $max_element;
-	}
+    /**
+     * @param int $max_element
+     */
+    public function setMaxElement( int $max_element )
+    {
+        $this->_max_element = $max_element;
+    }
 
-	public function setModuleUser()
-	{
-		$this->_module_user = true ;
-	}
+    public function setModuleUser()
+    {
+        $this->_module_user = true ;
+    }
 
-	protected function setMultilang()
+    protected function setMultilang()
     {
         $this->_hasMultiLang = true ;
     }
@@ -500,33 +500,33 @@ class Builder extends Model
         $this->_module_parent_id_name = $name;
     }
 
-	/**
-	 * @param null $pagination
-	 */
-	public function setPagination( $pagination )
-	{
-		$this->_pagination = $pagination;
-	}
+    /**
+     * @param null $pagination
+     */
+    public function setPagination( $pagination )
+    {
+        $this->_pagination = $pagination;
+    }
 
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
 
-	/**
-	 * @return int
-	 */
-	public function getMaxElement(): int
-	{
-		return $this->_max_element;
-	}
+    /**
+     * @return int
+     */
+    public function getMaxElement(): int
+    {
+        return $this->_max_element;
+    }
 
-	/**
-	 * @return null
-	 */
-	public function getPagination()
-	{
-		return $this->_pagination;
-	}
+    /**
+     * @return null
+     */
+    public function getPagination()
+    {
+        return $this->_pagination;
+    }
 
     /*
      *
@@ -565,15 +565,15 @@ class Builder extends Model
         return $this->_first_image_name ;
     }
 
-	protected function getLast()
-	{
-		return $this->_last ;
-	}
+    protected function getLast()
+    {
+        return $this->_last ;
+    }
 
-	protected function getDepe()
-	{
-		return $this->_last ;
-	}
+    protected function getDepe()
+    {
+        return $this->_last ;
+    }
 
     public function getField()
     {
@@ -625,15 +625,15 @@ class Builder extends Model
         return $this->_module_id_name ;
     }
 
-	public function getElementIdName()
-	{
-		return $this->_element_id_name ;
-	}
+    public function getElementIdName()
+    {
+        return $this->_element_id_name ;
+    }
 
-	public function getUserIdName()
-	{
-		return $this->_user_id_name ;
-	}
+    public function getUserIdName()
+    {
+        return $this->_user_id_name ;
+    }
 
     public function getParentTargetName()
     {
@@ -650,26 +650,26 @@ class Builder extends Model
         return $this->_folder_name ;
     }
 
-	/* ************************************************** */
-	/* *****************     DELETE      **************** */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* *****************     DELETE      **************** */
+    /* ************************************************** */
 
-	/*
-	 * Désactivation de la suppression
-	 */
-	public function disableDelete()
-	{
-		$this->_delete = false ;
-	}
+    /*
+     * Désactivation de la suppression
+     */
+    public function disableDelete()
+    {
+        $this->_delete = false ;
+    }
 
-	public function canDelete()
-	{
-		return $this->_delete ;
-	}
+    public function canDelete()
+    {
+        return $this->_delete ;
+    }
 
-	/* ************************************************** */
-	/* *****************   TABULATIONS   **************** */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* *****************   TABULATIONS   **************** */
+    /* ************************************************** */
 
     public function addTab( $key , $name , $icon , $showIF = NULL )
     {
@@ -751,17 +751,17 @@ class Builder extends Model
 
     public function addDependency( $name , $showIF = NULL )
     {
-    	$pass = true ;
-    	if ( is_callable( $showIF ) )
-		{
-			$pass = $showIF();
-		}
+        $pass = true ;
+        if ( is_callable( $showIF ) )
+        {
+            $pass = $showIF();
+        }
 
         if ( ! in_array( $name , $this->_dependency ) && $pass === true )
         {
             $rst = \DB::for_table('module')
                 ->select('module_icon')
-                ->select('module_class_name')
+                ->select('module_name')
                 ->where(array('module_class_name' => $name , 'module_active' => 1))
                 ->find_one();
 
@@ -769,9 +769,9 @@ class Builder extends Model
             {
                 $this->_hasDependency = true ;
                 $this->_dependency[] = [
-                    'name' => $name,
+                    'name' => $rst->module_name,
                     'icon' => $rst->module_icon,
-                    'class' => $rst->module_class_name
+                    'class' => $name
                 ];
             }
         }
@@ -787,49 +787,49 @@ class Builder extends Model
         $this->build('order' , true )->isOrder();
     }
 
-	/* VALIDATION */
-	protected function enableValidation()
-	{
-		$this->build('isValid' , true )
-			->isBoolean()
-			->noFront()
-			->full()
-			->defaut(1)
-			->name('En ligne');
+    /* VALIDATION */
+    protected function enableValidation()
+    {
+        $this->build('isValid' , true )
+            ->isBoolean()
+            ->noFront()
+            ->full()
+            ->defaut(1)
+            ->name('En ligne');
 
-		$this->addAction("enable") ;
-		$this->addAction("disable") ;
-		$this->setValidation() ;
-		$this->setValidationName( $this->field()->getName() ) ;
-	}
+        $this->addAction("enable") ;
+        $this->addAction("disable") ;
+        $this->setValidation() ;
+        $this->setValidationName( $this->field()->getName() ) ;
+    }
 
-	/* USER */
-	protected function enableUser()
-	{
-		if ( ACTIVE_USER )
-		{
-			$this->build('user_front_id' , true )
-				->isSelect()
-				->noFront()
+    /* USER */
+    protected function enableUser()
+    {
+        if ( ACTIVE_USER )
+        {
+            $this->build('user_front_id' , true )
+                ->isSelect()
+                ->noFront()
                 ->group('connexion')
-				->defaut(function() {
-					return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
-				} , true  )
-				->name('Utilisateur');
-		}
-	}
+                ->defaut(function() {
+                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+                } , true  )
+                ->name('Utilisateur');
+        }
+    }
 
-	protected function getUserAction()
-	{
-		return ( \App\Kernel\Front\User::getInstance()->isLogged() ? 'update' : 'register' ) ;
-	}
+    protected function getUserAction()
+    {
+        return ( \App\Kernel\Front\User::getInstance()->isLogged() ? 'update' : 'register' ) ;
+    }
 
-	protected function enableUserModule()
-	{
-		if ( ACTIVE_USER )
-		{
-		    $this->addGroup('connexion' , 'Informations de connexion');
-			$this->setModuleUser() ;
+    protected function enableUserModule()
+    {
+        if ( ACTIVE_USER )
+        {
+            $this->addGroup('connexion' , 'Informations de connexion');
+            $this->setModuleUser() ;
 
             $this->build('user_front_id' , true )
                 ->isHidden()
@@ -837,67 +837,67 @@ class Builder extends Model
                     return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
                 } , true  );
 
-			$this->build('user_action' , true )
-				->isHidden()
+            $this->build('user_action' , true )
+                ->isHidden()
                 ->group('connexion')
-				->noSave()
-				->noRename()
-				->defaut( $this->getUserAction() , true  );
+                ->noSave()
+                ->noRename()
+                ->defaut( $this->getUserAction() , true  );
 
-			$this->build('user_login' , true )
-				->isVarchar()
+            $this->build('user_login' , true )
+                ->isVarchar()
                 ->group('connexion')
                 ->notEmpty('login')
-				->noSave()
-				->noRename()
-				->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
-				->name('Email');
+                ->noSave()
+                ->noRename()
+                ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
+                ->name('Email');
 
-			if ( \App\Kernel\Front\User::getInstance()->isLogged() )
-			{
-				$this->build('user_password' , true )
-					->isPassword()
+            if ( \App\Kernel\Front\User::getInstance()->isLogged() )
+            {
+                $this->build('user_password' , true )
+                    ->isPassword()
                     ->group('connexion')
-					->noRename()
-					->name('Ancien mot de passe');
+                    ->noRename()
+                    ->name('Ancien mot de passe');
 
-				$this->build('user_new_password' , true )
-					->isPassword()
+                $this->build('user_new_password' , true )
+                    ->isPassword()
                     ->group('connexion')
-					->noRename()
-					->name('Nouveau mot de passe');
+                    ->noRename()
+                    ->name('Nouveau mot de passe');
 
-				$this->build('user_new_password_confirm' , true )
-					->isPassword()
+                $this->build('user_new_password_confirm' , true )
+                    ->isPassword()
                     ->group('connexion')
-					->noRename()
-					->name('Confirmer votre nouveau mot de passe');
-			}
-			else
-			{
-				$this->build('user_password' , true )
-					->isPassword()
+                    ->noRename()
+                    ->name('Confirmer votre nouveau mot de passe');
+            }
+            else
+            {
+                $this->build('user_password' , true )
+                    ->isPassword()
                     ->group('connexion')
                     ->notEmpty('user_password')
-					->noRename()
-					->name('Mot de passe');
+                    ->noRename()
+                    ->name('Mot de passe');
 
-				$this->build('user_password_confirm' , true )
-					->isPassword()
+                $this->build('user_password_confirm' , true )
+                    ->isPassword()
                     ->group('connexion')
                     ->notEmpty('user_password_confirm')
-					->noRename()
-					->name('Confirmer votre mot de passe');
-			}
-		}
-	}
+                    ->noRename()
+                    ->name('Confirmer votre mot de passe');
+            }
+        }
+    }
 
     /* PARENTS */
     protected function enableParent( $target )
     {
-		$this->build('parent_id' , true )
-			->isSelect()
-			->name('Parent');
+        $this->build('parent_id' , true )
+            ->isSelect()
+            ->name('Parent');
 
         $this->setParent() ;
         $this->setParentName( $this->field()->getName() ) ;
@@ -923,10 +923,10 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-		$this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
         $this->field()->setData( "moduleParent" , true ) ;
         $this->field()->setData( "twig" , "parent" ) ;
-		$this->field()->setData( "object" , $this->getModuleParentName() ) ;
+        $this->field()->setData( "object" , $this->getModuleParentName() ) ;
         $this->setModuleParentIdName( $this->field()->getName() ) ;
 
         return $this ;
@@ -936,7 +936,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-		$this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
         $this->setModuleIdName( $this->field()->getName() ) ;
 
         return $this ;
@@ -946,7 +946,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-		$this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
         $this->setElementIdName( $this->field()->getName() ) ;
 
         return $this ;
@@ -983,7 +983,7 @@ class Builder extends Model
         $field->setName( $name );
 
         $this->_field[ $name ] = $field;
-		$this->column( 1 , 2 ) ;
+        $this->column( 1 , 2 ) ;
     }
 
     public function field()
@@ -1011,7 +1011,7 @@ class Builder extends Model
 
     protected function isVideo()
     {
-		$this->field()->setData( "SQL_VALUE" , 255 ) ;
+        $this->field()->setData( "SQL_VALUE" , 255 ) ;
         $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
         $this->field()->setData( "type" , "video" ) ;
         return $this ;
@@ -1327,39 +1327,39 @@ class Builder extends Model
         return $this ;
     }
 
-	protected function column( $part , $width )
-	{
-		if ( $part == $width / 2 )	$className = 'col_half' ;
-		else if ( $part == $width )	$className = 'col_full' ;
-		else 						$className = 'col_' . $this->convertNumber( $part ) . '_' . $this->convertNumber2( $width ) ;
+    protected function column( $part , $width )
+    {
+        if ( $part == $width / 2 )	$className = 'col_half' ;
+        else if ( $part == $width )	$className = 'col_full' ;
+        else 						$className = 'col_' . $this->convertNumber( $part ) . '_' . $this->convertNumber2( $width ) ;
 
-		$this->field()->setData( "classField" , $className ) ;
-		$this->field()->setData( "part" , $part ) ;
-		$this->field()->setData( "width" , $width ) ;
-		return $this ;
-	}
+        $this->field()->setData( "classField" , $className ) ;
+        $this->field()->setData( "part" , $part ) ;
+        $this->field()->setData( "width" , $width ) ;
+        return $this ;
+    }
 
-	protected function convertNumber( $i )
-	{
-		switch( $i )
-		{
-			case '1' : return 'one'; break;
-			case '2' : return 'two'; break;
-			case '3' : return 'three'; break;
-			case '4' : return 'four'; break;
-			case '5' : return 'five'; break;
-		}
-	}
+    protected function convertNumber( $i )
+    {
+        switch( $i )
+        {
+            case '1' : return 'one';   break;
+            case '2' : return 'two';   break;
+            case '3' : return 'three'; break;
+            case '4' : return 'four';  break;
+            case '5' : return 'five';  break;
+        }
+    }
 
-	protected function convertNumber2( $i )
-	{
-		switch( $i )
-		{
-			case '3' : return 'third'; break;
-			case '4' : return 'fourth'; break;
-			case '5' : return 'fifth'; break;
-		}
-	}
+    protected function convertNumber2( $i )
+    {
+        switch( $i )
+        {
+            case '3' : return 'third';  break;
+            case '4' : return 'fourth'; break;
+            case '5' : return 'fifth';  break;
+        }
+    }
 
     protected function twig( $t )
     {
@@ -1367,17 +1367,17 @@ class Builder extends Model
         return $this ;
     }
 
-	protected function tab( $t )
-	{
-		$this->field()->setData( "tab" , $t ) ;
-		return $this ;
-	}
+    protected function tab( $t )
+    {
+        $this->field()->setData( "tab" , $t ) ;
+        return $this ;
+    }
 
-	protected function group( $t )
-	{
-		$this->field()->setData( "group" , $t ) ;
-		return $this ;
-	}
+    protected function group( $t )
+    {
+        $this->field()->setData( "group" , $t ) ;
+        return $this ;
+    }
 
     protected function unit( $unit , $where )
     {
@@ -1417,21 +1417,27 @@ class Builder extends Model
         return $this ;
     }
 
-	protected function option( $val )
-	{
-		$this->field()->setData( "option" , $val ) ;
-		return $this ;
-	}
+    protected function option( $val )
+    {
+        $this->field()->setData( "option" , $val ) ;
+        return $this ;
+    }
 
-	protected function noSave()
-	{
-		$this->field()->setData( "nosave" , true ) ;
-		return $this ;
-	}
+    protected function data( $key , $val )
+    {
+        $this->field()->setData( $key , $val ) ;
+        return $this ;
+    }
 
-	protected function noRename()
-	{
-		$this->field()->setData( "norename" , true ) ;
-		return $this ;
-	}
+    protected function noSave()
+    {
+        $this->field()->setData( "nosave" , true ) ;
+        return $this ;
+    }
+
+    protected function noRename()
+    {
+        $this->field()->setData( "norename" , true ) ;
+        return $this ;
+    }
 }
