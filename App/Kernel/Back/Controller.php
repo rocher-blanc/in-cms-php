@@ -1031,7 +1031,7 @@ class Controller extends \App\Kernel\Common\Controller
                     'class'  => $depedency['class'],
                     'slug'   => strtolower( $depedency['name'] ),
                     'icon'   => $depedency['icon'],
-                    'fields' => $this->Container()->module( $depedency['name'] )->getController(true)->getImportFiled()
+                    'fields' => $this->Container()->module( $depedency['class'] )->getController(true)->getImportFiled()
                 ];
             }
         }
