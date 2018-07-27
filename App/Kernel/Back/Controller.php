@@ -1029,7 +1029,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $depedencies[] = [
                     'name'   => $depedency['name'],
                     'class'  => $depedency['class'],
-                    'slug'   => strtolower( $depedency['name'] ),
+                    'slug'   => strtolower( $depedency['class'] ),
                     'icon'   => $depedency['icon'],
                     'fields' => $this->Container()->module( $depedency['class'] )->getController(true)->getImportFiled()
                 ];
