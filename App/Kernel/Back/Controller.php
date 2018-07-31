@@ -891,6 +891,7 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                             else if ( $field->getType() == "checkbox" )
                             {
+                            	dump( $_POST );
                                 $this->getRepository()->pushDataAssoc( $nameField , $field , $this->getId() ) ;
                             }
                             else if ( $field->getType() == "gallery" && $add == true )
@@ -1453,8 +1454,8 @@ class Controller extends \App\Kernel\Common\Controller
 			if ( $this->getEntity()->hasUrl() ) $seo->update() ;
             $rst = $this->pushData( false ) ;
 
-            if ( is_array( $rst ) ) return $this->Factory()->Response()->printJSON( $rst ) ;
-            else                    return ;
+            /*if ( is_array( $rst ) ) return $this->Factory()->Response()->printJSON( $rst ) ;
+            else                    return ;*/
         }
 
         $this->loadDepedencies() ;
