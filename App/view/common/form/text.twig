@@ -7,7 +7,7 @@
     </span>
 {% endif %}
 
-    <input type="text" value="{{ value }}" class="form-control" name="{{ name }}" id="id_{{ name }}" maxlength="{{ maxlength }}"{{ readonly ? ' readonly' : '' }} />
+    <input type="{{ subtype }}" value="{{ value }}" class="form-control" name="{{ name }}" id="id_{{ name }}" maxlength="{{ maxlength }}"{{ readonly ? ' readonly' : '' }} />
 
 {% if hasFlag %}
 </div>

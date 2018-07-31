@@ -1119,11 +1119,12 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isVarchar( $t = 255 )
+    protected function isVarchar( $t = 255 , $type = 'text' )
     {
         $this->field()->setData( "SQL_VALUE" , $t ) ;
         $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
         $this->field()->setData( "type" , "text" ) ;
+        $this->field()->setData( "subtype" , $type ) ;
         $this->field()->setData( "maxLength" , $t ) ;
         return $this ;
     }

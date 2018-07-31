@@ -12,6 +12,7 @@ class Text extends \App\Kernel\Back\Form
             'maxlength' => $field->getData('maxLength'),
             'hasFlag' => $field->hasLang(),
             'flag' => $field->getData('flag'),
+            'subtype' => $field->getData('subtype'),
             'readonly' => $field->getData('readonly'),
             'required' => $field->isRequired()
         ]);
