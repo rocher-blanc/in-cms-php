@@ -16,7 +16,8 @@
     {% for name,content in og if content != '' %}
         <meta property="og:{{ name }}" content="{{ content }}" />
     {% endfor %}
-    {{ block('meta') }}{% block stylesheets %}{{
+    {{ block('meta') }}{% if rgpd.enabled == 1 %}<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    {% endif %}{% block stylesheets %}{{
     css() }}{% endblock %}{{
     analytics.google  }}{{
     block('javascript_head') }}
@@ -39,7 +40,34 @@
 <body{{ block('classbody') }}>
 {{ block('content') }}
 {% block javascripts %}{{
-javascript() }}{% endblock %}{{
+javascript() }}{% endblock %}{% if rgpd.enabled == 1 %}<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+    window.addEventListener("load", function(){
+        window.cookieconsent.initialise({
+            "palette": {
+                "popup": {
+                    "background": "{{ rgpd.popup_background }}",
+                    "text": "{{ rgpd.popup_color }}"
+                },
+                "button": {
+                    "background": "{{ rgpd.button_background }}",
+                    "text": "{{ rgpd.button_color }}"
+                }
+            },
+        {% if rgpd.position == 'top-static' %}
+        "position": "{{ rgpd.position }}",
+            "static": true,
+        {% elseif rgpd.position != 'bottom' %}
+        "position": "{{ rgpd.position }}",
+        {% endif %}
+        "content": {
+            "message": "{{ rgpd.text }}",
+                "dismiss": "{{ rgpd.text_button }}",
+                "link": "{{ rgpd.text_link }}",
+                "href": "{{ rgpd.link }}"
+        }
+    })});
+</script>{% endif %}{{
 tracking.footer
 }}
 </body>

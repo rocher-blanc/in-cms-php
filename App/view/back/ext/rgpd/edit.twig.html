@@ -1,0 +1,92 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}RGPD{% endblock %}
+{% set this_page = 'Modification' %}
+{% set title_block_page = 'Modification' %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('/ext/rgpd') }}" role="form" class="form-horizontal group-border-dashed">
+	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+    <div class="fancy-title title-dotted-border">
+        <h3>Gestion RGPD</h3>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Générale</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_half">
+                <label>Activer la notification</label>
+                {% include 'form/generic/switch.twig' with {'value':post.rgpd_enabled, 'name':'rgpd_enabled'} %}
+            </div>
+            <div class="ed_field col_half col_last">
+                <label>Position</label>
+                <select name="rgpd_position" class="form-control" data-plugin-selectTwo>
+                    <option value="bottom"{{ post.rgpd_position == 'bottom' ? ' selected' : '' }}>Bas du site</option>
+                    <option value="top"{{ post.rgpd_position == 'top' ? ' selected' : '' }}>Haut du site</option>
+                    <option value="top-static"{{ post.rgpd_position == 'top-static' ? ' selected' : '' }}>Haut du site (pushdown)</option>
+                    <option value="bottom-left"{{ post.rgpd_position == 'bottom-left' ? ' selected' : '' }}>En bas à gauche</option>
+                    <option value="bottom-right"{{ post.rgpd_position == 'bottom-right' ? ' selected' : '' }}>En bas à droite</option>
+                </select>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Couleur</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_one_fourth">
+                <label>POPUP - Couleur de fond</label>
+                <input type="text" name="rgpd_popup_background" class="form-control" value="{{ post.rgpd_popup_background }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>POPUP - Texte</label>
+                <input type="text" name="rgpd_popup_color" class="form-control" value="{{ post.rgpd_popup_color }}" />
+            </div>
+            <div class="ed_field col_one_fourth">
+                <label>BOUTON - Couleur de fond</label>
+                <input type="text" name="rgpd_button_background" class="form-control" value="{{ post.rgpd_button_background }}" />
+            </div>
+            <div class="ed_field col_one_fourth col_last">
+                <label>BOUTON - Texte</label>
+                <input type="text" name="rgpd_button_color" class="form-control" value="{{ post.rgpd_button_color }}" />
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="fancy-title title-bottom-border">
+        <h3>Textes</h3>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full col_last">
+                <label>Texte</label>
+                <input type="text" name="rgpd_popup_text" class="form-control" value="{{ post.rgpd_popup_text }}" />
+            </div>
+            <div class="ed_field col_one_third">
+                <label>Texte du bouton</label>
+                <input type="text" name="rgpd_button_text" class="form-control" value="{{ post.rgpd_button_text }}" />
+            </div>
+            <div class="ed_field col_one_third">
+                <label>Texte du lien</label>
+                <input type="text" name="rgpd_link_text" class="form-control" value="{{ post.rgpd_link_text }}" />
+            </div>
+            <div class="ed_field col_one_third col_last">
+                <label>Lien</label>
+                <input type="text" name="rgpd_link_href" class="form-control" value="{{ post.rgpd_link_href }}" />
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    {% include 'form/generic/button.twig' %}
+</form>	
+{% endblock %}

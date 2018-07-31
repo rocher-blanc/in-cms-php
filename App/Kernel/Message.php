@@ -85,6 +85,9 @@ class Message
 
             /* MICRODATA */
             "microdata_success" => "Les microdatas ont bien été mis à jour",
+
+            /* RGPD */
+            "rgpd_success" 		=> "Les informations concernant la RGPD ont bien été mise à jour",
 		) ;
 	}
 }

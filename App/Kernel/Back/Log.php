@@ -137,6 +137,8 @@ class Log
 
             60 => "Modification des microdatas",
 
+            61 => "Modification des informations RGPD",
+
             /* MODULES */
             100 => "Ajout d'un nouvel élément \"%i\"",
             101 => "Modification d'un élément \"%i\"",
