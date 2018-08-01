@@ -796,3 +796,84 @@ ul.docs-icons li span {
 #content {
   overflow: visible;
 }
+
+
+/*----------------------------------------------------------------------*/
+/*----------                                                  ----------*/
+/*----------                    RESPONSIVE                    ----------*/
+/*----------                                                  ----------*/
+/*----------------------------------------------------------------------*/
+
+#header.full-header .container,
+.container-fullwidth {
+  @media only screen and (max-width: 991px) {
+    margin: 0 auto;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 100% !important;
+  }
+
+  @media (max-width: 575px) {
+    padding: 0 !important;
+  }
+}
+
+#logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  @media only screen and (max-width: 991px) {
+    display: none !important;
+  }
+}
+
+#primary-menu {
+  > ul {
+    //display: block;
+    //width:  100%;
+    //padding-left: 115px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    min-height: 100px;
+
+    .testimonial {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+}
+
+body:not(.sticky-responsive-menu) {
+  #primary-menu {
+    > ul {
+      &.d-block {
+        display: block;
+        position: relative;
+        z-index: 1;
+        margin-top: 100px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,.75);
+      }
+    }
+  }
+}
+
+.breadcrumbs {
+  @media only screen and (max-width: 767px) {
+    display: none;
+  }
+}
+
+.help-online {
+  background: #01AFB0 url('../../img/easydoor-info.jpg') top left no-repeat;
+  position: relative;
+  display: block;
+  min-height: 167px;
+  width: 285px;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
