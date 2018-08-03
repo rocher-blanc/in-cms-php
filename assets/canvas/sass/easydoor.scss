@@ -813,6 +813,9 @@ ul.docs-icons li span {
 
   @media (min-width: 576px) and (max-width: 767px) {
     width: 100% !important;
+    h1 {
+      padding: 0 15px !important;
+    }
   }
 
   @media (max-width: 575px) {
@@ -829,13 +832,17 @@ ul.docs-icons li span {
   }
 }
 
+#header-wrap.stay-big {
+  height: 100px !important;
+}
+
 #primary-menu {
   > ul {
     display: block;
     width: 100%;
     padding-left: 115px;
 
-    > li > a {
+    .testimonial, > li > a {
       transition: all 0s;
       -webkit-transition: all 0s;
       -moz-transition: all 0s;
@@ -844,10 +851,12 @@ ul.docs-icons li span {
     &.small-space {
       > li, .website {
         > a {
-          padding: 39px 8px !important;
+          padding: 39px 8px;
         }
         &.website {
           a {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
             background: $jweb-blue;
           }
         }
@@ -857,7 +866,7 @@ ul.docs-icons li span {
     &.two-lines {
       > li, .website {
         > a {
-          padding: 14px 6px !important;
+          padding: 14px 8px !important;
         }
       }
     }
@@ -881,15 +890,31 @@ ul.docs-icons li span {
   }
 }
 
+#header:not(.sticky-header) {
+  .small-space {
+    .website a {
+      padding: 39px 8px !important;
+    }
+  }
+  .two-lines {
+    .website a {
+      padding: 14px 8px !important;
+    }
+  }
+}
+
 body:not(.sticky-responsive-menu) {
   #primary-menu {
     > ul {
-      &.d-block {
-        display: block;
-        position: relative;
-        z-index: 1;
-        margin-top: 100px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,.75);
+      @media only screen and (max-width: 767px) {
+        display: none;
+        &.d-block {
+          display: block;
+          position: relative;
+          z-index: 1;
+          margin-top: 100px !important;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, .75);
+        }
       }
     }
   }
@@ -909,4 +934,8 @@ body:not(.sticky-responsive-menu) {
   width: 285px;
   max-width: 100%;
   margin-bottom: 20px;
+
+  @media only screen and (max-width: 767px) {
+    display: none;
+  }
 }

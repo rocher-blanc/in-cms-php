@@ -7,6 +7,9 @@ $(function() {
     $(window).resize(function() {
         headerResizing();
     });
+    $(window).scroll(function() {
+        headerResizing();
+    });
     headerResizing();
 });
 
@@ -78,6 +81,7 @@ headerResizing = function() {
     // Clean header
     $ul.removeClass("small-space");
     $ul.removeClass("two-lines");
+    $("#header").removeClass("static-sticky");
     $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth());
 
     // Big screen
@@ -94,6 +98,7 @@ headerResizing = function() {
             lastTop = $ul.find("li").last().offset().top;
             if( firstTop !== lastTop ) {
                 $ul.addClass("two-lines");
+                $("#header").addClass("static-sticky");
             }
 
         }
