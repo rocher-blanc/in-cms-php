@@ -798,11 +798,10 @@ ul.docs-icons li span {
 }
 
 
-/*----------------------------------------------------------------------*/
-/*----------                                                  ----------*/
-/*----------                    RESPONSIVE                    ----------*/
-/*----------                                                  ----------*/
-/*----------------------------------------------------------------------*/
+
+/* ************************************************ */
+/* Responsive                                       */
+/* ************************************************ */
 
 #header.full-header .container,
 .container-fullwidth {
@@ -832,9 +831,42 @@ ul.docs-icons li span {
 
 #primary-menu {
   > ul {
-    //display: block;
-    //width:  100%;
-    //padding-left: 115px;
+    display: block;
+    width: 100%;
+    padding-left: 115px;
+
+    > li > a {
+      transition: all 0s;
+      -webkit-transition: all 0s;
+      -moz-transition: all 0s;
+    }
+
+    &.small-space {
+      > li, .website {
+        > a {
+          padding: 39px 8px !important;
+        }
+        &.website {
+          a {
+            background: $jweb-blue;
+          }
+        }
+      }
+    }
+
+    &.two-lines {
+      > li, .website {
+        > a {
+          padding: 14px 6px !important;
+        }
+      }
+    }
+  }
+
+  .testimonial {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   @media only screen and (max-width: 767px) {
@@ -844,6 +876,7 @@ ul.docs-icons li span {
       position: absolute;
       right: 0;
       top: 0;
+      margin: 0;
     }
   }
 }
