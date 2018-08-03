@@ -7,6 +7,9 @@ $(function() {
     $(window).resize(function() {
         headerResizing();
     });
+    $(window).scroll(function() {
+        headerResizing();
+    });
     headerResizing();
 });
 
@@ -78,7 +81,8 @@ headerResizing = function() {
     // Clean header
     $ul.removeClass("small-space");
     $ul.removeClass("two-lines");
-    $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth());
+    $("#header").removeClass("static-sticky");
+    $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth() + $("#primary-menu .testimonial .testi-image").outerWidth());
 
     // Big screen
     if( width > 992 ) {
@@ -94,6 +98,7 @@ headerResizing = function() {
             lastTop = $ul.find("li").last().offset().top;
             if( firstTop !== lastTop ) {
                 $ul.addClass("two-lines");
+                $("#header").addClass("static-sticky");
             }
 
         }

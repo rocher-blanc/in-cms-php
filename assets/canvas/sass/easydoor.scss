@@ -799,6 +799,7 @@ ul.docs-icons li span {
 
 
 
+
 /* ************************************************ */
 /* Responsive                                       */
 /* ************************************************ */
@@ -829,13 +830,17 @@ ul.docs-icons li span {
   }
 }
 
+#header-wrap.stay-big {
+  height: 100px !important;
+}
+
 #primary-menu {
   > ul {
     display: block;
     width: 100%;
     padding-left: 115px;
 
-    > li > a {
+    .testimonial, > li > a {
       transition: all 0s;
       -webkit-transition: all 0s;
       -moz-transition: all 0s;
@@ -844,10 +849,12 @@ ul.docs-icons li span {
     &.small-space {
       > li, .website {
         > a {
-          padding: 39px 8px !important;
+          padding: 39px 8px;
         }
         &.website {
           a {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
             background: $jweb-blue;
           }
         }
@@ -857,7 +864,7 @@ ul.docs-icons li span {
     &.two-lines {
       > li, .website {
         > a {
-          padding: 14px 6px !important;
+          padding: 14px 8px !important;
         }
       }
     }
@@ -877,6 +884,19 @@ ul.docs-icons li span {
       right: 0;
       top: 0;
       margin: 0;
+    }
+  }
+}
+
+#header:not(.sticky-header) {
+  .small-space {
+    .website a {
+      padding: 39px 8px !important;
+    }
+  }
+  .two-lines {
+    .website a {
+      padding: 14px 8px !important;
     }
   }
 }
