@@ -13,6 +13,7 @@ class Media extends \App\Kernel\Common\Media
 	private $module_id = NULL ;
 	private $module_name = NULL ;
 	private $folder_name = NULL ;
+	private $field = NULL ;
 
 	/* ************************************************** */
 	/* ******************   SETTER   ******************** */
@@ -33,6 +34,11 @@ class Media extends \App\Kernel\Common\Media
 		$this->folder_name = $var ;
 	}
 
+	public function setField( $var )
+	{
+		$this->field = $var ;
+	}
+
 	/* ************************************************** */
 	/* ******************   GETTER   ******************** */
 	/* ************************************************** */
@@ -46,11 +52,16 @@ class Media extends \App\Kernel\Common\Media
 	{
 		return $this->module_name ;
 	}
-	
-	public function getFolder()
-	{
-		return $this->folder_name ;
-	}
+
+    public function getFolder()
+    {
+        return $this->folder_name ;
+    }
+
+    public function getField()
+    {
+        return $this->field ;
+    }
 
 	protected function Factory()
 	{
@@ -66,6 +77,31 @@ class Media extends \App\Kernel\Common\Media
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */
 	
+	public function getAllModel()
+	{
+		$rst = \DB::for_table('media')
+			->where_equal( 'media_module_id' , $this->getModuleId() )
+            ->where_equal( 'media_field' , $this->getField() )
+            ->find_many();
+
+		$arrayMedia = [] ;
+		if ( $rst )
+		{
+			foreach( $rst as $row )
+			{
+				$std = new \stdClass;
+				$std->media_delete 		= true;
+				$std->media_name 		= $row->media_name;
+				$std->media_id 	 		= $row->media_id;
+				$std->media_mini_name   = $this->Factory()->Url()->image( $this->getFolder() . '/' . $this->getMiniName( $row->media_name ) , true ) ;
+				
+				$arrayMedia[ $std->media_id ] = $std ;
+			}
+		}
+
+		return $arrayMedia ;
+	}
+
 	public function getAll()
 	{
 		$rst = \DB::for_table('media')
@@ -81,8 +117,8 @@ class Media extends \App\Kernel\Common\Media
 				$std->media_delete 		= true;
 				$std->media_name 		= $row->media_name;
 				$std->media_id 	 		= $row->media_id;
-				$std->media_mini_name   = $this->getMiniName( $row->media_name ) ;
-				
+				$std->media_mini_name   = $this->Factory()->Url()->image( $this->getFolder() . '/' . $this->getMiniName( $row->media_name ) , true ) ;
+
 				$arrayMedia[ $std->media_id ] = $std ;
 			}
 		}
@@ -166,6 +202,7 @@ class Media extends \App\Kernel\Common\Media
 		$img = new Image([
 			'module_id'   => $this->getModuleId(),
             'upload_dir'  => $upload_dir,
+            'field'       => $this->getApp()->request->post('model') == 1 ? $this->getApp()->request->post('field') : NULL,
             'upload_url'  => $this->Factory()->Url()->get( $upload_url , true ),
             'param_name'  => $fieldName,
 		]);

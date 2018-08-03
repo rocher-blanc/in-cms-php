@@ -4,7 +4,7 @@
         {% for tab in tabs %}
             <li{{ loop.first ? ' class="ui-tabs-active"' : '' }}>
                 <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}">
-                    <i class="{{ tab.icon }}"></i> {{ tab.name }} --{{ tabs|length }}--
+                    <i class="{{ tab.icon }}"></i> {{ tab.name }}
                 </a>
             </li>
         {% endfor %}

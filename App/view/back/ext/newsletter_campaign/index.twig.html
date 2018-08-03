@@ -89,12 +89,13 @@
             id: "#topolcontent",
             authorize: {
                 apiKey: "DCSCyS2S1STYFy0EpQJByYkLSIl8eCetqNJ6Awh79Ykk4Qh0WymMJsTqZYLW",
-                userId: "easydoor",
+                userId: "easydoor"
             },
-            templateId: 1
+            language: "fr",
+            templateId: 2
         };
 
-// Plugin Start
+        // Plugin Start
         !function(t){var e=document.createElement("iframe");e.width="100%",e.height="100%",e.frameBorder="0",e.id="topolio-plugin",e.src="https://d5aoblv5p04cg.cloudfront.net/editor/plugin/index.html",document.querySelectorAll(t.id)[0].appendChild(e),e.addEventListener("load",function(){e.contentWindow.postMessage({action:"START",data:JSON.parse(JSON.stringify(t))},"*")}),window.addEventListener("message",function(e){var n=JSON.parse(e.data);"callback"==n.type&&"function"==typeof t[n.action]&&t[n.action](n.data)})}(TOPOL_OPTIONS);
 	});
 

@@ -21,6 +21,7 @@
     {% if mod.canCreate == true %}<a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>{% endif %}
     {#{% if menu != false %}<a href="{{ route( mod.name , 'export' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-outbox"></i>Exporter</a>{% endif %}#}
     {% if menu != false %}<a href="{{ route( mod.name , 'import' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-inbox"></i>Importer</a>{% endif %}
+    {% if libimage != false %}<a href="{{ route( mod.name , 'libimagesupdate' , uri_id_parent ) }}" class="button button-mini"><i class="icon-image"></i>Banque d'images</a>{% endif %}
     {% if isIndex == true %}
         <div class="btn-group">
             <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -105,7 +105,7 @@ checkImage = function(base) {
                 autoReplace: true,
                 browseLabel: "Parcourir",
                 browseClass: "button button-mini button-rounded",
-                browseIcon: "<i class=\"icon-picture\"></i> ",
+                browseIcon: "<i class=\"icon-line-upload\"></i> ",
                 removeClass: "button button-mini button-rounded delete-img-" + $this.data('fieldname') + " button-red",
                 removeLabel: "Supprimer",
                 removeIcon: "<i class=\"icon-trash\"></i> "

@@ -1158,6 +1158,8 @@ class Builder extends Model
 
         $this->addAction("upload") ;
         $this->addAction("deletemedia") ;
+        $this->addAction("libimages") ;
+        $this->addAction("libimagesupdate") ;
 
         return $this ;
     }

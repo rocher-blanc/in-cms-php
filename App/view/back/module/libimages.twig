@@ -1,0 +1,21 @@
+{% extends 'modal.twig' %}
+
+{% block title_page %}<h3>Librairie d'images</h3>{% endblock %}
+{% block module %}
+    {% for img in images %}
+        <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+            <img src="{{ img.media_mini_name }}" class="" />
+        </a>
+    {% endfor %}
+
+    <script>
+        $(function() {
+           $('.select-picture').click(function(e) {
+               e.preventDefault();
+               $('#id_{{ name }}').val( $(this).data('id') ) ;
+               $('#source_{{ field_name }}').attr('src' ,  $(this).find('img').attr('src') ) ;
+               $.magnificPopup.close();
+           });
+        });
+    </script>
+{% endblock %}

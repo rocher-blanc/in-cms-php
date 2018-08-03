@@ -1,0 +1,41 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Librairie d\'images' %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+
+    <div class="fancy-title title-dotted-border">
+        <h3>Librairie d'images</h3>
+    </div>
+
+    <p>
+        Sed maximum est in amicitia parem esse inferiori. Saepe enim excellentiae quaedam sunt, qualis erat Scipionis in nostro, ut ita dicam, grege. Numquam se ille Philo, numquam Rupilio, numquam Mummio anteposuit, numquam inferioris ordinis amicis, Q. vero Maximum fratrem, egregium virum omnino, sibi nequaquam parem, quod is anteibat aetate, tamquam superiorem colebat suosque omnes per se posse esse ampliores volebat.
+    </p>
+
+    {% for key, img in fields %}
+        <div class="field">
+            <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
+            <div class="fancy-title title-double-border title-center topmargin-sm"><h4><span>{{ img.title }}</span></h4></div>
+            {% for img in img.images %}
+                <div class="mini" style="width: 100px; height: 100px; float: left; margin: 0 5px 5px 0; background: url('{{ asset('canvas/img/ajax-loader.gif') }}') center center no-repeat;">
+                    <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                        <img src="{{ img.media_mini_name }}" class="" />
+                    </a>
+                </div>
+            {% endfor %}
+            <div class="clear"></div>
+            <div class="text-center">
+                <input id="upload_{{ key }}" type="file" data-upload-image class="file-loading" data-fieldname="id_{{ key }}" data-imgname="source_{{ key }}" data-field="{{ key }}" data-uploadurl="{{ route( mod.name , 'upload' ) }}">
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block icon_page %}{{ mod.icon }}{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}"/>{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('canvas/js/components/bs-filestyle.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/locales/fileinput/fr.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/libimage.js') }}"></script>
+{% endblock %}

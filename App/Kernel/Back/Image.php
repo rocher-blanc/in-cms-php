@@ -33,6 +33,7 @@ class Image
             $media->media_size 		= $_FILES[ $this->options['param_name'] ]["size"];
             $media->media_type 		= $_FILES[ $this->options['param_name'] ]["type"];
             $media->media_module_id = $this->options['module_id'];
+            $media->media_field     = $this->options['field'];
 			$media->save() ;
 
 			$std = new \stdClass;

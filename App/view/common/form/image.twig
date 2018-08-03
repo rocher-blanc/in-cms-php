@@ -4,6 +4,7 @@
         <div class="card">
             <img class="card-img-top" id="source_{{ field_name }}" src="{{ hasValue ? image : asset('canvas/img/nophoto.png') }}" data-empty="{{ asset('canvas/img/nophoto.png') }}" />
             <div class="card-body">
+                <a href="{{ route( mod.name , 'libimages' ) }}?field_name={{ field_name }}&name={{ name }}" data-lightbox="ajax" class="button button-mini button-rounded button-amber"><i class="icon-picture"></i> Choisir</a>
                 <input id="upload_{{ name }}" value="{{ image }}" type="file" data-upload-image class="file-loading" data-fieldname="id_{{ name }}" data-imgname="source_{{ field_name }}" data-field="{{ field_name }}" data-uploadurl="{{ route( mod.name , 'upload' ) }}">
             </div>
         </div>

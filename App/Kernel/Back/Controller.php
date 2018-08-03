@@ -701,6 +701,11 @@ class Controller extends \App\Kernel\Common\Controller
         return $tree;
     }
 
+    protected function getGlobalVar()
+    {
+        $this->setRender( 'libimage' , ( empty( $this->getEntity()->getImageField() ) ? false : true ) ) ;
+    }
+
     /* ************************************************** */
     /* ******************  FUNCTIONS  ******************* */
     /* ************************************************** */
@@ -1274,6 +1279,7 @@ class Controller extends \App\Kernel\Common\Controller
         $counter = 0 ;
         $arrayParent = $this->getParentArray();
         $this->setRender( 'isIndex' , true ) ;
+        $this->getGlobalVar() ;
 
         if ( $this->getEntity()->isChild() )
         {
@@ -1320,6 +1326,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function tableAction()
     {
+        $this->getGlobalVar() ;
         $this->generateTable() ;
 
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
@@ -1400,6 +1407,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
+            $this->getGlobalVar() ;
             $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
             $this->setRender( 'parentLine' , $this->getParentArray() ) ;
 
@@ -1425,6 +1433,7 @@ class Controller extends \App\Kernel\Common\Controller
             else                    return ;
         }
 
+        $this->getGlobalVar() ;
         $this->loadDepedencies() ;
         $this->generateForm() ;
 
@@ -1457,6 +1466,7 @@ class Controller extends \App\Kernel\Common\Controller
             else                    return ;
         }
 
+        $this->getGlobalVar() ;
         $this->loadDepedencies() ;
         $this->generateForm( true ) ;
 
@@ -1509,36 +1519,54 @@ class Controller extends \App\Kernel\Common\Controller
         $this->render('delete.twig') ;
     }
 
-    protected function seoAction()
-    {
-        $seo = new \App\Kernel\Back\Seo;
-        $seo->setElementId( $this->getId() );
-        $seo->setModuleId( $this->getEntityId() );
-        $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-        $this->setRender( 'content' , $seo->getAll() ) ;
-        $this->setRender( 'index' , $seo->getIndex() ) ;
-        if ( $this->getApp()->request->isPost() )
-        {
-            $seo->update() ;
-        }
-
-        $one = $this->getRepository()->findOne( $this->getId() );
-
-        if ( $this->getApp()->request->isPost() )
-        {
-            $seo->update() ;
-        }
-
-        $this->setRender( 'content' , $seo->getAll() ) ;
-        $this->setRender( 'id' , $this->getId() ) ;
-        $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
-        $this->setRender( 'index' , $seo->getIndex() ) ;
-        $this->render('seo.twig.html') ;
-    }
-
     /* ************************************************** */
     /* ******************    MEDIA    ******************* */
     /* ************************************************** */
+
+    protected function libimagesupdateAction()
+    {
+        $tab = [];
+
+        if ( $this->getEntity()->getImageField() )
+        {
+            foreach( $this->getEntity()->getImageField() as $row )
+            {
+                foreach( $this->getEntity()->getField() as $field )
+                {
+                    if ( $row == $field->getColumn() )
+                    {
+                        $Media = new Media;
+                        $Media->setModuleId( $this->getEntityId() ) ;
+                        $Media->setModuleName( $this->getEntityName() ) ;
+                        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+                        $Media->setField( $field->getName() ) ;
+
+                        $tab[ $field->getName() ]['title']  = $field->getTitle();
+                        $tab[ $field->getName() ]['images'] = $Media->getAllModel();
+                    }
+                }
+            }
+        }
+
+        $this->getGlobalVar() ;
+        $this->setRender( 'fields' , $tab );
+
+        $this->render('libimages_update.twig') ;
+    }
+
+    protected function libimagesAction()
+    {
+        $Media = new Media;
+        $Media->setModuleId( $this->getEntityId() ) ;
+        $Media->setModuleName( $this->getEntityName() ) ;
+        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+        $Media->setField( $_GET['field_name'] ) ;
+
+        $this->setRender( 'images' , $Media->getAllModel() );
+        $this->setRender( 'name' , $_GET['name'] );
+        $this->setRender( 'field_name' , $_GET['field_name'] );
+        $this->render('libimages.twig') ;
+    }
 
     protected function uploadAction()
     {
