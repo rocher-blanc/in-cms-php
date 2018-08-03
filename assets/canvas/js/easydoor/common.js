@@ -82,7 +82,7 @@ headerResizing = function() {
     $ul.removeClass("small-space");
     $ul.removeClass("two-lines");
     $("#header").removeClass("static-sticky");
-    $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth() + $("#primary-menu .testimonial .testi-image").outerWidth());
+    $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth());
 
     // Big screen
     if( width > 992 ) {
