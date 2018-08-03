@@ -38,7 +38,7 @@
                             <a href="#"><i class="icon-download-alt"></i></a>
                             <a href="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ row.newsletter_group_sub_id) }}"><i class="icon-eye-open"></i></a>
                             <a href="{{ siteUrl('ext/newsletter_group_sub/edit/' ~ row.newsletter_group_sub_id) }}"><i class="icon-pencil"></i></a>
-                            <a class="btn btn-sm btn-danger modal-delete" href="#deleteModal" data-id="{{ row.newsletter_group_sub_id }}" data-link="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}" data-text="Êtes-vous sûr de vouloir supprimer le groupe d'abonnés '{{ row.newsletter_group_sub_name }}' ?"><i class="fa fa-trash"></i> Supprimer</a>
+                            <a data-lightbox="ajax" href="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}"><i class="icon-trash2"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

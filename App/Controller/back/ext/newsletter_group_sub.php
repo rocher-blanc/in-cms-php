@@ -2,6 +2,43 @@
 
 $app->group('/newsletter_group_sub', function () use ($app)
 {
+    $app->get('/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_group_sub/delete/' . $id)
+        ]);
+    });
+
+    $app->post('/delete/:id', function ($id) use ($app)
+    {
+        $ret = false ;
+        $contentRow = \DB::for_table('newsletter_group_sub')
+            ->where_equal('newsletter_group_sub_id' , $id)
+            ->find_one();
+
+        if ( $contentRow )
+        {
+            $subs = \DB::for_table('newsletter_sub')
+                ->where_equal('newsletter_sub_newsletter_group_sub_id' , $id)
+                ->delete_many();
+
+            \App\Kernel\Back\Log::getInstance()->warning( 202 , $contentRow->newsletter_group_sub_name );
+
+            $msg = "Le groupe d'abonnés a bien été supprimé";
+            $ret = true;
+            $contentRow->delete();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la suppression" ;
+        }
+
+        $result['msg'] = $msg;
+        $result['result'] = $ret;
+        $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_group_sub') ;
+
+        \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+    })->name('groupmodule_delete');
+
     $app->get('/', function () use ($app) {
 
         $tab = [];
@@ -151,8 +188,8 @@ $app->group('/newsletter_group_sub', function () use ($app)
             ];
 
             if ( $app->request->post('newsletter_group_sub_name') == "" ) {
-                $error = true ;
-                $tabError['newsletter_group_sub_name'] = "Veuillez remplir ce champ" ;
+                $error    = true ;
+                $errorMsg = "Veuillez indiquer le nom" ;
             }
             else {
                 $exist = \DB::for_table('newsletter_group_sub')->where_equal('newsletter_group_sub_name' , $app->request->post('newsletter_group_sub_name'));
@@ -160,9 +197,9 @@ $app->group('/newsletter_group_sub', function () use ($app)
                 $exist = $exist->count();
             }
 
-            if ( $app->request->post('newsletter_group_sub_name') != "" && $exist > 0 ) {
-                $error = true ;
-                $tabError['newsletter_group_sub_name'] = "Ce nom de groupe est deja utilisé" ;
+            if ( $app->request->post('newsletter_group_sub_name') != "" && $exist > 0 && $error != true ) {
+                $error    = true ;
+                $errorMsg = "Ce nom de groupe est deja utilisé" ;
             }
 
             if ( $error == false ) {
@@ -175,15 +212,15 @@ $app->group('/newsletter_group_sub', function () use ($app)
                 $contentRow->save();
 
                 \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 200 : 201 ) , $contentRow->newsletter_group_sub_name ) ;
+                $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_group_sub') ;
 
-                $id = $contentRow->newsletter_group_sub_id ;
-
-                $app->flash('__msg',addslashes( json_encode( "Le groupe d'abonnés a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
-                $app->flash('__result',true);
-
-                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/edit/' . $id );
-                else 											$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub' );
+                $errorMsg = "Le groupe d'abonnés a bien été " . ( $add == true ? "ajouté" : "modifié" ) ;
             }
+
+            $result['msg'] = $errorMsg;
+            $result['result'] = ( ! $error );
+
+            \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
         }
 
         $app->render('ext/newsletter_group_sub/edit.twig.html', array(
@@ -194,30 +231,4 @@ $app->group('/newsletter_group_sub', function () use ($app)
             "tabError"	 => json_encode( $tabError )));
 
     })->name('newsletter_group_sub_edit')->via('GET', 'POST');
-
-    $app->delete('/delete/:id', function ($id) use ($app)
-    {
-        $ret = false ;
-        $contentRow = \DB::for_table('newsletter_group_sub')
-            ->where_equal('newsletter_group_sub_id' , $id)
-            ->find_one();
-
-        if ( $contentRow )
-        {
-            \App\Kernel\Back\Log::getInstance()->warning( 202 , $contentRow->newsletter_group_sub_name ) ;
-
-            $msg = "Le groupe d'abonnés a bien été supprimé" ;
-            $ret = true ;
-            $contentRow->delete();
-        }
-        else
-        {
-            $msg = "Une erreur est survenue lors de la suppression" ;
-        }
-
-        echo json_encode([
-            "msg" => $msg,
-            "result" => $ret
-        ]) ;
-    })->name('newsletter_group_sub_delete');
 });

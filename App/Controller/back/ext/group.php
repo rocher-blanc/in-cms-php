@@ -242,6 +242,12 @@ $app->group('/group', function () use ($app)
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
 	})->name('group_right')->via('GET', 'POST');
 
+    $app->get('/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/admin/group/delete/' . $id)
+        ]);
+    });
+
 	$app->delete('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
