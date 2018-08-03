@@ -799,7 +799,6 @@ ul.docs-icons li span {
 
 
 
-
 /* ************************************************ */
 /* Responsive                                       */
 /* ************************************************ */
@@ -814,6 +813,7 @@ ul.docs-icons li span {
 
   @media (min-width: 576px) and (max-width: 767px) {
     width: 100% !important;
+    padding: 0 15px !important;
   }
 
   @media (max-width: 575px) {
@@ -904,12 +904,15 @@ ul.docs-icons li span {
 body:not(.sticky-responsive-menu) {
   #primary-menu {
     > ul {
-      &.d-block {
-        display: block;
-        position: relative;
-        z-index: 1;
-        margin-top: 100px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,.75);
+      @media only screen and (max-width: 767px) {
+        display: none;
+        &.d-block {
+          display: block;
+          position: relative;
+          z-index: 1;
+          margin-top: 100px !important;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, .75);
+        }
       }
     }
   }
@@ -929,4 +932,8 @@ body:not(.sticky-responsive-menu) {
   width: 285px;
   max-width: 100%;
   margin-bottom: 20px;
+
+  @media only screen and (max-width: 767px) {
+    display: none;
+  }
 }
