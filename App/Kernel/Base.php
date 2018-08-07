@@ -273,6 +273,10 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "module_table_field" => $this->infoColumn( "VARCHAR" , "50" ),
                 "module_table_module_id" => $this->infoColumn( "INT" , "11" ),
             ],
+            "newsletter_model" => [
+                "newsletter_model_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "newsletter_model_name" => $this->infoColumn( "VARCHAR" , "150" ),
+            ],
             "newsletter_sender" => [
                 "newsletter_sender_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "newsletter_sender_name" => $this->infoColumn( "VARCHAR" , "50" ),

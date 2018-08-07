@@ -1,43 +1,69 @@
-<ul class="sidenav">
-    <li class="parent"><a href="#">Paramètres</a></li>
-    <li{% if menu == 'page' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/page') }}">
-            <i class="icon-file-text"></i>Page<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'parammodule' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/parammodule') }}">
-            <i class="icon-dropbox"></i>Modules<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'user' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/user') }}">
-            <i class="icon-users"></i>Administrateurs<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'group' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/group') }}">
-            <i class="icon-group"></i>Groupes d'administrateurs<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'langue' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/langue') }}">
-            <i class="icon-world"></i>Langues<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'metadata' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/metadata') }}">
-            <i class="icon-tag2"></i>Métadonnées<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'microdata' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/microdata') }}">
-            <i class="icon-line2-layers"></i>Microdata<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-    <li{% if menu == 'rgpd' %} class="ui-tabs-active ui-state-active"{% endif %}>
-        <a href="{{ siteUrl('/ext/rgpd') }}">
-            <i class="icon-legal"></i>RGPD<i class="icon-chevron-right"></i>
-        </a>
-    </li>
-</ul>
+{% if menulink == 'newsletter_group_sub' or menulink == 'newsletter_sender' or menulink == 'newsletter_campaign' or menulink == 'newsletter_model' %}
+    <ul class="sidenav">
+        <li class="parent"><a href="#">Newsletter</a></li>
+        <li{% if menulink == 'newsletter_group_sub' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
+                <i class="icon-group"></i>Groupes d'abonnés<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'newsletter_sender' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/newsletter_sender') }}">
+                <i class="icon-user"></i>Expéditeurs<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'newsletter_campaign' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                <i class="icon-time"></i>Plannification des campagnes<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'newsletter_model' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/newsletter_model') }}">
+                <i class="icon-note"></i>Gabarits<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+{% else %}
+    <ul class="sidenav">
+        <li class="parent"><a href="#">Paramètres</a></li>
+        <li{% if menu == 'page' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/page') }}">
+                <i class="icon-file-text"></i>Page<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'parammodule' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/parammodule') }}">
+                <i class="icon-dropbox"></i>Modules<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'user' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/user') }}">
+                <i class="icon-users"></i>Administrateurs<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'group' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/group') }}">
+                <i class="icon-group"></i>Groupes d'administrateurs<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'langue' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/langue') }}">
+                <i class="icon-world"></i>Langues<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'metadata' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/metadata') }}">
+                <i class="icon-tag2"></i>Métadonnées<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'microdata' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/microdata') }}">
+                <i class="icon-line2-layers"></i>Microdata<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menu == 'rgpd' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ siteUrl('/ext/rgpd') }}">
+                <i class="icon-legal"></i>RGPD<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+{% endif %}

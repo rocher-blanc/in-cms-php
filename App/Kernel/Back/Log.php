@@ -154,6 +154,9 @@ class Log
             202 => "Suppression d'un groupe d'abonné \"%i\"",
             203 => "Ajout d'abonnés dans un groupe \"%i\"",
             204 => "Suppression d'un abonné dans un groupe \"%i\"",
+            205 => "Ajout d'un nouveau gabarit de newsletter \"%i\"",
+            206 => "Modification d'un gabarit de newsletter \"%i\"",
+            207 => "Suppression d'un gabarit de newsletter \"%i\"",
 
         ];
     }
