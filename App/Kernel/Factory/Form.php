@@ -225,10 +225,21 @@ class Form
         }
 
         $className = ucfirst( $field->getType() ) ;
+        $classExist = false ;
 
-        if ( file_exists( FORM_PATH . '/' . $className . '.php' ) )
+        if ( file_exists( FORM_PROJECT_PATH . '/' . $className . '.php' ) )
         {
-            $className = "\App\Kernel\Form\\" . $className ;
+            $className  = "\Project\Form\\" . $className ;
+            $classExist = true ;
+        }
+        else if ( file_exists( FORM_PATH . '/' . $className . '.php' ) )
+        {
+            $className  = "\App\Kernel\Form\\" . $className ;
+            $classExist = true ;
+        }
+
+        if ( $classExist )
+        {
             $obj = new $className ;
             $obj->setModuleId( $this->getModuleId() );
             $obj->setElementId( $this->getElementId() );

@@ -1198,6 +1198,14 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isCustom( $type , $typeSql = NULL , $valueSql = NULL )
+    {
+        if ( $valueSql !== NULL ) $this->field()->setData( "SQL_VALUE" , $valueSql ) ;
+        if ( $typeSql !== NULL ) $this->field()->setData( "SQL_TYPE" , $typeSql ) ;
+        $this->field()->setData( "type" , $type ) ;
+        $this->field()->setData( "custom" , true ) ;
+    }
+
     /* ************************************************** */
     /* ******************   OPTIONS   ******************* */
     /* ************************************************** */

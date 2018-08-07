@@ -12,6 +12,7 @@ defined('CONTROLLER_PROJECT_PATH') || define('CONTROLLER_PROJECT_PATH', PROJECT_
 defined('CONTROLLER_FOLDERS_PATH') || define('CONTROLLER_FOLDERS_PATH', serialize( [ CONTROLLER_PROJECT_PATH ] ) );
 defined('CONFIG_PROJECT_PATH') || define('CONFIG_PROJECT_PATH', PROJECT_PATH . '/config');
 defined('MODULE_PATH') || define('MODULE_PATH', PROJECT_PATH . '/Module');
+defined('MODULE_PATH') || define('MODULE_PATH', FORM_PROJECT_PATH . '/Form');
 defined('ENTITY_PATH') || define('ENTITY_PATH', MODULE_PATH . '/Entity');
 defined('ENTITIES_PROJECT_PATH') || define('ENTITIES_PROJECT_PATH', ENTITY_PATH . '/Class');
 defined('REPOSITORY_PROJECT_PATH') || define('REPOSITORY_PROJECT_PATH', MODULE_PATH . '/Repository');

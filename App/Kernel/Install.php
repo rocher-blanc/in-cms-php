@@ -267,6 +267,7 @@ class Install
             "Project/Controller",
             "Project/Controller/Back",
             "Project/Controller/Front",
+            "Project/Form",
             "Project/Module",
             "Project/Module/Webservice",
             "Project/Module/Repository",

@@ -56,7 +56,7 @@
                         </li>
                     {% endfor %}
                 {% endif %}
-                {% if id != '' %}
+                {% if id != '' and depedency == false %}
                     <li>
                         <a href="#tabs-history" id="onglet-history">
                             <i class="icon-time"></i> Historique
@@ -66,7 +66,7 @@
             </ul>
             <div class="tab-container" id="form-module-{{ mod.name }}">
                 {{ form }}
-                {% if id != '' %}
+                {% if id != '' and depedency == false %}
                     <div class="tab-content clearfix" id="tabs-history" data-onglet="onglet-history">
                         {% include 'module/tab_history.twig' %}
                     </div>
