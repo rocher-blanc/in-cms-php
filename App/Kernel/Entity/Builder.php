@@ -1204,6 +1204,7 @@ class Builder extends Model
         if ( $typeSql !== NULL ) $this->field()->setData( "SQL_TYPE" , $typeSql ) ;
         $this->field()->setData( "type" , $type ) ;
         $this->field()->setData( "custom" , true ) ;
+        return $this ;
     }
 
     /* ************************************************** */
