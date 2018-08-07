@@ -6,47 +6,31 @@
 {% set title_block_page = 'Ajout d\'abonnés dans le groupe "' ~ name ~ '"'%}
 
 {% block module %}
+    <div class="fancy-title title-dotted-border">
+        <h3>{{ title_block_page }}</h3>
+    </div>
+    <div class="ed-menu marginbottom-sm">
+        <a href="{{ siteUrl('ext/newsletter_group_sub') }}" class="button button-mini"><i class="icon-th-list"></i> Gérer</a>
+        <a href="{{ siteUrl('ext/newsletter_group_sub/edit') }}" class="button button-mini"><i class="icon-plus"></i> Ajouter</a>
+    </div>
+    <br /><br />
+    <div class="clear"></div>
+
 <form name="form" method="post" action="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ id ~ '/import') }}" role="form" class="form-horizontal group-border-dashed">
 	<input type="hidden" name="{{csrf_key}}" id="{{csrf_key}}" value="{{csrf_token}}" />
-	<div class="row">
-		<div class="col-md-12">
-			<section class="panel table ext">
-				<header class="panel-heading">
-					<h2 class="panel-title">{{ title_block_page }}</h2>
-				</header>
-				<div class="tab-content">
-					<div class="tab-pane active panel-body">
-						<div class="form-group">
-							<label class="col-md-3 control-label">Adresses email</label>
-							<div class="col-md-6">
-								<textarea id="emails" name="emails" class="form-control" rows="10"></textarea>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="alert alert-warning col-md-12">
-								<i class="fa fa-info-circle"></i> Pour ajouter plusieurs emails en une seule fois, il vous suffit de faire un retour à la ligne aprés chaque adresse.</strong>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2">
-								<a id="btn_back" href="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ id ) }}" class="btn btn-sm btn-warning"><i class="fa fa-arrow-left"></i> Retourner à la liste</a>
-							</div>
-
-							<div class="col-md-5 col-md-offset-5 text-right">
-								<button type="submit" id="btn_submit_stay" name="submit" value="stay" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Enregistrer et continuer l'édition</button>
-								<button type="submit" id="btn_submit" name="submit" value="back" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Enregistrer</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
-	</div>
+    <div class="tab-content">
+        <div class="tab-pane active panel-body">
+            <div class="ed_field col_full">
+                <label>Adresses email</label>
+                <textarea id="emails" name="emails" class="form-control" rows="10"></textarea>
+            </div>
+            <div class="style-msg infomsg">
+                <div class="sb-msg"><i class="icon-info-sign"></i><strong>Information</strong> Pour ajouter plusieurs emails en une seule fois, il vous suffit de faire un retour à la ligne aprés chaque adresse.</div>
+            </div>
+            {% include 'form/generic/button.twig' %}
+        </div>
+    </div>
 </form>
-<script>
-	var errorForm = {{ error }};
-	var tabError = '{{ tabError }}';
-</script>
 {% endblock %}
 
 {% block stylesheets %}

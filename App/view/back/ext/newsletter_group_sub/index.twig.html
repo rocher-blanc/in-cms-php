@@ -35,7 +35,7 @@
                             {{ row.count }}
                         </td>
                         <td class="text-right">
-                            <a href="#"><i class="icon-download-alt"></i></a>
+                            {% if row.count > 0 %}<a target="_blank" title="Télécharger la liste des abonnés" href="{{ siteUrl('ext/newsletter_group_sub/subscriber/download/' ~ row.newsletter_group_sub_id) }}"><i class="icon-download-alt"></i></a>{% endif %}
                             <a href="{{ siteUrl('ext/newsletter_group_sub/subscriber/' ~ row.newsletter_group_sub_id) }}"><i class="icon-eye-open"></i></a>
                             <a href="{{ siteUrl('ext/newsletter_group_sub/edit/' ~ row.newsletter_group_sub_id) }}"><i class="icon-pencil"></i></a>
                             <a data-lightbox="ajax" href="{{ siteUrl('ext/newsletter_group_sub/delete/' ~ row.newsletter_group_sub_id) }}"><i class="icon-trash2"></i></a>

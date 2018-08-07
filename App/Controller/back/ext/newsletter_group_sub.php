@@ -123,7 +123,7 @@ $app->group('/newsletter_group_sub', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->info( 203 , $contentRow->newsletter_group_sub_name ) ;
 
-                $app->flash('__msg',addslashes( json_encode( "Les emails ont bien été ajouté" ) ) );
+                $app->flash('__msg',addslashes( "Les emails ont bien été ajouté" ) );
                 $app->flash('__result',true);
 
                 if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub/subscriber/' . $group_id . "/import" );
@@ -140,7 +140,46 @@ $app->group('/newsletter_group_sub', function () use ($app)
 
     })->name('newsletter_group_sub_import')->via('GET', 'POST');
 
-    $app->delete('/subscriber/delete/:id', function ($id) use ($app)
+    $app->get('/subscriber/download/:id', function ($id) use ($app) {
+        $contentRow = \DB::for_table('newsletter_sub')
+            ->where_equal('newsletter_sub_newsletter_group_sub_id' , $id)
+            ->find_many();
+
+        if ( $contentRow )
+        {
+            header("Content-Type: text/plain");
+            header("Content-disposition: attachment; filename=export_group_newsletter_".$id.".csv;");
+
+            $array  = [];
+            $output = '' ;
+            $i      = 0;
+
+            foreach( $contentRow as $row )
+            {
+                $array = [
+                    'email' => $row->newsletter_sub_email
+                ];
+
+                if ( $i > 0 ) $output.= "\n" ;
+                $output.= implode( ";" , $array ) ;
+                $i++;
+            }
+
+            echo trim( $output ) ;
+        }
+        else
+        {
+            $app->redirect( $app->config('admin.url') . '/ext/newsletter_group_sub');
+        }
+    });
+
+    $app->get('/subscriber/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_group_sub/subscriber/delete/' . $id)
+        ]);
+    });
+
+    $app->post('/subscriber/delete/:id', function ($id) use ($app)
     {
         $ret = false ;
         $contentRow = \DB::for_table('newsletter_sub')
@@ -149,20 +188,26 @@ $app->group('/newsletter_group_sub', function () use ($app)
 
         if ( $contentRow )
         {
+            $group_id = $contentRow->newsletter_sub_newsletter_group_sub_id ;
             \App\Kernel\Back\Log::getInstance()->warning( 204 , $contentRow->newsletter_sub_email ) ;
 
             $msg = "L'abonné a bien été supprimé" ;
             $ret = true ;
             $contentRow->delete();
+
+            $url = $app->config('admin.url') . '/ext/newsletter_group_sub/subscriber/' . $group_id ;
         }
         else
         {
             $msg = "Une erreur est survenue lors de la suppression" ;
+
+            $url = $app->config('admin.url') . '/ext/newsletter_group_sub' ;
         }
 
         echo json_encode([
             "msg" => $msg,
-            "result" => $ret
+            "result" => $ret,
+            "url" => $url
         ]) ;
     })->name('newsletter_subscriber_delete');
 
@@ -212,7 +257,6 @@ $app->group('/newsletter_group_sub', function () use ($app)
                 $contentRow->save();
 
                 \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 200 : 201 ) , $contentRow->newsletter_group_sub_name ) ;
-                $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_group_sub') ;
 
                 $errorMsg = "Le groupe d'abonnés a bien été " . ( $add == true ? "ajouté" : "modifié" ) ;
             }
@@ -220,7 +264,14 @@ $app->group('/newsletter_group_sub', function () use ($app)
             $result['msg'] = $errorMsg;
             $result['result'] = ( ! $error );
 
-            \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+            if ( $error )
+            {
+                \App\Kernel\Factory::getInstance()->Response()->flash( $result['msg'] ) ;
+            }
+            else
+            {
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($result['msg'] , $result['result'] , '/ext/newsletter_group_sub' ) ;
+            }
         }
 
         $app->render('ext/newsletter_group_sub/edit.twig.html', array(
