@@ -38,17 +38,19 @@ $app->group('/newsletter_sender', function () use ($app)
 
             if ( $app->request->post('newsletter_sender_name') == "" ) {
                 $error = true ;
-                $tabError['newsletter_sender_name'] = "Veuillez remplir ce champ" ;
+                $msgError = "Veuillez remplir ce champ" ;
             }
-
-            if ( $app->request->post('newsletter_sender_email') == "" ) {
-                $error = true ;
-                $tabError['newsletter_sender_email'] = "Veuillez remplir ce champ" ;
-            }
-            else {
-                if ( ! filter_var( $app->request->post('newsletter_sender_email') , FILTER_VALIDATE_EMAIL ) ) {
+            else
+            {
+                if ( $app->request->post('newsletter_sender_email') == "" ) {
                     $error = true ;
-                    $tabError['newsletter_sender_email'] = htmlentities("L'adresse email est invalide",ENT_QUOTES) ;
+                    $msgError = "Veuillez remplir ce champ" ;
+                }
+                else {
+                    if ( ! filter_var( $app->request->post('newsletter_sender_email') , FILTER_VALIDATE_EMAIL ) ) {
+                        $error = true ;
+                        $msgError = htmlentities("L'adresse email est invalide",ENT_QUOTES) ;
+                    }
                 }
             }
 
@@ -66,11 +68,11 @@ $app->group('/newsletter_sender', function () use ($app)
 
                 $id = $contentRow->newsletter_sender_id ;
 
-                $app->flash('__msg',addslashes( json_encode( "L'expéditeur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
-                $app->flash('__result',true);
-
-                if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/newsletter_sender/edit/' . $id );
-                else 											$app->redirect( $app->config('admin.url') . '/ext/newsletter_sender' );
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( "L'expéditeur a bien été " . ( $add == true ? "ajouté" : "modifié" ) , true , '/ext/newsletter_sender' );
+            }
+            else
+            {
+                \App\Kernel\Factory::getInstance()->Response()->flash( $msgError );
             }
         }
 
@@ -84,7 +86,13 @@ $app->group('/newsletter_sender', function () use ($app)
 
     })->name('newsletter_sender_edit')->via('GET', 'POST');
 
-    $app->delete('/delete/:id', function ($id) use ($app)
+    $app->get('/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_sender/delete/' . $id)
+        ]);
+    });
+
+    $app->post('/delete/:id', function ($id) use ($app)
     {
         $ret = false ;
         $contentRow = \DB::for_table('newsletter_sender')
@@ -106,7 +114,8 @@ $app->group('/newsletter_sender', function () use ($app)
 
         echo json_encode([
             "msg" => $msg,
-            "result" => $ret
+            "result" => $ret,
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_sender')
         ]) ;
     })->name('newsletter_sender_delete');
 });
