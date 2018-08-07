@@ -797,6 +797,12 @@ ul.docs-icons li span {
   overflow: visible;
 }
 
+.mfp-wrap {
+  .bootstrap-select.btn-group .dropdown-menu.inner {
+    height: auto;
+  }
+}
+
 
 
 /* ************************************************ */

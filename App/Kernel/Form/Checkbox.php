@@ -22,7 +22,19 @@ class Checkbox extends \App\Kernel\Back\Form
         $select = '' ;
         foreach( $field->getData('option') as $key => $opt )
         {
-            $select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n" ;
+			if ( is_array( $opt ) )
+			{
+				$select .= '<optgroup label="'.$key.'">';
+				foreach( $opt as $keyOpt => $optOpt )
+				{
+					$select .= '<option value="' . $keyOpt . '"' . ( in_array( $keyOpt , $value ) ? " selected" : '' ) . '>' . $optOpt . '</option>' . "\n" ;
+				}
+				$select .= '</optgroup>';
+			}
+			else
+			{
+				$select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n";
+			}
         }
 
         return '
