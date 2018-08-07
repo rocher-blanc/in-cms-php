@@ -229,7 +229,7 @@ class Form
 
         if ( file_exists( FORM_PROJECT_PATH . '/' . $className . '.php' ) )
         {
-            $className  = "\Project\Form\\" . $className ;
+            $className  = "\Project\Module\Form\\" . $className ;
             $classExist = true ;
         }
         else if ( file_exists( FORM_PATH . '/' . $className . '.php' ) )
