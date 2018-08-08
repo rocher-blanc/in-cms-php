@@ -12,6 +12,7 @@
         $app->get('/', function () use ($app)
         {
             $contentRows = \DB::for_table('module')
+                ->where_equal('module_kernel' , 0)
 				->order_by_asc('module_active')
 				->order_by_asc('module_name')
 				->find_many();

@@ -111,4 +111,32 @@ $app->group('/newsletter_model', function () use ($app)
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_model')
         ]) ;
     })->name('newsletter_model_delete');
+
+    $app->post('/save/:id', function ($id) use ($app)
+    {
+        $ret = false ;
+        $contentRow = \DB::for_table('newsletter_model')
+            ->where_equal('newsletter_model_id' , $id)
+            ->find_one();
+
+        if ( $contentRow )
+        {
+            \App\Kernel\Back\Log::getInstance()->warning( 208 , $contentRow->newsletter_model_name ) ;
+
+            $msg = "Le gabarit a bien été sauvegardé" ;
+            $ret = true ;
+            $contentRow->newsletter_model_html = $app->request->post('html');
+            $contentRow->save();
+        }
+        else
+        {
+            $msg = "Une erreur est survenue lors de la sauvegarde" ;
+        }
+
+        echo json_encode([
+            "msg" => $msg,
+            "result" => $ret,
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/newsletter_model')
+        ]) ;
+    })->name('newsletter_model_save');
 });

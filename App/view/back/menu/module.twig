@@ -1,16 +1,57 @@
-{% for group in menuTree %}
-    {% if group.children|length > 1 %}
-        {% if group.open == true %}
-            <ul class="sidenav">
-                <li class="parent"><a href="#"><i class="{{ group.icon }}"></i>{{ group.name }}</a></li>
-                {% for module in group.children %}
-                    <li{% if module.selected == true %} class="ui-tabs-active ui-state-active"{% endif %}>
-                        <a href="{{ route( module.class ) }}">
-                            <i class="{{ module.icon }}"></i>{{ module.name }}<i class="icon-chevron-right"></i>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
+{% if menulink == 'NewsletterGroup' or menulink == 'NewsletterSubscriber' or menulink == 'NewsletterSender' or menulink == 'NewsletterCampaignGroup' or menulink == 'NewsletterCampaign' or menulink == 'NewsletterModelGroup' or menulink == 'NewsletterModel' %}
+    <ul class="sidenav">
+        <li class="parent"><a href="#">Newsletter</a></li>
+        <li{% if menulink == 'NewsletterGroup' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
+                <i class="icon-group"></i>Groupes d'abonnés<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterSubscriber' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
+                <i class="icon-group"></i>Abonnés<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterSender' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
+                <i class="icon-user"></i>Expéditeurs<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterCampaignGroup' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
+                <i class="icon-time"></i>Groupes de campagnes<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterCampaign' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
+                <i class="icon-time"></i>Planification des campagnes<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterModelGroup' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterModelGroup' , 'index' ) }}">
+                <i class="icon-note"></i>Groupes de gabarits<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+        <li{% if menulink == 'NewsletterModel' %} class="ui-tabs-active ui-state-active"{% endif %}>
+            <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
+                <i class="icon-note"></i>Gabarits<i class="icon-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+{% else %}
+    {% for group in menuTree %}
+        {% if group.children|length > 1 %}
+            {% if group.open == true %}
+                <ul class="sidenav">
+                    <li class="parent"><a href="#"><i class="{{ group.icon }}"></i>{{ group.name }}</a></li>
+                    {% for module in group.children %}
+                        <li{% if module.selected == true %} class="ui-tabs-active ui-state-active"{% endif %}>
+                            <a href="{{ route( module.class ) }}">
+                                <i class="{{ module.icon }}"></i>{{ module.name }}<i class="icon-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
-    {% endif %}
-{% endfor %}
+    {% endfor %}
+{% endif %}

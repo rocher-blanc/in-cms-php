@@ -6,7 +6,14 @@ class Repository extends \App\Kernel\Common\Repository
 {
     public function checkIfPatchTable( $id )
     {
-        $file = ENTITY_PATH . "/" . $this->getName() . ".php";
+        if ( file_exists( ENTITY_PATH . '/' . $this->getName() . '.php' ) )
+        {
+            $file = ENTITY_PATH . "/" . $this->getName() . ".php";
+        }
+        else if ( file_exists( V_ENTITY_PATH . '/' . $this->getName() . '.php' ) )
+        {
+            $file = V_ENTITY_PATH . "/" . $this->getName() . ".php";
+        }
 
         if ( \App\Kernel\Container::getInstance()->param()->get('key_module_' . $id ) != md5_file( $file ) )
         {

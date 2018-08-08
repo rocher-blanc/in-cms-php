@@ -154,22 +154,37 @@
                                                 <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
                                                 <ul>
                                                     <li>
-                                                        <a href="{{ siteUrl('/ext/newsletter_group_sub') }}">
+                                                        <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
                                                             <div>Groupes d'abonnés</div>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ siteUrl('/ext/newsletter_sender') }}">
+                                                        <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
+                                                            <div>Abonnés</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
                                                             <div>Expéditeurs</div>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                                                        <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
+                                                            <div>Groupes de campagnes</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
                                                             <div>Planification des campagnes</div>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ siteUrl('/ext/newsletter_campaign') }}">
+                                                        <a href="{{ route( 'NewsletterModelGroup' , 'index' ) }}">
+                                                            <div>Groupes de gabarits</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
                                                             <div>Gabarits</div>
                                                         </a>
                                                     </li>

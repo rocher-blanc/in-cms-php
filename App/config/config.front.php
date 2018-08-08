@@ -10,6 +10,10 @@ defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/vie
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Front');
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Front');
 
+defined('V_CONTROLLER_PATH') || define('V_CONTROLLER_PATH', V_MODULE_PATH . '/Controller/Front');
+defined('V_REPOSITORY_PATH') || define('V_REPOSITORY_PATH', V_MODULE_PATH . '/Repository/Front');
+
+
 defined('ADMIN') || define('ADMIN',false);
 
 defined('ASSET_CSS_VAR') || define('ASSET_CSS_VAR',"__asset_css_var__");

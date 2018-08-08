@@ -5,6 +5,8 @@ defined('ENTITIES_PATH') || define('ENTITIES_PATH', APPLICATION_PATH . '/Entitie
 defined('PROXIES_PATH') || define('PROXIES_PATH', APPLICATION_PATH . '/Proxies');
 defined('KERNEL_PATH') || define('KERNEL_PATH', APPLICATION_PATH . '/Kernel');
 defined('CONFIG_PATH') || define('CONFIG_PATH', APPLICATION_PATH . '/config');
+defined('V_MODULE_PATH') || define('V_MODULE_PATH', APPLICATION_PATH . '/Module');
+defined('V_ENTITY_PATH') || define('V_ENTITY_PATH', V_MODULE_PATH . '/Entity');
 defined('FACTORY_PATH') || define('FACTORY_PATH', KERNEL_PATH . '/Factory');
 defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
 defined('LANG_PATH') || define('LANG_PATH', PROJECT_PATH . '/Lang');

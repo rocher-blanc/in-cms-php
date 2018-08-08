@@ -4,7 +4,7 @@ $app->group('/newsletter_campaign', function () use ($app)
 {
     $app->get('/', function () use ($app) {
 
-       $app->render('ext/newsletter_campaign/index.twig.html', [
+       $app->render('ext/newsletter_campaign/index.twig', [
 
        ]);
 

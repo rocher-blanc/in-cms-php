@@ -105,17 +105,10 @@ class Response
     public function show404()
     {
         // erreur 404
-        if ( file_exists( TEMPLATES_PATH . '/errors/404.twig' ) )
-        {
-            $app = $this->getApp() ;
-            $app->notFound(function () use ($app) {
-                $app->render('errors/404.twig') ;
-            });
-        }
-        else
-        {
-            return false ;
-        }
+        $app = $this->getApp() ;
+        $app->notFound(function () use ($app) {
+            $app->render('errors/404.twig') ;
+        });
     }
 
     public function error( $message , $type = '404' )

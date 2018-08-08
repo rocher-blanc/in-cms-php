@@ -66,7 +66,14 @@ class Container
     {
         if ( $this->entity === NULL )
         {
-            $name = "\Project\Module\Entity\\" . $this->getName() ;
+            if ( file_exists( V_ENTITY_PATH . '/' . $this->getName() . '.php' ) )
+            {
+                $name = "\App\Module\Entity\\" . $this->getName() ;
+            }
+            else
+            {
+                $name = "\Project\Module\Entity\\" . $this->getName() ;
+            }
             $this->setEntity( new $name );
         }
 
@@ -77,7 +84,15 @@ class Container
     {
         if ( $this->repository === NULL )
         {
-            $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
+            {
+                $name = "\App\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            }
+            else
+            {
+                $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            }
+
 
             $this->setRepository( new $name( $this->getName() ) );
         }
@@ -101,10 +116,12 @@ class Container
     {
         if ( $this->controller === NULL )
         {
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )     $ControllerClass = "\Project\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
-            else																			             $ControllerClass = '\App\Kernel\\' . ( $admin ? "Back" : "Front" ) . '\Controller' ;
+            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )   $ControllerClass = "\Project\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            else if ( file_exists( V_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )    $ControllerClass = "\App\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+            else																			           $ControllerClass = '\App\Kernel\\' . ( $admin ? "Back" : "Front" ) . '\Controller' ;
 
             $Controller = new $ControllerClass;
+
             $Controller->setEntityName( $this->getName() );
             $result = $Controller->loadEntity();
             if ( $admin )

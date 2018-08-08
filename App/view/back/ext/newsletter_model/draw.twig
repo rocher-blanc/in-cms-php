@@ -32,6 +32,22 @@
 
 {% block javascripts %}
 <script>
+    saveTemplate = function( html , redirect ) {
+        $.ajax({
+            type: "POST",
+            url: '{{ siteUrl('ext/newsletter_model/save/' ~ id ) }}',
+            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html,
+            success: function(data){
+                if ( redirect ) {
+                    document.location.href = '{{ siteUrl('ext/newsletter_model') }}';
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                Notify(errorThrown, false);
+            }
+        });
+    };
+
 	$(function() {
 		// Plugin Settings
         var TOPOL_OPTIONS = {
@@ -41,7 +57,15 @@
                 userId: "{{ userId }}"
             },
             language: "fr",
-            templateId: {{ id }}
+            templateId: {{ id }},
+            onSaveAndClose: function(data) {
+                // HTML of the email
+                saveTemplate( data.html , true );
+            },
+            onSave: function(data) {
+                // HTML of the email
+                saveTemplate( data.html , false );
+            },
         };
 
         // Plugin Start

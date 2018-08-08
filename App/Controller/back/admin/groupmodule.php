@@ -409,6 +409,7 @@ $app->group('/groupmodule', function () use ($app)
 
         // Get modules
         $req_modules = \DB::for_table('module')
+                          ->where_equal('module_kernel' , 0)
                           ->where_in( "module_module_column_block_id", $blocks_list )
 //                          ->where_null( "module_module_column_block_id" )
                           ->order_by_asc( "module_order" )
@@ -424,6 +425,7 @@ $app->group('/groupmodule', function () use ($app)
         }
         $req_modules_noplace = \DB::for_table('module')
                           ->where_null( "module_module_column_block_id" )
+                          ->where_equal('module_kernel' , 0)
                           ->order_by_asc( "module_order" )
                           ->find_many();
         foreach( $req_modules_noplace as $module )
