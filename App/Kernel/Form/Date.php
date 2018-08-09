@@ -15,6 +15,7 @@ class Date extends \App\Kernel\Back\Form
         return $this->View()->fetch( 'form/date.twig' , [
             'name' => $name,
             'value' => $value,
+            'hour' => $field->getData('hour'),
             'column' => $field->getColumn(),
             'required' => $field->isRequired()
         ]);

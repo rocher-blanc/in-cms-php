@@ -1083,6 +1083,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;
+        $this->field()->setData( "hour" , $hour ) ;
         return $this ;
     }
 
@@ -1414,6 +1415,12 @@ class Builder extends Model
     protected function name( $t = "" )
     {
         $this->field()->setData( "title" , $t ) ;
+        return $this ;
+    }
+
+    protected function mode( $t )
+    {
+        $this->field()->setData( "mode" , $t ) ;
         return $this ;
     }
 

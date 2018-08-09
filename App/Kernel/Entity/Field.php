@@ -271,10 +271,15 @@ class Field
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
 
-	public function getTwigKey()
-	{
-		return $this->getData('twig') ;
-	}
+    public function getMode()
+    {
+        return $this->getData('mode') ;
+    }
+
+    public function getTwigKey()
+    {
+        return $this->getData('twig') ;
+    }
 
 	public function front()
 	{

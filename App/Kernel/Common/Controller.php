@@ -465,6 +465,7 @@ class Controller
 
                     $arrayField[] = [
                         "name"      => $row->getName(),
+                        "fieldname" => $row->getColumn(),
                         "Form_HTML" => $form->genHTML( $row ),
                         "title" 	=> $row->getData('title'),
                         "type" 		=> $row->getType(),

@@ -102,12 +102,5 @@ headerResizing = function() {
             }
 
         }
-        else {
-            console.log("ok");
-        }
-    }
-    // Mobile
-    else {
-        console.log( "mobile" );
     }
 };

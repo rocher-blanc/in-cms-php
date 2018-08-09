@@ -8,11 +8,29 @@ class Checkbox extends \App\Kernel\Back\Form
 	{
 		$this->initLib() ;
 
-		if ( $field->isParent() == true )   return $this->getMultiselectParent( $field , $name , $value ) ;
-		else                                return $this->getMultiselect( $field , $name , $value ) ;
+		if ( $field->isParent() == true )       return $this->getMultiselectParent( $field , $name , $value ) ;
+		else                                    return $this->getMultiselect( $field , $name , $value ) ;
 	}
 
     private function getMultiselect( $field, $name, $value = NULL )
+    {
+        switch ( $field->getMode() )
+        {
+            case 'bigList' :
+                return $this->View()->fetch( 'form/checkbox_biglist.twig' , [
+                    'name' => $name,
+                    'value' => $value,
+                    'option' => $field->getData('option'),
+                    'required' => $field->isRequired()
+                ]);
+            break;
+            default:
+                return $this->classic( $field, $name, $value );
+            break;
+        }
+    }
+
+    private function classic( $field, $name, $value = NULL )
     {
         $this->_lib_js  = 'cmsmedias/canvas/js/components/bs-select.js';
         $this->_lib_css = 'cmsmedias/canvas/css/src/components/bs-select.css';
@@ -22,19 +40,19 @@ class Checkbox extends \App\Kernel\Back\Form
         $select = '' ;
         foreach( $field->getData('option') as $key => $opt )
         {
-			if ( is_array( $opt ) )
-			{
-				$select .= '<optgroup label="'.$key.'">';
-				foreach( $opt as $keyOpt => $optOpt )
-				{
-					$select .= '<option value="' . $keyOpt . '"' . ( in_array( $keyOpt , $value ) ? " selected" : '' ) . '>' . $optOpt . '</option>' . "\n" ;
-				}
-				$select .= '</optgroup>';
-			}
-			else
-			{
-				$select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n";
-			}
+            if ( is_array( $opt ) )
+            {
+                $select .= '<optgroup label="'.$key.'">';
+                foreach( $opt as $keyOpt => $optOpt )
+                {
+                    $select .= '<option value="' . $keyOpt . '"' . ( in_array( $keyOpt , $value ) ? " selected" : '' ) . '>' . $optOpt . '</option>' . "\n" ;
+                }
+                $select .= '</optgroup>';
+            }
+            else
+            {
+                $select .= '<option value="' . $key . '"' . ( in_array( $key , $value ) ? " selected" : '' ) . '>' . $opt . '</option>' . "\n";
+            }
         }
 
         return '

@@ -34,7 +34,8 @@ class Controller extends \App\Kernel\Common\Controller
         $this->_id_parent = $var ;
     }
 
-    public function setLang( $var ) {
+    public function setLang( $var )
+    {
         $this->_lang = $var ;
     }
 
@@ -962,9 +963,9 @@ class Controller extends \App\Kernel\Common\Controller
 						}
 					}
 
-                    if ( $this->getApp()->request->post('submit') == "stay" )
+                    if ( $this->getApp()->request->post('buttonaction') == "stay" )
                     {
-                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() , '' ) ;
+                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() ) ;
                     }
                     else
                     {

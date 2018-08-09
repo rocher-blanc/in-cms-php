@@ -347,8 +347,9 @@ checkForm = function(base) {
         }
 
         $(base + ' .ed_field').removeClass('error');
-        var serialize = $(base + ' form.submitReady').serialize();
-        //var serialize = $form.serialize();
+
+        var valbutton = $("button[type=submit]:focus").val();
+        var serialize = $(base + ' form.submitReady').serialize() + "&buttonaction=" + valbutton;
 
         e.preventDefault();
         e.stopPropagation();
@@ -429,7 +430,6 @@ refreshShowIf = function( base , mod , route , $this ) {
                 $(base + ' .'+mod+'-form-process').hide();
             }
 
-
             if ( data.tabs.length ) {
                 $.each(data.tabs, function(i, tab) {
                     var linktab = $('#tabs-link-' + tab.key );
@@ -456,7 +456,7 @@ refreshShowIf = function( base , mod , route , $this ) {
 
             if ( data.fields.length ) {
                 $.each(data.fields, function(i, elt) {
-                    var field = $("[name='"+ elt.name+"']").closest('.ed_field');
+                    var field = $("div[data-field='"+ elt.name+"']");
                     if ( elt.show == true ) {
                         field.removeClass('hide').show();
                     }
@@ -475,6 +475,15 @@ initDatePicker = function(base) {
         $(base + " input[data-plugin-datepicker]").datepicker({
             language: 'fr',
             autoclose: true,
+            todayHighlight: true
+        });
+    }
+
+    if ( $(base + " input[data-plugin-datetimepicker]").length ) {
+        $(base + " input[data-plugin-datetimepicker]").datepicker({
+            language: 'fr',
+            autoclose: true,
+            timePicker: true,
             todayHighlight: true
         });
     }
