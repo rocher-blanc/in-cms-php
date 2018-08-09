@@ -1,0 +1,41 @@
+<div class="clear"></div>
+{% set col_number = 2 %}
+{% set col_class = "col_half" %}
+{% set number_in_part = ( option | length / col_number ) | round %}
+{% set active_part = 0 %}
+
+{% for key, val in option %}
+
+    {% if loop.first or loop.index == active_part * number_in_part + 1 %}
+        {% set active_part = active_part + 1 %}
+        <div class="{{ col_class }}{% if active_part == col_number %} col_last{% endif %}">
+    {% endif %}
+
+    {% if val is iterable %}
+
+        <div class="bottommargin-sm">
+            <div class="fancy-title title-double-border bottommargin-mini">
+                <h5>{{ key }}</h5>
+            </div>
+            {% for subkey, subval in val %}
+                <label class="checkbox-tag-label">
+                    <input type="checkbox" value="{{ subkey }}" name="{{ name }}" {% if subkey in value %}checked="checked"{% endif %}>
+                    <span>{{ subval }}</span>
+                </label>
+            {% endfor %}
+        </div>
+
+    {% else %}
+
+        <label class="checkbox-tag-label">
+            <input type="checkbox" value="{{ key }}" name="{{ name }}" {% if subkey in value %}checked="checked"{% endif %}>
+            <span>{{ val }}</span>
+        </label>
+
+    {% endif %}
+
+    {% if loop.last or loop.index == active_part * number_in_part %}
+        </div>
+    {% endif %}
+
+{% endfor %}

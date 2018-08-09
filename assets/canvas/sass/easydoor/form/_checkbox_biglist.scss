@@ -1,0 +1,35 @@
+.checkbox-tag-label {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin: 3px 0;
+  font-weight: 500;
+  text-transform: initial;
+
+  input {
+    position: absolute;
+    left: 5px;
+    top: 3px;
+
+    + span {
+      display: inline-block;
+      border-radius: 5px;
+      padding: 3px 8px 3px 25px;
+    }
+
+    &:checked {
+      + span {
+        background: $jweb-blue;
+        color: white;
+      }
+    }
+  }
+
+  &:hover {
+    span {
+      padding: 2px 7px 2px 24px;
+      border: 1px $jweb-blue solid;
+    }
+  }
+
+}
