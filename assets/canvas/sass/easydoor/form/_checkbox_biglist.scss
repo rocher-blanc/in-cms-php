@@ -31,5 +31,12 @@
       border: 1px $jweb-blue solid;
     }
   }
+}
 
+.error {
+  .checkbox-tag-label {
+    span {
+      color: #C02942;
+    }
+  }
 }
