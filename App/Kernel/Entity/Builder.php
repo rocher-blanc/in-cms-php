@@ -1334,6 +1334,19 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function formated( callable $result , string $message )
+    {
+        $this->field()->setData( "formated" , $result ) ;
+        $this->field()->setData( "notFormated_msg" , $message ) ;
+        return $this ;
+    }
+
+    protected function transform( callable $result )
+    {
+        $this->field()->setData( "transform" , $result ) ;
+        return $this ;
+    }
+
     protected function comment( $t )
     {
         $this->field()->setData( "comment" , $t ) ;

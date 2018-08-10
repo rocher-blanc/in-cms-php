@@ -191,6 +191,20 @@ class Field
         }
     }
 
+    public function isFormated( $lang = NULL )
+    {
+        if ( is_callable( $this->getData('formated') ) )
+        {
+            $function = $this->getData('formated') ;
+
+            return $function( $this->getValue( $lang ) );
+        }
+        else
+        {
+            return true ;
+        }
+    }
+
     /* ************************************************** */
     /* *****************     HASER    ******************* */
     /* ************************************************** */
@@ -409,6 +423,16 @@ class Field
         return true;
     }
 
+    public function transform( $idlang = NULL )
+    {
+        $rst = $this->getData('transform');
+
+        if ( is_callable( $rst ) )
+        {
+            $this->setValue( $rst( $this->getValue( $idlang ) ) );
+        }
+    }
+
     public function getColumn()
     {
         return $this->getData('columnName') ;
@@ -598,6 +622,16 @@ class Field
                     $this->setValue( NULL , $lang->url ) ;
                     $return = false ;
                 }
+                else if ( $this->isFormated( $lang->url ) == false )
+                {
+                    $this->setError( $this->getData('notFormated_msg') ) ;
+                    $this->setData( 'front-error' , $this->getColumn() . '_formated' ) ;
+                    $return = false ;
+                }
+                else
+                {
+                    $this->transform( $lang->id );
+                }
             }
         }
         else
@@ -611,6 +645,16 @@ class Field
 				$this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
                 $this->setValue( NULL ) ;
                 $return = false ;
+            }
+            else if ( $this->isEmpty() == false && $this->isFormated() == false )
+            {
+                $this->setError( $this->getData('notFormated_msg') ) ;
+                $this->setData( 'front-error' , $this->getColumn() . '_formated' ) ;
+                $return = false ;
+            }
+            else
+            {
+                $this->transform();
             }
 
             if ( $this->getType() == 'image' && $this->isRequired() == true )
