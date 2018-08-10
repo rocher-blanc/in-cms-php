@@ -695,11 +695,6 @@ class Field
         $this->setValue(NULL );
     }
 
-    public function clearSqlInfos()
-    {
-        // $this->clearData( array("SQL_TYPE","SQL_VALUE","SQL_DEFAULT") ) ;
-    }
-
     private function clearData( $field , $key )
     {
         if ( is_array( $key ) )
