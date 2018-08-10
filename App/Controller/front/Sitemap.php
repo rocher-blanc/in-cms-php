@@ -39,7 +39,7 @@ $app->get('/sitemap.xml', function () use ( $app )
                 $url = $app->request()->getUrl() ;
                 if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
 
-                if ( $module->module_index == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig.html' ) )
+                if ( $module->module_index == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig' ) )
                 {
                     echo "\t" . '<url>' . "\n" ;
                     echo "\t\t" . '<loc>' . $url . '/' . $module->module_lang_url . '</loc>' . "\n";
@@ -56,7 +56,7 @@ $app->get('/sitemap.xml', function () use ( $app )
                     $url.= '/' ;
                 }
 
-                if ( $module->module_index_elmt == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getone.twig.html' ) )
+                if ( $module->module_index_elmt == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getone.twig' ) )
                 {
                     if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
                     else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;
