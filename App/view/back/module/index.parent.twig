@@ -3,47 +3,25 @@
 </div>
 <div class="clearfix">
 
-    {% if hasImage %}
+    {% if canCreate == true %}
+    <div class="col-md-2 nopadding element-parent">
+        <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
+            <div class="image-presentation" style="background-image: url('{{ asset('canvas/img/plus-260.jpg') }}')"></div>
+            <h3>Ajouter un nouvel élément</h3>
+            <a class="button button-3d button-small button-rounded button-add" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
+        </div>
+    </div>
+    {% endif %}
+    {% for row in content %}
         <div class="col-md-2 nopadding element-parent">
             <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                <div class="image-presentation" style="background-image: url('{{ asset('canvas/img/plus-260.jpg') }}')"></div>
-                <h3>Ajouter un nouvel élément</h3>
-                <a class="button button-3d button-small button-rounded button-add" href="{{ route( module.class_name , 'add' , uri_id_parent ) }}">Sélectionner</a>
+                <span class="top"><i class="icon-tags"></i> {{ row.counter }}</span>
+                <div class="image-presentation" style="background-image: url('{% if hasImage %}{{ row.image }}{% else %}{% endif %}');"></div>
+                <h3>{{ row.name }}</h3>
+                <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
             </div>
         </div>
-        {% for row in content %}
-            <div class="col-md-2 nopadding element-parent">
-                <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                    <span class="top"><i class="icon-tags"></i> {{ row.counter }}</span>
-                    <div class="image-presentation" style="background-image: url('{{ row.image }}');"></div>
-                    <h3>{{ row.name }}</h3>
-                    <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-md-2">
-            <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                <div class="fbox-icon">
-                    <a href="{{ route( module.class_name , 'add' , uri_id_parent ) }}"><i class="icon-line-plus i-alt"></i></a>
-                </div>
-                <h3 style="text-transform: none;">Ajouter un nouvel élément</h3>
-            </div>
-        </div>
-
-        {% for row in content %}
-            <div class="col-md-2" style="border: 1px solid #ddd;">
-                <div class="feature-box fbox-center fbox-outline fbox-effect nobottomborder">
-                    <div class="fbox-icon">
-                        <a href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}"><i class="{{ module.icon }} i-alt"></i></a>
-                    </div>
-                    <h3 style="text-transform: none;">{{ row.name }}</h3>
-                    <a class="button button-3d button-small button-rounded" href="{{ route( mod.name , 'index' , uri_id_parent ~ '/' ~ row.id ) }}">Sélectionner</a>
-                </div>
-            </div>
-        {% endfor %}
-    {% endif %}
-
+    {% endfor %}
     <div class="clear"></div>
 
 </div>

@@ -8,8 +8,9 @@ class NewsletterModel extends Builder
 {
     protected function load()
     {
+        $this->addIcon( 'icon-photo' , 'draw' );
         $this->setFieldReference( 'name' );
-        $this->setModuleParent( 'NewsletterModelGroup' );
+        $this->setModuleParent( 'NewsletterCampaignGroup' );
 
         $this->build('name')
             ->column(1, 1)

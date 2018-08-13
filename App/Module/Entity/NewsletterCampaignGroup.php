@@ -9,6 +9,7 @@ class NewsletterCampaignGroup extends Builder
     protected function load()
     {
         $this->setModuleChild( 'NewsletterCampaign' );
+        $this->setModuleChild( 'NewsletterModel' );
         $this->setFieldReference( 'name' );
 
         $this->build('name')

@@ -1,0 +1,119 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Gestion' %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+
+    <div id="topolcontent"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #topolcontent {
+            height: 700px;
+        }
+
+        #leftPane {
+            background-color: pink;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        saveTemplate = function( html , redirect ) {
+            $.ajax({
+                type: "POST",
+                url: '{{ siteUrl('ext/newsletter_model/save/' ~ id ) }}',
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html,
+                success: function(data){
+                    if ( redirect ) {
+                        document.location.href = '{{ siteUrl('ext/newsletter_model') }}';
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
+        };
+
+        $(function() {
+            // Plugin Settings
+            var TOPOL_OPTIONS = {
+                id: "#topolcontent",
+                authorize: {
+                    apiKey: "{{ apiKey }}",
+                    userId: "{{ userId }}"
+                },
+                language: "fr",
+                templateId: {{ id }},
+                removeTopBar: false, // Hides the top bar of the email editor
+                light: true, // set the editor theme to be light
+                customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below
+                // URL or Callback when clicked on Save & close
+                callbacks: {
+                    onSaveAndClose: function (json, html) {
+                        saveTemplate(html, true);
+                    },
+                    onSave: function (json, html) {
+                        saveTemplate(html, false);
+                    },
+                    onTestSend: function (email, json, html) {
+                        // HTML of the email
+                        console.log(html);
+                        // JSON object of the email
+                        console.log(json);
+                        // Email of the recipient
+                        console.log(email);
+                        // Callback when send test email button is clicked
+                    },
+                    onOpenFileManager: function () {
+                        // Implement your own file manager open callback
+                    },
+                    onAutoSave(json) {
+                        // Called when the editor decides that it needs an autosave. Mostly when the user makes a change and does not save it immedietly.
+                        console.log(json);
+                    },
+                }
+            };
+
+            // Plugin script
+            "use strict";
+            !function (t) {
+                window.TopolPlugin || (window.TopolPlugin = new function () {
+                    var t = {}, n = {}, i = {}, o = [], a = !1;
+
+                    function e(t) {
+                        "callback" == t.data.type && "function" == typeof i.callbacks[t.data.action] && i.callbacks[t.data.action].apply(window, t.data.data.args)
+                    }
+
+                    function c(n, i) {
+                        a ? t.contentWindow.postMessage({action: n, data: i}, "*") : o.push({action: n, data: i})
+                    }
+
+                    this.init = function (l, s) {
+                        i = l || {}, (n = document.querySelectorAll(i.id)[0]) ? ((t = document.createElement("iframe")).width = "100%", t.height = "100%", t.frameBorder = "0", t.src = "https://d5aoblv5p04cg.cloudfront.net/editor/plugin/index.html", n.appendChild(t), parsedOptions = JSON.parse(JSON.stringify(i)), window.addEventListener("message", e), t.onload = function () {
+                            a = !0;
+                            for (var t = o.length, n = 0; n < t; n++) {
+                                var i = o.shift();
+                                c(i.action, i.data)
+                            }
+                        }) : console.error("Unable to find the element " + i.id), c("init", {options: Object.assign({}, l, {callbacks: null})})
+                    }, this.save = function () {
+                        c("save", {})
+                    }, this.load = function (t) {
+                        c("load", {json: t})
+                    }, this.togglePreview = function () {
+                        c("togglePreview", {})
+                    }, this.chooseFile = function (t) {
+                        c("chooseFile", {url: t})
+                    }
+                })
+            }();
+
+            // Plugin start
+            TopolPlugin.init(TOPOL_OPTIONS);
+        });
+    </script>
+{% endblock %}

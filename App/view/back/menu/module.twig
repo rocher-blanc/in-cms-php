@@ -1,4 +1,4 @@
-{% if menulink == 'NewsletterGroup' or menulink == 'NewsletterSubscriber' or menulink == 'NewsletterSender' or menulink == 'NewsletterCampaignGroup' or menulink == 'NewsletterCampaign' or menulink == 'NewsletterModelGroup' or menulink == 'NewsletterModel' %}
+{% if menulink == 'NewsletterGroup' or menulink == 'NewsletterSubscriber' or menulink == 'NewsletterSender' or menulink == 'NewsletterCampaignGroup' or menulink == 'NewsletterCampaign' or menulink == 'NewsletterModel' %}
     <ul class="sidenav">
         <li class="parent"><a href="#">Newsletter</a></li>
         <li{% if menulink == 'NewsletterCampaignGroup' %} class="ui-tabs-active ui-state-active"{% endif %}>
@@ -24,11 +24,6 @@
         <li{% if menulink == 'NewsletterCampaign' %} class="ui-tabs-active ui-state-active"{% endif %}>
             <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
                 <i class="icon-time"></i>Planification des campagnes<i class="icon-chevron-right"></i>
-            </a>
-        </li>
-        <li{% if menulink == 'NewsletterModelGroup' %} class="ui-tabs-active ui-state-active"{% endif %}>
-            <a href="{{ route( 'NewsletterModelGroup' , 'index' ) }}">
-                <i class="icon-note"></i>Groupes de gabarits<i class="icon-chevron-right"></i>
             </a>
         </li>
         <li{% if menulink == 'NewsletterModel' %} class="ui-tabs-active ui-state-active"{% endif %}>

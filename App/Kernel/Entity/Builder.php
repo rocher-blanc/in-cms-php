@@ -126,6 +126,12 @@ class Builder extends Model
     protected $_doc_field = [];
 
     /*
+     * @array
+     * Variable contenant toutes les icones pour les modules (tableau de gestion)
+     */
+    protected $icon = [];
+
+    /*
      * @boolean
      * Variable qui définit si le module est un parent
      */
@@ -141,7 +147,7 @@ class Builder extends Model
      * @string
      * Variable contenant le nom du module enfant
      */
-    protected $_module_child_name = '' ;
+    protected $_module_child_name = [] ;
 
     /*
      * @string
@@ -483,7 +489,7 @@ class Builder extends Model
     public function setModuleChild($module_child_name)
     {
         $this->_hasModuleParent = true;
-        $this->_module_child_name = $module_child_name;
+        $this->_module_child_name[$module_child_name] = $module_child_name;
     }
 
     protected function setFieldReference( $var )
@@ -539,7 +545,7 @@ class Builder extends Model
     /**
      * @return array
      */
-    public function getFieldReference()
+    public function getFieldReference():array
     {
         return $this->_field_reference;
     }
@@ -547,15 +553,15 @@ class Builder extends Model
     /**
      * @return string
      */
-    public function getModuleParentName()
+    public function getModuleParentName():string
     {
         return $this->_module_parent_name;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getModuleChildName()
+    public function getModuleChildName():array
     {
         return $this->_module_child_name;
     }
@@ -729,6 +735,24 @@ class Builder extends Model
         }
 
         return $tab ;
+    }
+
+    /* ************************************************** */
+    /* *****************     ICONES      **************** */
+    /* ************************************************** */
+
+    public function addIcon( $class , $action )
+    {
+        $this->addAction( $action );
+        $this->icon[ $action ] = [
+            'action'   => $action,
+            'class'    => $class
+        ];
+    }
+
+    public function getIcon()
+    {
+        return $this->icon ;
     }
 
     /* ************************************************** */

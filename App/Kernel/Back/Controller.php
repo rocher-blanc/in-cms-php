@@ -675,6 +675,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
         $this->setRender( 'validationName' , $this->getEntity()->getValidationName() ) ;
         $this->setRender( 'hasURL' , $this->getEntity()->hasURL() ) ;
+        $this->setRender( 'icons' , $this->getEntity()->getIcon() ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
         $this->setRender( 'order' , $order ) ;
@@ -722,8 +723,6 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $this->getOption('noAppend') == false )
         {
-
-
             $this->getApp()->view()->appendData([
                 'mod' => [
                     'id'    	=> $this->getEntityId(),
@@ -1122,7 +1121,7 @@ class Controller extends \App\Kernel\Common\Controller
             {
                 $std = new \stdClass;
                 $std->id        = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
-                $std->counter   = $this->Container()->module( $this->getEntity()->getModuleChildName() )->getRepository(true)->countWithParent( $std->id );
+                $std->counter   = $this->Container()->module( $this->getChild() )->getRepository(true)->countWithParent( $std->id );
                 $std->name      = '' ;
 
                 $i = 0;
@@ -1146,6 +1145,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $this->setRender( 'hasImage' , $this->getEntity()->hasImage() ) ;
+        $this->setRender( 'canCreate' , $this->canCreate() ) ;
         $this->setRender( 'content' , $tab ) ;
         $this->setRender( 'module' , $this->getModule() ) ;
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
@@ -1240,6 +1240,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         $Controller = \App\Kernel\Container::getInstance()->module( $arrayParent['current'] )->getController( true );
         $Controller->setIdParent( $this->getIdParent() ) ;
+        $Controller->setChild( $this->getEntityName() ) ;
         $parentContent = $Controller->getParentContent();
 
         $this->setRender( 'parent' , $parentContent ) ;

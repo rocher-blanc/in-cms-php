@@ -16,6 +16,8 @@ class Controller
     protected $_entity_name = "" ;
     protected $_entity_id = NULL ;
 
+    protected $_child = "" ;
+
     protected $_action_name = "" ;
     protected $_action = NULL ;
 
@@ -86,6 +88,11 @@ class Controller
         $this->_action_name = $var ;
     }
 
+    public function setChild( $var )
+    {
+        $this->_child = $var ;
+    }
+
     protected function setModule( $row )
     {
         $this->_module = new \stdClass;
@@ -123,6 +130,11 @@ class Controller
     protected function getRender()
     {
         return $this->_renderArray ;
+    }
+
+    protected function getChild()
+    {
+        return $this->_child ;
     }
 
     protected function getId()

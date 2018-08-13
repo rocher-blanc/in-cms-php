@@ -120,6 +120,11 @@
                             </td>
                         {% endif %}
 						<td class="text-right actionLink" style="vertical-align: middle;">
+			                {% if icons|length > 0 and right.edit == true %}
+                                {% for icon in icons %}
+                                    <a href="{{ route( mod.name , icon.action , uri_id_parent , content.id ) }}"><i class="{{ icon.class }}"></i></a>
+                                {%  endfor %}
+                            {% endif %}
 			                {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
                             {% if right.edit == true %}
                                 {% if depedency %}
