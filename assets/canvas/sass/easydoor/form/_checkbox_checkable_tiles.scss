@@ -1,0 +1,55 @@
+.checkable-tile {
+  vertical-align: top;
+  position: relative;
+  padding: 3px;
+  margin-right: 6px;
+  border: 1px solid #164757;
+  overflow: hidden;
+
+  input[type=checkbox] {
+    position: absolute;
+    left: -30px;
+
+    + i {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      font-size: 0;
+      font-weight: 900;
+      text-align: center;
+      color: #00afaf;
+      z-index: 2;
+
+      &:after {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        z-index: -1;
+        bottom: -6px;
+        left: 0;
+        width: 30px;
+        height: 30px;
+        background: rgba(255,255,255, .65);
+        transition: all .3s;
+      }
+    }
+  }
+
+  &:hover {
+    input[type=checkbox] + i:after {
+      background: rgba(255,255,255, .95);
+    }
+
+    input[type=checkbox]:checked + i {
+      font-size: 30px;
+    }
+  }
+}
+
+.error {
+  .checkable-tile {
+    border-color: #C02942;
+  }
+}

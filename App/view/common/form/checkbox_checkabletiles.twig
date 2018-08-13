@@ -1,0 +1,11 @@
+<div class="clear"></div>
+<ul class="nomargin ui-sortable" id="list_{{ name }}_checkable_tiles">
+    {% for row in 1..6 %}
+        <label class="mini-img checkable-tile" id="checkabletile{{ row }}">
+            <img src="https://picsum.photos/100/10{{ row }}" />
+            <input type="checkbox" name="{{ name }}[]" value="{{ row }}" />
+            <i class="icon-line-check"></i>
+        </label>
+    {% endfor %}
+    <li class="clear"></li>
+</ul>
