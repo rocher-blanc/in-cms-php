@@ -1,17 +1,14 @@
 <?php
 
 $app->group('/secured', function () use ($app) {
-	// CONNEXION
-	$app->group('/login', function () use ($app) 
-	{
-		$app->map('(/:param)', function ($param = -1) use ($app) 
-		{
-			$app->render('secured/login.twig.html') ;
-		})->via('GET', 'POST')->name('secured_login');
-	});
-	
-	// PROFILE
-	$app->post('/upload', function () use ($app) {
+    // CONNEXION
+    $app->map('/login', function () use ($app)
+    {
+        $app->render('secured/login.twig.html') ;
+    })->via('GET', 'POST')->name('secured_login');
+
+    // PROFILE
+    $app->post('/upload', function () use ($app) {
         $name = basename($_FILES[ $app->request->post('field') ]["name"]);
         $ext = explode( '.' , $name );
         $extension = end( $ext );
@@ -118,14 +115,14 @@ $app->group('/secured', function () use ($app) {
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError ))) ;
     })->via('GET', 'POST')->name('secured_profile');
-	
-	// DECONNEXION
-	$app->get('/logout', function () use ($app) {
-       
-	})->name('secured_logout');
-	
-	// ACCES INTERDIT
-	$app->get('/forbidden', function () use ($app) {
+
+    // DECONNEXION
+    $app->get('/logout', function () use ($app) {
+
+    })->name('secured_logout');
+
+    // ACCES INTERDIT
+    $app->get('/forbidden', function () use ($app) {
         $app->render('errors/401.twig.html');
-	})->name('secured_forbidden');
+    })->name('secured_forbidden');
 });

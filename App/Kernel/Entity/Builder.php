@@ -1162,6 +1162,15 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isInteger()
+    {
+        $this->field()->setData( "SQL_VALUE" , 11 ) ;
+        $this->field()->setData( "SQL_TYPE" , "INT" ) ;
+        $this->field()->setData( "type" , "number" ) ;
+        $this->field()->setData( "step" , 1 ) ;
+        return $this ;
+    }
+
     protected function isImage()
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
