@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Form;
 
+use App\Kernel\Back\Media;
+
 class Checkbox extends \App\Kernel\Back\Form
 {
 	public function html( $field, $name, $value = NULL )
@@ -23,20 +25,69 @@ class Checkbox extends \App\Kernel\Back\Form
                     'option' => $field->getData('option'),
                     'required' => $field->isRequired()
                 ]);
-            	break;
+            break;
 
 			case 'checkableTiles' :
-				return $this->View()->fetch( 'form/checkbox_checkabletiles.twig' , [
-					'name' => $name,
-					'value' => $value,
-					'option' => $field->getData('option'),
-					'required' => $field->isRequired()
-				]);
-				break;
+                return $this->checkableTiles( $field, $name, $value );
+            break;
 
             default:
                 return $this->classic( $field, $name, $value );
-            	break;
+            break;
+        }
+    }
+
+    private function checkableTiles( $field, $name, $value = NULL )
+    {
+        $arrayOption = [];
+        $Entity      = \App\Kernel\Container::getInstance()->module( $field->getData('object') )->getEntity() ;
+
+        if ( $Entity->hasImage() )
+        {
+            $opt = $field->getData('option');
+
+            if ( $opt )
+            {
+                $Repo = \App\Kernel\Container::getInstance()->module( $field->getData('object') )->getRepository(true) ;
+
+                foreach( $opt as $id => $value )
+                {
+                    $imageId = $Repo->getImage( $id );
+
+                    if ( $imageId )
+                    {
+                        $imageId = $imageId->get( $Entity->get( $Entity->getFirstImageName() )->getColumn() );
+
+                        $media = new Media;
+                        $media->setImageId( $imageId );
+                        $media->getNameById();
+                        $image = $Entity->getFolder() . '/' . $media->getMini( $media->getImageName() , 't' , 100 , 100 ) ;
+
+                        $arrayOption[ $id ] = [
+                            'value' => $value,
+                            'img'   => $this->Factory()->Url()->image( $image , true )
+                        ];
+                    }
+                    else
+                    {
+                        $arrayOption[ $id ] = [
+                            'value' => $value,
+                            'img'   => ''
+                        ];
+                    }
+                }
+            }
+
+            return $this->View()->fetch( 'form/checkbox_checkabletiles.twig' , [
+                'name' => $name,
+                'value' => $value,
+                'option' => $arrayOption,
+                'required' => $field->isRequired()
+            ]);
+        }
+        else
+        {
+            return $this->classic( $field, $name, $value );
         }
     }
 
