@@ -37,7 +37,7 @@ class Checkbox extends \App\Kernel\Back\Form
         }
     }
 
-    private function checkableTiles( $field, $name, $value = NULL )
+    private function checkableTiles( $field, $name, $values = NULL )
     {
         $arrayOption = [];
         $Entity      = \App\Kernel\Container::getInstance()->module( $field->getData('object') )->getEntity() ;
@@ -80,14 +80,14 @@ class Checkbox extends \App\Kernel\Back\Form
 
             return $this->View()->fetch( 'form/checkbox_checkabletiles.twig' , [
                 'name' => $name,
-                'value' => $value,
+                'value' => $values,
                 'option' => $arrayOption,
                 'required' => $field->isRequired()
             ]);
         }
         else
         {
-            return $this->classic( $field, $name, $value );
+            return $this->classic( $field, $name, $values );
         }
     }
 
