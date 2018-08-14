@@ -35,15 +35,17 @@
         transition: all .3s;
       }
     }
+
+    &:checked {
+      + i {
+        font-size: 30px;
+      }
+    }
   }
 
   &:hover {
     input[type=checkbox] + i:after {
       background: rgba(255,255,255, .95);
-    }
-
-    input[type=checkbox]:checked + i {
-      font-size: 30px;
     }
   }
 }
