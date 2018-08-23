@@ -1,12 +1,24 @@
-{% if hasFlag %}
+{% if hasFlag or unit %}
 <div style="margin-bottom:10px;" class="input-group input-group-icon">
-    <span class="input-group-addon">
-        <span class="icon">
-            <i class="flag-icon flag-icon-{{ flag }}"></i>
+    {% if hasFlag %}
+        <span class="input-group-addon">
+            <span class="icon">
+                <i class="flag-icon flag-icon-{{ flag }}"></i>
+            </span>
         </span>
-    </span>
-{% endif %}
+    {% endif %}
+    {% if unit and unit.where == "before" %}
+        <span class="input-group-addon">
+            {{ unit.unit }}
+        </span>
+    {% endif %}
+    {% endif %}
     <input type="number" step="{{ step }}" value="{{ value }}" class="form-control" name="{{ name }}" id="id_{{ name }}" />
-{% if hasFlag %}
+    {% if hasFlag or unit %}
+    {% if unit and unit.where == "after" %}
+        <span class="input-group-addon">
+            {{ unit.unit }}
+        </span>
+    {% endif %}
 </div>
 {% endif %}

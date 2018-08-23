@@ -3,7 +3,7 @@
     {% for id,row in option %}
         <label class="mini-img checkable-tile" id="checkabletile{{ id }}">
             <img src="{{ row.img }}" />
-            <input type="checkbox" name="{{ name }}[]" value="{{ id }}" />
+            <input type="checkbox" name="{{ name }}[]" value="{{ id }}" {% if id in value %}checked="checked"{% endif %}/>
             <i class="icon-line-check"></i>
         </label>
     {% endfor %}
