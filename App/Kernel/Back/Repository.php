@@ -22,6 +22,17 @@ class Repository extends \App\Kernel\Common\Repository
         }
     }
 
+    public function findWhere( $where )
+    {
+        $tab = [];
+        foreach( $where as $key => $value )
+        {
+            $tab[ $this->getEntity()->get( $key )->getColumn() ] = $value ;
+        }
+
+        return \DB::for_module( $this->getName() )->where( $tab )->find_one();
+    }
+
     public function findOne( $id )
     {
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
@@ -64,6 +75,11 @@ class Repository extends \App\Kernel\Common\Repository
     public function createLang()
     {
         return \DB::for_module_lang( $this->getName() )->create();
+    }
+
+    public function create()
+    {
+        return \DB::for_module( $this->getName() )->create();
     }
 
     public function checkDatabase()

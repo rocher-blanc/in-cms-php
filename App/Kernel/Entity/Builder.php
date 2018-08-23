@@ -1255,6 +1255,12 @@ class Builder extends Model
         return $this ;
     }
 
+    public function setData( $key , $value )
+    {
+        $this->field()->setData( $key , $value ) ;
+        return $this;
+    }
+
     protected function noFront()
     {
         $this->field()->setData( 'front' , false ) ;
