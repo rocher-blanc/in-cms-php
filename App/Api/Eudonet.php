@@ -134,7 +134,7 @@ class Eudonet
 
         $str = '{
   "ShowMetadata": true,
-  "RowsPerPage": 25,
+  "RowsPerPage": 25, 
   "NumPage": ' . $page . ',
   "ListCols": [
     0
