@@ -104,7 +104,7 @@ class Eudonet
         return $tab ;
     }
 
-    public function wording( $descId , $value )
+    public function wording( $descId , $value = NULL )
     {
         $rst = $this->request("get" , 'Catalog/' . $descId );
 
@@ -119,7 +119,8 @@ class Eudonet
             }
         }
 
-        return $tab[ $value ] ;
+        if ( $value === NULL )  return $tab ;
+        else                    return $tab[ $value ] ;
     }
 
     /* ************************************************** */
