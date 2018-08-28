@@ -82,7 +82,31 @@ class Eudonet
         $tab = [];
         $rst = $this->request("get" , 'Search/' . $tablId . '/' . $id );
 
-        dump( $rst );
+        if ( $rst['ResultInfos']['Success'] == true )
+        {
+            if ( $rst['ResultData']['Rows'][0]['Fields'] )
+            {
+                foreach( $rst['ResultData']['Rows'][0]['Fields'] as $row )
+                {
+                    $tab[ $row['DescId'] ] = $row['DbValue'] ;
+                }
+            }
+
+            if ( $rst['ResultMetaData']['Tables'][0]['Fields'] )
+            {
+                foreach( $rst['ResultMetaData']['Tables'][0]['Fields'] as $row )
+                {
+                    $tab1[ $row['DescId'] ] = $row['Label'] ;
+                }
+            }
+        }
+
+        return $tab ;
+    }
+
+    public function getWording( $descId , $value )
+    {
+        $rst = $this->request("get" , 'Catalog/' . $descId );
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -100,11 +124,11 @@ class Eudonet
                 {
                     $tab1[ $row['DescId'] ] = $row['Label'] ;
                 }
-                dump( $tab1 );
             }
         }
 
         return $tab ;
+
     }
 
     /* ************************************************** */
@@ -134,10 +158,10 @@ class Eudonet
 
         $str = '{
   "ShowMetadata": true,
-  "RowsPerPage": 25, 
+  "RowsPerPage": 50, 
   "NumPage": ' . $page . ',
   "ListCols": [
-    0
+    201
   ],
   "FilterId": 0,
   "WhereCustom": 
@@ -155,8 +179,6 @@ class Eudonet
     }
   ]
 }' ;
-
-        dump( $str );
         $params = json_decode( $str );
 
         $tab = [];
@@ -166,16 +188,22 @@ class Eudonet
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
-            if ( $rst['ResultData']['Rows'][0]['Fields'] )
+            if ( $rst['ResultData']['Rows'] )
             {
-                foreach( $rst['ResultData']['Rows'][0]['Fields'] as $row )
+                foreach( $rst['ResultData']['Rows'] as $row )
                 {
-                    $tab[ $row['DescId'] ] = $row['DbValue'] ;
+                    $tab['data'][ $row['FileId'] ] = $row['FileId'] ;
                 }
             }
-        }
 
-        return $tab ;
+            $tab['ResultMetaData'] = $rst['ResultMetaData'];
+
+            return $tab ;
+        }
+        else
+        {
+            return false ;
+        }
     }
 
     /* ************************************************** */
@@ -199,7 +227,14 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
 
-        return $rst ;
+        if ( $rst['ResultInfos']['Success'] == true )
+        {
+            return $rst['ResultData'] ;
+        }
+        else
+        {
+            return $rst ;
+        }
     }
 
     /* ************************************************** */
@@ -223,7 +258,14 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos );
 
-        return $rst ;
+        if ( $rst['ResultInfos']['Success'] == true )
+        {
+            return $rst['ResultData'] ;
+        }
+        else
+        {
+            return false ;
+        }
     }
 
     /* ************************************************** */

@@ -319,7 +319,7 @@ class Kernel
     /* ****************     RUN       ******************* */
     /* ************************************************** */
 
-    public function run()
+    public function run( $run = true )
     {
         $this->connectToDatabase() ;
         $this->initMaintenance() ;
@@ -327,7 +327,7 @@ class Kernel
         $this->initDate() ;
         $this->initSlim() ;
         $this->loadPlugin() ;
-        $this->getSlim()->run() ;
+        if ( $run ) $this->getSlim()->run() ;
     }
 
     /* ******************************************************************** */

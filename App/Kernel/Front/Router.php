@@ -556,6 +556,7 @@ class Router
                         {
                             // S'il est connecté mais pas dans le bon groupe
                             $tabGroup = unserialize( $page->page_access_user_group );
+                            if ( ! is_array( $tabGroup ) ) $tabGroup = [];
                             if ( ! in_array( $User->getGroup() , $tabGroup ) )
                             {
                                 $Response->redirect();

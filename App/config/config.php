@@ -81,6 +81,9 @@ defined('REDIS') || define('REDIS', false );
 defined('REDIS_SERVER') || define('REDIS_SERVER', '' );
 defined('REDIS_PORT') || define('REDIS_PORT', '' );
 
+//RABBIT
+defined('RABBIT_QUEUE') || define('RABBIT_QUEUE', serialize([]) );
+
 // SESSION
 defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
 defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours

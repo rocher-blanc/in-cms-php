@@ -16,7 +16,8 @@ class Data
     /* ************************************************** */
 
     private $name;
-    private $data;
+    private $data = false ;
+    private $add  = false ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -31,11 +32,6 @@ class Data
     /* ****************     SETTER    ******************* */
     /* ************************************************** */
 
-    private function setData( $rst )
-    {
-        $this->data = $rst ;
-    }
-
     public function set( $key , $value )
     {
         $this->data->set( $this->getEntity()->get( $key )->getColumn() , $value );
@@ -48,6 +44,11 @@ class Data
     public function getName()
     {
         return $this->name ;
+    }
+
+    public function get( $key )
+    {
+        return $this->data->get( $this->getEntity()->get( $key )->getColumn() ) ;
     }
 
     public function getData()
@@ -66,30 +67,68 @@ class Data
     }
 
     /* ************************************************** */
+    /* ****************     TOOLS     ******************* */
+    /* ************************************************** */
+
+    protected function Lang()
+    {
+        return \App\Kernel\Lang::getInstance() ;
+    }
+
+    /* ************************************************** */
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
 
     public function save()
     {
-        return $this->data->save();
+        $rst = $this->data->save();
+
+        $module = \DB::for_table('module')
+            ->select('module_id')
+            ->where([
+                'module_class_name' => $this->getName()
+                , 'module_active' => 1
+            ])
+            ->find_one();
+
+        if ( $this->getEntity()->hasUrl() && $this->add == true )
+        {
+            $seo = new \App\Kernel\Back\Seo;
+            $seo->setElementId( $this->get('id') );
+            $seo->setModuleId( $module->module_id );
+            $seo->setTitle( $this->get( $this->getEntity()->getUrlName() ) );
+            $seo->setLangId( $this->Lang()->getDefault()->id );
+            $seo->save();
+        }
+
+        return $rst ;
     }
 
-    public function findOrCreate( $value )
+    public function findOrCreate( $value = NULL )
     {
-        if ( is_array( $value ) )
+        if ( $value !== NULL )
         {
-            $rst = $this->getRepository()->findWhere( $value );
-        }
-        else
-        {
-            $rst = $this->getRepository()->findOne( $value );
-        }
-
-        if ( ! $rst )
-        {
-            $rst = $this->getRepository()->create() ;
+            if ( is_array( $value ) )
+            {
+                $this->data = $this->getRepository()->findWhere( $value );
+            }
+            else
+            {
+                $this->data = $this->getRepository()->findOne( $value );
+            }
         }
 
-        $this->setData( $rst );
+        if ( $this->data === false )
+        {
+            $this->data = $this->getRepository()->create() ;
+            $this->add = true ;
+            if ( is_array( $value ) )
+            {
+                foreach( $value as $key => $value )
+                {
+                    $this->set( $key , $value );
+                }
+            }
+        }
     }
 }
