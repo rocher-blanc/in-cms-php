@@ -104,38 +104,29 @@ class Eudonet
         return $tab ;
     }
 
-    public function getWording( $descId , $value )
+    public function wording( $descId , $value )
     {
         $rst = $this->request("get" , 'Catalog/' . $descId );
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
-            if ( $rst['ResultData']['Rows'][0]['Fields'] )
+            if ( $rst['ResultData']['CatalogValues'] )
             {
-                foreach( $rst['ResultData']['Rows'][0]['Fields'] as $row )
+                foreach( $rst['ResultData']['CatalogValues'] as $row )
                 {
-                    $tab[ $row['DescId'] ] = $row['DbValue'] ;
-                }
-            }
-
-            if ( $rst['ResultMetaData']['Tables'][0]['Fields'] )
-            {
-                foreach( $rst['ResultMetaData']['Tables'][0]['Fields'] as $row )
-                {
-                    $tab1[ $row['DescId'] ] = $row['Label'] ;
+                    $tab[ $row['DBValue'] ] = $row['DisplayValue'] ;
                 }
             }
         }
 
-        return $tab ;
-
+        return $tab[ $value ] ;
     }
 
     /* ************************************************** */
     /* ****************     SEARCH     ****************** */
     /* ************************************************** */
 
-    public function search( $tablId , $params , $order , $page = 1 )
+    public function search( $tablId , $params , $order , $fields , $page = 1 )
     {
         $custom = '' ;
         $strTmp = '' ;
@@ -161,7 +152,7 @@ class Eudonet
   "RowsPerPage": 50, 
   "NumPage": ' . $page . ',
   "ListCols": [
-    201
+    ' . $fields . '
   ],
   "FilterId": 0,
   "WhereCustom": 
@@ -183,8 +174,6 @@ class Eudonet
 
         $tab = [];
         $rst = $this->request("post" , 'Search/' . $tablId , $params );
-
-        dump( $rst );
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -227,14 +216,7 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
 
-        if ( $rst['ResultInfos']['Success'] == true )
-        {
-            return $rst['ResultData'] ;
-        }
-        else
-        {
-            return $rst ;
-        }
+        return $rst ;
     }
 
     /* ************************************************** */

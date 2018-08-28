@@ -4,9 +4,10 @@ namespace App\Kernel\Utils;
 
 class Slack
 {
-    protected $color = "#ffab40" ;
-    protected $username = "JWeb-Bot" ;
-    protected $emoji = ":jweb:" ;
+    protected $color = SLACK_COLOR ;
+    protected $username = SLACK_USERNAME ;
+    protected $author_name = SLACK_AUTHORNAME ;
+    protected $emoji = SLACK_EMOJI ;
 
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
@@ -114,11 +115,21 @@ class Slack
         $Slack->notification();
     }
 
+    public static function notify( $title, $link , $channel , $text )
+    {
+        $Slack = new Slack;
+        $Slack->setText( $text );
+        $Slack->setTitle( $title );
+        $Slack->setTitleLink( $link );
+        $Slack->setChannel( $channel );
+        $Slack->notification();
+    }
+
     public function notification()
     {
-        /*$msg = new \stdClass;
+        $msg = new \stdClass;
         $msg->color = $this->getColor() ;
-        $msg->author_name = "JWeb" ;
+        $msg->author_name = $this->author_name ;
         $msg->title = $this->getTitle() ;
         $msg->title_link = $this->getTitleLink() ;
         $msg->text = $this->getText() ;
@@ -131,7 +142,7 @@ class Slack
 
         $data_string = json_encode( $std );
 
-        $ch = curl_init('https://hooks.slack.com/services/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');
+        $ch = curl_init( SLACK_WEBHOOK );
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -141,6 +152,6 @@ class Slack
         );
 
         $result = curl_exec($ch);
-        curl_close($ch);*/
+        curl_close($ch);
     }
 }

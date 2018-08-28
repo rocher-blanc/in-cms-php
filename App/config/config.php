@@ -76,6 +76,14 @@ defined('TECHNO') || define('TECHNO','JContent');
 defined('DEBUG_BAR') || define('DEBUG_BAR', false );
 defined('PRODUCTION') || define('PRODUCTION', false );
 
+// SLACK
+defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
+defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
+defined('SLACK_AUTHORNAME') || define('SLACK_AUTHORNAME', "JWeb" );
+defined('SLACK_USERNAME') || define('SLACK_USERNAME', "JWeb-Bot" );
+defined('SLACK_COLOR') || define('SLACK_COLOR', "#ffab40" );
+
+
 // REDIS
 defined('REDIS') || define('REDIS', false );
 defined('REDIS_SERVER') || define('REDIS_SERVER', '' );
