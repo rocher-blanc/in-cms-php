@@ -79,7 +79,11 @@ class Eudonet
 
     public function one( $tablId , $id )
     {
-        $tab = [];
+        $tab     = [];
+        $dbValue = [];
+        $value   = [];
+        $libelle = [];
+
         $rst = $this->request("get" , 'Search/' . $tablId . '/' . $id );
 
         if ( $rst['ResultInfos']['Success'] == true )
@@ -88,7 +92,8 @@ class Eudonet
             {
                 foreach( $rst['ResultData']['Rows'][0]['Fields'] as $row )
                 {
-                    $tab[ $row['DescId'] ] = $row['DbValue'] ;
+                    $dbValue[ $row['DescId'] ] = $row['DbValue'] ;
+                    $value[ $row['DescId'] ] = $row['Value'] ;
                 }
             }
 
@@ -96,12 +101,16 @@ class Eudonet
             {
                 foreach( $rst['ResultMetaData']['Tables'][0]['Fields'] as $row )
                 {
-                    $tab1[ $row['DescId'] ] = $row['Label'] ;
+                    $libelle[ $row['DescId'] ] = $row['Label'] ;
                 }
             }
         }
 
-        return $tab ;
+        return [
+            'value' => $value,
+            'libelle' => $libelle,
+            'dbvalue' => $dbValue
+        ] ;
     }
 
     public function wording( $descId , $value = NULL )
@@ -216,6 +225,8 @@ class Eudonet
         }
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
+
+        dump( $rst );
 
         return $rst ;
     }

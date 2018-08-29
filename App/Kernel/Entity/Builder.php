@@ -871,7 +871,7 @@ class Builder extends Model
             $this->build('user_login' , true )
                 ->isVarchar()
                 ->group('connexion')
-                ->notEmpty('login')
+                ->notEmpty('user_register_login_empty' , true )
                 ->noSave()
                 ->noRename()
                 ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
@@ -902,14 +902,14 @@ class Builder extends Model
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty('user_password')
+                    ->notEmpty('user_register_password_empty' , true )
                     ->noRename()
                     ->name('Mot de passe');
 
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty('user_password_confirm')
+                    ->notEmpty('user_register_confirm_password_empty' , true )
                     ->noRename()
                     ->name('Confirmer votre mot de passe');
             }
@@ -1451,9 +1451,9 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function notEmpty( $t = "" )
+    protected function notEmpty( $t = "" , $traduction = false )
     {
-        $this->field()->setData( "notEmpty_msg" , $t ) ;
+        $this->field()->setData( "notEmpty_msg" , $traduction ? \App\Kernel\Front\Translate::getInstance()->getText( $t ) : $t ) ;
         $this->field()->setData( "notEmpty" , true ) ;
         return $this ;
     }
