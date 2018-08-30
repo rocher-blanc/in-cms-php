@@ -35,6 +35,12 @@ class Install
         }
 
 
+        defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
+        defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
+        defined('SLACK_AUTHORNAME') || define('SLACK_AUTHORNAME', "JWeb" );
+        defined('SLACK_USERNAME') || define('SLACK_USERNAME', "JWeb-Bot" );
+        defined('SLACK_COLOR') || define('SLACK_COLOR', "#ffab40" );
+
         defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
 
         defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
