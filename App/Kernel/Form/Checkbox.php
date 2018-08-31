@@ -93,9 +93,6 @@ class Checkbox extends \App\Kernel\Back\Form
 
     private function classic( $field, $name, $value = NULL )
     {
-        $this->_lib_js  = 'cmsmedias/canvas/js/components/bs-select.js';
-        $this->_lib_css = 'cmsmedias/canvas/css/src/components/bs-select.css';
-
         if ( $value === NULL ) $value = [];
 
         $select = '' ;

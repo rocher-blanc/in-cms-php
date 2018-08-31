@@ -25,12 +25,6 @@ class Document extends \App\Kernel\Back\Form
 	{
 		$this->value = $value ;
 
-		$this->_lib_js  = [
-			'cmsmedias/canvas/js/components/bs-filestyle.js',
-			'cmsmedias/canvas/js/easydoor/locales/fileinput/fr.js',
-		];
-		$this->_lib_css = ['cmsmedias/canvas/css/src/components/bs-filestyle.css'];
-
 		$tab = [];
 		
 		if ( $this->hasValue() ) 
