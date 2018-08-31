@@ -108,11 +108,13 @@
     {{ css }}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><!-- Pour date range + form-process -->
     <link rel="stylesheet" href="{{ asset('canvas/css/src/flag-icon/css/flag-icon.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-select.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
     {{ cdn_js }}
     {{ js }}
+    <script src="{{ asset('canvas/js/components/bs-select.js') }}"></script>
     {% if depedencies|length > 0 %}
         <script src="{{ asset('libs/jquery.tablednd.js') }}"></script>
         <script src="{{ asset('canvas/js/components/moment.js') }}"></script>
