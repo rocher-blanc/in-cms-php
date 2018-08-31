@@ -11,13 +11,6 @@ class Gallery extends \App\Kernel\Back\Form
     {
         $this->value = $value ;
 
-        $this->_lib_js  = [
-            'cmsmedias/canvas/js/components/bs-filestyle.js',
-            'cmsmedias/canvas/js/easydoor/locales/fileinput/fr.js',
-            'cmsmedias/libs/jquery-ui.min.js',
-        ];
-        $this->_lib_css = ['cmsmedias/canvas/css/src/components/bs-filestyle.css'];
-
         $Gal = new \App\Kernel\Back\Gallery;
         $Gal->setElementId( ( $value == '' ? -1 : $value ) );
         $Gal->setModuleId( \App\Kernel\Container::getInstance()->module( $field->getData('module') )->getController(true)->getEntityId() );
