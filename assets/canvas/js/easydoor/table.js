@@ -177,7 +177,7 @@ listenFormTable = function( base ) {
         if ( $form.find('.table-dnd').length ) {
             $form.find('.table-dnd').each(function() {
                 var $table = $(this);
-                $table.find('.table-dnd').tableDnD({
+                $table.tableDnD({
                     onDragStart: function(table, row) {
                         $( "#" + $(row).data('tr') ).addClass('myDragClass');
                         var originalOrder = $.tableDnD.serialize();
