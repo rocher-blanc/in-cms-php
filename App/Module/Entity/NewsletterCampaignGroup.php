@@ -15,7 +15,7 @@ class NewsletterCampaignGroup extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner un nom")
-            ->name("Nom du groupe");
+            ->notEmpty("Veuillez renseigner un nom de newsletter")
+            ->name("Nom de la newsletter");
     }
 }
