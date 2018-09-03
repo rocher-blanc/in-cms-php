@@ -19,11 +19,11 @@
         saveTemplate = function( html , redirect ) {
             $.ajax({
                 type: "POST",
-                url: '{{ siteUrl('ext/newsletter_model/save/' ~ id ) }}',
+                url: '{{ route( mod.name , 'saveMail' , uri_id_parent ) }}',
                 data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html,
                 success: function(data){
                     if ( redirect ) {
-                        document.location.href = '{{ siteUrl('ext/newsletter_model') }}';
+                        document.location.href = '{{ route( mod.name , 'index' , uri_id_parent ) }}';
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
