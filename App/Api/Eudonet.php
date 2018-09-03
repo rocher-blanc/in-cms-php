@@ -226,8 +226,6 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
 
-        dump( $rst );
-
         return $rst ;
     }
 
