@@ -175,29 +175,31 @@ listenFormTable = function( base ) {
 
         /** GESTION DE L'ORDER **/
         if ( $form.find('.table-dnd').length ) {
-            $form.find('.table-dnd').tableDnD({
-                onDragStart: function(table, row) {
-                    $( "#" + $(row).data('tr') ).addClass('myDragClass');
-                    var originalOrder = $.tableDnD.serialize();
-                },
-                dragHandle: '.orderTable',
-                onDragClass: 'myDragClass',
-                onDrop: function(table, row) {
-                    var data   = $.tableDnD.serialize();
-                    var module = $('#module4JS').val() ;
+            $form.find('.table-dnd').each(function() {
+                var $table = $(this);
+                $table.find('.table-dnd').tableDnD({
+                    onDragStart: function(table, row) {
+                        $( "#" + $(row).data('tr') ).addClass('myDragClass');
+                        var originalOrder = $.tableDnD.serialize();
+                    },
+                    dragHandle: '.orderTable',
+                    onDragClass: 'myDragClass',
+                    onDrop: function(table, row) {
+                        var data   = $.tableDnD.serialize();
 
-                    $.ajax({
-                        type : 'POST',
-                        data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + data,
-                        url : siteurl + "module/" + module + "/order/0/" + $("meta[name=token]").attr("content"),
-                        success: function(data){
-                            Notify(data.msg, data.result);
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            Notify(errorThrown, false);
-                        }
-                    });
-                }
+                        $.ajax({
+                            type : 'POST',
+                            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + data,
+                            url : siteurl + "module/" + $table.data('name') + "/order/0/" + $("meta[name=token]").attr("content"),
+                            success: function(data){
+                                Notify(data.msg, data.result);
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                Notify(errorThrown, false);
+                            }
+                        });
+                    }
+                });
             });
         }
 
