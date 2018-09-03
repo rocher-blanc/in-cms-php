@@ -23,6 +23,8 @@ class Controller extends \App\Kernel\Common\Controller
     public function __construct( $options = [] )
     {
         $this->_options = $options ;
+        $this->appendEntityInfo();
+        $this->getRepository()->checkIfPatchTable( $this->getEntityId() );
     }
 
     /* ************************************************** */
@@ -156,8 +158,6 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function init()
     {
-        $this->appendEntityInfo();
-        $this->getRepository()->checkIfPatchTable( $this->getEntityId() );
         $this->initRender();
     }
 

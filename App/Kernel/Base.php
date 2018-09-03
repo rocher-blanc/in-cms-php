@@ -50,6 +50,14 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
 ('user_front', 'Utilisateurs', 1, 1, 1, 1),
 ('user_front_group', 'Groupes d\'utilisateurs', 1, 1, 1, 1);
 
+INSERT INTO `module` (`module_name`, `module_class_name`, `module_active`, `module_icon`, `module_module_column_block_id`, `module_order`, `module_default`, `module_priority`, `module_index`, `module_index_elmt`, `module_kernel`) VALUES
+('NewsletterSender', 'NewsletterSender', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Groupe d\'abonnés', 'NewsletterGroup', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Abonnés', 'NewsletterSubscriber', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Newsletters', 'NewsletterCampaignGroup', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Planification des campagnes', 'NewsletterCampaign', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Gabarit', 'NewsletterModel', 1, '', NULL, 0, 0, 0, 0, 0, 1);
+
 INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES
 (1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1),
 (2, 'English', 'Anglais', 'en', 'gb', 'en', 0, 0),
@@ -274,6 +282,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "module_table_field" => $this->infoColumn( "VARCHAR" , "50" ),
                 "module_table_module_id" => $this->infoColumn( "INT" , "11" ),
             ],
+            /*
             "newsletter_campaign" => [
                 "newsletter_campaign_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "newsletter_campaign_subject" => $this->infoColumn( "VARCHAR" , "150" ),
@@ -303,6 +312,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "newsletter_group_sub_name" => $this->infoColumn( "VARCHAR" , "50" )
             ],
+            */
             "page" => [
                 "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "page_domain_id" => $this->infoColumn( "INT" , "11" ),
