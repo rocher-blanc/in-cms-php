@@ -521,7 +521,7 @@ class Controller
 		{
 			foreach( $this->getEntity()->getField() as $row )
 			{
-				if ( $arrayShow['fields'][ $row->getName() ]['show'] == true )
+			    if ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' )
 				{
 					if ( $this->field( $row->getName() )->checkEmpty() == false )
 					{
@@ -534,7 +534,7 @@ class Controller
 			{
 				foreach( $this->getEntity()->getField() as $row )
 				{
-					$this->field( $row->getName() )->getFormatValue() ;
+                    $this->field( $row->getName() )->getFormatValue() ;
 				}
 			}
 		}
@@ -555,6 +555,7 @@ class Controller
 	protected function hookAddCheckBefore() { return true; }
 	protected function hookAddCheckAfter() { return true; }
 	protected function hookAddSaveAfter() { return true; }
+
 
 	/*  **** UPDATE **** */
 	protected function hookUpdateCheckBefore() { return true; }

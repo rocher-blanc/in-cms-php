@@ -8,7 +8,8 @@ class NewsletterModel extends Builder
 {
     protected function load()
     {
-        $this->addIcon( 'icon-photo' , 'draw' );
+        if ( TOPOL_USER_ID !== NULL && TOPOL_API_KEY !== NULL ) $this->addIcon( 'icon-photo' , 'draw' );
+        
         $this->setFieldReference( 'name' );
         $this->setModuleParent( 'NewsletterCampaignGroup' );
 

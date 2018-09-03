@@ -9,8 +9,8 @@ class NewsletterModel extends Controller
     protected function drawAction()
     {
         $this->setRender('id' , $this->getId() );
-        $this->setRender('apiKey' , 'DCSCyS2S1STYFy0EpQJByYkLSIl8eCetqNJ6Awh79Ykk4Qh0WymMJsTqZYLW');
-        $this->setRender('userId' , 'easydoor');
+        $this->setRender('apiKey' , TOPOL_API_KEY);
+        $this->setRender('userId' , TOPOL_USER_ID);
 
         $this->render('draw.twig');
     }

@@ -423,6 +423,8 @@ class Field
 
 	public function show( &$content )
 	{
+	    if ( $this->getType() == 'hidden' ) return true ;
+
 		$rst = $this->getData('showIf');
 
 		if ( is_callable( $rst ) )

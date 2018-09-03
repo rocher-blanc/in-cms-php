@@ -45,6 +45,15 @@ class Slim
 		return $this->_slim ;
 	}
 
+    /* ************************************************** */
+    /* ****************     TOOLS     ******************* */
+    /* ************************************************** */
+
+    private function Factory()
+    {
+        return \App\Kernel\Factory::getInstance() ;
+    }
+
 	/* ************************************************** */
 	/* ******************  FUNCTIONS  ******************* */
 	/* ************************************************** */
@@ -131,6 +140,22 @@ class Slim
                 $viewArray[] = $row ;
             }
         }
+
+        $url = $this->Factory()->Url()->getFullUrl();
+        $exp = explode( '/' , $url );
+        if ( $exp[2] == 'module' )
+        {
+            if ( is_dir( VIEW_PROJECT_PATH . "/module/" . $exp[3] ) )
+            {
+                $viewArray[] = VIEW_PROJECT_PATH . "/module/" . $exp[3];
+            }
+
+            if ( is_dir( TEMPLATES_PATH . "/module/" . $exp[3] ) )
+            {
+                $viewArray[] = TEMPLATES_PATH . "/module/" . $exp[3];
+            }
+        }
+
 
         $viewArray[] = TEMPLATES_PATH ;
         if ( defined('THEME' ) )
