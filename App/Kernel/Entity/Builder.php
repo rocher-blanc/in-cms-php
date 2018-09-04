@@ -519,6 +519,14 @@ class Builder extends Model
     /* ************************************************** */
 
     /**
+     * @return boolean
+     */
+    public function itsDepedency()
+    {
+        return $this->_isDependency;
+    }
+
+    /**
      * @return int
      */
     public function getMaxElement(): int
@@ -832,14 +840,22 @@ class Builder extends Model
     {
         if ( ACTIVE_USER )
         {
-            $this->build('user_front_id' , true )
-                ->isSelect()
-                ->noFront()
-                ->group('connexion')
-                ->defaut(function() {
-                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
-                } , true  )
-                ->name('Utilisateur');
+            if ( $this->getApp()->config('config') == 'back' )
+            {
+                $this->build('user_front_id' , true )
+                    ->isSelect()
+                    ->isInteger()
+                    ->name('Utilisateur');
+            }
+            else
+            {
+                $this->build('user_front_id' , true )
+                    ->isInteger()
+                    ->isHidden()
+                    ->defaut(function() {
+                        return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+                    } , true  );
+            }
         }
     }
 
@@ -971,6 +987,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
         $this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "twig" , "depedency" ) ;
         $this->setElementIdName( $this->field()->getName() ) ;
 
         return $this ;

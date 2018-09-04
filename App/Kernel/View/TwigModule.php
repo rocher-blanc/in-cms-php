@@ -51,9 +51,9 @@ class TwigModule extends \Twig_Extension
         return $Controller->getComponent( $type , $request , $vars );
     }
 
-    public function form( $module , $type = 'html' )
+    public function form( $module , $id = NULL , $type = 'html' )
     {
-        return $this->Container()->module( $module )->getController()->getForm( $type );
+        return $this->Container()->module( $module )->getController()->getForm( $type , $id );
     }
 
     public function parse( $field )

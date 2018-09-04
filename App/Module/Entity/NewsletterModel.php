@@ -13,7 +13,7 @@ class NewsletterModel extends Builder
             $this->addAction( 'saveMail' );
             $this->addIcon( 'icon-photo' , 'draw' );
         }
-        
+
         $this->setFieldReference( 'name' );
         $this->setModuleParent( 'NewsletterCampaignGroup' );
 

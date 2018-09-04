@@ -27,7 +27,7 @@ checkForm = function(base) {
         }
 
         $(base + ' .ed_field').removeClass('error');
-        var serialize = $(base + ' form.submitReady').serialize();
+        var serialize = $form.serialize();
 
         e.preventDefault();
         e.stopPropagation();

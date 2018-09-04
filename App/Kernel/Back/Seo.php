@@ -165,8 +165,6 @@ class Seo
 		$row->set( 'seo_description' , $this->getDescription() ) ;
 		$row->set( 'seo_index' , $this->getIndex() ) ;
 		$row->save();
-
-		dump( $row );
 	}
 
     private function exist()

@@ -270,7 +270,7 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************   CHECKBOX   ******************* */
     /* ************************************************** */
 
-    protected function getAssocValue( $module , $fieldName , $id )
+    protected function getAssocValue( $module , $fieldName , $id , $modAssoc )
     {
         $content = $this->getRepository()->getAssocValue( $fieldName , $id );
         $result  = [] ;
@@ -285,14 +285,14 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $result )
         {
-            $rows = $this->Container()->module( $module )->getRepository()->findIn( $result );
+            $rows = $this->Container()->module( $modAssoc )->getRepository()->findIn( $result );
             if ( $rows )
             {
                 $elmts = [] ;
 
                 foreach( $rows as $row )
                 {
-                    $elmts[] = $this->Container()->module( $module )->getController()->parseValue( $row );
+                    $elmts[] = $this->Container()->module( $modAssoc )->getController()->parseValue( $row );
                 }
 
                 return $elmts;
@@ -457,14 +457,15 @@ class Controller extends \App\Kernel\Common\Controller
     /* ***************   PARSE VALUE   ****************** */
     /* ************************************************** */
 
-    protected function getObject( $id , $value , $field )
+    protected function getObject( $id , $value , $field , $module = NULL )
     {
         return [
             'id'     => $id,
             'type'   => $field->getType(),
             'name'   => $field->getName(),
             'value'  => $value,
-            'module' => $field->getObject()
+            'module' => ( $module !== NULL ? $module : $field->getObject() ),
+            'moduleAssoc' => ( $field->getType() !== 'checkbox' ? NULL : $field->getObject() )
         ];
     }
 
@@ -485,7 +486,7 @@ class Controller extends \App\Kernel\Common\Controller
                 return $this->getSelectValue( $object['module'] , $object['value'] ) ;
             break;
             case 'checkbox' :
-                return $this->getAssocValue( $object['module'] , $object['name'] , $object['value'] ) ;
+                return $this->getAssocValue( $object['module'] , $object['name'] , $object['id'] , $object['moduleAssoc'] ) ;
             break;
         }
     }
@@ -610,7 +611,7 @@ class Controller extends \App\Kernel\Common\Controller
 				}
 				else if ( $row->getType() == 'checkbox' or ( $row->isAssociated() && $row->getType() == 'select' ) )
 				{
-					$arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
+					$arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row , $this->getEntityName() ) ;
 				}
 				else if ( ! $row->isAssociated() && $row->getType() == 'select' )
                 {
@@ -646,6 +647,16 @@ class Controller extends \App\Kernel\Common\Controller
                 }
                 $arrayElement['url'].= $this->getModuleUrl() . $Seo->getUrl() ;
             }
+        }
+
+        if ( $this->getEntity()->itsDepedency() )
+        {
+            $module = \DB::for_table('module')
+                ->select('module_class_name')
+                ->where(['module_id' => $result->get( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->getColumn() ) ])
+                ->find_one();
+
+            $arrayElement['depedency'] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->getColumn() ) , $this->getEntity()->get( $this->getEntity()->getElementIdName() ) , $module->module_class_name );
         }
 
         return $arrayElement ;
@@ -729,6 +740,7 @@ class Controller extends \App\Kernel\Common\Controller
 						}
 
 						if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
+						if ( array_key_exists( 'depedency' , $parse ) ) $elmts[ $i ]['depedency'] = $parse['depedency'];
 						$i++;
 					}
 					break;
@@ -777,12 +789,17 @@ class Controller extends \App\Kernel\Common\Controller
         return "front" ;
     }
 
-    public function getForm( $type )
+    public function getForm( $type , $id )
     {
         switch( $type )
         {
             case "html" :
-                return $this->generateForm( $value = false ) ;
+                if ( $id !== NULL )
+                {
+                    $this->setId( $id );
+                }
+
+                return $this->generateForm( $id === NULL ? false : true ) ;
             break;
             case "object" :
                 // a faire

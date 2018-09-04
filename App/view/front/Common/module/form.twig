@@ -1,3 +1,12 @@
+{% macro field(c, counter, width) %}
+    <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}{% if c.show == false %} hide{% endif %}" id="field-{{ c.name }}" data-field="{{ c.fieldname }}">
+        <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
+        {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
+        {{ c.Form_HTML }}
+    </div>
+{% endmacro field %}
+{% import _self as form %}
+
 {% if tabs|length > 1 %}
 <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">
     <ul class="tab-nav clearfix">
@@ -21,7 +30,7 @@
             {{ c.Form_HTML }}
         {% endfor %}
 
-        {% for tab in tabs %}
+        {#{% for tab in tabs %}
             {% set counter = 0 %}
 
             {% if tabs|length > 1 %}
@@ -58,6 +67,68 @@
                 <p class="ed-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
             </div>
         </div>
+        {% endfor %}#}
+
+
+
+
+        {% for tab in tabs %}
+            {% set counter = 0 %}
+            <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
+                {% set counter = 0 %}
+                {% set width = 0 %}
+                {% for c in field if c.tab == tab.key and c.type != 'hidden' and not c.group %}
+                    {% if width == 0 %}
+                        {% set width = c.width %}
+                    {% endif %}
+
+                    {% set counter = counter + c.part %}
+
+                    {{ form.field(c, counter, width) }}
+
+                    {% if width == counter %}
+                        {% set width = 0 %}
+                        {% set counter = 0 %}
+                        <div class="clearfix"></div>
+                    {% endif %}
+                {% endfor %}
+                {% if tab.group|length > 0 %}
+                    {% for group in tab.group %}
+
+                        <div class="clearfix"></div>
+                        {% set width = 0 %}
+                        {% set counter = 0 %}
+
+                        {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
+                            {% if loop.first %}
+                                <div class="fancy-title title-double-border title-center topmargin-sm{{ group.show == false ? ' hide' : '' }}" id="group_form_{{ group.key }}"><h4><span>{{ group.name}}</span></h4></div>
+                            {% endif %}
+
+                            {% if width == 0 %}
+                                {% set width = c.width %}
+                            {% endif %}
+
+                            {% set counter = counter + c.part %}
+
+                            {{ form.field(c, counter, width) }}
+
+                            {% if width == counter %}
+                                {% set width = 0 %}
+                                {% set counter = 0 %}
+                                <div class="clearfix"></div>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endfor %}
+                {% endif %}
+
+                <div class="ed_field col_full">
+                    <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
+                </div>
+                <div class="ed_field col_full">
+                    <p class="ed-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
+                </div>
+            </div>
         {% endfor %}
     </form>
 

@@ -18,6 +18,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="97e59e30-9661-4321-81c1-59d8a4dba314" name="VPS1 - MAUTOV2" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
