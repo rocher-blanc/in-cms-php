@@ -71,4 +71,22 @@ class Repository
 					   ->group_by('seo.seo_element_id')
 					   ->find_many();
 	}
+
+    /* Fonction appelée par "add" & "update" */
+    public function pushDataAssoc( $nameField , $field , $id )
+    {
+        // On supprime tous les infos en base
+        \DB::for_module_assoc( $this->getName() , $nameField )
+            ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
+            ->delete_many();
+
+        // On insere
+        if ( $field->getValue() !== NULL && is_array( $field->getValue() ) )
+        {
+            foreach( $field->getValue() as $row )
+            {
+                \DB::add_assoc( $this->getName() , $nameField , $id , $row );
+            }
+        }
+    }
 }

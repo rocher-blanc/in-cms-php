@@ -548,8 +548,6 @@ class Router
                 {
                     if ( ACTIVE_USER )
                     {
-                        dump( $page );
-                        die;
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {
                             $Response->redirect( $Url->page( $page->page_access_user_redirect , true ) );
@@ -558,7 +556,8 @@ class Router
                         {
                             // S'il est connecté mais pas dans le bon groupe
                             $tabGroup = unserialize( $page->page_access_user_group );
-                            if ( ! is_array( $tabGroup ) ) $tabGroup = [];
+                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ]; // bug tempporairei du au formulaire de bo
+
                             if ( ! in_array( $User->getGroup() , $tabGroup ) )
                             {
                                 $Response->redirect();

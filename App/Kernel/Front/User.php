@@ -143,26 +143,33 @@ class User extends \App\Kernel\Common\User
     /* ************************************************** */
 
     public function hasError()
-	{
-		return $this->_error ;
-	}
+    {
+        return $this->_error ;
+    }
+
+    public function getError()
+    {
+        return $this->_error_msg ;
+    }
 
     protected function returnError( $key , $result = false )
     {
         if ( $result == false ) $this->_error = true ;
 
+        $this->_error_msg = [
+            'action' => $this->post('user_action'),
+            'result' => $result,
+            'msg' => $this->text( $key )
+        ];
+
         if ( $this->isAjax() )
         {
-            $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+            if ( $this->getProfileModule() === NULL ) $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
         }
         else
         {
             $this->CMS()->view()->appendData([
-                'user_error' => [
-                    'action' => $this->post('user_action'),
-                    'result' => $result,
-                    'msg' => $this->text( $key )
-                ]
+                'user_error' => $this->_error_msg
             ]);
 
             return $result ;

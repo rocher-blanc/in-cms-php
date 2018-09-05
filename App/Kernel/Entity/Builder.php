@@ -881,6 +881,7 @@ class Builder extends Model
                 ->isHidden()
                 ->group('connexion')
                 ->noSave()
+                ->noBack()
                 ->noRename()
                 ->defaut( $this->getUserAction() , true  );
 
@@ -899,18 +900,21 @@ class Builder extends Model
                     ->isPassword()
                     ->group('connexion')
                     ->noRename()
+                    ->noBack()
                     ->name('Ancien mot de passe');
 
                 $this->build('user_new_password' , true )
                     ->isPassword()
                     ->group('connexion')
                     ->noRename()
+                    ->noBack()
                     ->name('Nouveau mot de passe');
 
                 $this->build('user_new_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
                     ->noRename()
+                    ->noBack()
                     ->name('Confirmer votre nouveau mot de passe');
             }
             else
@@ -920,6 +924,7 @@ class Builder extends Model
                     ->group('connexion')
                     ->notEmpty('user_register_password_empty' , true )
                     ->noRename()
+                    ->noBack()
                     ->name('Mot de passe');
 
                 $this->build('user_password_confirm' , true )
@@ -927,6 +932,7 @@ class Builder extends Model
                     ->group('connexion')
                     ->notEmpty('user_register_confirm_password_empty' , true )
                     ->noRename()
+                    ->noBack()
                     ->name('Confirmer votre mot de passe');
             }
         }

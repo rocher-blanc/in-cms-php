@@ -914,7 +914,7 @@ class Controller extends \App\Kernel\Common\Controller
 						$this->field( $field->getname() )->clearValue();
 					}
 
-					$this->Factory()->Response()->flash( $result['msg'] , true );
+					//$this->Factory()->Response()->flash( $result['msg'] , true );
 
 					$result['result'] = true;
 				}

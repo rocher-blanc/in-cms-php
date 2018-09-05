@@ -98,4 +98,16 @@ class ControllerUser extends Controller
             return false ;
         }
     }
+
+    public function listenForm( $add = true )
+    {
+        $rst = parent::listenForm( $add );
+
+        if ( $rst['result'] == true )
+        {
+            $rst['msg'] = $this->User()->getError()['msg'] ;
+        }
+
+        return $rst ;
+    }
 }
