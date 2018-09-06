@@ -841,7 +841,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                         foreach( $this->getEntity()->getField() as $row )
                         {
-                            if ( ! $row->hasLang() )
+                            if ( ! $row->hasLang() && $row->back() !== false )
                             {
                                 if ( $row->isOrder() == true && $add == true )
                                 {
@@ -1311,6 +1311,16 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
+            if ( $this->getEntity()->getMaxElement() == 1 && $this->getEntity()->canDelete() == false )
+            {
+                if( $this->getRepository()->count() == 1 )
+                {
+                    $first = $this->getRepository()->first();
+                    $url = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $first->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+                    $this->Factory()->Response()->redirect( $url );
+                }
+            }
+
             $this->generateTable() ;
             if ( $this->getEntity()->hasParent() )  $template = 'table_parent' ;
             else                                    $template = 'table' ;

@@ -38,6 +38,11 @@ class Repository extends \App\Kernel\Common\Repository
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
     }
 
+    public function first()
+    {
+        return \DB::for_module( $this->getName() )->find_one();
+    }
+
     public function getImage( $id )
     {
         return \DB::for_module( $this->getName() )->select($this->getEntity()->get( $this->getEntity()->getFirstImageName() )->getColumn() )->where_id_is( $id )->find_one();
