@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Kernel\Back;
+namespace App\Kernel\Back\User;
 
-class ControllerUser extends Controller
+class Controller extends \App\Kernel\Back\Controller
 {
     protected function User()
     {
