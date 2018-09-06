@@ -69,6 +69,7 @@ class Eudonet
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
+            //dump( $rst['ResultData']['Token'] );
             $this->headers['x-auth'] = $rst['ResultData']['Token'] ;
         }
     }

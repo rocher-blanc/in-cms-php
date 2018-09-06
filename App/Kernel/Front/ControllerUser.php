@@ -107,6 +107,10 @@ class ControllerUser extends Controller
         {
             $rst['msg'] = $this->User()->getError()['msg'] ;
         }
+        else
+        {
+            return $this->User()->getError() ;
+        }
 
         return $rst ;
     }

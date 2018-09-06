@@ -209,19 +209,21 @@ class Controller
 		return $this->Container()->module( $this->getEntityName() )->getEntity() ;
 	}
 
-	public function getRepository()
-	{
-		return $this->Container()->module( $this->getEntityName() )->getRepository() ;
-	}
-
 	/* ********************************************************* */
 	/* ******************   FETCH / RENDER   ******************* */
 	/* ********************************************************* */
 
 	protected function render( $template )
 	{
-		$View = $this->Container()->newClass('App\Kernel\View');
-		$View->render( 'module/' . $template , $this->getRender() );
+        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) )
+        {
+            return "" ;
+        }
+        else
+        {
+            $View = $this->Container()->newClass('App\Kernel\View');
+            $View->render( 'module/' . $template , $this->getRender() );
+        }
 	}
 
 	protected function fetch( $template )

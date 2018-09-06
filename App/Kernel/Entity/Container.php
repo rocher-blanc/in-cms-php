@@ -8,7 +8,9 @@ class Container
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    private $repository = NULL ;
+    private $repositoryFront = NULL ;
+    private $repositoryBack  = NULL ;
+
     private $class      = NULL ;
     private $entity     = NULL ;
     private $controller = NULL ;
@@ -38,9 +40,14 @@ class Container
         $this->entity = $entity;
     }
 
-    public function setRepository( $repository )
+    public function setRepositoryFront( $repository )
     {
-        $this->repository = $repository;
+        $this->repositoryFront = $repository;
+    }
+
+    public function setRepositoryBack( $repository )
+    {
+        $this->repositoryBack = $repository;
     }
 
     public function setWebservice( $webservice )
@@ -82,22 +89,42 @@ class Container
 
     public function getRepository( $admin = false )
     {
-        if ( $this->repository === NULL )
+        if ( $admin )
         {
-            if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
+            if ( $this->repositoryBack === NULL )
             {
-                $name = "\App\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
-            }
-            else
-            {
-                $name = "\Project\Module\Repository\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
+                if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
+                {
+                    $name = "\App\Module\Repository\Back\\" . $this->getName() ;
+                }
+                else
+                {
+                    $name = "\Project\Module\Repository\Back\\" . $this->getName() ;
+                }
+
+                $this->setRepositoryBack( new $name( $this->getName() ) );
             }
 
-
-            $this->setRepository( new $name( $this->getName() ) );
+            return $this->repositoryBack ;
         }
+        else
+        {
+            if ( $this->repositoryFront === NULL )
+            {
+                if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
+                {
+                    $name = "\App\Module\Repository\Front\\" . $this->getName() ;
+                }
+                else
+                {
+                    $name = "\Project\Module\Repository\Front\\" . $this->getName() ;
+                }
 
-        return $this->repository ;
+                $this->setRepositoryFront( new $name( $this->getName() ) );
+            }
+
+            return $this->repositoryFront ;
+        }
     }
 
     public function getWebservice()

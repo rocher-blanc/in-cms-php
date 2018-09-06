@@ -50,6 +50,11 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
 
+    public function getRepository()
+    {
+        return $this->Container()->module( $this->getEntityName() )->getRepository() ;
+    }
+
     /**
      * @return string
      */
@@ -670,8 +675,8 @@ class Controller extends \App\Kernel\Common\Controller
 		switch( $type )
 		{
 			case "one" :
-				$result = $this->getRepository()->requestOne( $request );
-				break;
+			    $result = $this->getRepository()->requestOne( $request );
+            break;
 			case "all" :
 				$currentPage = NULL ;
 

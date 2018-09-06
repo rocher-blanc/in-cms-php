@@ -395,13 +395,13 @@ class Router
             $this->urlElementModule( $mp , $url , $id_module );
         }
 
-		$this->getApp()->get(':page+', function ( $page = [] ) use ( $class , $url , $element )
+		$this->getApp()->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
         {
             $Controller = \App\Kernel\Container::getInstance()->module( $class )->getController();
             $Controller->setUrl( explode('/',$url) );
             if ( $element ) $Controller->setElement();
             $Controller->execute();
-        });
+        })->via('GET', 'POST');
     }
 
     /* ************************************************** */

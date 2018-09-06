@@ -23,7 +23,7 @@ class Module extends \Slim\Middleware
 
     public function observe()
     {
-        if ( $this->app->request->isPost() )
+        if ( $this->app->request->isPost() && $this->app->request->post('keyControl') != '' )
         {
             $rst = [];
             $key = md5( $this->app->request->post('moduleName') . $this->app->request->post('id_element') );

@@ -282,37 +282,6 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "module_table_field" => $this->infoColumn( "VARCHAR" , "50" ),
                 "module_table_module_id" => $this->infoColumn( "INT" , "11" ),
             ],
-            /*
-            "newsletter_campaign" => [
-                "newsletter_campaign_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_campaign_subject" => $this->infoColumn( "VARCHAR" , "150" ),
-                "newsletter_campaign_newsletter_model_id" => $this->infoColumn( "INT" , "11" ),
-                "newsletter_campaign_newsletter_sender_id" => $this->infoColumn( "INT" , "11" ),
-                "newsletter_campaign_recipient" => $this->infoColumn( "VARCHAR" , "50" ),
-                "newsletter_campaign_date" => $this->infoColumn( "DATETIME" ),
-                "newsletter_campaign_status" => $this->infoColumn( "INT" , "11" ),
-            ],
-            "newsletter_model" => [
-                "newsletter_model_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_model_name" => $this->infoColumn( "VARCHAR" , "150" ),
-                "newsletter_model_html" => $this->infoColumn( "TEXT" ),
-            ],
-            "newsletter_sender" => [
-                "newsletter_sender_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_sender_name" => $this->infoColumn( "VARCHAR" , "50" ),
-                "newsletter_sender_email" => $this->infoColumn( "VARCHAR" , "150" )
-            ],
-            "newsletter_sub" => [
-                "newsletter_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_sub_email" => $this->infoColumn( "VARCHAR" , "255" ),
-                "newsletter_sub_state" => $this->infoColumn( "TINYINT" , "1" ),
-                "newsletter_sub_newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" )
-            ],
-            "newsletter_group_sub" => [
-                "newsletter_group_sub_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "newsletter_group_sub_name" => $this->infoColumn( "VARCHAR" , "50" )
-            ],
-            */
             "page" => [
                 "page_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "page_domain_id" => $this->infoColumn( "INT" , "11" ),
@@ -390,10 +359,6 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
             "user_front_group" => [
                 "user_front_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "user_front_group_name" => $this->infoColumn( "VARCHAR" , "50" )
-            ],
-            "user_front_profile" => [
-                "user_front_profile_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "user_front_profile_user_front_id" => $this->infoColumn( "INT" , "11" )
             ]
         ];
     }
