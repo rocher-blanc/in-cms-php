@@ -188,17 +188,40 @@ class User extends \App\Kernel\Common\User
         }
     }
 
+    protected function getProfileData()
+    {
+        if ( $this->getProfileModule() !== NULL && $this->isLogged() )
+        {
+            $data = new Data( $this->getProfileModule() );
+            $rst = $data->find([
+                'user_front_id' => $this->getId()
+            ]);
+
+            if ( $rst )
+            {
+                return $data->getDataArray();
+            }
+        }
+        else
+        {
+            return [];
+        }
+    }
+
     public function appendVar()
     {
-        $this->CMS()->view()->appendData([
+        $tab = [
             'user' => array_merge([
                 'id'        => $this->getId(),
                 'login'     => $this->getLogin(),
                 'group'     => $this->getGroup(),
                 'fb_url'    => $this->getFacebookUrl(),
-                'isLogged'  => $this->isLogged()
+                'isLogged'  => $this->isLogged(),
+                'profile'   => $this->getProfileData()
             ], $this->getVar() )
-        ]);
+        ] ;
+
+        $this->CMS()->view()->appendData( $tab );
     }
 
     /* ************************************************** */
