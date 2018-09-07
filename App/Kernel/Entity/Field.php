@@ -654,7 +654,7 @@ class Field
             if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
             {
                 $Gal = new \App\Kernel\Back\Gallery;
-                $Gal->setElementId( $this->getData('id') );
+                $Gal->setElementId( $this->getData('id') == '' ? -1 : $this->getData('id') );
                 $Gal->setModuleId( $this->getData('entity_id') );
                 $Gal->setField( $this->getName() );
                 $ct = $Gal->count();
