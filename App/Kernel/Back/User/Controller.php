@@ -12,18 +12,7 @@ class Controller extends \App\Kernel\Back\Controller
     /*  **** ADD **** */
     protected function hookAddCheckBefore()
     {
-        if ( $this->getApp()->request->post('user_action') == 'register' )
-        {
-            if ( $this->User()->hasError() )
-            {
-                $this->checkForm();
-                return false ;
-            }
-            else
-            {
-                return true ;
-            }
-        }
+
 
         return true ;
     }
@@ -31,18 +20,7 @@ class Controller extends \App\Kernel\Back\Controller
     /*  **** UPDATE **** */
     protected function hookUpdateCheckBefore()
     {
-        if ( $this->getApp()->request->post('user_action') == 'update' )
-        {
-            if ( $this->User()->hasError() )
-            {
-                $this->checkForm();
-                return false ;
-            }
-            else
-            {
-                return true ;
-            }
-        }
+
 
         return true ;
     }
@@ -64,7 +42,8 @@ class Controller extends \App\Kernel\Back\Controller
     }
 
     /*  **** VALIDATION **** */
-    protected function hookEnableAfter() {
+    protected function hookEnableAfter()
+    {
         $content = $this->getRepository()->findOne( $this->getId() );
 
         if ( $content )

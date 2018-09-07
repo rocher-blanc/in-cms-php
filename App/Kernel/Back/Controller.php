@@ -841,22 +841,25 @@ class Controller extends \App\Kernel\Common\Controller
 
                         foreach( $this->getEntity()->getField() as $row )
                         {
-                            if ( ! $row->hasLang() && $row->back() !== false )
+                            if ( $row->back() !== false && $row->save() !== false )
                             {
-                                if ( $row->isOrder() == true && $add == true )
+                                if ( ! $row->hasLang() )
                                 {
-                                    $content->set( $row->getColumn() , $row->getDefault() ) ;
+                                    if ( $row->isOrder() == true && $add == true )
+                                    {
+                                        $content->set( $row->getColumn() , $row->getDefault() ) ;
+                                    }
+                                    else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                                    {
+                                        $content->set( $row->getColumn() , $row->getValue() ) ;
+                                    }
                                 }
-                                else if ( $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                                else
                                 {
-                                    $content->set( $row->getColumn() , $row->getValue() ) ;
-                                }
-                            }
-                            else
-                            {
-                                foreach( $this->Lang()->getAll() as $lang )
-                                {
-                                    $contentLang[ $lang->url ]->set( $row->getColumn() , $row->getValue( $lang->url ) ) ;
+                                    foreach( $this->Lang()->getAll() as $lang )
+                                    {
+                                        $contentLang[ $lang->url ]->set( $row->getColumn() , $row->getValue( $lang->url ) ) ;
+                                    }
                                 }
                             }
                         }
@@ -1311,14 +1314,21 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
+            $count = $this->getRepository()->count() ;
+
             if ( $this->getEntity()->getMaxElement() == 1 && $this->getEntity()->canDelete() == false )
             {
-                if( $this->getRepository()->count() == 1 )
+                if( $count == 1 )
                 {
                     $first = $this->getRepository()->first();
                     $url = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $first->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
                     $this->Factory()->Response()->redirect( $url );
                 }
+            }
+            else if ( $count == 0 )
+            {
+                $url = $this->Factory()->Url()->route( $this->getEntityName() , 'add' , $this->getUriParent() ) ;
+                $this->Factory()->Response()->redirect( $url );
             }
 
             $this->generateTable() ;

@@ -331,4 +331,15 @@ class Gallery extends \App\Kernel\Common\Gallery
 
         return $tab ;
     }
+
+    public function count()
+    {
+        $ct = \DB::for_table('gallery')
+            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
+            ->where_equal( 'gallery_element_id' , $this->getElementId() )
+            ->where_equal( 'gallery_field' , $this->getField() )
+            ->count();
+
+        return $ct ;
+    }
 }

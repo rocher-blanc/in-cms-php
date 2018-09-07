@@ -26,6 +26,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="26c53a49-02b4-4e2a-9d15-9cf1a2a60bfb" name="VPS1 - Macadam" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

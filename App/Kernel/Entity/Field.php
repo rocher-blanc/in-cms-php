@@ -651,14 +651,30 @@ class Field
 			if ( $this->rename() )  $this->setValue( $this->getApp()->request->post( $this->getColumn() ) ) ;
 			else					$this->setValue( $this->getApp()->request->post( $this->getName() ) ) ;
 
-			if ( $this->isEmpty() == true && $this->isRequired() == true )
-			{
-				$this->setError( $this->getData('notEmpty_msg') ) ;
-				$this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
-				$this->setValue( NULL ) ;
-				$return = false ;
-			}
-			else if ( $this->isEmpty() == false && $this->isFormated() == false )
+            if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
+            {
+                $Gal = new \App\Kernel\Back\Gallery;
+                $Gal->setElementId( $this->getData('id') );
+                $Gal->setModuleId( $this->getData('entity_id') );
+                $Gal->setField( $this->getName() );
+                $ct = $Gal->count();
+
+                if ( $ct == 0 )
+                {
+                    $this->setError( $this->getData('notEmpty_msg') ) ;
+                    $this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
+                    $this->setValue( NULL ) ;
+                    $return = false ;
+                }
+            }
+            else if ( $this->isEmpty() == true && $this->isRequired() == true )
+            {
+                $this->setError( $this->getData('notEmpty_msg') ) ;
+                $this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
+                $this->setValue( NULL ) ;
+                $return = false ;
+            }
+            else if ( $this->isEmpty() == false && $this->isFormated() == false )
 			{
 				$this->setError( $this->getData('notFormated_msg') ) ;
 				$this->setData( 'front-error' , $this->getColumn() . '_formated' ) ;

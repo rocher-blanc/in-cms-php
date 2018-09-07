@@ -525,6 +525,13 @@ class Controller
 			{
 			    if ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' )
 				{
+				    if ( $row->getType() == 'gallery' )
+                    {
+                        $this->field( $row->getName() )->setData( "id" , $this->getId() ) ;
+                        $this->field( $row->getName() )->setData( "entity_id" , $this->getEntityId() ) ;
+                        $this->field( $row->getName() )->setData( "controller" , $this->getEntityName() ) ;
+                    }
+
 					if ( $this->field( $row->getName() )->checkEmpty() == false )
 					{
 						$this->_return = false ;

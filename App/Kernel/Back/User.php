@@ -4,51 +4,155 @@ namespace App\Kernel\Back;
 
 class User extends \App\Kernel\Common\User
 {
+    protected $id           = NULL ;
+    protected $email        = '' ;
+    protected $active       = 0 ;
+    protected $entityName   = '' ;
 
     /* ************************************************** */
     /* ****************     ISER      ******************* */
     /* ************************************************** */
 
-    public function isLogged()
-    {
-        return false;
-    }
-
     /* ************************************************** */
     /* ****************    SETTER     ******************* */
     /* ************************************************** */
+
+    /**
+     * @param string $entityName
+     */
+    public function setEntityName(string $entityName)
+    {
+        $this->entityName = $entityName;
+    }
+
+    /**
+     * @param null $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @param int $active
+     */
+    public function setActive(int $active)
+    {
+        $this->active = $active;
+    }
 
     /* ************************************************** */
     /* ****************    GETTER     ******************* */
     /* ************************************************** */
 
-    public static function getInstance()
+    /**
+     * @return string
+     */
+    public function getEntity()
     {
-        if ( self::$instance === NULL )
-        {
-            self::$instance = new User;
-        }
+        return \App\Kernel\Container::getInstance()->module( $this->getEntityName() )->getEntity() ;
+    }
 
-        return self::$instance ;
+    /**
+     * @return string
+     */
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
+    /**
+     * @return null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActive(): int
+    {
+        return $this->active;
     }
 
     /* ************************************************** */
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
 
+    /* ************************************************** */
+    /* ****************   FUNCTIONS   ******************* */
+    /* ************************************************** */
 
-
-    protected function returnError( $key , $result = false )
+    public function isUnique()
     {
-        if ( $result == false ) $this->_error = true ;
+        $ct = \DB::for_table('user_front');
 
-        if ( $this->isAjax() )
+        if ( $this->getId() !== NULL )
         {
-            $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+            $ct = $ct->where_not_equal('user_front_id', $this->getId() );
         }
-        else
+
+        $ct = $ct->where_equal('user_front_login', $this->getEmail() )->count();
+
+        if ( $ct == 0 ) return true ;
+        else            return false ;
+    }
+
+    public function isFormated()
+    {
+        return filter_var( $this->getEmail(), FILTER_VALIDATE_EMAIL );
+    }
+
+    public function add()
+    {
+        $rst = \DB::for_table('user_front')->create();
+
+        if ( $rst )
         {
-            return $result ;
+            $date = new \DateTime();
+
+            $rst->user_front_login = $this->getEmail() ;
+            $rst->user_front_token = $this->getNewToken() ;
+            $rst->user_front_active = $this->getEmail() ;
+            $rst->user_front_user_front_group_id = $this->getEmail() ;
+            $rst->user_front_date_created = $date->format('Y-m-d H:i:s');
+            $rst->save();
         }
+    }
+
+    public function update()
+    {
+        $rst = \DB::for_table('user_front')
+            ->where_not_equal('user_front_id', $this->getId() )
+            ->find_one();
+
+        if ( $rst )
+        {
+            $rst->user_front_login = $this->getEmail() ;
+            $rst->save();
+        }
+    }
+
+    public function delete()
+    {
+        \DB::for_table('user_front')->where_id_is( $this->getId() )->delete();
     }
 }
