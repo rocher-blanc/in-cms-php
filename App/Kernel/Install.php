@@ -13,7 +13,7 @@ class Install
 
     public static function postUpdate()
     {
-        $vendorName = 'jweb/cms' ;
+        $vendorName = 'JWebCreation/cms' ;
         if ( getenv('APP_HOME') === false )
         {
             $separator = "/" ;
@@ -33,7 +33,6 @@ class Install
             defined('_PATH_') || define('_PATH_', $path );
             defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
         }
-
 
         defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
         defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
@@ -324,7 +323,7 @@ class Install
             if ( ! is_dir( _PATH_ . "/" . $folder ) ) mkdir( _PATH_ . "/" . $folder ) ;
         }
 
-        self::copyr( VENDOR_PATH . '/jweb/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
+        self::copyr( VENDOR_PATH . '/JWebCreation/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
     }
 
     protected static function create( $nameFile , $content )
