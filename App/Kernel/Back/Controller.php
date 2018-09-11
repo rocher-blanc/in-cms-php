@@ -593,7 +593,21 @@ class Controller extends \App\Kernel\Common\Controller
                             if ( $field->getType() == "select" && $field->getData('option') !== NULL )
                             {
                                 $opt = $field->getData('option') ;
-                                $value = $opt[ $row->get( $field->getColumn() ) ] ;
+
+                                if ( is_array( current( $opt ) ) )
+                                {
+                                    foreach( $opt as $key => $valueArray )
+                                    {
+                                        if ( isset( $valueArray[ $row->get( $field->getColumn() ) ] ) )
+                                        {
+                                            $value = $valueArray[ $row->get( $field->getColumn() ) ] ;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    $value = $opt[ $row->get( $field->getColumn() ) ] ;
+                                }
                             }
                             else if ( $field->getType() == "radio" && $field->getData('isBoolean') == true )
                             {
@@ -666,6 +680,7 @@ class Controller extends \App\Kernel\Common\Controller
             $tdArray = $this->getTreeTableParent( $tdArray ) ;
         }
 
+        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
         $this->setRender( 'depedency' , $this->isDepedency() ) ;
         $this->setRender( 'dModule' , $this->getDepedencyModule() ) ;
         $this->setRender( 'dElement' , $this->getDepedencyElement() ) ;
@@ -725,12 +740,13 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $this->getApp()->view()->appendData([
                 'mod' => [
-                    'id'    	=> $this->getEntityId(),
-                    'name'  	=> $this->getEntityName(),
-                    'title' 	=> $rst->module_name,
-                    'icon'  	=> $rst->module_icon,
-					'canCreate' => $this->canCreate(),
-					'canDelete' => $this->getEntity()->canDelete()
+                    'id'    	    => $this->getEntityId(),
+                    'name'  	    => $this->getEntityName(),
+                    'title' 	    => $rst->module_name,
+                    'icon'  	    => $rst->module_icon,
+					'canCreate'     => $this->canCreate(),
+					'canDelete'     => $this->getEntity()->canDelete(),
+					'canDuplicate'  => $this->getEntity()->canDuplicate()
 				],
                 'action'    => $this->getActionName(),
                 'fields'    => $this->getImportFiled(),
@@ -1345,6 +1361,48 @@ class Controller extends \App\Kernel\Common\Controller
             $this->render('index.twig');
         }
     }
+
+    /* ************************************************** */
+    /* ******************  DUPLICATE  ******************* */
+    /* ************************************************** */
+
+    protected function duplicateAction()
+    {
+        $content = $this->getRepository()->findOne( $this->getId() );
+
+        if ( ! $content )
+        {
+            $rst = [
+                'result' => false,
+                'msg' => "Le contenu n'est plus disponible",
+            ];
+        }
+        else
+        {
+            $data = new Data( $this->getEntityName() );
+            $data->create();
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->hasLang() == false && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                {
+                    $data->set( $row->getName() , $content->get( $row->getColumn() ) );
+                }
+            }
+
+            $data->save();
+
+            $rst = [
+                'result' => true,
+                'msg' => "Le contenu a bien été dupliqué",
+            ];
+        }
+
+        return $this->Factory()->Response()->printJSON( $rst ) ;
+    }
+
+    /* ************************************************** */
+    /* ******************    TABLE    ******************* */
+    /* ************************************************** */
 
     protected function tableAction()
     {

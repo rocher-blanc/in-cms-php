@@ -2,6 +2,12 @@ $(function() {
     init('body');
 });
 
+if (typeof Notify === "function") {
+    Notify = function( msg, result) {
+        alert( msg );
+    };
+}
+
 init = function( base ) {
     checkForm( base );
     checkBox( base );
@@ -89,58 +95,28 @@ checkForm = function(base) {
 
     $(base + ' form.submitReady[data-condition="true"]').not('.conditionReady').each(function() {
         var $this = $(this);
-        var route = $this.data('route-condition');
-        var mod = $this.data('slug');
+        var route = $this.attr('action');
 
         $this.find('select').change(function() {
-            refreshShowIf( base , mod , route , $this );
+            refreshShowIf( base , route , $this );
         });
 
         $this.find('.bootstrap-switch').on('switchChange.bootstrapSwitch', function (e, data) {
-            refreshShowIf( base , mod , route , $this );
+            refreshShowIf( base , route , $this );
         });
     }).addClass('conditionReady');
 };
 
-refreshShowIf = function( base , mod , route , $this ) {
-    if ( $(base + ' .'+mod+'-form-process').length ) {
-        $(base + ' .'+mod+'-form-process').show();
-    }
+refreshShowIf = function( base , route , $this ) {
+
+    console.log('change!');
+    console.log(route);
     var serialize = $this.serialize();
     $.ajax({
         url: route,
         type: 'POST',
-        data: serialize,
+        data: serialize + "&show=1",
         success: function(data) {
-            if ( $(base + ' .'+mod+'-form-process').length ) {
-                $(base + ' .'+mod+'-form-process').hide();
-            }
-
-
-            if ( data.tabs.length ) {
-                $.each(data.tabs, function(i, tab) {
-                    var linktab = $('#tabs-link-' + tab.key );
-                    if ( tab.show == true ) {
-                        linktab.removeClass('hide').show();
-                    }
-                    else {
-                        linktab.hide();
-                    }
-
-                    if ( tab.group.length ) {
-                        $.each(tab.group, function(i, group) {
-                            var eltgrp = $('#group_form_' + group.key );
-                            if ( group.show == true ) {
-                                eltgrp.removeClass('hide').show();
-                            }
-                            else {
-                                eltgrp.hide();
-                            }
-                        });
-                    }
-                });
-            }
-
             if ( data.fields.length ) {
                 $.each(data.fields, function(i, elt) {
                     var field = $("[name='"+ elt.name+"']").closest('.ed_field');

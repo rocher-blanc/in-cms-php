@@ -70,6 +70,27 @@ listenFormTable = function( base ) {
             });
         });
 
+        /** GESTION DES DUPLICATE **/
+        $form.find('.duplicate').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $link = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: $link.attr('href'),
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content"),
+                success: function(data) {
+                    Notify(data.msg, data.result);
+                    reloadTable( $form , base );
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
+        });
+
         /** GESTION DES DATE RANGE PICKER **/
         if ( $form.find('.daterange').length ) {
             $form.find('.daterange').daterangepicker({
@@ -205,6 +226,9 @@ listenFormTable = function( base ) {
 
         /** GESTION DES SELECT **/
         initSelect( '#' + base );
+
+        /** GESTION DES MODALS **/
+        modalDepedency('#' + $form.data('container'));
     });
 };
 
@@ -232,11 +256,17 @@ deleteElement = function( url , base ) {
 
 
 reloadTable = function( $form , base ) {
+    var iddiv = $('#' + $form.data('container')) ;
+    var urlajax = $form.attr('action') ;
+    if ( iddiv.data('table') != '' ) {
+        urlajax = iddiv.data('table');
+    }
+
     $.ajax({
-        url: $form.attr('action') ,
+        url: urlajax,
         type: 'GET',
         success: function(html) {
-            $( '#' + $form.data('container') ).html( html ) ;
+            iddiv.html( html ) ;
             listenFormTable( base ) ;
         }
     });

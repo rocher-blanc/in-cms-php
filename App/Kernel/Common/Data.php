@@ -106,29 +106,11 @@ class Data
 
     public function findOrCreate( $value = NULL )
     {
-        if ( $value !== NULL )
-        {
-            if ( is_array( $value ) )
-            {
-                $this->data = $this->getRepository()->findWhere( $value );
-            }
-            else
-            {
-                $this->data = $this->getRepository()->findOne( $value );
-            }
-        }
+        $rst = $this->find( $value );
 
-        if ( $this->data === false )
+        if ( $rst === false )
         {
-            $this->data = $this->getRepository()->create() ;
-            $this->add = true ;
-            if ( is_array( $value ) )
-            {
-                foreach( $value as $key => $value )
-                {
-                    $this->set( $key , $value );
-                }
-            }
+            $this->create( $value );
         }
     }
 
@@ -150,6 +132,20 @@ class Data
         else
         {
             return true ;
+        }
+    }
+
+    public function create( $value = NULL )
+    {
+        $this->data = $this->getRepository()->create() ;
+        $this->add  = true ;
+
+        if ( is_array( $value ) )
+        {
+            foreach( $value as $key => $value )
+            {
+                $this->set( $key , $value );
+            }
         }
     }
 

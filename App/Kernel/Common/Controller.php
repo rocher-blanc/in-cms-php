@@ -366,23 +366,23 @@ class Controller
 
 		if ( $value == true )
 		{
-			$content = $this->getRepository()->findOne( $this->getId() );
+            $content = $this->getRepository()->findOne( $this->getId() );
 
-			if ( ! $content )
-			{
-				return false ;
-			}
-			else
-			{
-				foreach( $this->getEntity()->getField() as $row )
-				{
-					if ( $row->hasLang() == false )
-					{
-						$name = $row->getName() ;
-						$contentShow->$name = $content->get( $row->getColumn() );
-					}
-				}
-			}
+            if ( ! $content )
+            {
+                return false ;
+            }
+            else
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->hasLang() == false )
+                    {
+                        $name = $row->getName() ;
+                        $contentShow->$name = $content->get( $row->getColumn() );
+                    }
+                }
+            }
 
 			if ( $this->getEntity()->hasMultiLang() )
 			{
@@ -599,7 +599,7 @@ class Controller
 		return $std ;
 	}
 
-	protected function getShow( $naming = false , $content = NULL )
+	public function getShow( $naming = false , $content = NULL )
 	{
 		if ( $content === NULL ) $contentShow = $this->convertPost();
 		else                     $contentShow = $content ;

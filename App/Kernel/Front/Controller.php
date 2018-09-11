@@ -780,6 +780,7 @@ class Controller extends \App\Kernel\Common\Controller
             'form' => $this->renderForm([
                 'field' => $form['field'],
                 'tabs' => $form['tabs'],
+                'condition' => $form['condition'],
                 'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'id' => $form['id'],
                 'module' => $this->getEntityName(),
