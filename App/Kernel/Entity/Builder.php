@@ -36,6 +36,12 @@ class Builder extends Model
 
     /*
      * @boolean
+     * Définit si la duplication est autorisée
+     */
+    protected $_dupliacate = false;
+
+    /*
+     * @boolean
      * Définit si une gestion d'ordre est présente
      */
     protected $_hasOrder = false;
@@ -665,6 +671,21 @@ class Builder extends Model
     }
 
     /* ************************************************** */
+    /* *****************    DUPLICATE    **************** */
+    /* ************************************************** */
+
+    public function duplicate()
+    {
+        $this->addAction('duplicate');
+        $this->_dupliacate = true ;
+    }
+
+    public function canDuplicate()
+    {
+        return $this->_dupliacate ;
+    }
+
+    /* ************************************************** */
     /* *****************     DELETE      **************** */
     /* ************************************************** */
 
@@ -896,7 +917,7 @@ class Builder extends Model
 
             if ( \App\Kernel\Front\User::getInstance()->isLogged() )
             {
-                $this->build('user_password' , true )
+                /*$this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
                     ->noRename()
@@ -915,7 +936,7 @@ class Builder extends Model
                     ->group('connexion')
                     ->noRename()
                     ->noBack()
-                    ->name('Confirmer votre nouveau mot de passe');
+                    ->name('Confirmer votre nouveau mot de passe');*/
             }
             else
             {
