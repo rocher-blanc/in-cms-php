@@ -108,9 +108,6 @@ checkForm = function(base) {
 };
 
 refreshShowIf = function( base , route , $this ) {
-
-    console.log('change!');
-    console.log(route);
     var serialize = $this.serialize();
     $.ajax({
         url: route,
