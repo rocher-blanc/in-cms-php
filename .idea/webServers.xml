@@ -2,14 +2,6 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="8e24dc9d-3b44-4c52-8069-24b0cfadf1cc" name="VPS1 - IFEC (project level)" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
       <webServer id="bb5b8d82-5869-4133-852c-23a2bb4fcb18" name="VPS1 - Domilib" url="http://vps1.jweb-creation.fr">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>

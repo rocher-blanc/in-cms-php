@@ -46,7 +46,7 @@ checkForm = function(base) {
             data: serialize,
             success: function(data) {
                 if( data.result ) {
-                    $(base + ' form.ajax').trigger("reset");
+                    //$(base + ' form.ajax').trigger("reset");
                 }
 
                 if(data.result == true && data.url != '') {

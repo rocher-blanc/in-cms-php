@@ -517,7 +517,7 @@ class Controller
 	{
 		$arrayShow = $this->getShow(true);
 
-		$this->_return = true ;
+		$this->_return    = true ;
 
 		if ( !empty( $this->getEntity()->getField() ) )
 		{

@@ -81,12 +81,6 @@ class User extends \App\Kernel\Common\User
         return 'easydoor_user' ;
     }
 
-    protected function getProfileModule()
-    {
-        if ( defined('MODULE_USER') )  return MODULE_USER ;
-        else								 return NULL ;
-    }
-
     public function getId()
     {
         return $this->id ;
@@ -227,6 +221,40 @@ class User extends \App\Kernel\Common\User
     /* ************************************************** */
     /* ****************    ACTIONS    ******************* */
     /* ************************************************** */
+
+    ###################################################################################################################################
+    ######################################               MODULE USER                 ##################################################
+    ###################################################################################################################################
+
+    protected function getProfileModule()
+    {
+        if ( defined('MODULE_USER') )   return MODULE_USER ;
+        else								  return NULL ;
+    }
+
+    protected function checkModule()
+    {
+        if ( $this->getProfileModule() !== NULL )
+        {
+            $Module = $this->Container()->module( $this->getProfileModule() )->getController();
+            if ( ! $Module->checkForm() )
+            {
+                $Entity = $this->Container()->module( $this->getProfileModule() )->getEntity();
+                foreach( $Entity->getField() as $field )
+                {
+                    if ( $field->getError() !== NULL ) return $this->returnError( $field->getFrontError() , false ) ;
+                }
+            }
+            else
+            {
+                return true ;
+            }
+        }
+        else
+        {
+            return true ;
+        }
+    }
 
     ###################################################################################################################################
     ######################################                  LOGIN                    ##################################################
@@ -579,26 +607,7 @@ class User extends \App\Kernel\Common\User
         }
         else
         {
-            if ( $this->getProfileModule() !== NULL )
-            {
-                $Module = $this->Container()->module( $this->getProfileModule() )->getController();
-                if ( ! $Module->checkForm() )
-                {
-                    $Entity = $this->Container()->module( $this->getProfileModule() )->getEntity();
-                    foreach( $Entity->getField() as $field )
-                    {
-                        if ( $field->getError() !== NULL ) return $this->returnError( $field->getFrontError() ) ;
-                    }
-                }
-                else
-                {
-                    return true ;
-                }
-            }
-            else
-            {
-                return true ;
-            }
+            return $this->checkModule() ;
         }
     }
 
@@ -619,7 +628,6 @@ class User extends \App\Kernel\Common\User
             $password           = trim( $this->post('user_password') ) ;
             $newPassword        = trim( $this->post('user_new_password') ) ;
             $newPasswordConfirm = trim( $this->post('user_new_password_confirm') ) ;
-
             $user               = $this->getById();
 
             if ( empty( $login ) )
@@ -658,42 +666,12 @@ class User extends \App\Kernel\Common\User
                 }
                 else
                 {
-                    if ( $this->getProfileModule() !== NULL )
-                    {
-                        $Module = $this->Container()->module( $this->getProfileModule() )->getController();
-                        if ( ! $Module->checkForm() )
-                        {
-                            return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
-                        }
-                        else
-                        {
-                            return true ;
-                        }
-                    }
-                    else
-                    {
-                        return true ;
-                    }
+                    return $this->checkModule();
                 }
             }
             else
             {
-                if ( $this->getProfileModule() !== NULL )
-                {
-                    $Module = $this->Container()->module( $this->getProfileModule() )->getController();
-                    if ( ! $Module->checkForm() )
-                    {
-                        return $this->returnError( "xxxxxxxxxxxxxxxxxxxxx" ) ;
-                    }
-                    else
-                    {
-                        return true ;
-                    }
-                }
-                else
-                {
-                    return true ;
-                }
+                return $this->checkModule();
             }
         }
         else
@@ -713,7 +691,7 @@ class User extends \App\Kernel\Common\User
 
             if ( $this->post('user_new_password') != '' )
             {
-                $user->user_front_password = password_hash( $this->post('user_new_password') , PASSWORD_BCRYPT , ['cost' => 9] ) ;
+                $user->user_front_password = $this->hashPassword( $this->post('user_new_password') ) ;
             }
             $user->save();
 
