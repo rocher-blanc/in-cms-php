@@ -9,12 +9,12 @@ class Select extends \App\Kernel\Back\Form
 		$this->initLib() ;
 		return $this->getSelect( $field, $name, $value ) ;
 	}
-	
+
 	private function getSelect( $field, $name, $value = NULL )
 	{
         $this->_lib_js  = 'cmsmedias/canvas/js/components/select-boxes.js';
 		$this->_lib_css = 'cmsmedias/canvas/css/src/components/select-boxes.css';
-		
+
 		$select = '' ;
 		if ( ! $field->isRequired() )
 		{
@@ -32,11 +32,23 @@ class Select extends \App\Kernel\Back\Form
 			{
 				foreach( $field->getData('option') as $key => $opt )
 				{
-					$select .= '<option value="' . $key . '"' . ( $key == $value ? ' selected' : '' ) . '>' . $opt . '</option>' ;
+					if( is_array( $opt) )
+					{
+						$select .= '<optgroup label="'.$key.'">';
+						foreach( $opt as $keyOpt => $optOpt )
+						{
+							$select .= '<option value="' . $keyOpt . '"' . ( $keyOpt == $value ? " selected" : '' ) . '>' . $optOpt . '</option>' . "\n" ;
+						}
+						$select .= '</optgroup>';
+					}
+					else
+					{
+						$select .= '<option value="' . $key . '"' . ( $key == $value ? ' selected' : '' ) . '>' . $opt . '</option>' ;
+					}
 				}
 			}
         }
-		
+
 		return '
 		<select name="' . $name . '" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectTwo>
 			' . $select . '
