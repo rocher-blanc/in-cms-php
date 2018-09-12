@@ -535,7 +535,7 @@ class Builder extends Model
     /**
      * @return int
      */
-    public function getMaxElement(): int
+    public function getMaxElement()
     {
         return $this->_max_element;
     }
