@@ -1028,6 +1028,11 @@ class Controller extends \App\Kernel\Common\Controller
                                 $result['tab']   = $row->getTab() ;
                                 $result['field'] = $row->getName() ;
                                 $first = false ;
+
+                                if ( $this->getEntity()->itsDepedency() )
+                                {
+                                    $result['tab'] = strtolower( $this->getEntityName() ) ;
+                                }
                             }
                         }
                     }
@@ -1055,7 +1060,9 @@ class Controller extends \App\Kernel\Common\Controller
                     'class'  => $depedency['class'],
                     'slug'   => strtolower( $depedency['class'] ),
                     'icon'   => $depedency['icon'],
-                    'fields' => $this->Container()->module( $depedency['class'] )->getController(true)->getImportFiled()
+                    'fields' => $this->Container()->module( $depedency['class'] )->getController(true)->getImportFiled(),
+                    'max'    => $this->Container()->module( $depedency['class'] )->getEntity()->getMaxElement(),
+                    'delete' => $this->Container()->module( $depedency['class'] )->getEntity()->canDelete()
                 ];
             }
         }
@@ -1809,5 +1816,38 @@ class Controller extends \App\Kernel\Common\Controller
         $Gallery->setModuleId( $this->getEntityId() );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
         $Gallery->order();
+    }
+
+    /*
+     * Gestion des formulaire seul pour les dependences qui n'ont pas la suppression d'activer ainsi que le nombre max d element a 1
+     */
+    protected function formAction()
+    {
+        $form = parent::generateForm( $this->getId() !== NULL ? true : false );
+/*
+        if ( $form === false )
+        {
+            $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
+        }
+*/
+/*
+        $this->setRender( 'cdn_css' , $form['cdn_css'] ) ;
+        $this->setRender( 'cdn_js' , $form['cdn_js'] ) ;
+
+        $this->setRender( 'css' , $form['css'] ) ;
+        $this->setRender( 'js' , $form['js'] ) ;
+
+        $this->setRender( 'tabs' , $form['tabs'] ) ;
+        $this->setRender( 'condition' , $form['condition'] ) ;
+*/
+        echo $this->renderForm([
+            'field' => $form['field'],
+            'tabs' => $form['tabs'],
+            'condition' => $form['condition'],
+            'uri_id_parent' => $this->getUriParent(),
+            'route' => $this->Factory()->Url()->route( $this->getEntityName() , ( $value == false ? 'add' : 'edit' ) , $this->getUriParent() , $form['id'] ),
+            'id' => $form['id']
+        ]) ;
+
     }
 }

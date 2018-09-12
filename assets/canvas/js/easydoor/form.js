@@ -16,6 +16,7 @@ init = function( base ) {
     checkGallery( base );
     modalDepedency('body');
     tableDepedency( base );
+    formDepedency( base );
     checkVideo( base );
 };
 
@@ -45,6 +46,25 @@ modalDepedency = function ( base ) {
             }
         });
     }
+};
+
+formDepedency = function( base ) {
+    loadForm( base + ' .depedencyForm' );
+};
+
+loadForm = function( className ) {
+    $( className ).each(function() {
+        var $div = $(this);
+        $.ajax({
+            url: $div.data('form') ,
+            type: 'GET',
+            success: function(html) {
+                $div.html( html ) ;
+                checkboxSwitch('#' +  $div.attr('id') );
+                init('#' +  $div.attr('id') );
+            }
+        });
+    });
 };
 
 tableDepedency = function( base ) {
@@ -458,10 +478,10 @@ refreshShowIf = function( base , mod , route , $this ) {
                 $.each(data.fields, function(i, elt) {
                     var field = $("div[data-field='"+ elt.name+"']");
                     if ( elt.show == true ) {
-                        field.removeClass('hide').show();
+                        field.css("visibility", "visible");
                     }
                     else {
-                        field.hide();
+                        field.css("visibility", "hidden");
                     }
                 });
             }

@@ -126,6 +126,11 @@ class Model
 				mkdir( $this->getPathDocument() , 0755 );
 			}
 		}
+
+		if ( $this->getMaxElement() == 1 && $this->canDelete() == false && $this->itsDepedency() == true )
+        {
+            $this->addAction('form');
+        }
 	}
 	
 	/* ************************************************** */

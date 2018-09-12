@@ -54,6 +54,7 @@ checkForm = function(base) {
                 }
                 else {
                     Notify(data.msg, data.result);
+                    /*
                     if ( data.tab ) $('#onglet-' + data.tab ).click();
 
                     if ( data.field ) {
@@ -77,6 +78,7 @@ checkForm = function(base) {
                             }
                         });
                     }
+                    */
                 }
 
                 if ( $(base + ' .'+mod+'-form-process').length ) {
