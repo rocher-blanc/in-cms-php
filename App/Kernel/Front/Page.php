@@ -92,6 +92,12 @@ abstract class Page
     public function execute()
     {
         $this->loadMeta() ;
+
+        if ( $this->CMS()->request()->isAjax() )    $this->controllerAJAX();
+        if ( $this->CMS()->request()->isPost() )    $this->controllerPOST();
+        if ( $this->CMS()->request()->isGet() )     $this->controllerGET();
+
+
         $this->render() ;
     }
 
@@ -99,6 +105,14 @@ abstract class Page
     {
         return $this->CMS()->request()->post( $key );
     }
+
+    /* ************************************************** */
+    /* *****************  CONTROLLER  ******************* */
+    /* ************************************************** */
+
+    protected function controllerGET() {}
+    protected function controllerPOST() {}
+    protected function controllerAJAX() {}
 
     /* ************************************************** */
     /* *****************     META     ******************* */
