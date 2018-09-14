@@ -146,7 +146,7 @@ class User extends \App\Kernel\Common\User
         return $this->_error_msg ;
     }
 
-    protected function returnError( $key , $result = false )
+    protected function returnError( $key , $result = false , $forceView = false )
     {
         if ( $result == false ) $this->_error = true ;
 
@@ -158,7 +158,7 @@ class User extends \App\Kernel\Common\User
 
         if ( $this->isAjax() )
         {
-            if ( $this->getProfileModule() === NULL ) $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+            if ( $this->getProfileModule() === NULL || $forceView == true ) $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
         }
         else
         {
@@ -597,6 +597,10 @@ class User extends \App\Kernel\Common\User
         {
             return $this->returnError( "user_register_password_empty" ) ;
         }
+        else if ( $this->formatPasswordRequired( $password ) == false )
+        {
+            return $this->returnError( "user_register_password_invalid_format" ) ;
+        }
         else if ( empty( $passwordConfirm ) )
         {
             return $this->returnError( "user_register_confirm_password_empty" ) ;
@@ -624,11 +628,8 @@ class User extends \App\Kernel\Common\User
              *
              */
 
-            $login              = trim( $this->post('user_login') ) ;
-            $password           = trim( $this->post('user_password') ) ;
-            $newPassword        = trim( $this->post('user_new_password') ) ;
-            $newPasswordConfirm = trim( $this->post('user_new_password_confirm') ) ;
-            $user               = $this->getById();
+            $login = trim( $this->post('user_login') ) ;
+            $user  = $this->getById();
 
             if ( empty( $login ) )
             {
@@ -641,33 +642,6 @@ class User extends \App\Kernel\Common\User
             else if ( ! $this->uniqLogin( $login ) )
             {
                 return $this->returnError( "user_update_login_not_uniq" ) ;
-            }
-            else if ( ! empty( $password ) or ! empty( $newPassword ) or ! empty( $newPasswordConfirm ) )
-            {
-                if ( empty( $password ) )
-                {
-                    return $this->returnError( "user_update_password_empty" ) ;
-                }
-                else if ( empty( $newPassword ) )
-                {
-                    return $this->returnError( "user_update_new_password_empty" ) ;
-                }
-                else if ( empty( $newPasswordConfirm ) )
-                {
-                    return $this->returnError( "user_update_new_password_confirm_empty" ) ;
-                }
-                else if ( $newPassword != $newPasswordConfirm )
-                {
-                    return $this->returnError( "user_update_new_password_different" ) ;
-                }
-                else if ( ! password_verify( $password , $user->user_front_password ) )
-                {
-                    return $this->returnError( "user_update_last_password_invalid" ) ;
-                }
-                else
-                {
-                    return $this->checkModule();
-                }
             }
             else
             {
@@ -709,6 +683,65 @@ class User extends \App\Kernel\Common\User
         $profile = $this->updateProfileOtherInformation( $profile ) ;
         $profile->save();
         */
+    }
+
+    ###################################################################################################################################
+    ######################################                 PASSWORD                  ##################################################
+    ###################################################################################################################################
+
+    public function updatePassword()
+    {
+        $password           = trim( $this->post('user_password') ) ;
+        $newPassword        = trim( $this->post('user_new_password') ) ;
+        $newPasswordConfirm = trim( $this->post('user_new_password_confirm') ) ;
+
+        if ( ! $this->isLogged() )
+        {
+            return $this->returnError( "user_update_not_logged" ) ;
+        }
+        else
+        {
+            $user = $this->getById();
+
+            if ( empty( $password ) )
+            {
+                return $this->returnError( "user_update_password_empty" , false , true ) ;
+            }
+            else if ( empty( $newPassword ) )
+            {
+                return $this->returnError( "user_update_new_password_empty" , false , true ) ;
+            }
+            else if ( $this->formatPasswordRequired( $newPassword ) == false )
+            {
+                return $this->returnError( "user_update_new_password_invalid_format" , false , true ) ;
+            }
+            else if ( empty( $newPasswordConfirm ) )
+            {
+                return $this->returnError( "user_update_new_password_confirm_empty" , false , true ) ;
+            }
+            else if ( $newPassword != $newPasswordConfirm )
+            {
+                return $this->returnError( "user_update_new_password_different" , false , true ) ;
+            }
+            else if ( ! password_verify( $password , $user->user_front_password ) )
+            {
+                return $this->returnError( "user_update_last_password_invalid" , false , true ) ;
+            }
+            else
+            {
+                $user->user_front_login     = $this->post('user_login') ;
+                $user->user_front_token     = $this->getNewToken() ;
+                $user->user_front_password  = $this->hashPassword( $password ) ;
+                $user->save();
+
+                return $this->returnError( "user_update_password_successful" , true , true ) ;
+            }
+        }
+    }
+
+    protected function formatPasswordRequired( $pass )
+    {
+        return true ;
     }
 
     ###################################################################################################################################

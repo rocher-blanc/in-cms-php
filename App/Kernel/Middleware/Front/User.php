@@ -38,6 +38,11 @@ class User extends \Slim\Middleware
                 $this->user()->update();
             }
 
+            if ( $this->app->request->post('user_action') == 'update_password' )
+            {
+                $this->user()->updatePassword();
+            }
+
             if ( $this->app->request->post('user_action') == 'register' )
             {
                 $this->user()->register();
