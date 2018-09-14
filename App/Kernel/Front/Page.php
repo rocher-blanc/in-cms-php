@@ -97,7 +97,6 @@ abstract class Page
         if ( $this->CMS()->request()->isPost() )    $this->controllerPOST();
         if ( $this->CMS()->request()->isGet() )     $this->controllerGET();
 
-
         $this->render() ;
     }
 
