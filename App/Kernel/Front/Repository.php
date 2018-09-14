@@ -38,16 +38,42 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function findAll( $currentPage = NULL )
     {
-    	$rst = $this->getKit() ;
+        $rst = $this->getKit() ;
 
-    	if ( $currentPage !== NULL )
-		{
-			$rst = $rst->limit( $this->getEntity()->getPagination() )
-					   ->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
-		}
+        if ( $currentPage !== NULL )
+        {
+            $rst = $rst->limit( $this->getEntity()->getPagination() )
+                ->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
+        }
 
         return $rst->find_many();
     }
+
+    #################################################################################################################################
+    ##################################################    USER     ##################################################################
+    #################################################################################################################################
+
+    public function User()
+    {
+        return \App\Kernel\Front\User::getInstance() ;
+    }
+
+    public function findAllUser( $currentPage = NULL )
+    {
+        $rst = $this->getKit()->where_equal( $this->getEntity()->get('user_front_id')->getColumn() , $this->User()->getId() ) ;
+
+        if ( $currentPage !== NULL )
+        {
+            $rst = $rst->limit( $this->getEntity()->getPagination() )
+                ->offset( ( $this->getEntity()->getPagination() * $currentPage ) - $this->getEntity()->getPagination() );
+        }
+
+        return $rst->find_many();
+    }
+
+    #################################################################################################################################
+    #################################################################################################################################
+    #################################################################################################################################
 
     public function findSiteMap( $field , $id )
     {
