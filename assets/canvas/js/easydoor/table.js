@@ -23,6 +23,7 @@ tableCustomization = function() {
             url: urlCustomization,
             data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&field=' + $link.data('name') + '&active=' + active,
             success: function(data){
+                console.log($parent.data('table'));
                 reloadTable( $( '#' + $parent.data('table') ).find('form.tableFormSeach') , $parent.data('table') )
             },
             error: function(jqXHR, textStatus, errorThrown) {

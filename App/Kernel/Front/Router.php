@@ -470,6 +470,10 @@ class Router
     {
         $page = \DB::for_table('page')
             ->select('page_id')
+            ->select('page_access_user')
+            ->select('page_access_user_group')
+            ->select('page_access_user_redirect')
+            ->select('page_id')
             ->where_equal('page_active', 1)
             ->where_equal('page_default', 1);
 
@@ -492,8 +496,32 @@ class Router
             $app = $this->getApp() ;
             if ( file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . ".php" ) )
             {
-                $app->get('/(:lang)', function ( $lang = NULL ) use ( $page )
+                $User       = $this->User();
+                $Response   = $this->Factory()->Response();
+                $Url        = $this->Factory()->Url();
+
+                $app->get('/(:lang)', function ( $lang = NULL ) use ( $page , $User , $Response , $Url )
                 {
+                    if ( ACTIVE_USER )
+                    {
+
+                        if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
+                        {
+                            $Response->redirect( $Url->page( $page->page_access_user_redirect , true ) );
+                        }
+                        else if ( $page->page_access_user == 2 && $User->isLogged() == true )
+                        {
+                            // S'il est connecté mais pas dans le bon groupe
+                            $tabGroup = unserialize( $page->page_access_user_group );
+                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ]; // bug tempporairei du au formulaire de bo
+
+                            if ( ! in_array( $User->getGroup() , $tabGroup ) )
+                            {
+                                $Response->redirect();
+                            }
+                        }
+                    }
+
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 
                     $pageClass = new $ControllerClass;

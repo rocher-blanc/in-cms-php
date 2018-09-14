@@ -478,10 +478,20 @@ refreshShowIf = function( base , mod , route , $this ) {
                 $.each(data.fields, function(i, elt) {
                     var field = $("div[data-field='"+ elt.name+"']");
                     if ( elt.show == true ) {
-                        field.css("visibility", "visible");
+                        if ( field.data('show') == 'hidden' ) {
+                            field.removeClass('hidden');
+                        }
+                        else {
+                            field.removeClass('hide').show();
+                        }
                     }
                     else {
-                        field.css("visibility", "hidden");
+                        if ( field.data('show') == 'hidden' ) {
+                            field.addClass('hidden');
+                        }
+                        else {
+                            field.addClass('hide');
+                        }
                     }
                 });
             }
