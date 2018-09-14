@@ -770,7 +770,7 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $row->getTitle() != '' )
             {
                 $tabField[ $row->getName() ] = [
-                    'table' => ( $row->getName() != $this->getEntity()->getValidationName() ? true : false ),
+                    'table' => ( $row->getName() != $this->getEntity()->getValidationName() && $row->back() == true ? true : false ),
                     'letter' => $alphas[$i],
                     'title'  => $row->getTitle(),
                     'active'  => ( in_array( $row->getName() , $fieldActive ) ? true : false )
@@ -1394,6 +1394,29 @@ class Controller extends \App\Kernel\Common\Controller
                 if ( $row->hasLang() == false && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
                 {
                     $data->set( $row->getName() , $content->get( $row->getColumn() ) );
+                }
+            }
+
+            if ( $this->getEntity()->hasValidation() )
+            {
+                $data->set( $this->getEntity()->getValidationName() , 0 );
+            }
+
+            if ( $this->getEntity()->hasValidation() )
+            {
+                $data->set( $this->getEntity()->getValidationName() , 0 );
+            }
+
+            if ( ! empty( $this->getEntity()->getFieldReference() ) )
+            {
+                if ( count( $this->getEntity()->getFieldReference() ) == 1 )
+                {
+                    $field =  $this->getEntity()->getFieldReference()[0] ;
+
+                    if ( $this->getEntity()->get( $field )->getType() == 'text' )
+                    {
+                        $data->set( $field , "Copie de " . $content->get( $this->getEntity()->get( $field )->getColumn() ) );
+                    }
                 }
             }
 
