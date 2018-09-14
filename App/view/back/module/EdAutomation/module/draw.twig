@@ -41,6 +41,7 @@
                     userId: "{{ userId }}"
                 },
                 language: "fr",
+                templateId: {{ idtopol }},
                 removeTopBar: false, // Hides the top bar of the email editor
                 light: true, // set the editor theme to be light
                 customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below
@@ -107,7 +108,7 @@
 
             // Plugin start
             TopolPlugin.init(TOPOL_OPTIONS);
-            TopolPlugin.load("{{ json }}");
+            {#TopolPlugin.load("{{ json }}");#}
         });
     </script>
 {% endblock %}

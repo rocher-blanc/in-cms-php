@@ -15,7 +15,7 @@ class EdAutomation extends Builder
         }
 
         $this->setFieldReference( 'name' );
-        $this->duplicate();
+        //$this->duplicate();
 
         $this->build('name')
             ->column(1, 1)

@@ -35,6 +35,22 @@ class TwigModule extends \Twig_Extension
         );
     }
 
+    public function module( $module , $component , $type , $request = [] , $vars = [] )
+    {
+        if ( is_string( $request ) ) $request = [];
+
+        $replaceString = '' ;
+        $fullUrl = $this->Factory()->Url()->getFullUrl() ;
+        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
+        $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
+
+        $Controller = $this->Container()->module( $module )->getController();
+        $Controller->setUrl( explode('/',$url) );
+        $Controller->setComponentName( $component );
+
+        return $Controller->getComponent( $type , $request , $vars );
+    }
+
     public function component( $module , $component , $type , $request = [] , $vars = [] )
     {
         if ( is_string( $request ) ) $request = [];

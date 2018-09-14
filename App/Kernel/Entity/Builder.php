@@ -871,8 +871,8 @@ class Builder extends Model
             else
             {
                 $this->build('user_front_id' , true )
-                    ->isInteger()
                     ->isHidden()
+                    ->isInteger()
                     ->defaut(function() {
                         return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
                     } , true  );
@@ -915,30 +915,7 @@ class Builder extends Model
                 ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
                 ->name('Email');
 
-            if ( \App\Kernel\Front\User::getInstance()->isLogged() )
-            {
-                /*$this->build('user_password' , true )
-                    ->isPassword()
-                    ->group('connexion')
-                    ->noRename()
-                    ->noBack()
-                    ->name('Ancien mot de passe');
-
-                $this->build('user_new_password' , true )
-                    ->isPassword()
-                    ->group('connexion')
-                    ->noRename()
-                    ->noBack()
-                    ->name('Nouveau mot de passe');
-
-                $this->build('user_new_password_confirm' , true )
-                    ->isPassword()
-                    ->group('connexion')
-                    ->noRename()
-                    ->noBack()
-                    ->name('Confirmer votre nouveau mot de passe');*/
-            }
-            else
+            if ( ! \App\Kernel\Front\User::getInstance()->isLogged() )
             {
                 $this->build('user_password' , true )
                     ->isPassword()
