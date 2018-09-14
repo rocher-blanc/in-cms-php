@@ -148,45 +148,55 @@
                                     <a href="#" class="sf-with-ul"><div>easyDOOR</div></a>
                                     <div class="mega-menu-content style-2 clearfix">
 
-                                        {% if active_newsletter == true %}
                                         <ul class="mega-menu-column col-lg-3">
+                                            {% if active_newsletter == true %}
+                                                <li class="mega-menu-title sub-menu">
+                                                    <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
+                                                    <ul>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
+                                                                <div>Newsletters</div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
+                                                                <div>Groupes d'abonnés</div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
+                                                                <div>Abonnés</div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
+                                                                <div>Expéditeurs</div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
+                                                                <div>Planification des campagnes</div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
+                                                                <div>Gabarits</div>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            {% endif %}
                                             <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
+                                                <a href="#" class="sf-with-ul"><div>Emailing</div></a>
                                                 <ul>
                                                     <li>
-                                                        <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
-                                                            <div>Newsletters</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
-                                                            <div>Groupes d'abonnés</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
-                                                            <div>Abonnés</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                            <div>Expéditeurs</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
-                                                            <div>Planification des campagnes</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
-                                                            <div>Gabarits</div>
+                                                        <a href="{{ route( 'EdAutomation' , 'index' ) }}">
+                                                            <div>Automation</div>
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </li>
                                         </ul>
-                                        {% endif %}
 
                                         <ul class="mega-menu-column col-lg-3">
                                             <li class="mega-menu-title sub-menu">
