@@ -282,7 +282,7 @@ class User extends \App\Kernel\Common\User
                     ->where_equal('user_front_active', 1)
                     ->find_one();
 
-                if ( is_object( $user ) && $user->user_front_login === $login && password_verify( $password , $user->user_front_password ) == true )
+                if ( is_object( $user ) && $user->user_front_login === $login && $this->checkPassword( $user->user_front_password , $password ) == true )
                 {
                     $date = new \DateTime();
                     $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
@@ -723,7 +723,7 @@ class User extends \App\Kernel\Common\User
             {
                 return $this->returnError( "user_update_new_password_different" , false , true ) ;
             }
-            else if ( ! password_verify( $password , $user->user_front_password ) )
+            else if ( ! $this->checkPassword( $user->user_front_password , $password ) )
             {
                 return $this->returnError( "user_update_last_password_invalid" , false , true ) ;
             }
@@ -742,6 +742,11 @@ class User extends \App\Kernel\Common\User
     protected function formatPasswordRequired( $pass )
     {
         return true ;
+    }
+
+    protected function checkPassword( $pass , $post )
+    {
+        return password_verify( $post , $pass ) ;
     }
 
     ###################################################################################################################################
