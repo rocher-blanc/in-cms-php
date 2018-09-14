@@ -277,8 +277,8 @@ class Field
 
 	public function hasCondition()
 	{
-		if ( $this->getData('showIf') === NULL ) 	return false ;
-		else									        return true ;
+        if ( $this->getData('showIf') === NULL ) 	return false ;
+        else									        return true ;
 	}
 
 	/* ************************************************** */
@@ -295,10 +295,16 @@ class Field
 		return $this->getData('twig') ;
 	}
 
-	public function front()
-	{
-		return $this->getData('front') ;
-	}
+    public function front()
+    {
+        return $this->getData('front') ;
+    }
+
+    public function visible()
+    {
+        if ( $this->getData('visibility') === NULL ) 	return false ;
+        else									            return true ;
+    }
 
 	public function back()
 	{

@@ -1285,6 +1285,7 @@ class Controller extends \App\Kernel\Common\Controller
             $table = \DB::for_table('module_table')->create();
             $table->module_table_module_id = $this->getEntityId();
             $table->module_table_field = $this->getApp()->request->post('field');
+
             $table->save();
         }
         else

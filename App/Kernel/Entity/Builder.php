@@ -1436,6 +1436,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function visibie()
+    {
+        $this->field()->setData( "visibility" , true ) ;
+        return $this ;
+    }
+
     protected function column( $part , $width )
     {
         if ( $part == $width / 2 )	$className = 'col_half' ;

@@ -484,6 +484,7 @@ class Controller
 						"title" 	=> $row->getData('title'),
 						"type" 		=> $row->getType(),
 						"tab" 		=> $row->getTab(),
+						"visible"   => $row->visible(),
 						"show" 		=> $show,
 						"group" 	=> $row->getGroup(),
 						"class" 	=> $row->getData('classField'),
@@ -732,10 +733,10 @@ class Controller
 					{
 						if ( is_callable( $grp['showIF'] ) )
 						{
-							$function = $grp['showIF'];
-							$show = $function( $contentShow ) ;
+                            $function = $grp['showIF'];
+                            $show = $function( $contentShow ) ;
 
-							if ( $show == false )
+                            if ( $show == false )
 							{
 								$ctGrpHide++;
 								$arrayTab[ $keyTab ][ 'group' ][ $keyGrp ][ 'show' ] = false;
