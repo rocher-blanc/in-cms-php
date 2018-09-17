@@ -28,6 +28,8 @@ class Controller
 	protected $_depedency_module = NULL ;
 	protected $_depedency_element = NULL ;
 
+    protected $_msg 		= [] ;
+
 	/* ************************************************** */
 	/* ******************   SETTER   ******************** */
 	/* ************************************************** */
@@ -175,6 +177,11 @@ class Controller
 	/* ******************     TOOLS     ******************** */
 	/* ***************************************************** */
 
+    protected function Log()
+    {
+        return \App\Kernel\Back\Log::getInstance() ;
+    }
+
 	protected function Factory()
 	{
 		return \App\Kernel\Factory::getInstance() ;
@@ -195,6 +202,22 @@ class Controller
 		return \Slim\Slim::getInstance() ;
 	}
 
+    /* ************************************************** */
+    /* *****************   MESSAGES   ******************* */
+    /* ************************************************** */
+
+    protected function m( $key )
+    {
+        if ( array_key_exists( $key , $this->getMessage() ) ) 	return $this->getMessage( $key ) ;
+        else													return $this->Message()->get( $key ) ;
+    }
+
+    protected function getMessage( $key = NULL )
+    {
+        if ( $key === NULL ) return $this->_msg ;
+        else				 return $this->_msg[ $key ] ;
+    }
+
 	/* ***************************************************** */
 	/* ******************   CONTAINER   ******************** */
 	/* ***************************************************** */
@@ -209,9 +232,19 @@ class Controller
 		return $this->Container()->module( $this->getEntityName() )->getEntity() ;
 	}
 
-	/* ********************************************************* */
-	/* ******************   FETCH / RENDER   ******************* */
-	/* ********************************************************* */
+    /* ********************************************************* */
+    /* ******************      REQUEST       ******************* */
+    /* ********************************************************* */
+
+    protected function post( $key = NULL )
+    {
+        if ( $key === NULL )    return $this->getApp()->request->post();
+        else                    return $this->getApp()->request->post( $key );
+    }
+
+    /* ********************************************************* */
+    /* ******************   FETCH / RENDER   ******************* */
+    /* ********************************************************* */
 
 	protected function render( $template )
 	{
@@ -813,4 +846,151 @@ class Controller
 	{
 		return $this->Factory()->Response()->printJSON( $this->getShow() );
 	}
+
+    /* ************************************************** */
+    /* ************         DELETE         ************** */
+    /* ************************************************** */
+
+    public function delete()
+    {
+        if ( $this->getEntity()->canDelete() == false )
+        {
+            return [
+                'msg' => 'La suppression n\'est pas autorisé sur ce module',
+                'url' => '',
+                'result' => false
+            ];
+        }
+
+        $result = $this->hookDeleteBefore() ;
+
+        if ( $result === true )
+        {
+            $result = [
+                'msg' => '',
+                'url' => '',
+                'result' => false
+            ];
+
+            $content = $this->getRepository()->findOne( $this->getId() );
+
+            if ( $content )
+            {
+                if ( $this->getEntity()->hasMultiLang() )
+                {
+                    \DB::for_module_lang( $this->getEntityName() , $this->getId() )
+                        ->delete_many();
+                }
+
+                if ( !empty( $this->getEntity()->getField() ) )
+                {
+                    foreach( $this->getEntity()->getField() as $name => $row )
+                    {
+                        if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
+                        {
+                            $Alt = new \App\Kernel\Back\Alt;
+                            $Alt->setElementId( $this->getId() );
+                            $Alt->setModuleId( $this->getEntityId() );
+                            $Alt->delete();
+                        }
+                        else if ( $row->getType() == 'checkbox' )
+                        {
+                            \DB::for_module_assoc( $this->getEntityName() , $name )
+                                ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+                                ->delete_many();
+                        }
+                        else if ( $row->getType() == 'gallery' )
+                        {
+                            $Gallery = new \App\Kernel\Back\Gallery;
+                            $Gallery->setElementId( $this->getId() );
+                            $Gallery->setField( $row->getName() );
+                            $Gallery->setModuleId( $this->getEntityId() );
+                            if ( $row->hasThumb() )
+                            {
+                                foreach( $row->getThumb() as $thumb )
+                                {
+                                    // width, height
+                                    $Gallery->setThumb( $thumb[0] , $thumb[1] );
+                                }
+                            }
+                            $Gallery->deleteElement();
+                        }
+                    }
+                }
+
+                if ( $this->getEntity()->hasUrl() )
+                {
+                    $seo = new \App\Kernel\Back\Seo;
+                    $seo->setElementId( $this->getId() );
+                    $seo->setModuleId( $this->getEntityId() );
+                    $seo->delete();
+                }
+
+                if ( $this->getEntity()->hasParent() )
+                {
+                    $parent_id = $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasOrder() )
+                    {
+                        $max = \DB::for_module( $this->getEntityName() );
+
+                        if ( is_null( $parent_id ) )    $max = $max->where_null( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() );
+                        else                            $max = $max->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id );
+
+                        $max = $max->count();
+                    }
+
+                    $rst = \DB::for_module( $this->getEntityName() )->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getId() ) ;
+                    if ( $this->getEntity()->hasOrder() ) $rst = $rst->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
+                    $rst = $rst->find_many();
+
+                    if ( $rst )
+                    {
+                        $order = $max + 1;
+                        foreach( $rst as $rep )
+                        {
+                            $rep->set( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $parent_id ) ;
+                            if ( $this->getEntity()->hasOrder() ) $rep->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
+                            $rep->save();
+                            $order++;
+                        }
+                    }
+                }
+
+                if ( $this->getEntity()->hasOrder() )
+                {
+                    $order = $content->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+                    $rst = \DB::for_module( $this->getEntityName() )
+                        ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() )
+                        ->select( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasParent() ) $rst = $rst->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $content->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ) ;
+                    $rst = $rst->where_gt( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order )->find_many();
+
+                    if ( $rst )
+                    {
+                        foreach( $rst as $row )
+                        {
+                            $order = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) - 1 ;
+                            $row->set( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() , $order );
+                            $row->save();
+                        }
+                    }
+                }
+
+                $content->delete();
+
+                $this->hookDeleteAfter() ;
+
+                $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
+
+                $result['msg'] = $this->m("delete_success");
+                $result['result'] = true ;
+            }
+            else
+            {
+                $result['msg'] = $this->m("delete_success");
+            }
+        }
+
+        return $result ;
+    }
 }

@@ -38,6 +38,10 @@ class Module extends \Slim\Middleware
                 {
                     $action = 'showIf';
                 }
+                else if ( $this->app->request->post('delete') != '' )
+                {
+                    $action = 'delete';
+                }
 
                 switch( $action )
                 {
@@ -45,7 +49,14 @@ class Module extends \Slim\Middleware
                     case "showIf" :
                         $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
                         $rst = $Controller->getShow();
-                    break;
+                        break;
+
+                    // SHOW IF
+                    case "delete" :
+                        $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
+                        $Controller->setId( $this->app->request->post('id_element') );
+                        $rst = $Controller->delete();
+                        break;
 
                     // CRUD
                     default :
