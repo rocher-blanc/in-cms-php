@@ -2,9 +2,15 @@ $(function() {
     init('body');
 });
 
-if (typeof Notify === "function") {
+if (typeof Notify !== "function") {
     Notify = function( msg, result) {
         alert( msg );
+    };
+}
+
+if (typeof redirect !== "function") {
+    redirect = function( url ) {
+        document.location.href = url ;
     };
 }
 
