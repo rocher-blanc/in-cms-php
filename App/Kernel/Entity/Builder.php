@@ -871,8 +871,7 @@ class Builder extends Model
             else
             {
                 $this->build('user_front_id' , true )
-                    ->isHidden()
-                    ->isInteger()
+                    ->isHidden("INT" , 11)
                     ->defaut(function() {
                         return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
                     } , true  );
@@ -893,7 +892,7 @@ class Builder extends Model
             $this->setModuleUser() ;
 
             $this->build('user_front_id' , true )
-                ->isHidden()
+                ->isHidden("INT" , 11)
                 ->defaut(function() {
                     return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
                 } , true  );
@@ -1045,9 +1044,9 @@ class Builder extends Model
     protected function initDefaultField()
     {
         $this->build('id' , true )->isId();
-        $this->build('date_created' , true )->isHiddenDate();
-        $this->build('date_last_updated' , true )->isHiddenDate();
-        $this->build('date_updated' , true )->isHiddenDate();
+        $this->build('date_created' , true )->twig('date_created')->isHiddenDate();
+        $this->build('date_last_updated' , true )->twig('date_last_updated')->isHiddenDate();
+        $this->build('date_updated' , true )->twig('date_updated')->isHiddenDate();
     }
 
     /* ************************************************** */
@@ -1363,7 +1362,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function ManyToMany( $object , $var )
+    protected function ManyToMany( $object , $var = NULL )
     {
         $this->field()->setData( "manyToMany" , true ) ;
         $this->field()->setData( "object" , $object ) ;
