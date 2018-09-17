@@ -1,0 +1,8 @@
+    <form method="post" action="{{ route }}" class="ajax{{ form_class != '' ? ' ' ~ form_class : '' }}">
+        <input type="hidden" name="id_element" value="{{ id }}" />
+        <input type="hidden" name="delete" value="1" />
+        <input type="hidden" name="moduleName" value="{{ module }}" />
+        <input type="hidden" name="keyControl" value="{{ keyControl }}" />
+        {% if redirect != '' %}<input type="hidden" name="redirect" value="{{ redirect }}" />{% endif %}
+        <button class="{{ button_class }}">{{ button_text }}</button>
+    </form>

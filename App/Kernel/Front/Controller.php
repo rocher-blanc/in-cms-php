@@ -816,7 +816,8 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
-                    break;
+                break;
+
                 case "all" :
                     $i = 0;
                     foreach( $result as $row )
@@ -836,7 +837,7 @@ class Controller extends \App\Kernel\Common\Controller
                         if ( array_key_exists( 'depedency' , $parse ) ) $elmts[ $i ]['depedency'] = $parse['depedency'];
                         $i++;
                     }
-                    break;
+                break;
             }
         }
 
@@ -855,7 +856,7 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   FORMER   ******************** */
     /* ************************************************** */
 
-    protected function generateForm( $value = false )
+    protected function generateForm( $value = false , $url = '' )
     {
         $form = parent::generateForm( $value );
 
@@ -872,6 +873,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'id' => $form['id'],
                 'module' => $this->getEntityName(),
+                'redirect' => $url,
                 'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
                 'result' => $this->result_form,
             ])
@@ -883,7 +885,7 @@ class Controller extends \App\Kernel\Common\Controller
         return "front" ;
     }
 
-    public function getForm( $type , $id )
+    public function getForm( $type , $id , $url )
     {
         switch( $type )
         {
@@ -893,12 +895,29 @@ class Controller extends \App\Kernel\Common\Controller
                     $this->setId( $id );
                 }
 
-                return $this->generateForm( $id === NULL ? false : true ) ;
-            break;
+                return $this->generateForm( $id === NULL ? false : true , $url ) ;
+                break;
             case "object" :
                 // a faire
-            break;
+                break;
         }
+    }
+
+    public function getFormDelete( $id , $var , $url )
+    {
+        $View = $this->Container()->newClass('App\Kernel\View');
+        return $View->fetch( 'module/formDelete.twig' , [
+            'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+            'id' => $id,
+            'module' => $this->getEntityName(),
+            'redirect' => $url,
+            'button_text' => $var['text'],
+            'button_class' => $var['class'],
+            'form_class' => $var['fclass'],
+            'redirect' => $url,
+            'keyControl' => md5( $this->getEntityName() . $id ),
+            'result' => $this->result_form,
+        ] );
     }
 
     public function listenForm( $add = true )
@@ -1011,6 +1030,11 @@ class Controller extends \App\Kernel\Common\Controller
 					//$this->Factory()->Response()->flash( $result['msg'] , true );
 
 					$result['result'] = true;
+
+					if ( $this->post('redirect') != '' )
+                    {
+                        $result['url'] = $this->getUrlRedirect();
+                    }
 				}
 				else
 				{
@@ -1050,5 +1074,10 @@ class Controller extends \App\Kernel\Common\Controller
         $this->result_form = $result;
 
         return $result ;
+    }
+
+    protected function getUrlRedirect()
+    {
+        return $this->post('redirect') ;
     }
 }

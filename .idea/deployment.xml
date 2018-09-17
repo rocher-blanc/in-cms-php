@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="PROD - IFEC" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="VPS - FNH" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
     <serverData>
       <paths name="PROD - IFEC">
         <serverdata>
@@ -19,7 +19,7 @@
       <paths name="VPS - FNH">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

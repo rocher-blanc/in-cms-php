@@ -31,6 +31,7 @@ class TwigModule extends \Twig_Extension
        return array(
             new \Twig_SimpleFunction('component', [$this, 'component']),
             new \Twig_SimpleFunction('form', [$this, 'form']),
+            new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
             new \Twig_SimpleFunction('parse', [$this, 'parse']),
         );
     }
@@ -67,9 +68,14 @@ class TwigModule extends \Twig_Extension
         return $Controller->getComponent( $type , $request , $vars );
     }
 
-    public function form( $module , $id = NULL , $type = 'html' )
+    public function form( $module , $id = NULL , $url = '', $type = 'html' )
     {
-        return $this->Container()->module( $module )->getController()->getForm( $type , $id );
+        return $this->Container()->module( $module )->getController()->getForm( $type , $id , $url );
+    }
+
+    public function formDelete( $module , $id , $var = [], $url = '' )
+    {
+        return $this->Container()->module( $module )->getController()->getFormDelete( $id , $var , $url );
     }
 
     public function parse( $field )
