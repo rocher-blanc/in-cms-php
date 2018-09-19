@@ -17,6 +17,7 @@ class User extends \App\Kernel\Common\User
     protected $group        = NULL;
     protected $facebook_url = NULL;
     protected $_var         = [];
+    protected $_twig        = [];
     protected $_error       = false;
 
     /* ************************************************** */
@@ -72,6 +73,11 @@ class User extends \App\Kernel\Common\User
         $this->_var[ $key ] = $value ;
     }
 
+    protected function setTwig( array $array )
+    {
+        $this->_twig = $array ;
+    }
+
     /* ************************************************** */
     /* ****************    GETTER     ******************* */
     /* ************************************************** */
@@ -94,6 +100,11 @@ class User extends \App\Kernel\Common\User
     protected function getVar()
     {
         return $this->_var ;
+    }
+
+    public function getTwig()
+    {
+        return $this->_twig ;
     }
 
     public function getProfile( $key )
@@ -204,18 +215,18 @@ class User extends \App\Kernel\Common\User
 
     public function appendVar()
     {
-        $tab = [
-            'user' => array_merge([
-                'id'        => $this->getId(),
-                'login'     => $this->getLogin(),
-                'group'     => $this->getGroup(),
-                'fb_url'    => $this->getFacebookUrl(),
-                'isLogged'  => $this->isLogged(),
-                'profile'   => $this->getProfileData()
-            ], $this->getVar() )
-        ] ;
+        $this->setTwig(array_merge([
+            'id'        => $this->getId(),
+            'login'     => $this->getLogin(),
+            'group'     => $this->getGroup(),
+            'fb_url'    => $this->getFacebookUrl(),
+            'isLogged'  => $this->isLogged(),
+            'profile'   => $this->getProfileData()
+        ], $this->getVar() ));
 
-        $this->CMS()->view()->appendData( $tab );
+        $this->CMS()->view()->appendData([
+            'user' => $this->getTwig()
+        ]);
     }
 
     /* ************************************************** */
@@ -662,11 +673,6 @@ class User extends \App\Kernel\Common\User
 
             $user->user_front_login = $this->post('user_login') ;
             $user->user_front_token = $this->getNewToken() ;
-
-            if ( $this->post('user_new_password') != '' )
-            {
-                $user->user_front_password = $this->hashPassword( $this->post('user_new_password') ) ;
-            }
             $user->save();
 
             if ( $this->getProfileModule() !== NULL ) $this->updateProfile() ;
@@ -729,9 +735,8 @@ class User extends \App\Kernel\Common\User
             }
             else
             {
-                $user->user_front_login     = $this->post('user_login') ;
                 $user->user_front_token     = $this->getNewToken() ;
-                $user->user_front_password  = $this->hashPassword( $password ) ;
+                $user->user_front_password  = $this->hashPassword( $newPassword ) ;
                 $user->save();
 
                 return $this->returnError( "user_update_password_successful" , true , true ) ;

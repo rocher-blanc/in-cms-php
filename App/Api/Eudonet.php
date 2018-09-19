@@ -95,6 +95,14 @@ class Eudonet
                 {
                     $dbValue[ $row['DescId'] ] = $row['DbValue'] ;
                     $value[ $row['DescId'] ] = $row['Value'] ;
+
+                    if ( isset( $row['FileId'] ) )
+                    {
+                        $descid = $row['DescId'] / 100;
+                        list( $u, $null ) = explode( "." , $descid );
+                        $descid = round( $u * 100 , 0 );
+                        $value[ intval( $descid ) ] = $row['FileId'] ;
+                    }
                 }
             }
 
@@ -181,7 +189,10 @@ class Eudonet
     }
   ]
 }' ;
+        echo "<pre>" . $str . "</pre>" ;
+        dump( $str );
         $params = json_decode( $str );
+        dump( $params );
 
         $tab = [];
         $rst = $this->request("post" , 'Search/' . $tablId , $params );

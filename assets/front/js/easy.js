@@ -3,14 +3,16 @@ $(function() {
 });
 
 if (typeof Notify !== "function") {
-    Notify = function( msg, result) {
+    Notify = function( msg, result ) {
         alert( msg );
     };
 }
 
 if (typeof redirect !== "function") {
     redirect = function( url ) {
-        document.location.href = url ;
+        if(typeof url !== "undefined") {
+            document.location.href = url ;
+        }
     };
 }
 
@@ -51,40 +53,16 @@ checkForm = function(base) {
             url: $form.attr('action'),
             data: serialize,
             success: function(data) {
+                console.log( data );
                 if( data.result ) {
                     //$(base + ' form.ajax').trigger("reset");
                 }
 
-                if(data.result == true && data.url != '') {
+                if(data.result == true && typeof data.url !== "undefined") {
                     redirect( data.url );
                 }
                 else {
                     Notify(data.msg, data.result);
-                    /*
-                    if ( data.tab ) $('#onglet-' + data.tab ).click();
-
-                    if ( data.field ) {
-                        if ( $('#field-' + data.field).find('input').length ) {
-                            $('#field-' + data.field).find('input').addClass('error').focus();
-                        }
-                        else if ( $('#field-' + data.field).find('textarea').length ) {
-                            $('#field-' + data.field).find('textarea').addClass('error').focus();
-                        }
-                    }
-
-                    if ( data.fields ) {
-                        $.each(data.fields, function( index, value ) {
-                            $('#field-' + value.field).addClass('error');
-
-                            if ( $('#field-' + value.field).find('input').length ) {
-                                $('#field-' + value.field).find('input').addClass('error');
-                            }
-                            else if ( $('#field-' + value.field).find('textarea').length ) {
-                                $('#field-' + value.field).find('textarea').addClass('error');
-                            }
-                        });
-                    }
-                    */
                 }
 
                 if ( $(base + ' .'+mod+'-form-process').length ) {
@@ -122,6 +100,30 @@ refreshShowIf = function( base , route , $this ) {
         type: 'POST',
         data: serialize + "&show=1",
         success: function(data) {
+            if ( data.tabs.length ) {
+                $.each(data.tabs, function(i, tab) {
+                    var linktab = $('#tabs-link-' + tab.key );
+                    if ( tab.show == true ) {
+                        linktab.removeClass('hide').show();
+                    }
+                    else {
+                        linktab.hide();
+                    }
+
+                    if ( tab.group.length ) {
+                        $.each(tab.group, function(i, group) {
+                            var eltgrp = $('#group_form_' + group.key );
+                            if ( group.show == true ) {
+                                eltgrp.removeClass('hide').show();
+                            }
+                            else {
+                                eltgrp.hide();
+                            }
+                        });
+                    }
+                });
+            }
+            
             if ( data.fields.length ) {
                 $.each(data.fields, function(i, elt) {
                     var field = $("[name='"+ elt.name+"']").closest('.ed_field');

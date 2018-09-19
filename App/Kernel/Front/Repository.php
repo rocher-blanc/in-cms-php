@@ -238,8 +238,11 @@ class Repository extends \App\Kernel\Common\Repository
                     case "id" :
                         $rst->where_id_is( $rqt );
                     break;
-					case "parent" :
-						$rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
+                    case "user" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getUserIdName() ) , $rqt );
+                    break;
+                    case "parent" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
                     break;
                     case "limit" :
                         $rst->limit( $rqt )->offset(0);

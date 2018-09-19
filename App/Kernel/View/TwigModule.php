@@ -30,13 +30,14 @@ class TwigModule extends \Twig_Extension
     {
        return array(
             new \Twig_SimpleFunction('component', [$this, 'component']),
+            new \Twig_SimpleFunction('module', [$this, 'module']),
             new \Twig_SimpleFunction('form', [$this, 'form']),
             new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
             new \Twig_SimpleFunction('parse', [$this, 'parse']),
         );
     }
 
-    public function module( $module , $component , $type , $request = [] , $vars = [] )
+    public function module( $module , $type , $request = [] )
     {
         if ( is_string( $request ) ) $request = [];
 
@@ -47,9 +48,8 @@ class TwigModule extends \Twig_Extension
 
         $Controller = $this->Container()->module( $module )->getController();
         $Controller->setUrl( explode('/',$url) );
-        $Controller->setComponentName( $component );
 
-        return $Controller->getComponent( $type , $request , $vars );
+        return $Controller->getElement( $type , $request );
     }
 
     public function component( $module , $component , $type , $request = [] , $vars = [] )

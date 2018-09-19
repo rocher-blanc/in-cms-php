@@ -678,9 +678,12 @@ class Controller extends \App\Kernel\Common\Controller
 
         switch( $type )
         {
+            case "count" :
+                return $this->getRepository()->requestCount( $request );
+            break;
             case "one" :
                 $result = $this->getRepository()->requestOne( $request );
-                break;
+            break;
             case "all" :
                 $currentPage = NULL ;
 
@@ -720,33 +723,22 @@ class Controller extends \App\Kernel\Common\Controller
             switch( $type )
             {
                 case "one" :
-                    $parse = $this->parseValue( $result );
+                    $elmts = $this->parseValue( $result );
                 break;
                 case "all" :
                     $i = 0;
                     foreach( $result as $row )
                     {
-                        $parse = $this->parseValue( $row );
-
-                        foreach( $this->getEntity()->getField() as $field )
-                        {
-                            if ( $field->hasTwigKey() )
-                            {
-                                if ( $field->getName() == $this->getEntity()->getModuleParentIdName() ) $elmts[ $i ][ $field->getTwigKey() ] = $parse['parent'];
-                                else																	$elmts[ $i ][ $field->getTwigKey() ] = $parse[ $field->getName() ];
-                            }
-                        }
-
-                        if ( array_key_exists( 'url' , $parse ) ) $elmts[ $i ]['url'] = $parse['url'];
-                        if ( array_key_exists( 'depedency' , $parse ) ) $elmts[ $i ]['depedency'] = $parse['depedency'];
+                        $elmts[ $i ] = $this->parseValue( $row );
                         $i++;
                     }
-                    break;
+                break;
             }
         }
 
         return [
             'object' => $elmts,
+            'totalRows' => count( $elmts ),
             'pagination' => $pagination
         ];
     }

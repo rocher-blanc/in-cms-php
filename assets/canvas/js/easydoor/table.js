@@ -23,8 +23,7 @@ tableCustomization = function() {
             url: urlCustomization,
             data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&field=' + $link.data('name') + '&active=' + active,
             success: function(data){
-                console.log($parent.data('table'));
-                reloadTable( $( '#' + $parent.data('table') ).find('form.tableFormSeach') , $parent.data('table') )
+                reloadTable( $( '#' + $parent.data('table') ).find('form.tableFormSearch') , $parent.data('table') )
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 Notify(errorThrown, false);
@@ -34,7 +33,7 @@ tableCustomization = function() {
 };
 
 listenFormTable = function( base ) {
-    $( '#' + base ).find('form.tableFormSeach').each(function() {
+    $( '#' + base ).find('form.tableFormSearch').each(function() {
         var $form = $(this);
 
         /** GESTION DES FILTRES DE RECHERCHE **/
@@ -229,7 +228,9 @@ listenFormTable = function( base ) {
         initSelect( '#' + base );
 
         /** GESTION DES MODALS **/
-        modalDepedency('#' + $form.data('container'));
+        if (typeof modalDepedency === "function") {
+            modalDepedency('#' + $form.data('container'));
+        }
     });
 };
 
@@ -243,7 +244,7 @@ deleteElement = function( url , base ) {
             Notify(data.msg, data.result);
 
             if(data.result == true) {
-                $( '#' + base ).find('form.tableFormSeach').each(function() {
+                $( '#' + base ).find('form.tableFormSearch').each(function() {
                     reloadTable( $(this) , base );
                 });
             }
@@ -258,17 +259,25 @@ deleteElement = function( url , base ) {
 
 reloadTable = function( $form , base ) {
     var iddiv = $('#' + $form.data('container')) ;
-    var urlajax = $form.attr('action') ;
-    if ( iddiv.data('table') != '' ) {
-        urlajax = iddiv.data('table');
-    }
 
-    $.ajax({
-        url: urlajax,
-        type: 'GET',
-        success: function(html) {
-            iddiv.html( html ) ;
-            listenFormTable( base ) ;
-        }
-    });
+    if ( iddiv.data('table') !== "undefined" ) {
+        $.ajax({
+            url: iddiv.data('table') + "?test=2",
+            type: 'GET',
+            success: function(html) {
+                iddiv.html( html ) ;
+                listenFormTable( base ) ;
+            }
+        });
+    }
+    else {
+        $.ajax({
+            url: $form.attr('action') + "?test=1",
+            type: 'GET',
+            success: function(html) {
+                iddiv.html( html ) ;
+                listenFormTable( base ) ;
+            }
+        });
+    }
 };

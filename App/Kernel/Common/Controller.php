@@ -425,43 +425,43 @@ class Controller
 				}
 			}
 
-			if ( !empty( $this->getEntity()->getField() ) )
-			{
-				foreach( $this->getEntity()->getField() as $row )
-				{
-					if ( $row->hasLang() == true )
-					{
-						$array = [];
-						foreach( $this->Lang()->getAll() as $lang )
-						{
-							if ( is_object( $contentLang[ $lang->id ] ) ) $array[ $lang->url ] = $contentLang[ $lang->id ]->get( $row->getColumn() );
-						}
-						$value = $array ;
-					}
-					else
-					{
-						if ( $row->getType() == 'checkbox' )
-						{
-							$value = $this->getAssocValue( $row->getName() ) ;
-						}
-						else if ( $row->getType() == 'date' )
-						{
-							$date  = new \DateTime( $content->get( $row->getColumn() ) ) ;
-							$value = $date->format('d/m/Y');
-						}
-						else if ( $row->getType() == 'gallery' )
-						{
-							$value = $this->getId();
-						}
-						else
-						{
-							$value = $content->get( $row->getColumn() );
-						}
-					}
+            if ( !empty( $this->getEntity()->getField() ) )
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->hasLang() == true )
+                    {
+                        $array = [];
+                        foreach( $this->Lang()->getAll() as $lang )
+                        {
+                            if ( is_object( $contentLang[ $lang->id ] ) ) $array[ $lang->url ] = $contentLang[ $lang->id ]->get( $row->getColumn() );
+                        }
+                        $value = $array ;
+                    }
+                    else
+                    {
+                        if ( $row->getType() == 'checkbox' )
+                        {
+                            $value = $this->getAssocValue( $row->getName() ) ;
+                        }
+                        else if ( $row->getType() == 'date' )
+                        {
+                            $date  = new \DateTime( $content->get( $row->getColumn() ) ) ;
+                            $value = $date->format('d/m/Y');
+                        }
+                        else if ( $row->getType() == 'gallery' )
+                        {
+                            $value = $this->getId();
+                        }
+                        else
+                        {
+                            $value = $content->get( $row->getColumn() );
+                        }
+                    }
 
-					$this->getEntity()->build( $row->getName() )->field()->setValue( $value ) ;
-				}
-			}
+                    $this->getEntity()->build( $row->getName() )->field()->setValue( $value ) ;
+                }
+            }
 		}
 
 		if ( !empty( $this->getEntity()->getField() ) )
@@ -492,6 +492,31 @@ class Controller
 				}
 			}
 		}
+
+        if ( $value == false )
+        {
+            if ( !empty( $this->getEntity()->getField() ) )
+            {
+                foreach( $this->getEntity()->getField() as $row )
+                {
+                    if ( $row->getType() == 'select' && $row->isRequired() == true )
+                    {
+                        $first = current( $row->getOptions() );
+                        $name  = $row->getName();
+                        if ( is_array( $first ) )
+                        {
+                            $first = array_keys( $first , current( $first ) )[0];
+                        }
+                        else
+                        {
+                            $first = array_keys( $row->getOptions() , $first )[0];
+                        }
+
+                        $contentShow->$name = $first ;
+                    }
+                }
+            }
+        }
 
 		$shows      = $this->getShow( true , $contentShow );
 		$condition  = false ;

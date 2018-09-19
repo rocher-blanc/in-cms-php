@@ -1367,6 +1367,7 @@ class Builder extends Model
         $this->field()->setData( "manyToMany" , true ) ;
         $this->field()->setData( "object" , $object ) ;
         $this->field()->setData( "var" , $var ) ;
+
         return $this ;
     }
 
