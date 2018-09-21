@@ -87,6 +87,8 @@ class Eudonet
 
         $rst = $this->request("get" , 'Search/' . $tablId . '/' . $id );
 
+        if ( isset( $_GET['dump'] ) ) dump( $rst );
+
         if ( $rst['ResultInfos']['Success'] == true )
         {
             if ( $rst['ResultData']['Rows'][0]['Fields'] )

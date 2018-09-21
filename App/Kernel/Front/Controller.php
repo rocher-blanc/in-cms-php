@@ -718,12 +718,18 @@ class Controller extends \App\Kernel\Common\Controller
                 break;
         }
 
+        $ct = 0;
+
         if ( $result )
         {
             switch( $type )
             {
                 case "one" :
-                    $elmts = $this->parseValue( $result );
+                    if ( $result )
+                    {
+                        $elmts = $this->parseValue( $result );
+                        $ct = 1;
+                    }
                 break;
                 case "all" :
                     $i = 0;
@@ -732,13 +738,17 @@ class Controller extends \App\Kernel\Common\Controller
                         $elmts[ $i ] = $this->parseValue( $row );
                         $i++;
                     }
+
+                    $ct = count( $elmts );
                 break;
             }
         }
 
+
+
         return [
             'object' => $elmts,
-            'totalRows' => count( $elmts ),
+            'totalRows' => $ct,
             'pagination' => $pagination
         ];
     }
