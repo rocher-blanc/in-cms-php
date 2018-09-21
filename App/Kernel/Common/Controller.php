@@ -388,7 +388,7 @@ class Controller
 		return $View->fetch( 'module/form.twig' , $values );
 	}
 
-	protected function generateForm( $value = false )
+	protected function generateForm( $valueF = false )
 	{
 		$form = $this->Factory()->Form() ;
 		$form->initLib();
@@ -397,7 +397,7 @@ class Controller
 
 		$contentShow = new \stdClass;
 
-		if ( $value == true )
+		if ( $valueF == true )
 		{
             $content = $this->getRepository()->findOne( $this->getId() );
 
@@ -493,7 +493,7 @@ class Controller
 			}
 		}
 
-        if ( $value == false )
+        if ( $valueF == false )
         {
             if ( !empty( $this->getEntity()->getField() ) )
             {
@@ -561,7 +561,7 @@ class Controller
 			'condition'  => $condition,
 			'field'      => $arrayField,
 			'tabs'       => $shows['tabs'],
-			'route_type' => ( $value == false ? 'add' : 'edit' ),
+			'route_type' => ( $valueF == false ? 'add' : 'edit' ),
 			'id'         => $this->getId(),
 			'cdn_css'    => $form->getCdnCSS(),
 			'cdn_js'     => $form->getCdnJS(),
