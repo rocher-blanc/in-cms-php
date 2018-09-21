@@ -450,7 +450,7 @@ refreshShowIf = function( base , mod , route , $this ) {
                 $(base + ' .'+mod+'-form-process').hide();
             }
 
-            if ( data.tabs.length ) {
+            if ( data.tabs && data.tabs.length ) {
                 $.each(data.tabs, function(i, tab) {
                     var linktab = $('#tabs-link-' + tab.key );
                     if ( tab.show == true ) {
@@ -460,7 +460,7 @@ refreshShowIf = function( base , mod , route , $this ) {
                         linktab.hide();
                     }
 
-                    if ( tab.group.length ) {
+                    if ( tab.group && tab.group.length ) {
                         $.each(tab.group, function(i, group) {
                             var eltgrp = $('#group_form_' + group.key );
                             if ( group.show == true ) {
