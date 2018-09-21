@@ -189,13 +189,9 @@ class Eudonet
     }
   ]
 }' ;
-        echo "<pre>" . $str . "</pre>" ;
-        dump( $str );
         $params = json_decode( $str );
-        dump( $params );
-
-        $tab = [];
-        $rst = $this->request("post" , 'Search/' . $tablId , $params );
+        $tab    = [];
+        $rst    = $this->request("post" , 'Search/' . $tablId , $params );
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
