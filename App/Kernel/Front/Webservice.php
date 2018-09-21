@@ -13,6 +13,7 @@ class Webservice
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
+    /* ************************************************** */
 
     public function __construct()
     {
@@ -256,6 +257,7 @@ class Webservice
 
     protected function deleteToken()
     {
+        unset( $_GET[ $this->getKeyToken() ] );
         unset( $_GET[ $this->getKeyToken() ] );
     }
 
