@@ -52,7 +52,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getIdParent()
     {
-        return $_GET['parent'] ;
+        return [ $_GET['parent'] ] ;
     }
 
     public function getRepository()
