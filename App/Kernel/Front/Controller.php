@@ -50,6 +50,11 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
 
+    protected function getIdParent()
+    {
+        return $_GET['parent'] ;
+    }
+
     public function getRepository()
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository() ;
@@ -665,6 +670,24 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         return $arrayElement ;
+    }
+
+    public function parseAll( $rows, $callback = NULL )
+    {
+        $rst = [];
+        if( $rows )
+        {
+            foreach( $rows as $row )
+            {
+                $parsed = $this->parseValue( $row );
+                if( is_callable( $callback ) )
+                {
+                    $parsed = $callback($parsed);
+                }
+                $rst[] = $parsed;
+            }
+        }
+        return $rst;
     }
 
     /* ***************************************************** */
