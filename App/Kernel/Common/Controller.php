@@ -203,6 +203,34 @@ class Controller
 	}
 
     /* ************************************************** */
+    /* ******************    CANER    ******************* */
+    /* ************************************************** */
+
+    protected function canCreate()
+    {
+        if ( $this->getEntity()->getMaxElement() == 0 )
+        {
+            return true ;
+        }
+        else if ( $this->isDepedency() == false && $this->getEntity()->isChild() == false && $this->getEntity()->getMaxElement() > $this->getRepository()->count() )
+        {
+            return true;
+        }
+        else if ( $this->isDepedency() == false && $this->getEntity()->isChild() == true && $this->getEntity()->getMaxElement() > $this->getRepository()->countWithParent( end( $this->getIdParent() ) ) )
+        {
+            return true;
+        }
+        else if ( $this->isDepedency() == true && $this->getEntity()->isChild() == false && $this->getEntity()->getMaxElement() > $this->getRepository()->countWithDepedencyElement( $this->getDepedencyModule() , $this->getDepedencyElement() ) )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /* ************************************************** */
     /* *****************   MESSAGES   ******************* */
     /* ************************************************** */
 
