@@ -216,7 +216,7 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     // Pour les checkbox dans le même module (systeme de table d'association)
-    protected function getAssocValue( $nameField )
+    protected function getAssocValue( $module , $nameField , $id , $modAssoc )
     {
         $content = \DB::for_module_assoc( $this->getEntityName() , $nameField )
             ->select( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) )

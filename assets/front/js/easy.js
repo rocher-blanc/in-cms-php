@@ -19,6 +19,7 @@ if (typeof redirect !== "function") {
 init = function( base ) {
     checkForm( base );
     checkBox( base );
+    checkboxSwitch( base );
     initDatePicker( base );
     initSelect( base );
 };
@@ -32,6 +33,12 @@ checkBox = function( base ) {
     }
 };
 
+checkboxSwitch = function( base ) {
+    if ( $( base + ' .bt-switch').length ) {
+        $( base + " .bt-switch").bootstrapSwitch();
+    }
+};
+
 checkForm = function(base) {
     $(base + ' form.ajax').not('.submitReady').bind('submit', function(e) {
         var $form = $(this);
@@ -41,7 +48,7 @@ checkForm = function(base) {
         }
 
         $(base + ' .ed_field').removeClass('error');
-        var serialize = $form.serialize();
+        var serialize = new FormData($form.get(0));
 
         e.preventDefault();
         e.stopPropagation();
@@ -52,6 +59,9 @@ checkForm = function(base) {
             type: $form.attr('method'),
             url: $form.attr('action'),
             data: serialize,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
             success: function(data) {
                 console.log( data );
                 if( data.result ) {

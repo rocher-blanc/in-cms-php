@@ -27,7 +27,16 @@ class Checkbox extends \App\Kernel\Back\Form
                 ]);
             break;
 
-			case 'checkableTiles' :
+            case 'simple' :
+                return $this->View()->fetch( 'form/checkbox_simple.twig' , [
+                    'name' => $name,
+                    'value' => $value,
+                    'option' => $field->getData('option'),
+                    'required' => $field->isRequired()
+                ]);
+            break;
+
+            case 'checkableTiles' :
                 return $this->checkableTiles( $field, $name, $value );
             break;
 

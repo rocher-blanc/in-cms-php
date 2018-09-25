@@ -470,7 +470,7 @@ class Controller
                     {
                         if ( $row->getType() == 'checkbox' )
                         {
-                            $value = $this->getAssocValue( $row->getName() ) ;
+                            $value = $this->getAssocValueForm( $row->getName() ) ;
                         }
                         else if ( $row->getType() == 'date' )
                         {
@@ -1041,6 +1041,25 @@ class Controller
             else
             {
                 $result['msg'] = $this->m("delete_success");
+            }
+        }
+
+        return $result ;
+    }
+    protected function getAssocValueForm( $nameField )
+    {
+        $content = \DB::for_module_assoc( $this->getEntityName() , $nameField )
+            ->select( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) )
+            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+            ->find_many();
+
+        $result  = array() ;
+
+        if ( $content )
+        {
+            foreach( $content as $row )
+            {
+                $result[] = $row->get( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) ) ;
             }
         }
 

@@ -520,7 +520,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => "",
+            'msg'    => "La clef a bien été ajouté",
         ]);
     });
 

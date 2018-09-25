@@ -28,7 +28,7 @@
     {% else %}
 
         <label class="checkbox-tag-label">
-            <input type="checkbox" value="{{ key }}" name="{{ name }}[]" {% if subkey in value %}checked="checked"{% endif %}>
+            <input type="checkbox" value="{{ key }}" name="{{ name }}[]" {% if key in value %}checked="checked"{% endif %}>
             <span>{{ val }}</span>
         </label>
 

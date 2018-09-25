@@ -984,17 +984,27 @@ class Controller extends \App\Kernel\Common\Controller
 							$content = $this->getRepository()->create();
 						}
 
-						foreach( $this->getEntity()->getField() as $row )
-						{
-							if ( $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
-							{
-								$content->set($row->getColumn(), $row->getDefault());
-							}
-							else if ( $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
-							{
-								$content->set($row->getColumn(), $row->getValue());
-							}
-						}
+                        foreach( $this->getEntity()->getField() as $row )
+                        {
+                            if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
+                            {
+                                $Media = new Media;
+                                $Media->setModuleId( $this->getEntityId() ) ;
+                                $Media->setModuleName( $this->getEntityName() ) ;
+                                $Media->setFolder( $this->getEntity()->getFolder() ) ;
+                                $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+
+                                $content->set($row->getColumn(), $Media->getImageId() );
+                            }
+                            else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
+                            {
+                                $content->set($row->getColumn(), $row->getDefault());
+                            }
+                            else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                            {
+                                $content->set($row->getColumn(), $row->getValue());
+                            }
+                        }
 
 						$date = new \DateTime();
 

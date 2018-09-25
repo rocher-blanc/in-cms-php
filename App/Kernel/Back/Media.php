@@ -2,77 +2,8 @@
 
 namespace App\Kernel\Back;
 
-use App\Kernel\Back\Image;
-
 class Media extends \App\Kernel\Common\Media
 {
-	/* ************************************************** */
-	/* ****************   VARIABLES   ******************* */
-	/* ************************************************** */
-	
-	private $module_id = NULL ;
-	private $module_name = NULL ;
-	private $folder_name = NULL ;
-	private $field = NULL ;
-
-	/* ************************************************** */
-	/* ******************   SETTER   ******************** */
-	/* ************************************************** */
-
-	public function setModuleId( $var )
-	{
-		$this->module_id = $var ;
-	}
-
-	public function setModuleName( $var )
-	{
-		$this->module_name = $var ;
-	}
-
-	public function setFolder( $var )
-	{
-		$this->folder_name = $var ;
-	}
-
-	public function setField( $var )
-	{
-		$this->field = $var ;
-	}
-
-	/* ************************************************** */
-	/* ******************   GETTER   ******************** */
-	/* ************************************************** */
-
-	public function getModuleId()
-	{
-		return $this->module_id ;
-	}
-
-	public function getModuleName()
-	{
-		return $this->module_name ;
-	}
-
-    public function getFolder()
-    {
-        return $this->folder_name ;
-    }
-
-    public function getField()
-    {
-        return $this->field ;
-    }
-
-	protected function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
-	}
-	
-	protected function getApp()
-	{
-		return \Slim\Slim::getInstance() ;
-	}
-
 	/* ************************************************** */
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */
@@ -274,71 +205,6 @@ class Media extends \App\Kernel\Common\Media
 		return false ;
 	}
 	
-	public function rename()
-	{
-		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-		$img  = UPLOAD_PATH . '/' . $this->getImageName() ;
-		
-		if ( file_exists( $img ) )
-		{
-			$name = $this->updateName( $this->getImageName() ) ;
-			
-			if ( file_exists( $path . $name ) ) $exist = true ;
-			else							    		 $exist = false ;
-			
-			if ( $exist == true )
-			{
-				$i = 1;
-				if ( strpos( "-" , $name ) !== false )
-				{
-					$exp 	= explode( "-" , $name ) ;
-					$ct  	= count( $exp ) ;
-					$ext 	= $exp[ $ct - 1 ] ;
-					$extlen = ( strlen( $ext ) + 1 ) * -1 ;
-					
-					$exp = str_replace( $this->getExtension( $name ) , "" , $name ) ;
-					
-					if ( is_numeric( $ext ) )
-					{
-						$name = substr( $name , 0 , $extlen ) . $this->getExtension( $name ) ;
-						$i    = intval( $ext + 1 ) ;
-					}
-					else
-					{
-						$name = $this->updateName( $this->getImageName() ) ;
-					}
-				}
-				
-				while( $exist == true )
-				{
-					$newname = $this->updateName( $name , $i ) ;
-					if ( ! file_exists( $path . $newname ) )
-					{
-						$exist = false ;
-						$name  = $newname ;
-					}
-					$i++;
-				}
-			}
-			
-			if ( $path . $name != $img )
-			{
-				rename( $img , $path . $name ) ;
-				
-				$media = \DB::for_table('media')
-					->where_id_is( $this->getImageId() )
-					->find_one();
-				
-				$media->media_name = $name;
-				$media->save() ;
-				
-				$this->setImageName( $name ) ;
-			}
-			
-			return $this->genThumb( 100 , 100 ) ;
-		}
-	}
-	
 	private function getMiniName( $name )
 	{
 		return $this->getMini( $name , 't' , 100 , 100 ) ;
@@ -348,19 +214,6 @@ class Media extends \App\Kernel\Common\Media
 	{
 		$exp = explode( "." , $name ) ;
 		return '.' . end( $exp ) ;
-	}
-	
-	private function updateName( $name , $addStr = "" )
-	{
-		$exp 	= explode( "." , $name ) ;
-		$ext 	= end( $exp ) ;
-		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
-		if ( $addStr != "" ) $addStr = "-" . $addStr ;
-		
-		$name = substr( $name , 0 , $extlen ) ;
-		$name = $this->Factory()->Url()->encode( $name . $addStr ) . "." . $ext ;
-		
-		return $name ;
 	}
 	
 	public function genThumb( $width , $height , $crop = false )
