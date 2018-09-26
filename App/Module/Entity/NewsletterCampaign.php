@@ -21,7 +21,7 @@ class NewsletterCampaign extends Builder
             ->column(1, 2)
             ->isDate(true)
             ->notEmpty("Veuillez renseigner la date d'envoi")
-            ->name("Date d'envoie");
+            ->name("Date d'envoi");
 
         $this->build('sender')
             ->column(1, 2)

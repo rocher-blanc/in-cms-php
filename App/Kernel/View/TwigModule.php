@@ -80,13 +80,20 @@ class TwigModule extends \Twig_Extension
 
     public function parse( $field )
     {
-        if ( array_key_exists( 'id' , $field ) == true &&
-            array_key_exists( 'type' , $field ) == true &&
-            array_key_exists( 'value' , $field ) == true &&
-            array_key_exists( 'name' , $field ) == true &&
-            array_key_exists( 'module' , $field ) == true )
+        if ( is_array( $field ) )
         {
-            return $this->Container()->module( $field['module'] )->getController()->subParse( $field );
+            if ( array_key_exists( 'id' , $field ) == true &&
+                array_key_exists( 'type' , $field ) == true &&
+                array_key_exists( 'value' , $field ) == true &&
+                array_key_exists( 'name' , $field ) == true &&
+                array_key_exists( 'module' , $field ) == true )
+            {
+                return $this->Container()->module( $field['module'] )->getController()->subParse( $field );
+            }
+        }
+        else
+        {
+            return [];
         }
     }
 }

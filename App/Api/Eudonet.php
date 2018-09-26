@@ -65,7 +65,7 @@ class Eudonet
             "UserPassword"          => EUDO_USER_PASSWORD,
             "UserLang"              => EUDO_USER_LANG,
             "ProductName"           => EUDO_PRODUCT_NAME
-        ]);
+        ])['result'];
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -85,7 +85,9 @@ class Eudonet
         $value   = [];
         $libelle = [];
 
-        $rst = $this->request("get" , 'Search/' . $tablId . '/' . $id );
+        $toto = $this->request("get" , 'Search/' . $tablId . '/' . $id );
+
+        $rst = $toto['result'] ;
 
         if ( isset( $_GET['dump'] ) ) dump( $rst );
 
@@ -118,6 +120,8 @@ class Eudonet
         }
 
         return [
+            'remain' => $toto['remain'],
+            'result' => $rst['ResultInfos']['Success'],
             'value' => $value,
             'libelle' => $libelle,
             'dbvalue' => $dbValue
@@ -126,7 +130,7 @@ class Eudonet
 
     public function wording( $descId , $value = NULL )
     {
-        $rst = $this->request("get" , 'Catalog/' . $descId );
+        $rst = $this->request("get" , 'Catalog/' . $descId )['result'];
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -193,7 +197,7 @@ class Eudonet
 }' ;
         $params = json_decode( $str );
         $tab    = [];
-        $rst    = $this->request("post" , 'Search/' . $tablId , $params );
+        $rst    = $this->request("post" , 'Search/' . $tablId , $params )['result'];
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -234,7 +238,7 @@ class Eudonet
             }
         }
 
-        $rst = $this->request("post" , 'CUD/' . $tablId , $infos );
+        $rst = $this->request("post" , 'CUD/' . $tablId , $infos )['result'];
 
         return $rst ;
     }
@@ -258,7 +262,7 @@ class Eudonet
             }
         }
 
-        $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos );
+        $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos )['result'];
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
@@ -302,7 +306,10 @@ class Eudonet
                 'json' => $params
             ]);
 
-            return json_decode($authResponse->getBody(), true);
+            return [
+                'result' => json_decode($authResponse->getBody(), true),
+                'remain' => $authResponse->getHeader('X-CALL-REMAIN')[0]
+            ];
         } catch ( Exception $e )
         {
             dump( $e );
