@@ -104,7 +104,18 @@
                                     <img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />
                                 </td>
                             {% else %}
-                                <td style="vertical-align: middle;">{{ row.value }}</td>
+                                {% if row.module != '' %}
+                                    <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value }}</a></td>
+                                {% elseif row.subtype == 'email' %}
+                                    <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="mailto:{{ row.value }}">{{ row.value }}</a></td>
+                                {% elseif row.type == 'date' %}
+                                    <td style="vertical-align: middle;">{{ row.value != '30/11/-0001' ? row.value : '-' }}</td>
+                                {% elseif row.type == 'link' %}
+
+                                    <td style="vertical-align: middle;"><a style="" href="{{ row.value }}" target="_blank"><i class="icon-link"></i></a></td>
+                                {% else %}
+                                    <td style="vertical-align: middle;">{{ row.value }}</td>
+                                {% endif %}
                             {% endif %}
 						{% endfor %}
                         {% if hasValidation %}

@@ -5,10 +5,10 @@ $(function() {
     checkboxSwitch('body');
 
     $(window).resize(function() {
-        headerResizing();
+        setTimeout(function(){ headerResizing(); }, 300);
     });
     $(window).scroll(function() {
-        headerResizing();
+        setTimeout(function(){ headerResizing(); }, 300);
     });
     headerResizing();
 });
@@ -76,13 +76,14 @@ deleteElementExt = function( url ) {
 
 headerResizing = function() {
     var width = $("body").width();
+    var $notif = $("#primary-menu").find("#top-cart").eq(0);
     var $ul = $("#primary-menu").find("ul").eq(0);
 
     // Clean header
     $ul.removeClass("small-space");
     $ul.removeClass("two-lines");
     $("#header").removeClass("static-sticky");
-    $ul.css("padding-right", $("#primary-menu .testimonial").outerWidth());
+    $notif.css("padding-right", $("#primary-menu .testimonial").outerWidth());
 
     // Big screen
     if( width > 992 ) {

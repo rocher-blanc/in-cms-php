@@ -25,6 +25,12 @@
                     {% set width = c.width %}
                 {% endif %}
 
+                {% if c.part == c.width and counter != 0 %}
+                    <div class="clearfix"></div>
+                    {% set width = c.width %}
+                    {% set counter = 0 %}
+                {% endif %}
+
                 {% set counter = counter + c.part %}
 
                 {{ form.field(c, counter, width) }}

@@ -439,6 +439,9 @@ class Controller extends \App\Kernel\Common\Controller
                             $typeArray[ $field->getName() ] = $field->getType() ;
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
                                 'value' => $value,
+                                'module' => $field->getData('object'),
+                                'subtype' => $field->getData('subtype'),
+                                'id' => $row->get( $field->getColumn() ),
                                 'type' => $typeField
                             ];
                         }

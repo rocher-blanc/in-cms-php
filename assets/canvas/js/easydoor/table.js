@@ -260,7 +260,7 @@ deleteElement = function( url , base ) {
 reloadTable = function( $form , base ) {
     var iddiv = $('#' + $form.data('container')) ;
 
-    if ( iddiv.data('table') !== "undefined" ) {
+    if ( typeof iddiv.data('table') !== "undefined" ) {
         $.ajax({
             url: iddiv.data('table') + "?test=2",
             type: 'GET',

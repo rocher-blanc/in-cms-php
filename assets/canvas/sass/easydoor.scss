@@ -806,6 +806,48 @@ ul.docs-icons li span {
   }
 }
 
+#top-cart {
+  transition-duration: 0s;
+  margin-bottom: 0 !important;
+  margin-top: -100px !important;
+  margin-left: -1px !important;
+
+  & > a {
+    & > span {
+      top: 38px;
+      right: 3px;
+      background-color: $jweb-blue;
+    }
+  }
+
+  a {
+    padding: 45px 0px 55px 0px;
+    display: block;
+    width: 40px;
+    text-align: center;
+
+    i {
+      font-size: 18px;
+      color: $theme-color;
+    }
+  }
+}
+
+.sticky-header {
+  #top-cart {
+    & > a {
+      & > span {
+        top: 21px;
+      }
+    }
+
+    a {
+      margin: 0 !important;
+      margin-top: -80px !important;
+      padding: 25px 0px 35px 0px;
+    }
+  }
+}
 
 
 /* ************************************************ */

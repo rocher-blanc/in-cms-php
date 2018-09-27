@@ -863,10 +863,22 @@ class Builder extends Model
         {
             if ( $this->getApp()->config('config') == 'back' )
             {
-                $this->build('user_front_id' , true )
-                    ->isSelect()
-                    ->isInteger()
-                    ->name('Utilisateur');
+                if ( defined('MODULE_USER') )
+                {
+                    $this->build('user_front_id' , true )
+                        ->isSelect()
+                        ->ManyToMany(MODULE_USER )
+                        ->name('Utilisateur');
+                }
+                else
+                {
+                    $this->build('user_front_id' , true )
+                        ->isSelect()
+                        ->isInteger()
+                        ->name('Utilisateur');
+                }
+
+
             }
             else
             {

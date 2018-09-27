@@ -355,7 +355,7 @@ class Controller
 	{
 		$Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
-		if ( $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
+		if ( $row->getData('var') !== NULL && $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
 		{
 			$this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
 			$this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
@@ -379,9 +379,17 @@ class Controller
 
 	public function getElementForAssociation( $name , $returnType = NULL )
 	{
-		$alias      = 'titre' ;
-		$target     = $this->getEntity()->get( $name );
-		$content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+	    $alias = 'titre' ;
+
+	    if ( $name !== NULL )
+        {
+            $target     = $this->getEntity()->get( $name );
+            $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+        }
+        else
+        {
+            $content    = $this->getRepository()->findAllForSelect2( $alias ) ;
+        }
 
 		switch( $returnType )
 		{
@@ -397,10 +405,10 @@ class Controller
 				}
 
 				return $tab ;
-				break;
+            break;
 			default :
 				if ( $this->getEntity()->hasParent() ) $content = $this->getTreeParent( $content , $alias ) ;
-				break;
+            break;
 		}
 
 		return $content ;
