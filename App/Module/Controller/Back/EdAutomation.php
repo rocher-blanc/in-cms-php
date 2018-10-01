@@ -15,10 +15,11 @@ class EdAutomation extends Controller
         $this->setRender('userId' , TOPOL_USER_ID);
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
 
-        $content = $this->getRepository()->findOne( $this->getId() );
+        $content = $this->getRepository()->findOne( 22 );
 
-        $json = str_replace('\"' , '"' , $content->get( $this->getEntity()->get('json')->getColumn() ) );
-        $json = str_replace('"' , '\"' , $json );
+        $json = $content->get( $this->getEntity()->get('json')->getColumn() );
+        /*$json = str_replace('\"' , '"' , $content->get( $this->getEntity()->get('json')->getColumn() ) );
+        $json = str_replace('"' , '\"' , $json );*/
         $this->setRender( 'json' , $json ) ;
 
         $this->render('draw.twig');
@@ -32,7 +33,9 @@ class EdAutomation extends Controller
         ]);
 
         $data->set('html' , $_POST['html']);
-        $data->set('json' , $_POST['json']);
+        $res = (file_get_contents('php://input'));
+        list(, $json ) = explode( '&json=' , $res );
+        $data->set('json' , $json);
         $data->save();
     }
 }
