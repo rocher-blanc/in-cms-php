@@ -7,8 +7,6 @@
     <h4 class="ed-h4"><i class="icon-eye-open"></i>{{ rst.subject }}</h4>
     <h4 class="ed-h4"><i class="icon-users"></i>{% for dest in rst.destinataires %}{% if not loop.first %}, {% endif %}{{ dest }}{% endfor %}</h4>
 
-    {% set status = [] %}
-
     {% if res.State != 11 %}
 
         <div class="dark bottommargin-lg">
@@ -38,8 +36,8 @@
                 <thead>
                 <tr>
                     <th>Informations</th>
-                    <th class="th-actions">Valeur</th>
-                    <th class="th-actions">%</th>
+                    <th class="center">Valeur</th>
+                    <th class="center">%</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -146,8 +144,8 @@
             <thead>
             <tr>
                 <th>URL</th>
-                <th class="th-actions">Clics total</th>
-                <th class="th-actions">Clics net</th>
+                <th class="center">Clics total</th>
+                <th class="center">Clics net</th>
             </tr>
             </thead>
             <tbody>
@@ -162,9 +160,6 @@
         </table>
 
     </div>
-
-
-    {% set dests = [] %}
 
     {% set tabStatus = [] %}
 
@@ -198,7 +193,7 @@
             <thead>
             <tr>
                 <th>Statut</th>
-                <th class="th-actions">Nombre d'emails</th>
+                <th class="center">Nombre d'emails</th>
             </tr>
             </thead>
             <tbody>
@@ -226,8 +221,8 @@
                 <th>Statut</th>
                 <th class="center">Ouvert (UTC)</th>
                 <th>Message d'absence</th>
-                <th class="th-actions">Nombre clics total</th>
-                <th class="th-actions">Nombre clics unique</th>
+                <th class="center">Nombre clics total</th>
+                <th class="center">Nombre clics unique</th>
             </tr>
             </thead>
             <tbody data-order="0" data-sens="asc">
@@ -237,9 +232,7 @@
                     <td>{{ attribute(status, item.state) }}</td>
 
                     {% if item.read == 1 %}
-                        {%  set read_full = date(item.readDateUTC, 'sfull') %}
-                        {%  set read_hour = date(item.readDateUTC, 'hour') %}
-                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ read_full }} à {{ read_hour }}</td>
+                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} à {{ item.readDateUTC|date("H:i") }}</td>
                     {% else %}
                         <td class="center"><i class="icon-line-circle-cross danger"></i></td>
                     {% endif %}
