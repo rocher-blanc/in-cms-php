@@ -449,6 +449,38 @@ class Controller extends \App\Kernel\Common\Controller
 
                     $tdArray[ $i ]['id'] = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
 
+                    $tabIcon = [];
+                    if ( ! empty( $this->getEntity()->getIcon() ) )
+                    {
+                        $contentShow = new \stdClass;
+                        foreach( $this->getEntity()->getField() as $f )
+                        {
+                            if ( $f->getData( $this->getDataView() ) == true && ( ( $f->isParent() == true && $f->hasOption() == true ) or $f->isParent() != true ) && $f->getType() !== NULL )
+                            {
+                                $name = $f->getName() ;
+                                $contentShow->$name = $row->get( $f->getColumn() );
+                            }
+                        }
+
+                        foreach( $this->getEntity()->getIcon() as $icon )
+                        {
+                            if ( is_callable( $icon['showIF'] ) )
+                            {
+                                $function = $icon['showIF'];
+                                if ( $function( $contentShow ) == true )
+                                {
+                                    $tabIcon[] = $icon ;
+                                }
+                            }
+                            else
+                            {
+                                $tabIcon[] = $icon ;
+                            }
+                        }
+                    }
+
+                    $tdArray[ $i ]['icons'] = $tabIcon ;
+
                     if ( $this->getEntity()->hasParent() ) 		$tdArray[ $i ][ $this->getEntity()->getParentName() ] = $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasOrder() ) 		$tdArray[ $i ]['order'] = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasValidation() ) 	$tdArray[ $i ]['validation'] = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
@@ -492,7 +524,6 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
         $this->setRender( 'validationName' , $this->getEntity()->getValidationName() ) ;
         $this->setRender( 'hasURL' , $this->getEntity()->hasURL() ) ;
-        $this->setRender( 'icons' , $this->getEntity()->getIcon() ) ;
         $this->setRender( 'th' , $thArray ) ;
         $this->setRender( 'td' , $tdArray ) ;
         $this->setRender( 'order' , $order ) ;
