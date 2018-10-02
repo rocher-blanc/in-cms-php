@@ -5,7 +5,7 @@ namespace App\Module\Controller\Back;
 use App\Kernel\Back\Controller;
 use App\Kernel\Back\Data;
 
-class EdAutomation extends Controller
+class EdEmail extends Controller
 {
     protected function drawAction()
     {

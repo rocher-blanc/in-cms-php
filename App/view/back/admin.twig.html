@@ -187,11 +187,42 @@
                                                 </li>
                                             {% endif %}
                                             <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Emailing</div></a>
+                                                <a href="#" class="sf-with-ul"><div>Automation</div></a>
                                                 <ul>
+                                                    <li>
+                                                        <a href="{{ route( 'EdAutomationModelGroup' , 'index' ) }}">
+                                                            <div>Groupe d'emails</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'EdAutomationModel' , 'index' ) }}">
+                                                            <div>Modèle d'emails</div>
+                                                        </a>
+                                                    </li>
                                                     <li>
                                                         <a href="{{ route( 'EdAutomation' , 'index' ) }}">
                                                             <div>Automation</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'EdAutomationVarGroup' , 'index' ) }}">
+                                                            <div>Groupe de variables</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route( 'EdAutomationVar' , 'index' ) }}">
+                                                            <div>Variables d'environnement</div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Email</div></a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="{{ route( 'EdEmail' , 'index' ) }}">
+                                                            <div>Modèles</div>
                                                         </a>
                                                     </li>
                                                 </ul>

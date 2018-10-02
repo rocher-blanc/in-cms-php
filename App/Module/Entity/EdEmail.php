@@ -4,7 +4,7 @@ namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
 
-class EdAutomation extends Builder
+class EdEmail extends Builder
 {
     protected function load()
     {
@@ -16,7 +16,6 @@ class EdAutomation extends Builder
         }
 
         $this->setFieldReference( 'name' );
-        $this->setModuleParent( 'EdAutomationModel' );
 
         $this->build('name')
             ->column(1, 1)
