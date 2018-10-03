@@ -4,7 +4,7 @@ namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
 
-class EdAutomation extends Builder
+class EdEmail extends Builder
 {
     protected function load()
     {
@@ -12,17 +12,22 @@ class EdAutomation extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
-            $this->addIcon( 'icon-photo' , 'draw' );
+            $this->addIcon( 'icon-photo' , 'draw' , function($c) {
+                return ( $c->blocked == 0 ? true : false );
+            });
         }
 
         $this->setFieldReference( 'name' );
-        $this->setModuleParent( 'EdAutomationModel' );
 
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
             ->notEmpty("Veuillez renseigner le nom du template")
             ->name("Nom");
+
+        $this->build('blocked')
+            ->isBoolean()
+            ->name("Modification bloquer" );
 
         $this->build('html')
             ->noFront()

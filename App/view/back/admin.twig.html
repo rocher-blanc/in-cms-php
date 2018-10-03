@@ -144,143 +144,184 @@
                                     {{ menu.parametre('') }}
                                 </li>
                             {% else %}
-                                <li class="mega-menu sub-menu">
-                                    <a href="#" class="sf-with-ul"><div>easyDOOR</div></a>
-                                    <div class="mega-menu-content style-2 clearfix">
+                            <li class="mega-menu sub-menu">
+                                <a href="#" class="sf-with-ul"><div>easyDOOR</div></a>
+                                <div class="mega-menu-content style-2 clearfix">
 
-                                        <ul class="mega-menu-column col-lg-3">
-                                            {% if active_newsletter == true %}
-                                                <li class="mega-menu-title sub-menu">
-                                                    <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
-                                                    <ul>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
-                                                                <div>Newsletters</div>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
-                                                                <div>Groupes d'abonnés</div>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
-                                                                <div>Abonnés</div>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                                <div>Expéditeurs</div>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
-                                                                <div>Planification des campagnes</div>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
-                                                                <div>Gabarits</div>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title sub-menu">
+                                            {{ menu.parametre('sf-with-ul') }}
+                                        </li>
+                                    </ul>
+
+                                    {% if active_user == true %}
+                                    <ul class="mega-menu-column col-lg-3">
+
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>Utilisateurs</div></a>
+                                            <ul>
+                                                {#<li>
+                                                <a href="{{ siteUrl('/ext/user_front') }}">
+                                                    <div>Utilisateurs</div>
+                                                </a>
+                                            </li>#}
+                                                <li>
+                                                    <a href="{{ siteUrl('/ext/user_front_group') }}">
+                                                        <div>Groupes d'utilisateurs</div>
+                                                    </a>
                                                 </li>
-                                            {% endif %}
-                                            <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Emailing</div></a>
-                                                <ul>
-                                                    <li>
-                                                        <a href="{{ route( 'EdAutomation' , 'index' ) }}">
-                                                            <div>Automation</div>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
+                                            </ul>
+                                        </li>
 
-                                        <ul class="mega-menu-column col-lg-3">
-                                            <li class="mega-menu-title sub-menu">
-                                                {{ menu.parametre('sf-with-ul') }}
-                                            </li>
-                                        </ul>
+                                    </ul>
+                                    {% endif %}
 
-                                        {% if active_user == true %}
-                                        <ul class="mega-menu-column col-lg-3">
+                                    {% if user.admin == true %}
+                                    <ul class="mega-menu-column col-lg-3">
 
-                                            <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Utilisateurs</div></a>
-                                                <ul>
-                                                    {#<li>
-                                                        <a href="{{ siteUrl('/ext/user_front') }}">
-                                                            <div>Utilisateurs</div>
-                                                        </a>
-                                                    </li>#}
-                                                    <li>
-                                                        <a href="{{ siteUrl('/ext/user_front_group') }}">
-                                                            <div>Groupes d'utilisateurs</div>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>Développeur</div></a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/moduleadmin') }}">
+                                                        <div>Modules</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/domain') }}">
+                                                        <div>Domaines</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/pageadmin') }}">
+                                                        <div>Pages</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/groupmodule') }}">
+                                                        <div>Menu d'administration</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/performance') }}">
+                                                        <div>Performances</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/log') }}">
+                                                        <div>Journal d'événements</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/maintenance') }}">
+                                                        <div>Maintenance</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ siteUrl('/admin/security') }}">
+                                                        <div>Sécurité</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
 
-                                        </ul>
-                                        {% endif %}
+                                    </ul>
+                                    {% endif %}
 
-                                        {% if user.admin == true %}
-                                        <ul class="mega-menu-column col-lg-3">
-
-                                            <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Développeur</div></a>
-                                                <ul>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/moduleadmin') }}">
-                                                            <div>Modules</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/domain') }}">
-                                                            <div>Domaines</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/pageadmin') }}">
-                                                            <div>Pages</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/groupmodule') }}">
-                                                            <div>Menu d'administration</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/performance') }}">
-                                                            <div>Performances</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/log') }}">
-                                                            <div>Journal d'événements</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/maintenance') }}">
-                                                            <div>Maintenance</div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ siteUrl('/admin/security') }}">
-                                                            <div>Sécurité</div>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-                                        </ul>
-                                        {% endif %}
-
-                                    </div>
-                                </li>
+                                </div>
+                            </li>
                             {% endif %}
+                            <li class="mega-menu sub-menu">
+                                <a href="#" class="sf-with-ul"><div>easyLETTER</div></a>
+                                <div class="mega-menu-content style-2 clearfix">
+                                    {% if active_newsletter == true %}
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>Newsletter</div></a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
+                                                        <div>Newsletters</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
+                                                        <div>Groupes d'abonnés</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
+                                                        <div>Abonnés</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
+                                                        <div>Expéditeurs</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
+                                                        <div>Planification des campagnes</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
+                                                        <div>Gabarits</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    {% endif %}
+
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>Automation</div></a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route( 'EdAutomationModelGroup' , 'index' ) }}">
+                                                        <div>Groupe d'emails</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'EdAutomationModel' , 'index' ) }}">
+                                                        <div>Modèle d'emails</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'EdAutomation' , 'index' ) }}">
+                                                        <div>Automation</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'EdAutomationVarGroup' , 'index' ) }}">
+                                                        <div>Groupe de variables</div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route( 'EdAutomationVar' , 'index' ) }}">
+                                                        <div>Variables d'environnement</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>Email</div></a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route( 'EdEmail' , 'index' ) }}">
+                                                        <div>Modèles</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </li>
 
 
 

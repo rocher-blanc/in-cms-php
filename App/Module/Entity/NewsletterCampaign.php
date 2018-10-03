@@ -11,6 +11,12 @@ class NewsletterCampaign extends Builder
         $this->setModuleParent( 'NewsletterCampaignGroup' );
         $this->setFieldReference( 'subject' );
 
+        $this->addAction( 'stats' );
+        $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
+            return $c->statut == 3 ? true : false ;
+        });
+
+
         $this->build('subject')
             ->column(1, 2)
             ->isVarchar()
@@ -43,5 +49,16 @@ class NewsletterCampaign extends Builder
             ->ManyToMany( 'NewsletterModel', "name" )
             ->notEmpty("Veuillez sélectionner le gabarit")
             ->name("Gabarit email");
+
+        $this->build('statut')
+            ->column(1, 1)
+            ->isSelect()
+            ->option([
+                1 => "En attente",
+                2 => "Prête",
+                3 => "Envoyée"
+            ])
+            ->notEmpty("Veuillez sélectionner un statut")
+            ->name("Statut");
     }
 }

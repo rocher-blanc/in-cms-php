@@ -343,7 +343,7 @@ class Field
 
 	public function getOptions()
 	{
-		return $this->getData('option') ;
+		return ( is_array( $this->getData('option') ) ? $this->getData('option') : [] ) ;
 	}
 
 	public function getOption( $key )

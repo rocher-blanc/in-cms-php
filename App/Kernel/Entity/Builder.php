@@ -770,12 +770,13 @@ class Builder extends Model
     /* *****************     ICONES      **************** */
     /* ************************************************** */
 
-    public function addIcon( $class , $action )
+    public function addIcon( $class , $action , $showIF = NULL )
     {
         $this->addAction( $action );
         $this->icon[ $action ] = [
             'action'   => $action,
-            'class'    => $class
+            'class'    => $class,
+            'showIF' => $showIF
         ];
     }
 

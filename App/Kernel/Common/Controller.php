@@ -377,7 +377,7 @@ class Controller
 		}
 	}
 
-	public function getElementForAssociation( $name , $returnType = NULL )
+	public function getElementForAssociation( $name = NULL , $returnType = NULL )
 	{
 	    $alias = 'titre' ;
 

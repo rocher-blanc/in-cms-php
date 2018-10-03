@@ -18,4 +18,18 @@
     <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
     {% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
     {% if hasValidation and right.validation == true %}<script src="{{ asset('canvas/js/components/bs-switches.js') }}" data-turbolinks-eval="false"></script>{% endif %}
+    <script>
+        $(function(){
+            let maxHeight = 0;
+            $('.feature-box').each(function() {
+                if ( $(this).height() > maxHeight ) {
+                    maxHeight = $(this).height();
+                }
+            });
+
+            $('.feature-box').each(function() {
+                $(this).css('height' , maxHeight);
+            });
+        });
+    </script>
 {% endblock %}

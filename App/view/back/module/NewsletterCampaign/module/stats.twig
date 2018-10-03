@@ -1,0 +1,253 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Gestion' %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+    <h4 class="ed-h4"><i class="icon-eye-open"></i>{{ rst.subject }}</h4>
+    <h4 class="ed-h4"><i class="icon-users"></i>{% for dest in rst.destinataires %}{% if not loop.first %}, {% endif %}{{ dest }}{% endfor %}</h4>
+
+    {% if res.State != 11 %}
+
+        <div class="dark bottommargin-lg">
+            <div class="text-center">
+                <div class="counter counter-large color"><span data-from="0" data-to="{{ res.Sent }}" data-refresh-interval="5" data-speed="500">0</span> / {{ res.ToSend }}</div>
+                {% if res.Sent > 1 %}
+                    <h3>emails envoyés</h3>
+                {% else %}
+                    <h3>email envoyé</h3>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>État</span></h3>
+        </div>
+        <h4 class="text-center"><span style="color:{% if res.State == 10 %}#3c763d{% else %}#31708f{% endif %};">{{ res.StateStr }}</span></h4>
+
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>Statistiques</span></h3>
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Informations</th>
+                    <th class="center">Valeur</th>
+                    <th class="center">%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Nombre d'emails délivrés & Taux de délivrabilité</td>
+                    {% set ndelivres = res.Sent - res.HardBounces %}
+
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = ndelivres/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+                    <td class="center">{{ ndelivres }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Nombre d'emails ouverts & Taux d'ouverture</td>
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = res.RecipientsRead/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+                    <td class="center">{{ res.RecipientsRead }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Nombre de clics total</td>
+                    {% set totalclics = 0 %}
+                    {% for item in links %}
+                        {% set totalclics = totalclics + item.clicCount %}
+                    {% endfor %}
+                    <td class="center">{{ totalclics }}</td>
+                    <td class="center">-</td>
+                </tr>
+                <tr>
+                    <td>Nombre de clics net & Taux de clic</td>
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = res.RecipientsClic/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+
+                    <td class="center">{{ res.RecipientsClic }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Taux de réactivité (nombre de cliqueurs / nombre d'ouvreurs)</td>
+                    {% if res.RecipientsRead != 0 %}
+                        {% set pourcent = res.RecipientsClic/res.RecipientsRead*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+                    <td class="center">-</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Nombre d'emails softBounce</td>
+
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = res.SoftBounces/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+                    <td class="center">{{ res.SoftBounces }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Nombre d'emails hardBounce</td>
+
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = res.HardBounces/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+
+                    <td class="center">{{ res.HardBounces }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                <tr>
+                    <td>Nombre de désinscrits</td>
+
+                    {% if res.Sent > 0 %}
+                        {% set pourcent = res.Unsubscribe/res.Sent*100 %}
+                    {% else %}
+                        {% set pourcent = 0 %}
+                    {% endif %}
+                    <td class="center">{{ res.Unsubscribe }}</td>
+                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    {% endif %}
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>Liens</span></h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>URL</th>
+                <th class="center">Clics total</th>
+                <th class="center">Clics net</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in links %}
+                <tr>
+                    <td>{{ item.link }}</td>
+                    <td class="center">{{ item.clicCount }}</td>
+                    <td class="center">{{ item.recipientsClic }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    {% set tabStatus = [] %}
+
+    {% for item in dests %}
+
+        {% set state = item.state %}
+        {% set label = attribute(status, item.state) %}
+
+        {% if label in tabStatus|keys %}
+
+            {% set count = attribute(tabStatus, label) %}
+            {% set count = count + 1 %}
+            {% set tabStatus = tabStatus|merge({(label): count}) %}
+
+        {% else %}
+
+            {% set count = 1 %}
+            {% set tabStatus = tabStatus|merge({(label): count}) %}
+
+        {% endif %}
+
+    {% endfor %}
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>Statuts de réception</span></h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Statut</th>
+                <th class="center">Nombre d'emails</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key,item in tabStatus %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td class="center">{{ item }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>Liste d'envoi</span></h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table id="ed-table-gestion" class="table table-striped table-hover table-condensed dataTableSimple">
+            <thead class="thead-inverse">
+            <tr>
+                <th>Email</th>
+                <th>Statut</th>
+                <th class="center">Ouvert (UTC)</th>
+                <th>Message d'absence</th>
+                <th class="center">Nombre clics total</th>
+                <th class="center">Nombre clics unique</th>
+            </tr>
+            </thead>
+            <tbody data-order="0" data-sens="asc">
+            {% for item in dests %}
+                <tr>
+                    <td>{{ item.email }}</td>
+                    <td>{{ attribute(status, item.state) }}</td>
+
+                    {% if item.read == 1 %}
+                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} à {{ item.readDateUTC|date("H:i") }}</td>
+                    {% else %}
+                        <td class="center"><i class="icon-line-circle-cross danger"></i></td>
+                    {% endif %}
+                    {% if item.vacation %}
+                        <td>{{ item.vacation }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    <td class="center">{{ item.clicCount }}</td>
+                    <td class="center">{{ item.linkClicCount }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}
