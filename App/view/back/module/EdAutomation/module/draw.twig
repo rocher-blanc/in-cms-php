@@ -4,7 +4,7 @@
 
 {% block module %}
     {% include 'module/header.twig' %}
-    {% if select|length > 1 %}
+    {% if select|length > 0 %}
     <div class="duplicate">
         <div class="col_one_fourth">
             <select id="duplicate-model" name="model" class="form-control select2">
@@ -88,6 +88,7 @@
                 light: true, // set the editor theme to be light
                 customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below
                 // URL or Callback when clicked on Save & close
+                mergeTags: {{ mergeTags }},
                 callbacks: {
                     onSaveAndClose: function (json, html) {
                         saveTemplate(html, json, true);

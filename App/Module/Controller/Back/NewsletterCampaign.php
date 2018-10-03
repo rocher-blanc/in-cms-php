@@ -4,12 +4,20 @@ namespace App\Module\Controller\Back;
 
 use App\Kernel\Back\Controller;
 use App\Kernel\Back\Data;
+use App\Api\Easyletter;
 
 class NewsletterCampaign extends Controller
 {
     public function hookAddSaveAfter()
     {
         // j'envoi la rqt a api easyletter
+        $data = [];
+        $data['content'] = 'url';
+        $data['recipient'] = 'url';
+        $data['urlUnsubscribe'] = 'url';
+
+        $EL = new Easyletter;
+        //$EL->newsletter($data);
     }
 
     protected function statsAction()
