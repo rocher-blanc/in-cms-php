@@ -1143,6 +1143,14 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isHour()
+    {
+        $this->field()->setData( "SQL_VALUE" , "5" ) ;
+        $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
+        $this->field()->setData( "type" , "hour" ) ;
+        return $this ;
+    }
+
     protected function isPassword()
     {
         $this->field()->setData( "type" , "password" ) ;

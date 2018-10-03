@@ -510,7 +510,7 @@ initDatePicker = function(base) {
     }
 
     if ( $(base + " input[data-plugin-datetimepicker]").length ) {
-        $(base + " input[data-plugin-datetimepicker]").datepicker({
+        $(base + " input[data-plugin-datetimepicker]").datetimepicker({
             language: 'fr',
             autoclose: true,
             timePicker: true,
