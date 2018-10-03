@@ -12,7 +12,9 @@ class EdEmail extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
-            $this->addIcon( 'icon-photo' , 'draw' );
+            $this->addIcon( 'icon-photo' , 'draw' , function($c) {
+                return ( $c->blocked == 0 ? true : false );
+            });
         }
 
         $this->setFieldReference( 'name' );
@@ -22,6 +24,10 @@ class EdEmail extends Builder
             ->isVarchar()
             ->notEmpty("Veuillez renseigner le nom du template")
             ->name("Nom");
+
+        $this->build('blocked')
+            ->isBoolean()
+            ->name("Modification bloquer" );
 
         $this->build('html')
             ->noFront()

@@ -9,8 +9,12 @@
         <div class="col_one_fourth">
             <select id="duplicate-model" name="model" class="form-control select2">
                 <option value="0" disabled selected>Créer un email à partir d'un gabarit existant</option>
-                {% for key, name in select %}
-                    {% if id != key %}<option value="{{ key }}">{{ name }}</option>{% endif %}
+                {% for group, list in select %}
+                    <optgroup label="{{ group }}">
+                        {% for key, name in list %}
+                            <option value="{{ key }}">{{ name }}</option>
+                        {% endfor %}
+                    </optgroup>
                 {% endfor %}
             </select>
         </div>

@@ -10,7 +10,7 @@ class EdEmail extends Controller
     protected function drawAction()
     {
         $this->setRender('id' , $this->getId() );
-        $this->setRender('idtopol' , $this->getId() + 100000 );
+        $this->setRender('idtopol' , $this->getId() + ( 100000 * $this->getEntityId() ) );
         $this->setRender('apiKey' , TOPOL_API_KEY);
         $this->setRender('userId' , TOPOL_USER_ID);
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;

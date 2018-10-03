@@ -16,8 +16,26 @@ class EdAutomation extends Controller
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
 
         $select = $this->getElementForAssociation(NULL, "array");
+        if ( $select )
+        {
+            foreach( $select as $key => $value )
+            {
+                $tab['Automotion'][ $this->getEntityId() . "-" . $key ] = $value ;
+            }
+        }
 
-        $this->setRender( 'select' , $select ) ;
+        $Model = $this->Container()->module('EdEmail')->getController(true);
+        $top = $Model->getElementForAssociation(NULL, "array");
+        if ( $select )
+        {
+            foreach( $top as $key => $value )
+            {
+                $tab['Modèle'][ $Model->getEntityId() . "-" . $key ] = $value ;
+            }
+        }
+
+        dump( $tab );
+        $this->setRender( 'select' , $tab );
 
         $this->render('draw.twig');
     }
