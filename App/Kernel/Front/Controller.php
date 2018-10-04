@@ -27,6 +27,15 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
+    protected function User()
+    {
+        return User::getInstance() ;
+    }
+
+    /* ************************************************** */
+    /* ******************   SETTER   ******************** */
+    /* ************************************************** */
+
     public function setUrl( $var )
     {
         if ( $var[0] === '' )    $this->_url = [] ;
@@ -52,7 +61,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getIdParent()
     {
-        return [ $_GET['parent'] ] ;
+        return [ $this->_get('parent') ] ;
     }
 
     public function getRepository()
@@ -766,8 +775,6 @@ class Controller extends \App\Kernel\Common\Controller
                 break;
             }
         }
-
-
 
         return [
             'object' => $elmts,
