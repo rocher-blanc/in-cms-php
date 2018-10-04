@@ -18,7 +18,11 @@ class Mail
     {
         $this->obj = new \PHPMailer;
 
-        if ( MAIL_SMTP )
+        if ( defined('EL_TOKEN' ) )
+        {
+
+        }
+        else if ( MAIL_SMTP )
         {
             if ( DEBUG && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
 
