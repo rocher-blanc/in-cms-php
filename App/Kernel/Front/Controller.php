@@ -264,10 +264,10 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************     VIEW     ******************* */
     /* ************************************************** */
 
-    protected function render( $template )
+    protected function render( $template , $force = false )
     {
         $this->checkTemplate( $template ) ;
-        return parent::render( $this->getEntityName() . '/' . $template ) ;
+        return parent::render( $this->getEntityName() . '/' . $template , $force ) ;
     }
 
     protected function checkTemplate( $template )

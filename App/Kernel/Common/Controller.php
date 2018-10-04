@@ -289,9 +289,9 @@ class Controller
     /* ******************   FETCH / RENDER   ******************* */
     /* ********************************************************* */
 
-	protected function render( $template )
+	protected function render( $template , $force = false )
 	{
-        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) )
+        if ( ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) ) && $force == false )
         {
             return "" ;
         }
