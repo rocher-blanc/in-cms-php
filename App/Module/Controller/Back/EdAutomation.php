@@ -10,7 +10,7 @@ class EdAutomation extends Controller
     protected function drawAction()
     {
         $this->setRender('id' , $this->getId() );
-        $this->setRender('idtopol' , $this->getId() + 100000 );
+        $this->setRender('idtopol' , $this->getId() + (100000 * $this->getEntityId()) );
         $this->setRender('apiKey' , TOPOL_API_KEY);
         $this->setRender('userId' , TOPOL_USER_ID);
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
@@ -74,15 +74,15 @@ class EdAutomation extends Controller
         }
 
         $this->setRender( 'mergeTags' , json_encode( $tags ) );
-
+/*
         if ( $rst )
         {
             foreach( $rst as $row )
             {
                 $tab['Automotion'][ $this->getEntityId() . "-" . $row->mod_edautomation_id ] = $row->mod_edautomation_name ;
             }
-        }
-/*
+        }*/
+
         $select = $this->getElementForAssociation(NULL, "array");
         if ( $select )
         {
@@ -90,7 +90,7 @@ class EdAutomation extends Controller
             {
                 $tab['Automotion'][ $this->getEntityId() . "-" . $key ] = $value ;
             }
-        }*/
+        }
 
         $Model = $this->Container()->module('EdEmail')->getController(true);
         $top = $Model->getElementForAssociation(NULL, "array");
