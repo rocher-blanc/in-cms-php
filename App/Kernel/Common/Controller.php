@@ -192,10 +192,15 @@ class Controller
 		return \App\Kernel\Lang::getInstance() ;
 	}
 
-	protected function Message()
-	{
-		return \App\Kernel\Message::getInstance() ;
-	}
+    protected function Message()
+    {
+        return \App\Kernel\Message::getInstance() ;
+    }
+
+    protected function CMS()
+    {
+        return \App\Kernel\CMS::getInstance() ;
+    }
 
 	protected function getApp()
 	{
@@ -264,10 +269,20 @@ class Controller
     /* ******************      REQUEST       ******************* */
     /* ********************************************************* */
 
+    public function _get( $key = NULL )
+    {
+        return ( $key === NULL ? $_GET : $_GET[ $key ] ) ;
+    }
+
+    public function _post( $key = NULL )
+    {
+        return ( $key === NULL ? $_POST : $_POST[ $key ] ) ;
+    }
+
+    // obselete, a supprimer asap
     protected function post( $key = NULL )
     {
-        if ( $key === NULL )    return $this->getApp()->request->post();
-        else                    return $this->getApp()->request->post( $key );
+        return $this->_post( $key );
     }
 
     /* ********************************************************* */
