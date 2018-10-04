@@ -28,7 +28,7 @@ class Easyletter
         }
     }
 
-    public function automotion( $data )
+    public function automotion( array $data )
     {
         $array = array_merge( $data , [
             'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
@@ -48,12 +48,26 @@ class Easyletter
         return $this->request( $array );
     }
 
-    public function newsletter()
+    public function newsletter( array $data )
     {
+        $array = array_merge( $data , [
+            'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
+            'msgSMS' => "",
+            'urlUnsubscribe' => "",
 
+            'txtOnlineViewTag' => "",
+            'txtHtmlUnsubscribeTag' => "",
+            'txtSendToAFriendTag' => "",
+
+            'schedule' => 1,
+            'sendingRate' => 0,
+            'transactional' => 0,
+        ]);
+
+        return $this->request( $array );
     }
 
-    private function request( $data )
+    private function request( array $data )
     {
         $response = $this->client->post('/v1/campaign/quick', [
             'body' => json_encode( $data )
