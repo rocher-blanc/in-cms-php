@@ -169,7 +169,18 @@ class User extends \App\Kernel\Common\User
 
         if ( $this->isAjax() )
         {
-            if ( $this->getProfileModule() === NULL || $forceView == true ) $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result );
+            if ( $this->getProfileModule() === NULL || $forceView == true || $this->post('ajax') == 1 )
+            {
+                $tab = [];
+                if ( $this->post('redirect' ) != '' )
+                {
+                    $tab = [
+                        'url' => $this->post('redirect' )
+                    ];
+                }
+
+                $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result , $tab );
+            }
         }
         else
         {
@@ -204,7 +215,10 @@ class User extends \App\Kernel\Common\User
 
             if ( $rst )
             {
-                return $data->getDataArray();
+                $array = $data->getDataArray() ;
+
+                $this->_var = array_merge( $this->_var , $array );
+                return $array;
             }
         }
         else
@@ -299,8 +313,10 @@ class User extends \App\Kernel\Common\User
                     $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
                     $user->save();
 
+                    $saveSession = $this->save( $user ) ;
+
                     $this->returnError( "user_login_successful" , true ) ;
-                    return $this->save( $user ) ;
+                    return $saveSession;
                 }
                 else
                 {
@@ -326,8 +342,8 @@ class User extends \App\Kernel\Common\User
     {
         if ( $this->isLogged() )
         {
-            session_destroy();
             $_SESSION[ $this->getSessionName() ] = [];
+            session_destroy();
 
             $this->returnRedirect('/');
         }

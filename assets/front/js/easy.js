@@ -62,11 +62,13 @@ checkForm = function(base) {
             enctype: 'multipart/form-data',
             processData: false,
             contentType: false,
+            dataType: "json",
             success: function(data) {
-                console.log( data );
                 if( data.result ) {
                     //$(base + ' form.ajax').trigger("reset");
                 }
+                console.log(data.url);
+                console.log(data.result);
 
                 if(data.result == true && typeof data.url !== "undefined") {
                     redirect( data.url );

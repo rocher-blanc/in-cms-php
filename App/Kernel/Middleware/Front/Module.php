@@ -10,6 +10,7 @@ class Module extends \Slim\Middleware
     {
         $this->app->hook('slim.before', [$this, 'observe']);
         $this->next->call();
+
     }
 
     private function error( $msg )

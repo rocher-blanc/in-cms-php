@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="PROD - IFEC" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="WAW - VPS1 - IFEC" overwriteAll="false" createEmptyFolders="true" autoUploadExternalChanges="true">
     <serverData>
       <paths name="PROD - IFEC">
         <serverdata>
@@ -45,6 +45,13 @@
         </serverdata>
       </paths>
       <paths name="VPS1 - easyLETTER">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="WAW - VPS1 - IFEC">
         <serverdata>
           <mappings>
             <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
