@@ -12,6 +12,7 @@ class NewsletterModel extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addIcon( 'icon-photo' , 'draw' );
+            $this->addAction( 'duplicate' );
         }
 
         $this->setFieldReference( 'name' );
@@ -24,10 +25,15 @@ class NewsletterModel extends Builder
             ->name("Nom");
 
         $this->build('html')
-            ->column(1, 1)
             ->noFront()
             ->noBack()
             ->isText()
             ->name("HTML");
+
+        $this->build('json')
+            ->noFront()
+            ->noBack()
+            ->isText()
+            ->name("JSON");
     }
 }

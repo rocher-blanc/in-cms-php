@@ -32,6 +32,11 @@ class Meta
     /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
+    
+    public function exist( $key , $var , $default = '' )
+    {
+        return ( array_key_exists($key, $var) ? $var[ $key ] : '' ) ;
+    }
 
     public function load()
     {
@@ -90,9 +95,9 @@ class Meta
         $this->CMS()->view()->appendData([
             'site' => [
                 'url'               => $this->Factory()->Url()->getFullUrl(),
-                'referer'           => $_SERVER['HTTP_REFERER'],
-                'referer_external'  => $_SESSION['referer'],
-                'adwords'           => $_SESSION['adwords'],
+                'referer'           => $this->exist( "HTTP_REFERER" , $_SERVER ),
+                'referer_external'  => $this->exist( "referer" , $_SESSION ),
+                'adwords'           => $this->exist( "adwords" , $_SESSION ),
                 'get'               => $_GET,
                 'post'              => $_POST
             ],
@@ -101,25 +106,25 @@ class Meta
 				'language'       => $this->Lang()->getActive()->url,
 				'identifier-url' => \App\Kernel\Http::getInstance()->getUrl() . '/',
 				'description'    => "",
-				'author'         => $tab['seo_author'],
+				'author'         => $this->exist( "seo_author" , $tab ),
 				'robots'         => ( $tab['seo_robots'] == '0' ? 'noindex,nofollow' : 'index,follow' ),
-				'robots_value'   => $tab['seo_robots'],
-				'geo.region'     => $tab['seo_geo_region'],
-				'geo.placename'  => $tab['seo_geo_placename'],
-				'geo.position'   => $tab['seo_geo_position'],
-				'ICBM'           => $tab['seo_geo_icbm']
+				'robots_value'   => $this->exist( "seo_robots" , $tab ),
+				'geo.region'     => $this->exist( "seo_geo_region" , $tab ),
+				'geo.placename'  => $this->exist( "seo_geo_placename" , $tab ),
+				'geo.position'   => $this->exist( "seo_geo_position" , $tab ),
+				'ICBM'           => $this->exist( "seo_geo_icbm" , $tab )
 			],
 			'rgpd' => [
-				'enabled'        	=> $tabrgpd['rgpd_enabled'],
-				'position'        	=> $tabrgpd['rgpd_position'],
-				'popup_background'  => $tabrgpd['rgpd_popup_background'],
-				'popup_color'       => $tabrgpd['rgpd_popup_color'],
-				'button_background' => $tabrgpd['rgpd_button_background'],
-				'button_color'      => $tabrgpd['rgpd_button_color'],
-				'text'        		=> $tabrgpd['rgpd_popup_text'],
-				'text_button'       => $tabrgpd['rgpd_button_text'],
-				'text_link'        	=> $tabrgpd['rgpd_link_text'],
-				'link'        		=> $tabrgpd['rgpd_link_href']
+				'enabled'        	=> $this->exist( "rgpd_enabled" , $tabrgpd ),
+				'position'        	=> $this->exist( "rgpd_position" , $tabrgpd ),
+				'popup_background'  => $this->exist( "rgpd_popup_background" , $tabrgpd ),
+				'popup_color'       => $this->exist( "rgpd_popup_color" , $tabrgpd ),
+				'button_background' => $this->exist( "rgpd_button_background" , $tabrgpd ),
+				'button_color'      => $this->exist( "rgpd_button_color" , $tabrgpd ),
+				'text'        		=> $this->exist( "rgpd_popup_text" , $tabrgpd ),
+				'text_button'       => $this->exist( "rgpd_button_text" , $tabrgpd ),
+				'text_link'        	=> $this->exist( "rgpd_link_text" , $tabrgpd ),
+				'link'        		=> $this->exist( "rgpd_link_href" , $tabrgpd )
 			],
             'og' => [
                 'type'           => "website",
@@ -129,20 +134,20 @@ class Meta
                 'description'    => ""
             ],
             'md' => [
-                'name'           => $md['md_name'],
-                'alt_name'       => $md['md_alt_name'],
-                'description'    => $md['md_description'],
-                'logo' 			 => $md['md_logo'],
-                'facebook'       => $md['md_facebook'],
-                'twitter'        => $md['md_twitter'],
-                'instagram'      => $md['md_instagram'],
-                'linkedin'       => $md['md_linkedin'],
-                'pinterest'      => $md['md_pinterest'],
+                'name'           => $this->exist( "md_name" , $md ),
+                'alt_name'       => $this->exist( "md_alt_name" , $md ),
+                'description'    => $this->exist( "md_description" , $md ),
+                'logo' 			 => $this->exist( "md_logo" , $md ),
+                'facebook'       => $this->exist( "md_facebook" , $md ),
+                'twitter'        => $this->exist( "md_twitter" , $md ),
+                'instagram'      => $this->exist( "md_instagram" , $md ),
+                'linkedin'       => $this->exist( "md_linkedin" , $md ),
+                'pinterest'      => $this->exist( "md_pinterest" , $md ),
                 'sameAs'         => $sameAs,
-                'phone'          => $md['md_phone'],
-                'address'        => $md['md_address'],
-                'zip'            => $md['md_zip'],
-                'town'           => $md['md_town']
+                'phone'          => $this->exist( "md_phone" , $md ),
+                'address'        => $this->exist( "md_address" , $md ),
+                'zip'            => $this->exist( "md_zip" , $md ),
+                'town'           => $this->exist( "md_town" , $md )
             ],
             'webmaster_tools' => [
                 'google'    => $tab['seo_google_webmaster_tools'],

@@ -126,7 +126,6 @@ class Controller extends \App\Kernel\Common\Controller
         {
             return $this->Factory()->Response()->error("Impossible de charger l'entity") ;
         }
-		die;
     }
 
     public function init()

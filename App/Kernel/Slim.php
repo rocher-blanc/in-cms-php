@@ -91,9 +91,6 @@ class Slim
             'httponly' => false,
             'name' => $this->_slim->config('session_name'),
         ]));
-		
-		$this->_slim->view()->getInstance()->addGlobal("session_name", session_name());
-        $this->_slim->view()->getInstance()->addGlobal("session_id", session_id());
 
         if ( DEBUG_BAR )
         {
@@ -143,19 +140,21 @@ class Slim
 
         $url = $this->Factory()->Url()->getFullUrl();
         $exp = explode( '/' , $url );
-        if ( $exp[2] == 'module' )
+        if ( count( $exp ) > 2 )
         {
-            if ( is_dir( VIEW_PROJECT_PATH . "/module/" . $exp[3] ) )
+            if ( $exp[2] == 'module' )
             {
-                $viewArray[] = VIEW_PROJECT_PATH . "/module/" . $exp[3];
-            }
+                if ( is_dir( VIEW_PROJECT_PATH . "/module/" . $exp[3] ) )
+                {
+                    $viewArray[] = VIEW_PROJECT_PATH . "/module/" . $exp[3];
+                }
 
-            if ( is_dir( TEMPLATES_PATH . "/module/" . $exp[3] ) )
-            {
-                $viewArray[] = TEMPLATES_PATH . "/module/" . $exp[3];
+                if ( is_dir( TEMPLATES_PATH . "/module/" . $exp[3] ) )
+                {
+                    $viewArray[] = TEMPLATES_PATH . "/module/" . $exp[3];
+                }
             }
         }
-
 
         $viewArray[] = TEMPLATES_PATH ;
         if ( defined('THEME' ) )

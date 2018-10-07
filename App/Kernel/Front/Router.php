@@ -401,6 +401,7 @@ class Router
             $Controller->setUrl( explode('/',$url) );
             if ( $element ) $Controller->setElement();
             $Controller->execute();
+
         })->via('GET', 'POST');
     }
 

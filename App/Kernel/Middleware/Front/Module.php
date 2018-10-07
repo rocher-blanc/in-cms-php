@@ -74,8 +74,7 @@ class Module extends \Slim\Middleware
                 if ( $this->app->request->isAjax() )
                 {
                     header('Content-Type: application/json');
-                    echo json_encode( $rst );
-                    die;
+                    $this->app->response()->body( json_encode( $rst ) );
                 }
             }
         }

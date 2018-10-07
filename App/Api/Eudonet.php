@@ -132,6 +132,8 @@ class Eudonet
     {
         $rst = $this->request("get" , 'Catalog/' . $descId )['result'];
 
+        dump( $rst );
+
         if ( $rst['ResultInfos']['Success'] == true )
         {
             if ( $rst['ResultData']['CatalogValues'] )

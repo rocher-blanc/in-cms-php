@@ -68,9 +68,9 @@ class Loader
         $this->kernel->addPlugin(new \App\Kernel\Front\Meta) ;
     }
 
-    public function index()
+    public function index( $run = true )
     {
         $this->preload();
-        $this->kernel->run();
+        $this->kernel->run( $run );
     }
 }

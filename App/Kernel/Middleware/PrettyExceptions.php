@@ -30,7 +30,7 @@ class PrettyExceptions extends \Slim\Middleware
 
     protected function renderBody( &$env , $exception )
     {
-        $title = 'JContent Application Error';
+        $title = 'easyDOOR Error';
         $code = $exception->getCode();
         $message = $exception->getMessage();
         $file = $exception->getFile();

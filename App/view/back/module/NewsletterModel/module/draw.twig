@@ -4,6 +4,26 @@
 
 {% block module %}
     {% include 'module/header.twig' %}
+    {% if select|length > 0 %}
+        <div class="duplicate">
+            <div class="col_one_fourth">
+                <select id="duplicate-model" name="model" class="form-control select2">
+                    <option value="0" disabled selected>Créer un email à partir d'un gabarit existant</option>
+                    {% for group, list in select %}
+                        <optgroup label="{{ group }}">
+                            {% for key, name in list %}
+                                <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col_one_fourth">
+                <a href="javascript:;" id="loadDupication" class="ed-button button button-rounded button-reveal button-small button-3d notopmargin"><i class="icon-save"></i><span>Dupliquer</span></a>
+            </div>
+        </div>
+    {% endif %}
+
     <div id="topolcontent"></div>
 {% endblock %}
 
@@ -16,11 +36,11 @@
 
 {% block javascripts %}
     <script>
-        saveTemplate = function( html , redirect ) {
+        saveTemplate = function( html , json , redirect ) {
             $.ajax({
                 type: "POST",
-                url: '{{ route( mod.name , 'saveMail' , uri_id_parent ) }}',
-                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html,
+                url: '{{ route( mod.name , 'saveMail' , uri_id_parent , id ) }}',
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html + '&json=' + JSON.stringify(json),
                 success: function(data){
                     if ( redirect ) {
                         document.location.href = '{{ route( mod.name , 'index' , uri_id_parent ) }}';
@@ -32,7 +52,32 @@
             });
         };
 
+        duplicateTemplate = function( idt ) {
+            $.ajax({
+                type: "POST",
+                url: '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}',
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&template=' + idt,
+                success: function(data){
+                    const json = JSON.parse(JSON.stringify(data));
+                    TopolPlugin.load(json);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
+        };
+
+
         $(function() {
+            $('#loadDupication').click(function() {
+                let template = $('#duplicate-model').val() ;
+                console.log( template );
+                if ( template != null ) {
+                    duplicateTemplate(template);
+                }
+            });
+
+
             // Plugin Settings
             var TOPOL_OPTIONS = {
                 id: "#topolcontent",
@@ -48,10 +93,10 @@
                 // URL or Callback when clicked on Save & close
                 callbacks: {
                     onSaveAndClose: function (json, html) {
-                        saveTemplate(html, true);
+                        saveTemplate(html, json, true);
                     },
                     onSave: function (json, html) {
-                        saveTemplate(html, false);
+                        saveTemplate(html, json, false);
                     },
                     onTestSend: function (email, json, html) {
                         // HTML of the email

@@ -55,8 +55,8 @@ class Response
 	/* Parse en JSON */
 	public function printJSON( $array )
 	{
-		$this->getApp()->contentType('application/json');
-		echo json_encode( $array ) ;
+        $this->getApp()->contentType('application/json');
+		$this->getApp()->response()->body( json_encode( $array ) );
 
 		if ( array_key_exists( 'msg' , $array ) && array_key_exists( 'result' , $array ) )
         {

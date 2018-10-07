@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Middleware;
 
+use App\Kernel\Exception;
+
 class SessionCrypt extends \Slim\Middleware\SessionCookie
 {
     protected function getKey()
