@@ -35,7 +35,8 @@ class Meta
     
     public function exist( $key , $var , $default = '' )
     {
-        return ( array_key_exists($key, $var) ? $var[ $key ] : '' ) ;
+        if ( ! is_array( $var ) ) return $default;
+        return ( array_key_exists($key, $var) ? $var[ $key ] : $default ) ;
     }
 
     public function load()

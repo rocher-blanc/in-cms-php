@@ -30,7 +30,7 @@ class Easyletter
 
     public function automotion( array $data )
     {
-        $array = array_merge( $data , [
+        $array = array_merge([
             'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
@@ -43,14 +43,14 @@ class Easyletter
             'schedule' => 0,
             'sendingRate' => 0,
             'transactional' => 1,
-        ]);
+        ], $data );
 
         return $this->request( $array );
     }
 
     public function newsletter( array $data )
     {
-        $array = array_merge( $data , [
+        $array = array_merge([
             'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
@@ -62,7 +62,7 @@ class Easyletter
             'schedule' => 1,
             'sendingRate' => 0,
             'transactional' => 0,
-        ]);
+        ], $data );
 
         return $this->request( $array );
     }

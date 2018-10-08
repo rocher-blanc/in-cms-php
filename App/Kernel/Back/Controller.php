@@ -1449,6 +1449,11 @@ class Controller extends \App\Kernel\Common\Controller
         else								        $this->Factory()->Response()->returnJSON( $this->m("disable_failed") ) ;
     }
 
+    protected function showDelete( $c )
+    {
+        return true ;
+    }
+
     protected function deleteAction()
     {
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
