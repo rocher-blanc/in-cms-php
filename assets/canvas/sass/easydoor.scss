@@ -1,5 +1,10 @@
 @import "variables";
 
+html, body {
+  height: 100% !important;
+  overflow: visible !important;
+}
+
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
