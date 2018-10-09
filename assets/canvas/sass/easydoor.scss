@@ -802,15 +802,6 @@ ul.docs-icons li span {
   overflow: visible;
 }
 
-.mfp-wrap {
-  .dropdown-menu.open {
-    height: 300px;
-  }
-  .bootstrap-select.btn-group .dropdown-menu.inner {
-    height: auto !important;
-  }
-}
-
 #top-cart {
   transition-duration: 0s;
   margin-bottom: 0 !important;
@@ -853,6 +844,20 @@ ul.docs-icons li span {
     }
   }
 }
+
+/* Bug des selects : texte qui sort de la zone */
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bug de l'animation de l'icône de notification */
+#top-cart {
+  transition: none !important;
+}
+
+/* Bug de l'aide dans la zone de texte */
+
 
 
 /* ************************************************ */
