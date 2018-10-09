@@ -767,10 +767,10 @@ ul.docs-icons li span {
 }
 
 .dropdown-item.active, .dropdown-item:active,
-.dropdown-item.active:hover, .dropdown-item.active:focus{
+.dropdown-item.selected:hover, .dropdown-item.selected:focus {
   color: #fff;
   text-decoration: none;
-  background-color: $jweb-blue;
+  background-color: $jweb-blue !important;
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
