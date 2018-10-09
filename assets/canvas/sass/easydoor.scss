@@ -766,7 +766,8 @@ ul.docs-icons li span {
   background-color: #f8f9fa;
 }
 
-.dropdown-item.active, .dropdown-item:active {
+.dropdown-item.active, .dropdown-item:active,
+.dropdown-item.active:hover, .dropdown-item.active:focus{
   color: #fff;
   text-decoration: none;
   background-color: $jweb-blue;
