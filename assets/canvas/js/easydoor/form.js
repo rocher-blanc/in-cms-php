@@ -30,11 +30,10 @@ modalDepedency = function ( base ) {
                     SEMICOLON.widget.loadFlexSlider();
                     SEMICOLON.initialize.resizeVideos();
                     SEMICOLON.widget.masonryThumbs();
-                    init('#myModal1');
                     checkboxSwitch('#myModal1');
-                    if ( $('#myModal1 .tab-nav a').length ) {
-                        $('#myModal1 .tab-nav a:first').tab('show');
-                        console.log($('#myModal1 .tab-nav a'));
+                    init('#myModal1');
+                    if( $("#myModal1 .tabs").length ) {
+                        $("#myModal1 .tabs").tabs();
                     }
                 },
                 open: function() {

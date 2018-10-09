@@ -1,5 +1,10 @@
 @import "variables";
 
+html, body {
+  height: 100% !important;
+  overflow: visible !important;
+}
+
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
@@ -761,10 +766,11 @@ ul.docs-icons li span {
   background-color: #f8f9fa;
 }
 
-.dropdown-item.active, .dropdown-item:active {
+.dropdown-item.active, .dropdown-item:active,
+.dropdown-item.selected:hover, .dropdown-item.selected:focus {
   color: #fff;
   text-decoration: none;
-  background-color: $jweb-blue;
+  background-color: $jweb-blue !important;
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
@@ -795,15 +801,6 @@ ul.docs-icons li span {
 
 #content {
   overflow: visible;
-}
-
-.mfp-wrap {
-  .dropdown-menu.open {
-    height: 300px;
-  }
-  .bootstrap-select.btn-group .dropdown-menu.inner {
-    height: auto !important;
-  }
 }
 
 #top-cart {
@@ -848,6 +845,20 @@ ul.docs-icons li span {
     }
   }
 }
+
+/* Bug des selects : texte qui sort de la zone */
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bug de l'animation de l'icône de notification */
+#top-cart {
+  transition: none !important;
+}
+
+/* Bug de l'aide dans la zone de texte */
+
 
 
 /* ************************************************ */
