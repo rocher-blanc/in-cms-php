@@ -132,8 +132,6 @@ class Eudonet
     {
         $rst = $this->request("get" , 'Catalog/' . $descId )['result'];
 
-        dump( $rst );
-
         if ( $rst['ResultInfos']['Success'] == true )
         {
             if ( $rst['ResultData']['CatalogValues'] )
@@ -200,6 +198,8 @@ class Eudonet
         $params = json_decode( $str );
         $tab    = [];
         $rst    = $this->request("post" , 'Search/' . $tablId , $params )['result'];
+
+        if ( isset( $_GET['dump'] ) ) dump( $rst );
 
         if ( $rst['ResultInfos']['Success'] == true )
         {
