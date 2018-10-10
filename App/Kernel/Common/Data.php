@@ -113,6 +113,31 @@ class Data
         return $rst ;
     }
 
+    public function delete()
+    {
+        $rst = $this->data->save();
+
+        $module = \DB::for_table('module')
+            ->select('module_id')
+            ->where([
+                'module_class_name' => $this->getName()
+                , 'module_active' => 1
+            ])
+            ->find_one();
+
+        if ( $this->getEntity()->hasUrl() )
+        {
+            /*$seo = new \App\Kernel\Back\Seo;
+            $seo->setElementId( $this->get('id') );
+            $seo->setModuleId( $module->module_id );
+            $seo->setTitle( $this->get( $this->getEntity()->getUrlName() ) );
+            $seo->setLangId( $this->Lang()->getDefault()->id );
+            $seo->save();*/
+        }
+
+        return $rst ;
+    }
+
     public function findOrCreate( $value = NULL )
     {
         $rst = $this->find( $value );
