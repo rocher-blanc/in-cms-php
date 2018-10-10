@@ -876,6 +876,11 @@ ul.docs-icons li span {
 }
 
 /* Bug de l'aide dans la zone de texte */
+.tooltip {
+  opacity:0;
+  transition: opacity .3s;
+  .show { opacity:1; }
+}
 
 
 
