@@ -846,6 +846,24 @@ ul.docs-icons li span {
   }
 }
 
+/* Editeur de texte */
+.note-editing-area {
+  p {
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  a {
+    color: $jweb-blue !important;
+    text-decoration: underline;
+  }
+}
+
 /* Bug des selects : texte qui sort de la zone */
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
   overflow: hidden;
@@ -858,6 +876,11 @@ ul.docs-icons li span {
 }
 
 /* Bug de l'aide dans la zone de texte */
+.tooltip {
+  opacity:0;
+  transition: opacity .3s;
+  &.show { opacity:1; }
+}
 
 
 

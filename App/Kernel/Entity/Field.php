@@ -375,8 +375,18 @@ class Field
 	{
 		if ( $this->getType() == 'date' && $this->getValue() !== NULL )
 		{
-			list( $d , $m , $y ) = explode( '/' , $this->getValue( $lang ) ) ;
-			$this->setValue("$y-$m-$d") ;
+			if ( $this->getData('hour') == true )
+            {
+                list( $date , $hour ) = explode( ' - ' , $this->getValue( $lang ) ) ;
+                list( $d , $m , $y ) = explode( '/' , $date ) ;
+                list( $h , $i ) = explode( ':' , $hour ) ;
+                $this->setValue("$y-$m-$d $h:$i:00") ;
+            }
+            else
+            {
+                list( $d , $m , $y ) = explode( '/' , $this->getValue( $lang ) ) ;
+                $this->setValue("$y-$m-$d") ;
+            }
 		}
 		else if ( $this->getType() == 'radio' && $this->getData('isBoolean') == true )
 		{

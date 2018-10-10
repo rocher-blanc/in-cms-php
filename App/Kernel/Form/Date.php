@@ -13,8 +13,8 @@ class Date extends \App\Kernel\Back\Form
 
         if ( $field->getData('hour') )
         {
-            $this->_lib_js[] = 'cmsmedias/canvas/js/components/timepicker.js';
-            $this->_lib_css[] = 'cmsmedias/canvas/css/src/components/timepicker.css';
+            $this->_lib_js[] = 'cmsmedias/canvas/js/components/datetimepicker.js';
+            $this->_lib_css[] = 'cmsmedias/canvas/css/src/components/datetimepicker.css';
         }
 
         $this->_lib_css[] = 'cmsmedias/canvas/css/src/components/datepicker.css';
