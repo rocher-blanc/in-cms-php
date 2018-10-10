@@ -52,14 +52,14 @@ class Module extends \Slim\Middleware
                         $rst = $Controller->getShow();
                         break;
 
-                    // SHOW IF
+                    // DELETE
                     case "delete" :
                         $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
                         $Controller->setId( $this->app->request->post('id_element') );
                         $rst = $Controller->delete();
                         break;
 
-                    // CRUD
+                    // ADD/UPDATE
                     default :
                         $add = ( $this->app->request->post('id_element') == '-1' ? true : false );
                         $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
@@ -69,12 +69,14 @@ class Module extends \Slim\Middleware
                 }
             }
 
-            if ( !empty( $rst ) )
+            if ( ! empty( $rst ) )
             {
                 if ( $this->app->request->isAjax() )
                 {
-                    header('Content-Type: application/json');
-                    $this->app->response()->body( json_encode( $rst ) );
+                    $this->app->contentType('application/json');
+                    //$this->app->response()->body( json_encode( $rst ) );
+                    echo json_encode( $rst ) ;
+                    die;
                 }
             }
         }

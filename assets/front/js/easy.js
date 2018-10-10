@@ -67,8 +67,6 @@ checkForm = function(base) {
                 if( data.result ) {
                     //$(base + ' form.ajax').trigger("reset");
                 }
-                console.log(data.url);
-                console.log(data.result);
 
                 if(data.result == true && typeof data.url !== "undefined") {
                     redirect( data.url );
@@ -111,6 +109,7 @@ refreshShowIf = function( base , route , $this ) {
         url: route,
         type: 'POST',
         data: serialize + "&show=1",
+        dataType: 'json',
         success: function(data) {
             if ( data.tabs.length ) {
                 $.each(data.tabs, function(i, tab) {
@@ -135,7 +134,7 @@ refreshShowIf = function( base , route , $this ) {
                     }
                 });
             }
-            
+
             if ( data.fields.length ) {
                 $.each(data.fields, function(i, elt) {
                     var field = $("[name='"+ elt.name+"']").closest('.ed_field');

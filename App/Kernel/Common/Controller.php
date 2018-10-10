@@ -498,7 +498,14 @@ class Controller
                         else if ( $row->getType() == 'date' )
                         {
                             $date  = new \DateTime( $content->get( $row->getColumn() ) ) ;
-                            $value = $date->format('d/m/Y');
+                            if ( $row->getData('hour') === true )
+                            {
+                                $value = $date->format('d/m/Y - H:i');
+                            }
+                            else
+                            {
+                                $value = $date->format('d/m/Y');
+                            }
                         }
                         else if ( $row->getType() == 'gallery' )
                         {
