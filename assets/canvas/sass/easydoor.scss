@@ -879,7 +879,7 @@ ul.docs-icons li span {
 .tooltip {
   opacity:0;
   transition: opacity .3s;
-  .show { opacity:1; }
+  &.show { opacity:1; }
 }
 
 
