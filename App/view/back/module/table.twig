@@ -135,7 +135,7 @@
 			                {% if content.icons|length > 0 and right.edit == true %}
                                 {% for icon in content.icons %}
                                     {% if depedency %}
-                                        <a href="{{ dRoute( mod.name , icon.action , dElement , dModule , content.id ) }}"><i class="{{ icon.class }}"></i></a>
+                                        <a href="{{ dRoute( mod.name , icon.action , dElement , dModule , content.id ) }}" data-modal="true"><i class="{{ icon.class }}"></i></a>
                                     {% else %}
                                         <a href="{{ route( mod.name , icon.action , uri_id_parent , content.id ) }}"><i class="{{ icon.class }}"></i></a>
                                     {% endif %}
@@ -151,7 +151,7 @@
                             {% endif %}
                             {% if right.edit == true %}
                                 {% if depedency %}
-                                    <a href="{{ dRoute( mod.name , 'edit' , dElement , dModule , content.id ) }}"data-modal="true"><i class="icon-pencil"></i></a>
+                                    <a href="{{ dRoute( mod.name , 'edit' , dElement , dModule , content.id ) }}" data-modal="true"><i class="icon-pencil"></i></a>
                                 {% else %}
                                     <a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>
                                 {% endif %}
