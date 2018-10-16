@@ -216,6 +216,7 @@ class User extends \App\Kernel\Common\User
             if ( $rst )
             {
                 $array = $data->getDataArray() ;
+                unset( $array['id'] );
 
                 $this->_var = array_merge( $this->_var , $array );
                 return $array;
