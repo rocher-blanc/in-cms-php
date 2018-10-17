@@ -16,7 +16,6 @@ class NewsletterCampaign extends Builder
             return $c->statut == 3 ? true : false ;
         });
 
-
         $this->build('subject')
             ->column(1, 2)
             ->isVarchar()
