@@ -75,33 +75,35 @@ deleteElementExt = function( url ) {
 };
 
 headerResizing = function() {
-    var width = $("body").width();
-    var $notif = $("#primary-menu").find("#top-cart").eq(0);
-    var $ul = $("#primary-menu").find("ul").eq(0);
+    if( $("#primary-menu").find("ul").length > 0 ) {
+        var width = $("body").width();
+        var $notif = $("#primary-menu").find("#top-cart").eq(0);
+        var $ul = $("#primary-menu").find("ul").eq(0);
 
-    // Clean header
-    $ul.removeClass("small-space");
-    $ul.removeClass("two-lines");
-    $("#header").removeClass("static-sticky");
-    $notif.css("padding-right", $("#primary-menu .testimonial").outerWidth());
+        // Clean header
+        $ul.removeClass("small-space");
+        $ul.removeClass("two-lines");
+        $("#header").removeClass("static-sticky");
+        $notif.css("padding-right", $("#primary-menu .testimonial").outerWidth());
 
-    // Big screen
-    if( width > 992 ) {
-        var firstTop = $ul.find("li").first().offset().top;
-        var lastTop = $ul.find("li").last().offset().top;
+        // Big screen
+        if( width > 992 ) {
+            var firstTop = $ul.find("li").first().offset().top;
+            var lastTop = $ul.find("li").last().offset().top;
 
-        // Small space test
-        if( firstTop !== lastTop ) {
-            $ul.addClass("small-space");
-
-            // Two lines test
-            firstTop = $ul.find("li").first().offset().top;
-            lastTop = $ul.find("li").last().offset().top;
+            // Small space test
             if( firstTop !== lastTop ) {
-                $ul.addClass("two-lines");
-                $("#header").addClass("static-sticky");
-            }
+                $ul.addClass("small-space");
 
+                // Two lines test
+                firstTop = $ul.find("li").first().offset().top;
+                lastTop = $ul.find("li").last().offset().top;
+                if( firstTop !== lastTop ) {
+                    $ul.addClass("two-lines");
+                    $("#header").addClass("static-sticky");
+                }
+
+            }
         }
     }
 };
