@@ -63,8 +63,13 @@ deleteElementExt = function( url ) {
         data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content"),
         success: function(data) {
             $.magnificPopup.close();
-            if( data.url != '') {
-                redirect( data.url );
+            if( data.result == true ) {
+                if (data.url != '') {
+                    redirect(data.url);
+                }
+            }
+            else {
+                Notify(data.msg, false);
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {

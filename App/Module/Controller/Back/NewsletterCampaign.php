@@ -107,8 +107,6 @@ class NewsletterCampaign extends Controller
         $this->setRender('dests' , $tabDests );
         $this->setRender('links' , $tabLinks );
 
-
-
         $this->render('stats.twig');
     }
 }

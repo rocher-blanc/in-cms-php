@@ -104,7 +104,7 @@ $app->group('/user', function () use ($app)
 				
 				$id = $contentRow->user_id;
 				
-				$app->flash('__msg',addslashes( json_encode( "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
+				$app->flash('__msg',addslashes(  "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) );
 				$app->flash('__result',true);
 				
 				if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user/edit/' . $id );
@@ -144,7 +144,7 @@ $app->group('/user', function () use ($app)
 		$ret = false ;
 		if ( $id == $_SESSION[ $app->config('session') ]['id'] )
 		{
-			$msg = "Vous ne pouvez pas supprimer le compte avec lequel vous êtes actuellement connecté!" ;
+			$msg = "Vous ne pouvez pas supprimer le compte avec lequel vous êtes actuellement connecté! $id - " . $_SESSION[ $app->config('session') ]['id'] ;
 		}
 		else
 		{
@@ -157,7 +157,7 @@ $app->group('/user', function () use ($app)
 			{
 				if ( $contentRow->user_group_id == 1 )
 				{
-					$msg = "Impossible de supprimer ce compte pour des raisons techniques" ;
+					$msg = "Impossible de supprimer ce compte, l'utilisateur est dans le groupe \"Administrateurs\"" ;
 				}
 				else
 				{
@@ -179,6 +179,10 @@ $app->group('/user', function () use ($app)
 
 		}
 		
-		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+		echo json_encode([
+            "msg" => $msg ,
+            "result" => $ret,
+            'url' => \App\Kernel\Factory::getInstance()->Url()->get('ext/user')
+        ]) ;
 	})->name('user_delete');
 });
