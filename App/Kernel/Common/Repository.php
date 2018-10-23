@@ -44,6 +44,17 @@ class Repository
         return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName ) ;
     }
 
+    public function countWhere( $where )
+    {
+        $tab = [];
+        foreach( $where as $key => $value )
+        {
+            $tab[ $this->getEntity()->get( $key )->getColumn() ] = $value ;
+        }
+
+        return \DB::for_module( $this->getName() )->where( $tab )->count();
+    }
+
     public function findAllForSelect2( $alias )
     {
         $lang = false ;

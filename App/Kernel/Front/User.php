@@ -215,11 +215,12 @@ class User extends \App\Kernel\Common\User
 
             if ( $rst )
             {
-                $array = $data->getDataArray() ;
+                $rst = $data->getDataArray() ;
+                $array = $rst ;
                 unset( $array['id'] );
 
                 $this->_var = array_merge( $this->_var , $array );
-                return $array;
+                return $rst;
             }
         }
         else
@@ -316,17 +317,18 @@ class User extends \App\Kernel\Common\User
 
                     $saveSession = $this->save( $user ) ;
 
-                    $this->returnError( "user_login_successful" , true ) ;
+                    $this->returnError( "user_login_successful" , true , true ) ;
                     return $saveSession;
                 }
                 else
                 {
-                    return $this->returnError( "user_login_failed" ) ;
+                    return $this->returnError( "user_login_failed" , false , true ) ;
+
                 }
             }
             else
             {
-                return $this->returnError( "user_login_field_empty" ) ;
+                return $this->returnError( "user_login_field_empty" , false , true ) ;
             }
         }
         else

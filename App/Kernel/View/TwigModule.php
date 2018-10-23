@@ -28,13 +28,13 @@ class TwigModule extends \Twig_Extension
 
     public function getFunctions()
     {
-       return array(
+       return [
             new \Twig_SimpleFunction('component', [$this, 'component']),
             new \Twig_SimpleFunction('module', [$this, 'module']),
             new \Twig_SimpleFunction('form', [$this, 'form']),
             new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
             new \Twig_SimpleFunction('parse', [$this, 'parse']),
-        );
+       ];
     }
 
     public function module( $module , $type , $request = [] )

@@ -127,12 +127,10 @@ class Data
 
         if ( $this->getEntity()->hasUrl() )
         {
-            /*$seo = new \App\Kernel\Back\Seo;
+            $seo = new \App\Kernel\Back\Seo;
             $seo->setElementId( $this->get('id') );
             $seo->setModuleId( $module->module_id );
-            $seo->setTitle( $this->get( $this->getEntity()->getUrlName() ) );
-            $seo->setLangId( $this->Lang()->getDefault()->id );
-            $seo->save();*/
+            $seo->delete();
         }
 
         return $rst ;
@@ -167,6 +165,11 @@ class Data
         {
             return true ;
         }
+    }
+
+    public function count( array $value )
+    {
+        return $this->getRepository()->countWhere( $value );
     }
 
     public function create( $value = NULL )
