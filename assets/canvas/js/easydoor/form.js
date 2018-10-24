@@ -368,7 +368,7 @@ checkForm = function(base) {
         $(base + ' .ed_field').removeClass('error');
 
         var valbutton = $("button[type=submit]:focus").val();
-        var serialize = $(base + ' form.submitReady').serialize() + "&buttonaction=" + valbutton;
+        var serialize = $form.serialize() + "&buttonaction=" + valbutton;
 
         e.preventDefault();
         e.stopPropagation();
@@ -376,6 +376,7 @@ checkForm = function(base) {
         $.ajax({
             type: $form.attr('method'),
             url: $form.attr('action'),
+            dataType: "json",
             data: serialize,
             success: function(data) {
                 if(data.result == true && data.url != '') {
