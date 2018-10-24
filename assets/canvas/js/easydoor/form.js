@@ -376,6 +376,7 @@ checkForm = function(base) {
         $.ajax({
             type: $form.attr('method'),
             url: $form.attr('action'),
+            dataType: "json",
             data: serialize,
             success: function(data) {
                 if(data.result == true && data.url != '') {
