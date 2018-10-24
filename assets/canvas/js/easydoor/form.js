@@ -368,7 +368,7 @@ checkForm = function(base) {
         $(base + ' .ed_field').removeClass('error');
 
         var valbutton = $("button[type=submit]:focus").val();
-        var serialize = $(base + ' form.submitReady').serialize() + "&buttonaction=" + valbutton;
+        var serialize = $form.serialize() + "&buttonaction=" + valbutton;
 
         e.preventDefault();
         e.stopPropagation();
