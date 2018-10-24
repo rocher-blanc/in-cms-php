@@ -323,7 +323,6 @@ class User extends \App\Kernel\Common\User
                 else
                 {
                     return $this->returnError( "user_login_failed" , false , true ) ;
-
                 }
             }
             else
@@ -333,7 +332,7 @@ class User extends \App\Kernel\Common\User
         }
         else
         {
-            $this->returnRedirect('/');
+            $this->returnError( "user_login_successful" , true , true ) ;
         }
     }
 

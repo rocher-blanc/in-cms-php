@@ -13,6 +13,7 @@ class NewsletterModel extends Controller
         $this->setRender('apiKey' , TOPOL_API_KEY);
         $this->setRender('idtopol' , $this->getId() + (100000 * $this->getEntityId()) );
         $this->setRender('userId' , TOPOL_USER_ID);
+        
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
 
         $rst = \DB::for_module( $this->getEntityName() )

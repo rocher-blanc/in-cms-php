@@ -11,8 +11,8 @@ class NewsletterModel extends Builder
         if ( TOPOL_USER_ID !== NULL && TOPOL_API_KEY !== NULL )
         {
             $this->addAction( 'saveMail' );
-            $this->addIcon( 'icon-photo' , 'draw' );
             $this->addAction( 'duplicate' );
+            $this->addIcon( 'icon-photo' , 'draw' );
         }
 
         $this->setFieldReference( 'name' );
