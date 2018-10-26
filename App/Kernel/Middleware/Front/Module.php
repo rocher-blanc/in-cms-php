@@ -78,6 +78,5 @@ class Module extends \Slim\Middleware
                 }
             }
         }
-
     }
 }
