@@ -91,9 +91,14 @@ class Repository extends \App\Kernel\Common\Repository
         return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement )->count();
     }
 
+    public function requestFirstGetAllTableIndex()
+    {
+        return \DB::for_module( $this->getName() );
+    }
+
     public function requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
     {
-        $content = \DB::for_module( $this->getName() );
+        $content = $this->requestFirstGetAllTableIndex();
 
         if ( $this->getEntity()->hasMultiLang() )
         {

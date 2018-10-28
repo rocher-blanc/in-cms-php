@@ -924,6 +924,7 @@ class Builder extends Model
                 ->notEmpty('user_register_login_empty' , true )
                 ->noSave()
                 ->noRename()
+                ->setData('fieldSql' , 'user_front.user_front_login')
                 ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
                 ->name('Email');
 
