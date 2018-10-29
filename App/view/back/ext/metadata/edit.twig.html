@@ -69,13 +69,17 @@
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="ed_field col_half">
+            <div class="ed_field col_one_third">
                 <label>Google webmaster tools</label>
                 <input type="text" name="seo_google_webmaster_tools" class="form-control" value="{{ post.seo_google_webmaster_tools }}" />
             </div>
-            <div class="ed_field col_half col_last">
+            <div class="ed_field col_one_third">
                 <label>Bing webmaster tools</label>
                 <input type="text" name="seo_bing_webmaster_tools" class="form-control" value="{{ post.seo_bing_webmaster_tools }}" />
+            </div>
+            <div class="ed_field col_one_third col_last">
+                <label>Google Tag Manager #ID</label>
+                <input type="text" name="seo_gtm" class="form-control" placeholder="GTM-XXXXXXXXX" value="{{ post.seo_gtm }}" />
             </div>
             <div class="ed_field col_full">
                 <label>Google Analytics</label>

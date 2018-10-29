@@ -35,9 +35,21 @@
         {% for l in lang.all %}
             {% if l.url != lang.active.url %}<link rel="alternate" href="{{ l.full_url }}" hreflang="{{ l.url }}" />{% endif %}
         {% endfor %}
+    {% endif %}{% if env() != 'dev' and tracking.gtm != '' %}
+    <script>
+        (function(w,d,s,l,i) {
+            w[l]=w[l]||[];
+            w[l].push({ 'gtm.start': new Date().getTime(),event:'gtm.js' });
+            var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+            j.async=true;
+            j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','{{ tracking.gtm }}');
+    </script>
     {% endif %}
 </head>
 <body{{ block('classbody') }}>
+{% if env() != 'dev' and tracking.gtm != '' %}<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>{% endif %}
 {{ block('content') }}
 {% block javascripts %}{{
 javascript() }}{% endblock %}{% if rgpd.enabled == 1 %}<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>

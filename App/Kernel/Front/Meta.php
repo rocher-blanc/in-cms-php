@@ -41,11 +41,11 @@ class Meta
 
     public function load()
     {
-		$content = \DB::for_table('param')
-			->select('param_key')
-			->select('param_value')
-			->where_like('param_key','seo_%')
-			->find_many();
+        $content = \DB::for_table('param')
+            ->select('param_key')
+            ->select('param_value')
+            ->where_like('param_key','seo_%')
+            ->find_many();
 
 		$tab = [];
 		if ( $content )
@@ -159,7 +159,8 @@ class Meta
             ],
             'tracking' => [
                 'header'    => $tab['seo_divers_header'],
-                'footer'    => $tab['seo_divers_footer']
+                'footer'    => $tab['seo_divers_footer'],
+                'gtm'       => $tab['seo_gtm']
             ]
         ]);
     }

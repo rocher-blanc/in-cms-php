@@ -31,7 +31,6 @@ class Base
 CREATE TRIGGER `after_delete_extension` AFTER DELETE ON `extension` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_extension_id = old.extension_id; END;
 CREATE TRIGGER `after_delete_module_group` AFTER DELETE ON `module_group` FOR EACH ROW BEGIN UPDATE module SET module_module_group_id = NULL WHERE module_module_group_id = old.module_group_id; END;
 CREATE TRIGGER `after_delete_module` AFTER DELETE ON `module` FOR EACH ROW BEGIN DELETE FROM param WHERE param_key = CONCAT(\'key_module_\',old.module_id); DELETE FROM module_lang WHERE module_lang_module_id = old.module_id; END;
-CREATE TRIGGER `after_delete_user_front` AFTER DELETE ON `user_front` FOR EACH ROW BEGIN DELETE FROM user_front_profile WHERE user_front_profile_user_front_id = old.user_front_id; END;
 CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_group_id = old.user_group_id; END;');
     }
 
