@@ -75,6 +75,24 @@ class Eudonet
     }
 
     /* ************************************************** */
+    /* ***********    NOTIFICATION DEBUG   ************** */
+    /* ************************************************** */
+
+    protected function notif( $type , $var , $message , $array , $table , $id = NULL )
+    {
+        ob_start();
+        print_r( $array );
+        //print_r( $var );
+        $out1 = ob_get_contents();
+
+        $idt = '' ;
+        if ( $id !== NULL ) $idt = "ID : $id - " ;
+
+        $slack   = new \App\Kernel\Utils\Slack;
+        $slack->notify( "[$type] Table : $table - " . $idt . $message . "\n\n" . $var['ResultInfos']['ApiMessage'], "" , "logs-ifec" , $var['ResultInfos']['ErrorMessage'] . "\n\n" . $out1 );
+    }
+
+    /* ************************************************** */
     /* ****************       ONE      ****************** */
     /* ************************************************** */
 
@@ -225,7 +243,7 @@ class Eudonet
     /* ****************       ADD      ****************** */
     /* ************************************************** */
 
-    public function add( $tablId , $params )
+    public function add( $tablId , $params , $msg = '' )
     {
         $infos = [];
 
@@ -242,6 +260,11 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos )['result'];
 
+        if ( $rst['ResultInfos']['Success'] == false )
+        {
+            $this->notif( "ADD" , $rst , $msg , $params , $tablId );
+        }
+
         return $rst ;
     }
 
@@ -249,7 +272,7 @@ class Eudonet
     /* ****************     UPDATE     ****************** */
     /* ************************************************** */
 
-    public function update( $tablId , $id , $params )
+    public function update( $tablId , $id , $params , $msg = '' )
     {
         $infos = [];
 
@@ -272,6 +295,8 @@ class Eudonet
         }
         else
         {
+            $this->notif( "UPDATE" , $rst , $msg , $params , $tablId , $id );
+
             return false ;
         }
     }

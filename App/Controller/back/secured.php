@@ -123,6 +123,6 @@ $app->group('/secured', function () use ($app) {
 
     // ACCES INTERDIT
     $app->get('/forbidden', function () use ($app) {
-        $app->render('errors/401.twig.html');
+        $app->render('errors/403.twig');
     })->name('secured_forbidden');
 });
