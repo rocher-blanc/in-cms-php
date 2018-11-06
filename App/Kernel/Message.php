@@ -51,7 +51,8 @@ class Message
 			"delete_failed"		=> "Une erreur est survenue lors de l'opération",
 			"order_success"		=> "La position de l'élément a bien été modifié",
 			"order_failed"		=> "Une erreur est survenue lors de l'opération",
-			
+            "default_success"	=> "L'élément par défaut a bien été modifié",
+
 			/* MEDIA */
 			"crop_image"						=> "L'image a bien été recadrée",
 			"deletemedia_success"				=> "L'image a bien été supprimée",

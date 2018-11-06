@@ -96,6 +96,12 @@ class Builder extends Model
     public $_hasDependency = false;
 
     /*
+     * @boolean
+     * Définit s'il y a une valeur par défaut dans le module
+     */
+    public $_hasDefault = false;
+
+    /*
      * @array
      * Liste toutes les dépendances du module
      */
@@ -225,6 +231,9 @@ class Builder extends Model
         /* Module parent */
         'element_module_parent_id',
 
+        /* Element par defaut */
+        'default',
+
         /* Element parent */
         'parent_id',
 
@@ -319,6 +328,11 @@ class Builder extends Model
     public function hasParent()
     {
         return $this->_hasParent ;
+    }
+
+    public function hasDefault()
+    {
+        return $this->_hasDefault ;
     }
 
     public function hasDependency()
@@ -449,6 +463,12 @@ class Builder extends Model
         return $this ;
     }
 
+    public function setDefaultName( $n )
+    {
+        $this->_default_name = $n ;
+        return $this ;
+    }
+
     protected function setParentTarget( $name )
     {
         $this->_parent_target_name = $name ;
@@ -496,6 +516,16 @@ class Builder extends Model
     {
         $this->_hasModuleParent = true;
         $this->_module_child_name[$module_child_name] = $module_child_name;
+    }
+
+    /**
+     * @param string $module_child_name
+     */
+    public function setDefault()
+    {
+        $this->_hasDefault = true;
+        $this->build('default' , true )->isDefault();
+
     }
 
     protected function setFieldReference( $var )
@@ -554,6 +584,11 @@ class Builder extends Model
     public function getModuleParentIdName()
     {
         return $this->_module_parent_id_name ;
+    }
+
+    public function getDefaultName()
+    {
+        return $this->_default_name ;
     }
 
     /**
@@ -972,6 +1007,19 @@ class Builder extends Model
         $this->field()->setData( "noUpdate" , true ) ;
         $this->field()->setData( "twig" , 'id' ) ;
         $this->setIdName( $this->field()->getName() ) ;
+
+        return $this ;
+    }
+
+    protected function isDefault()
+    {
+        $this->field()->setData( "SQL_VALUE" , 1 ) ;
+        $this->field()->setData( "SQL_TYPE" , "TINYINT" ) ;
+        $this->field()->setData( "SQL_DEFAULT" , 0 ) ;
+        $this->field()->setData( "noUpdate" , true ) ;
+        $this->field()->setData( "twig" , 'default' ) ;
+        $this->setDefaultName( $this->field()->getName() ) ;
+        $this->addAction("default") ;
 
         return $this ;
     }

@@ -568,6 +568,9 @@ class User extends \App\Kernel\Common\User
 
     protected function sendValidationMail( $user )
     {
+        /*
+         *
+         */
         $mail = new Mail;
         $mail->add( $user->user_front_login )
             ->setSubject( $this->text('user_mail_subjet_validation') )

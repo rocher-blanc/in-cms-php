@@ -484,6 +484,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( $this->getEntity()->hasParent() ) 		$tdArray[ $i ][ $this->getEntity()->getParentName() ] = $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasOrder() ) 		$tdArray[ $i ]['order'] = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasValidation() ) 	$tdArray[ $i ]['validation'] = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
+                    if ( $this->getEntity()->hasDefault() ) 	$tdArray[ $i ]['default'] = $row->get( $this->getEntity()->get( $this->getEntity()->getDefaultName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasUrl() )
                     {
                         if ( ! $this->isMain() )
@@ -522,6 +523,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'right' , $rightArray ) ;
         $this->setRender( 'hasOrder' , $this->getEntity()->hasOrder() ) ;
         $this->setRender( 'hasValidation' , $this->getEntity()->hasValidation() ) ;
+        $this->setRender( 'hasDefault' , $this->getEntity()->hasDefault() ) ;
         $this->setRender( 'validationName' , $this->getEntity()->getValidationName() ) ;
         $this->setRender( 'hasURL' , $this->getEntity()->hasURL() ) ;
         $this->setRender( 'th' , $thArray ) ;
@@ -725,6 +727,23 @@ class Controller extends \App\Kernel\Common\Controller
                             $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
                         }
                         $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') ) ;
+
+                        if ( $this->getEntity()->hasDefault() )
+                        {
+                            if ( $this->getEntity()->isChild() )
+                            {
+                                $ct = $this->getRepository()->countWithParent( end( $this->getIdParent() ) );
+                            }
+                            else
+                            {
+                                $ct = $this->getRepository()->count();
+                            }
+
+                            if ( $ct == 0 )
+                            {
+                                $content->set( $this->getEntity()->get('default')->getColumn() , 1 ) ;
+                            }
+                        }
 
                         // On ajoute les infos sans multi-langue
                         $content->save() ;
@@ -1466,6 +1485,33 @@ class Controller extends \App\Kernel\Common\Controller
 
         $this->setRender( 'id' , $this->getId() ) ;
         $this->render('delete.twig') ;
+    }
+
+    protected function defaultAction()
+    {
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $data = new Data( $this->getEntityName() );
+            $rst = $data->find([
+                'default' => 1
+            ]);
+
+            if ( $rst )
+            {
+                $data->set('default' , 0 );
+                $data->save();
+            }
+
+            $newData = new Data( $this->getEntityName() );
+            $rst = $data->find( $this->getId() );
+            if ( $rst )
+            {
+                $data->set('default' , 1 );
+                $data->save();
+            }
+
+            return $this->Factory()->Response()->returnJSON( $this->m("default_success") , true ) ;
+        }
     }
 
     /* ************************************************** */
