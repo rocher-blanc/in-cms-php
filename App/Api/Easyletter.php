@@ -4,10 +4,11 @@ namespace App\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use App\Kernel\Front\Data;
 
 class Easyletter
 {
-    private $urlApi = 'https://api.easyletter.fr/v1/' ;
+    private $urlApi = 'https://api.easyletter.fr/' ;
     private $token  = EL_TOKEN ;
     private $client ;
 
@@ -22,16 +23,53 @@ class Easyletter
             $this->client = new Client([
                 'base_uri' => $this->urlApi,
                 'headers'  => [
-                    'X-API-KEY' => $this->token
+                    'X-API-KEY'    => $this->token,
+                    'Content-Type' => 'application/json'
                 ]
             ]);
         }
     }
-
-    public function automotion( array $data )
+    
+    public function automotion( string $keyAutomation , string $email , array $data = [] , $idSender = NULL )
     {
-        $array = array_merge([
-            'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
+        if ( $idSender !== NULL )
+        {
+            $Sender = new Data('NewsletterSender');
+            $Sender->find( $idSender );
+        }
+        else
+        {
+            $Sender = new Data('NewsletterSender');
+            $Sender->find([
+                "default" => 1
+            ]);
+        }
+
+        $Automation = new Data('EdAutomationModel');
+        $Automation->find([
+            'key' => $keyAutomation
+        ]);
+
+        $AutomationModel = new Data('EdAutomation');
+        $AutomationModel->find([
+            'element_module_parent_id' => $Automation->get('id'),
+            'default' => 1
+        ]);
+
+        $tab = [] ;
+        $tab[ $email ] = array_merge( $data , [ 'Email' => $email ]) ;
+
+        $AutomationHistory = new Data('EdAutomationHistory');
+        $AutomationHistory->create([
+            'automation' => $AutomationModel->get('id'),
+            'email' => $email,
+            'date' => date("Y-m-d H:i:s"),
+            'information' => json_encode( $tab ),
+        ]);
+        $AutomationHistory->save();
+
+        $a = [
+            'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
 
@@ -40,18 +78,27 @@ class Easyletter
             'txtSendToAFriendTag' => "",
 
             'dateTimeUTC' => date("Y-m-d H:i:s"),
-            'schedule' => 0,
-            'sendingRate' => 0,
-            'transactional' => 1,
-        ], $data );
+            'schedule' => '0',
+            'sendingRate' => '0',
+            'transactional' => '1',
 
-        return $this->request( $array );
+            'subject' => $Automation->get('subject'),
+            'senderName' => $Sender->get('name'),
+            'senderEmail' => $Sender->get('email'),
+            'returnPathEmail' => $Sender->get('email_response'),
+
+            'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
+            'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $AutomationModel->get('id'),
+        ];
+        dump( $a );
+
+        return $this->request($a);
     }
 
     public function newsletter( array $data )
     {
         $array = array_merge([
-            'msgType' => 0, // 0 = HTML ; 1 = TXT ; 2 = SMS
+            'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
 
@@ -59,9 +106,9 @@ class Easyletter
             'txtHtmlUnsubscribeTag' => "",
             'txtSendToAFriendTag' => "",
 
-            'schedule' => 1,
-            'sendingRate' => 0,
-            'transactional' => 0,
+            'schedule' => '1',
+            'sendingRate' => '0',
+            'transactional' => '0',
         ], $data );
 
         return $this->request( $array );
@@ -75,15 +122,27 @@ class Easyletter
 
         if ( $response->getStatusCode() == 200 )
         {
+            $body = json_decode( $response->getBody()->getContents() , true ) ;
+            dump( $response );
+            dump( $response->getBody() );
+
+            dump( $body );
+            dump( $this->client );
+
             return true ;
         }
         else
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
+            dump( $response->getBody() );
+            dump( $body );
             $this->setError( $body['response']['error'] );
 
             return false ;
         }
+
+        echo '<pre>' ;
+        echo( json_encode( $data ) );
     }
 
     public function stats()
