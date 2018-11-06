@@ -90,7 +90,6 @@ class Easyletter
             'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
             'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $AutomationModel->get('id'),
         ];
-        dump( $a );
 
         return $this->request($a);
     }
@@ -123,26 +122,16 @@ class Easyletter
         if ( $response->getStatusCode() == 200 )
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
-            dump( $response );
-            dump( $response->getBody() );
 
-            dump( $body );
-            dump( $this->client );
-
-            return true ;
+            return $body ;
         }
         else
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
-            dump( $response->getBody() );
-            dump( $body );
             $this->setError( $body['response']['error'] );
 
             return false ;
         }
-
-        echo '<pre>' ;
-        echo( json_encode( $data ) );
     }
 
     public function stats()
