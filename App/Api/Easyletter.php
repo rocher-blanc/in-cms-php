@@ -68,7 +68,7 @@ class Easyletter
         ]);
         $AutomationHistory->save();
 
-        $a = [
+        $rst = $this->request([
             'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
@@ -89,9 +89,15 @@ class Easyletter
 
             'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
             'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $AutomationModel->get('id'),
-        ];
+        ]);
 
-        return $this->request($a);
+        if ( $rst !== false )
+        {
+            $AutomationHistory->set('id_easyletter' , $rst );
+            $AutomationHistory->save();
+        }
+
+        return $AutomationHistory->get('id');
     }
 
     public function newsletter( array $data )
@@ -123,7 +129,7 @@ class Easyletter
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
 
-            return $body ;
+            return $body['data']['id'] ;
         }
         else
         {

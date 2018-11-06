@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Front;
 
+use App\Api\Easyletter;
+
 class User extends \App\Kernel\Common\User
 {
     /* ************************************************** */
@@ -568,25 +570,13 @@ class User extends \App\Kernel\Common\User
 
     protected function sendValidationMail( $user )
     {
-        /*
-         *
-         */
-        $mail = new Mail;
-        $mail->add( $user->user_front_login )
-            ->setSubject( $this->text('user_mail_subjet_validation') )
-            ->parse('validation', [
-                'token' => $user->user_front_token,
-                'login' => $user->user_front_login,
-            ]);
+        $el = new Easyletter;
+        $el->automotion("user_account_validation" , $user->user_front_login , [
+            'token' => $user->user_front_token,
+            'login' => $user->user_front_login,
+        ]);
 
-        if ( ! $mail->send() )
-        {
-            return false ;
-        }
-        else
-        {
-            return true ;
-        }
+        return true ;
     }
 
     protected function getActiveRegister()
