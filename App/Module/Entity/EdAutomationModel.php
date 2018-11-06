@@ -13,10 +13,16 @@ class EdAutomationModel extends Builder
         $this->setModuleParent( 'EdAutomationModelGroup' );
 
         $this->build('name')
-            ->column(1, 3)
+            ->full()
             ->isVarchar()
             ->notEmpty("Veuillez renseigner le nom du modèle")
             ->name("Nom");
+
+        $this->build('subject')
+            ->column(1, 3)
+            ->isVarchar()
+            ->notEmpty("Veuillez renseigner le sujet")
+            ->name("Sujet");
 
         $this->build('key')
             ->column(1, 3)

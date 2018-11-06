@@ -17,6 +17,7 @@ class EdAutomation extends Builder
 
         $this->setFieldReference( 'name' );
         $this->setModuleParent( 'EdAutomationModel' );
+        $this->setDefault();
 
         $this->build('name')
             ->column(1, 1)

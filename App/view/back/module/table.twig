@@ -26,6 +26,11 @@
 
                             </th>
                         {% endif %}
+                        {% if hasDefault %}
+                            <th style="width: 100px;">
+                                Défaut<br />
+                            </th>
+                        {% endif %}
                         <th class="text-right" style="width: 220px;">
 							Afficher<select class="form-control form-control-sm inline" name="elmt_per_page" style="width: 75px; margin: 0 5px;">
 								<option value="10" {{ elmt_per_page == '10' ? ' selected' : '' }}>10</option>
@@ -75,6 +80,9 @@
                                 {% endif %}
 							</td>
 						{% endfor %}
+                        {% if hasDefault %}
+                            <td></td>
+                        {% endif %}
                         {% if hasValidation %}
                             <td></td>
                         {% endif %}
@@ -118,6 +126,17 @@
                                 {% endif %}
                             {% endif %}
 						{% endfor %}
+                        {% if hasDefault %}
+                            <td class="text-center" style="vertical-align: middle;">
+                                {% if right.edit == true %}
+                                    {% if content.default == 1 %}
+                                        <span class="button button-rounded button-mini button-green">Par défaut</span>
+                                    {% else %}
+                                        <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">Mettre par défaut</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endif %}
                         {% if hasValidation %}
                             <td class="text-center" style="vertical-align: middle;">
                                 {% if right.validation == true %}

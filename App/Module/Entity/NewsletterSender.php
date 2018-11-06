@@ -8,6 +8,7 @@ class NewsletterSender extends Builder
     protected function load()
     {
         $this->setFieldReference( 'name' );
+        $this->setDefault();
 
         $this->build('name')
             ->column(1, 1)
