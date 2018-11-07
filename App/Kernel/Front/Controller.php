@@ -927,10 +927,10 @@ class Controller extends \App\Kernel\Common\Controller
                 }
 
                 return $this->generateForm( $id === NULL ? false : true , $url ) ;
-                break;
+            break;
             case "object" :
                 // a faire
-                break;
+            break;
         }
     }
 
@@ -1071,6 +1071,7 @@ class Controller extends \App\Kernel\Common\Controller
 					//$this->Factory()->Response()->flash( $result['msg'] , true );
 
 					$result['result'] = true;
+					$result['msg']    = ( $add ? $this->getAddSuccessMessage() : $this->getUpdateSuccessMessage() );
 
 					if ( $this->post('redirect') != '' )
                     {
@@ -1115,6 +1116,16 @@ class Controller extends \App\Kernel\Common\Controller
         $this->result_form = $result;
 
         return $result ;
+    }
+
+    protected function getAddSuccessMessage()
+    {
+        return '' ;
+    }
+
+    protected function getUpdateSuccessMessage()
+    {
+        return '' ;
     }
 
     protected function getUrlRedirect()
