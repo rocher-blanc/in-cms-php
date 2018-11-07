@@ -64,26 +64,35 @@ checkForm = function(base) {
             contentType: false,
             dataType: "json",
             success: function(data) {
+                // Result is success
                 if( data.result ) {
-                    //$(base + ' form.ajax').trigger("reset");
+                    // Test to redirection
+                    if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
+                        redirect( data.url );
+                    }
                 }
-
-                if(data.result == true && typeof data.url !== "undefined") {
-                    redirect( data.url );
-                }
+                // Result is not success
                 else {
-                    Notify(data.msg, data.result);
-                }
+                    if ( data.tab ) $('#onglet-' + data.tab ).click();
 
+                    if ( data.field ) {
+                        if ( $('#field-' + data.field).find('input, textarea').length ) {
+                            $('#field-' + data.field).find('input, textarea').addClass('error').focus();
+                        }
+                    }
+
+                    if ( data.fields ) {
+                        $.each(data.fields, function( index, value ) {
+                            $('#field-' + value.field).addClass('error');
+                        });
+                    }
+                }
+                // Hide process icon
                 if ( $(base + ' .'+mod+'-form-process').length ) {
                     $(base + ' .'+mod+'-form-process').hide();
                 }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                Notify(errorThrown, false);
-                if ( $(base + ' .'+mod+'-form-process').length ) {
-                    $(base + ' .'+mod+'-form-process').hide();
-                }
+                // Send notification
+                Notify(data.msg, data.result);
             }
         });
         return false;
