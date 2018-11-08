@@ -66,7 +66,7 @@ class Install
         // self::patchVendor() ;
         self::patchDb() ;
 
-        \App\Kernel\Utils\Slack::notificationInstall( "JContent" , "" , "dev" , ( $install ? "Installation" : "Mise à jour" ) . " du CMS avec succés\nProjet : " . self::getFolderProject() );
+        \App\Kernel\Utils\Slack::notificationInstall( "easyDOOR" , "" , "dev" , ( $install ? "Installation" : "Mise à jour" ) . " du CMS avec succés\nProjet : " . self::getFolderProject() );
     }
 
     protected static function getFolderProject()
