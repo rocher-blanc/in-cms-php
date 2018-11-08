@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Container;
+
 class Menu
 {
 	/*
@@ -147,6 +149,7 @@ class Menu
             'menuTree'          => $groups,
             'active_user'       => ACTIVE_USER,
             'active_newsletter' => NEWSLETTER_ACTIVE,
+            'el_credits'        => $this->Container()->param()->get('el_credits'),
             'color'             => COLOR,
             'techno'            => TECHNO
         ]);
