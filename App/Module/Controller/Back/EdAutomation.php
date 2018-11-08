@@ -64,7 +64,7 @@ class EdAutomation extends Controller
             foreach( $array as $val )
             {
                 $std = new \stdClass;
-                $std->value = "{" . $val['value'] . "}";
+                $std->value = "[" . $val['value'] . "]";
                 $std->text = $val['text'];
                 $std->label = $val['label'];
                 $obj->items[] = $std ;
