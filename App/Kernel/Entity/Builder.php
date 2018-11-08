@@ -1464,6 +1464,24 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function style( callable $result )
+    {
+        $this->field()->setData( "style" , $result ) ;
+        return $this ;
+    }
+
+    protected function javascript( callable $result )
+    {
+        $this->field()->setData( "javascript" , $result ) ;
+        return $this ;
+    }
+
+    protected function updateValue( callable $result )
+    {
+        $this->field()->setData( "updateValue" , $result ) ;
+        return $this ;
+    }
+
     protected function formated( callable $result , string $message )
     {
         $this->field()->setData( "formated" , $result ) ;

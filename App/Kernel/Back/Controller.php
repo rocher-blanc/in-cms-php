@@ -344,6 +344,7 @@ class Controller extends \App\Kernel\Common\Controller
                     $thArray[ $field->getName() ] = array_merge([
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
+                        'search' => ( is_callable( $field->getData('updateValue') ) ? false : true ),
                         'value' => $this->getApp()->request->get( $field->getName() ),
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
@@ -383,6 +384,19 @@ class Controller extends \App\Kernel\Common\Controller
                 $i = 0;
                 foreach( $content as $row )
                 {
+                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) )
+                    {
+                        $contentShow = new \stdClass;
+                        foreach( $this->getEntity()->getField() as $f )
+                        {
+                            if ( $f->getData( $this->getDataView() ) == true && ( ( $f->isParent() == true && $f->hasOption() == true ) or $f->isParent() != true ) && $f->getType() !== NULL )
+                            {
+                                $name = $f->getName() ;
+                                $contentShow->$name = $row->get( $f->getColumn() );
+                            }
+                        }
+                    }
+
                     foreach( $this->getEntity()->getField() as $field )
                     {
                         if ( in_array( $field->getName() , $indexTable ) )
@@ -436,8 +450,57 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $field->getData('unit') !== NULL && $field->getData('whereUnit') == "after" ) $value.= ' ' . $field->getData('unit') ;
                             }
 
+                            /* *************************************************** */
+                            /* *************************************************** */
+                            /*                       STYLE                         */
+                            /* *************************************************** */
+                            /* *************************************************** */
+
+                            $style    = '' ;
+                            $callableStyle = $field->getData('style') ;
+
+                            if ( is_callable( $callableStyle ) )
+                            {
+                                $style = $callableStyle( $contentShow );
+                            }
+
+                            /* *************************************************** */
+                            /* *************************************************** */
+                            /*                      JAVSCRIPTS                     */
+                            /* *************************************************** */
+                            /* *************************************************** */
+
+                            $js = '' ;
+                            $callableJavascript = $field->getData('javascript') ;
+
+                            if ( is_callable( $callableJavascript ) )
+                            {
+                                $js = $callableJavascript( $contentShow );
+                            }
+
+                            /* *************************************************** */
+                            /* *************************************************** */
+                            /*                    UPDATE VALUE                     */
+                            /* *************************************************** */
+                            /* *************************************************** */
+
+                            $callableValue = $field->getData('updateValue') ;
+
+                            if ( is_callable( $callableValue ) )
+                            {
+                                $value = $callableValue( $contentShow );
+                            }
+
+                            /* *************************************************** */
+                            /* *************************************************** */
+                            /*                     SET VALUE                       */
+                            /* *************************************************** */
+                            /* *************************************************** */
+
                             $typeArray[ $field->getName() ] = $field->getType() ;
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
+                                'style' => $style,
+                                'javascript' => $js,
                                 'value' => $value,
                                 'module' => $field->getData('object'),
                                 'subtype' => $field->getData('subtype'),
@@ -449,19 +512,15 @@ class Controller extends \App\Kernel\Common\Controller
 
                     $tdArray[ $i ]['id'] = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
 
+                    /* *************************************************** */
+                    /* *************************************************** */
+                    /*                       ICONS                         */
+                    /* *************************************************** */
+                    /* *************************************************** */
+
                     $tabIcon = [];
                     if ( ! empty( $this->getEntity()->getIcon() ) )
                     {
-                        $contentShow = new \stdClass;
-                        foreach( $this->getEntity()->getField() as $f )
-                        {
-                            if ( $f->getData( $this->getDataView() ) == true && ( ( $f->isParent() == true && $f->hasOption() == true ) or $f->isParent() != true ) && $f->getType() !== NULL )
-                            {
-                                $name = $f->getName() ;
-                                $contentShow->$name = $row->get( $f->getColumn() );
-                            }
-                        }
-
                         foreach( $this->getEntity()->getIcon() as $icon )
                         {
                             if ( is_callable( $icon['showIF'] ) )
