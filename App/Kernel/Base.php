@@ -76,6 +76,7 @@ INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_fl
 INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('seo_author', 'JWeb Création'),
 ('security_lock_ip', '0'),
+('el_credits', '0'),
 ('seo_geo_region', NULL),
 ('seo_geo_placename', NULL),
 ('seo_geo_position', NULL),
