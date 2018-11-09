@@ -903,6 +903,7 @@ class Builder extends Model
                 {
                     $this->build('user_front_id' , true )
                         ->isSelect()
+                        ->user()
                         ->ManyToMany(MODULE_USER )
                         ->name('Utilisateur');
                 }
@@ -910,6 +911,7 @@ class Builder extends Model
                 {
                     $this->build('user_front_id' , true )
                         ->isSelect()
+                        ->user()
                         ->isInteger()
                         ->name('Utilisateur');
                 }
@@ -920,6 +922,7 @@ class Builder extends Model
             {
                 $this->build('user_front_id' , true )
                     ->isHidden("INT" , 11)
+                    ->user()
                     ->defaut(function() {
                         return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
                     } , true  );
@@ -1618,6 +1621,12 @@ class Builder extends Model
     protected function noSave()
     {
         $this->field()->setData( "nosave" , true ) ;
+        return $this ;
+    }
+
+    protected function user()
+    {
+        $this->field()->setData( "user" , true ) ;
         return $this ;
     }
 

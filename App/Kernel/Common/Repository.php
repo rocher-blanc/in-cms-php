@@ -55,8 +55,10 @@ class Repository
         return \DB::for_module( $this->getName() )->where( $tab )->count();
     }
 
-    public function findAllForSelect2( $alias )
+    public function findAllForSelect2( $alias = NULL )
     {
+        if ( $alias === NULL ) $alias = 'titre' ;
+
         $lang = false ;
         if ( ! empty( $this->getEntity()->getFieldReference() ) )
         {
@@ -67,6 +69,11 @@ class Repository
 
             if ( $ct == 1 )
             {
+                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->isUser() && defined('MODULE_USER') )
+                {
+                    return \App\Kernel\Container::getInstance()->module( MODULE_USER )->getRepository(true)->findAllForSelect2();
+                }
+
                 if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->hasLang() ) $lang = true ;
                 $content = $content->select( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->fieldSql() , $alias );
             }

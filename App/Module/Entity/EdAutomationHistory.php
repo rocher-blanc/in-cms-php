@@ -62,7 +62,6 @@ class EdAutomationHistory extends Builder
                 if ( $send ) $str = '<i class="icon-email2" data-toggle="tooltip" data-placement="top" title="Envoyé" style="color: #007ca2;"></i>';
                 else         $str = '<i class="icon-email2" data-toggle="tooltip" data-placement="top" title="Non envoyé" style="color: #ddd;"></i>';
 
-
                 if ( $delivery ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Délivré" class="icon-check-sign" style="color: #449d44;"></i>' ;
                 else             $str.= '<i data-toggle="tooltip" data-placement="top" title="Non délivré" class="icon-check-sign" style="color: #ddd;"></i>' ;
 

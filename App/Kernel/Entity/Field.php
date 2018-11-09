@@ -117,11 +117,17 @@ class Field
 	/* ******************     ISER    ******************* */
 	/* ************************************************** */
 
-	public function isCustom()
-	{
-		if ( $this->getData('custom') === true ) 	return true ;
-		else										    return false ;
-	}
+    public function isUser()
+    {
+        if ( $this->getData('user') === true ) 	    return true ;
+        else										    return false ;
+    }
+
+    public function isCustom()
+    {
+        if ( $this->getData('custom') === true ) 	return true ;
+        else										    return false ;
+    }
 
 	public function isURL()
 	{

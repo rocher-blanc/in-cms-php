@@ -355,6 +355,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                     if ( $field->getType() == "select" && $field->isAssociated() == true )
                     {
+
                         $option = $this->getValueAssociated( $field , 'array' );
                         $this->getEntity()->get( $field->getName() )->setData('option',$option);
                     }
