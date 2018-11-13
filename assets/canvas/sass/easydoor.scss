@@ -784,10 +784,13 @@ ul.docs-icons li span {
 
 .dropdown-header {
   display: block;
-  padding: 0.5rem 1.5rem;
+  padding: 4px 6px;
+  margin-top: 6px;
   margin-bottom: 0;
-  font-size: 0.875rem;
-  color: #6c757d;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fafafa;
+  background: $theme-color;
   white-space: nowrap;
 }
 
@@ -796,7 +799,7 @@ ul.docs-icons li span {
 }
 
 .bootstrap-select.btn-group .dropdown-menu a.dropdown-item {
-  padding: 6px;
+  padding: 2px 6px;
 }
 .bootstrap-select.btn-group .dropdown-menu {
   height: 800px;
