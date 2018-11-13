@@ -94,16 +94,14 @@ headerResizing = function() {
         // Big screen
         // if( width > 992 ) {
             var firstTop = $ul.find("li").first().offset().top;
-            var lastTop = $ul.find("li").last().offset().top;
 
             // Small space test
-            if( firstTop > 0 ) {
+            if( firstTop > $(window).scrollTop() ) {
                 $ul.addClass("small-space");
 
                 // Two lines test
                 firstTop = $ul.find("li").first().offset().top;
-                lastTop = $ul.find("li").last().offset().top;
-                if( firstTop > 0 ) {
+                if( firstTop > $(window).scrollTop() ) {
                     $("#primary-menu").addClass("two-lines");
                     // $("#header").addClass("static-sticky");
                 }
