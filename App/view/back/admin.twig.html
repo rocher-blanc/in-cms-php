@@ -50,99 +50,119 @@
 
 {% block contenu %}
     <div id="wrapper" class="clearfix">
-        <header id="header" class="full-header">
+        <header id="header" class="full-header sticky-header">
             <div id="header-wrap">
                 <div class="container clearfix">
                     <div id="primary-menu-trigger"><i class="icon-reorder"></i></div>
 
+                    <!-- Logo -->
                     <div id="logo">
                         {% include 'logo.twig.html' %}
                     </div>
 
+                    <!-- Profile -->
+                    <div id="top-account" class="dropdown">
+                        <a href="#" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon-user"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            <a class="dropdown-item tleft" href="{{ siteUrl('/secured/profile') }}">
+                                <i class="icon-user"></i> &nbsp; Profil
+                            </a>
+                            <a href="{{ siteUrl('/secured/logout') }}" class="dropdown-item tleft">
+                                <i class="icon-signout"></i> &nbsp; Déconnexion
+                            </a>
+                        </ul>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div id="top-notify">
+                        <i class="icon-bell"></i>
+                    </div>
+
+                    <!-- Menu -->
                     <nav id="primary-menu">
                         <ul>
                             {% for group in menuTree %}
-                                {% if group.columns | length > 1 %}
+                            {% if group.columns | length > 1 %}
 
-                                    <li class="mega-menu sub-menu">
-                                        <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
-                                        <div class="mega-menu-content style-2 clearfix">
-                                            {%     if group.columns | length == 1 %} {% set class = "col-lg-12" %}
-                                            {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
-                                            {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
-                                            {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
-                                            {% else                               %} {% set class = "col-5" %}
-                                            {% endif %}
-                                            {% for column in group.columns %}
-                                                <ul class="mega-menu-column {{ class }}">
-                                                    {% for block in column.blocks %}
-                                                        <li class="mega-menu-title sub-menu">
-                                                            <a href="#" class="sf-with-ul"><div>{{ block.title }}</div></a>
-                                                            <ul>
-                                                                {% for module in block.modules %}
-                                                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endfor %}
-                                        </div>
-                                    </li>
-
-                                {% else %}
-
-                                    {% set modules = group.columns | first .blocks | first .modules %}
-
-                                    {% if modules | length > 1 %}
-
-                                        <li>
-                                            <a href="javascript:;">{{ group.name }}</a>
+                            <li class="mega-menu sub-menu">
+                                <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
+                                <div class="mega-menu-content style-2 clearfix">
+                                    {%     if group.columns | length == 1 %} {% set class = "col-lg-12" %}
+                                    {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
+                                    {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
+                                    {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
+                                    {% else                               %} {% set class = "col-5" %}
+                                    {% endif %}
+                                    {% for column in group.columns %}
+                                    <ul class="mega-menu-column {{ class }}">
+                                        {% for block in column.blocks %}
+                                        <li class="mega-menu-title sub-menu">
+                                            <a href="#" class="sf-with-ul"><div>{{ block.title }}</div></a>
                                             <ul>
-                                                {% for module in group.columns | first . blocks | first . modules %}
-                                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                                                {% for module in block.modules %}
+                                                <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
                                                 {% endfor %}
                                             </ul>
                                         </li>
-                                    {% elseif modules | length == 1 %}
-                                        <li>
-                                            <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
-                                        </li>
-                                    {% endif %}
-                                {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                    {% endfor %}
+                                </div>
+                            </li>
+
+                            {% else %}
+
+                            {% set modules = group.columns | first .blocks | first .modules %}
+
+                            {% if modules | length > 1 %}
+
+                            <li>
+                                <a href="javascript:;">{{ group.name }}</a>
+                                <ul>
+                                    {% for module in group.columns | first . blocks | first . modules %}
+                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% elseif modules | length == 1 %}
+                            <li>
+                                <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
+                            </li>
+                            {% endif %}
+                            {% endif %}
                             {% endfor %}
 
                             {% for group in menuTree %}
-                                {% if group.children|length > 1 %}
-                                    <li>
-                                        <a href="javascript:;">
-                                            <div>{{ group.name }}</div>
-                                        </a>
-                                        <ul>
-                                            {% for module in group.children %}
-                                                <li>
-                                                    <a href="{{ route( module.class ) }}">
-                                                        <div>{{ module.name }}</div>
-                                                    </a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                {% else %}
+                            {% if group.children|length > 1 %}
+                            <li>
+                                <a href="javascript:;">
+                                    <div>{{ group.name }}</div>
+                                </a>
+                                <ul>
                                     {% for module in group.children %}
-                                        <li>
-                                            <a href="{{ route( module.class ) }}">
-                                                <div>{{ module.name }}</div>
-                                            </a>
-                                        </li>
+                                    <li>
+                                        <a href="{{ route( module.class ) }}">
+                                            <div>{{ module.name }}</div>
+                                        </a>
+                                    </li>
                                     {% endfor %}
-                                {% endif %}
+                                </ul>
+                            </li>
+                            {% else %}
+                            {% for module in group.children %}
+                            <li>
+                                <a href="{{ route( module.class ) }}">
+                                    <div>{{ module.name }}</div>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
                             {% endfor %}
 
                             {% if active_newsletter == false and user.admin == false and active_user == false %}
-                                <li>
-                                    {{ menu.parametre('') }}
-                                </li>
+                            <li>
+                                {{ menu.parametre('') }}
+                            </li>
                             {% else %}
                             <li class="mega-menu sub-menu">
                                 <a href="#" class="sf-with-ul"><div>easyDOOR</div></a>
@@ -351,31 +371,11 @@
                             </li>
 
                             <li class="website">
-                                <a target="_blank" href="{{ siteUrl('/',false) }}">
-                                    <div>Voir mon site</div>
+                                <a target="_blank" href="{{ siteUrl('/',false) }}" data-toggle="tooltip" title="Voir mon site">
+                                    <i class="icon-bookmark" style="margin:0;"></i>
                                 </a>
                             </li>
                         </ul>
-
-                        <div id="top-cart">
-                            <a href="#" id="top-cart-trigger">
-                                <i class="icon-bell-alt"></i>
-                                {#<span>1</span>#}
-                            </a>
-                        </div>
-
-                        <div class="testimonial">
-                            <div class="testi-image">
-                                <a href="{{ siteUrl('/secured/profile') }}"><img src="{{ user.photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.photo , false ) }}"></a>
-                            </div>
-                            <div class="testi-content">
-                                <div class="testi-meta">
-                                    {{ user.fname }} {{ user.lname }}
-                                    <span>{{ user.group_name }}</span>
-                                    <a class="ed-logout" href="{{ siteUrl('/secured/logout') }}"><i class="icon-signout"></i>Déconnexion</a>
-                                </div>
-                            </div>
-                        </div>
                     </nav>
                 </div>
             </div>

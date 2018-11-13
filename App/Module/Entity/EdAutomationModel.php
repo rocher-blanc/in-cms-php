@@ -36,35 +36,41 @@ class EdAutomationModel extends Builder
             ->name("Variables d'environnements");
     }
 
-    private function getList_EdAutomationVar()
-    {
-        $rst = [];
 
-        // Find all groups
-        $data_group = new \App\Kernel\Back\Data( "EdAutomationVarGroup" );
-        $data_group->find([]);
-        if( $data_group->getData() )
-        {
-            // For each group
-            foreach( $data_group->getData() as $group )
-            {
-                // Find all elements in group
-                $data_el = new \App\Kernel\Back\Data( "EdAutomationVar" );
-                $data_el->find([ 'parent_id' => $group->get("id") ]);
-                if( $data_el->getData() )
-                {
-                    $rst_temp = [];
+	private function getList_EdAutomationVar()
+	{
+		// Prepare modules and result
+		$mod_group = \App\Kernel\Container::getInstance()->module("EdAutomationVarGroup");
+		$mod_element = \App\Kernel\Container::getInstance()->module("EdAutomationVar");
+		$rst = [];
 
-                    foreach( $data_el->getData() as $element )
-                    {
-                        $rst_temp[ $element->get("id") ] = $element->get("label");
-                    }
+		// Find all groups
+		$all_group = $mod_group->getRepository()->findAll();
+		if( $all_group )
+		{
+			// For each groups
+			foreach( $all_group as $row_group ) {
+				// Parse group and create self result
+				$group = $mod_group->getController()->parseValue($row_group);
+				$rst_temp = [];
 
-                    $rst[ $group->get("name") ] = $rst_temp;
-                }
-            }
-        }
-
-        return $rst;
-    }
+				// Find elements in group
+				$all_element = $mod_element->getRepository()->getKit()
+					->where_equal( $mod_element->getEntity()->get('element_module_parent_id')->getColumn(), $group['id'] )
+					->find_many();
+				if( $all_element )
+				{
+					foreach( $all_element as $row_element )
+					{
+						$element = $mod_element->getController()->parseValue($row_element);
+						$rst_temp[ $element['id'] ] = $element['label'];
+					}
+					// Add group to final result
+					$rst[ $group['name'] ] = $rst_temp;
+				}
+			}
+		}
+		// Return final result
+		return $rst;
+	}
 }

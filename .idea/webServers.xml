@@ -2,34 +2,10 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="bb5b8d82-5869-4133-852c-23a2bb4fcb18" name="VPS1 - Domilib" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
+      <webServer id="de538624-097a-408c-aa8d-b0f743487531" name="VPS1 WAW - IFEC" url="http://vps1.waw.agency">
+        <fileTransfer host="vps1.waw.agency" port="21" rootFolder="/www/vendor/JWebCreation/cms/">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
-      <webServer id="97e59e30-9661-4321-81c1-59d8a4dba314" name="VPS1 - MAUTOV2" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
-      <webServer id="26c53a49-02b4-4e2a-9d15-9cf1a2a60bfb" name="VPS1 - Macadam" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
-      <webServer id="20e9f5ae-a41b-4c25-8d4d-dee64846c561" name="VPS1 - easyLETTER" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
           </advancedOptions>
           <option name="port" value="21" />
         </fileTransfer>

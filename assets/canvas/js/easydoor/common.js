@@ -87,28 +87,26 @@ headerResizing = function() {
 
         // Clean header
         $ul.removeClass("small-space");
-        $ul.removeClass("two-lines");
-        $("#header").removeClass("static-sticky");
+        $("#primary-menu").removeClass("two-lines");
+        // $("#header").removeClass("static-sticky");
         $notif.css("padding-right", $("#primary-menu .testimonial").outerWidth());
 
         // Big screen
-        if( width > 992 ) {
+        // if( width > 992 ) {
             var firstTop = $ul.find("li").first().offset().top;
-            var lastTop = $ul.find("li").last().offset().top;
 
             // Small space test
-            if( firstTop !== lastTop ) {
+            if( firstTop > $(window).scrollTop() ) {
                 $ul.addClass("small-space");
 
                 // Two lines test
                 firstTop = $ul.find("li").first().offset().top;
-                lastTop = $ul.find("li").last().offset().top;
-                if( firstTop !== lastTop ) {
-                    $ul.addClass("two-lines");
-                    $("#header").addClass("static-sticky");
+                if( firstTop > $(window).scrollTop() ) {
+                    $("#primary-menu").addClass("two-lines");
+                    // $("#header").addClass("static-sticky");
                 }
 
             }
-        }
+        // }
     }
 };
