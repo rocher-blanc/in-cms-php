@@ -1551,10 +1551,17 @@ class Controller extends \App\Kernel\Common\Controller
     {
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
         {
-            $data = new Data( $this->getEntityName() );
-            $rst = $data->find([
+            $search = [
                 'default' => 1
-            ]);
+            ];
+
+            if ( !empty( $this->getIdParent() ) )
+            {
+                $search['element_module_parent_id'] = end( $this->getIdParent() );
+            }
+
+            $data = new Data( $this->getEntityName() );
+            $rst = $data->find($search);
 
             if ( $rst )
             {

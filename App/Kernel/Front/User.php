@@ -571,12 +571,17 @@ class User extends \App\Kernel\Common\User
     protected function sendValidationMail( $user )
     {
         $el = new Easyletter;
-        $el->automotion("user_account_validation" , $user->user_front_login , [
-            'token' => $user->user_front_token,
-            'login' => $user->user_front_login,
-        ]);
+        $el->automotion("user_account_validation" , $user->user_front_login , array_merge([
+            'url_validation' => \App\Kernel\Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token,
+            'email' => $user->user_front_login,
+        ], $this->getEmailVariableValidation() ));
 
         return true ;
+    }
+
+    protected function getEmailVariableValidation()
+    {
+        return [];
     }
 
     protected function getActiveRegister()
@@ -850,6 +855,7 @@ class User extends \App\Kernel\Common\User
                     $user->user_front_token    = $this->getNewToken();
                     $user->save();
 
+                    /*
                     $mail = new Mail;
                     $mail->add( $login )
                         ->setSubject( $this->text('user_mail_subjet_lost_password') )
@@ -857,8 +863,15 @@ class User extends \App\Kernel\Common\User
                             'password' => $pass,
                             'login' => $login,
                         ]);
+                    */
 
-                    if ( ! $mail->send() )
+                    $el = new Easyletter;
+                    $rstMail = $el->automotion("lost_password" , $login , array_merge([
+                        'password' => $pass,
+                        'email' => $login,
+                    ], $this->getEmailVariablePassword() ));
+
+                    if ( $rstMail === false )
                     {
                         return $this->returnError( "user_lost_password_send_mail_error" ) ;
                     }
@@ -873,6 +886,11 @@ class User extends \App\Kernel\Common\User
                 }
             }
         }
+    }
+
+    protected function getEmailVariablePassword()
+    {
+        return [];
     }
 
     protected function generatePassword( $length = 10 )
