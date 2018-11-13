@@ -32,10 +32,19 @@
 }
 
 #primary-menu {
+  &.two-lines {
+    touch-action: pan-y;
+    padding: 0 110px 0 60px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
   > ul {
     display: block;
     width: 100%;
-    padding-left: 115px;
+    padding-left: 30px;
 
     .testimonial, > li > a {
       transition: all 0s;
@@ -58,10 +67,14 @@
       }
     }
 
-    &.two-lines {
+
+  }
+  &.two-lines {
+    > ul {
       > li, .website {
+        position: static;
         > a {
-          padding: 14px 8px !important;
+          padding: 4px 8px !important;
         }
       }
     }
@@ -101,13 +114,13 @@
 body:not(.sticky-responsive-menu) {
   #primary-menu {
     > ul {
-      @media only screen and (max-width: 767px) {
+      @media only screen and (max-width: 991px) {
         display: none;
         &.d-block {
           display: block;
           position: relative;
           z-index: 1;
-          margin-top: 100px !important;
+          margin-top: 60px !important;
           box-shadow: 0 1px 3px rgba(0, 0, 0, .75);
         }
       }

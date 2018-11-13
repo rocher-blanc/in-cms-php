@@ -478,6 +478,12 @@ form {
   background-color: #00afaf;
 }
 
+#primary-menu {
+  height: 60px;
+}
+#primary-menu ul {
+  background: white;
+}
 #primary-menu ul li .mega-menu-content.style-2 ul.mega-menu-column > li.mega-menu-title > a {
   color: $jweb-blue;
 }
@@ -888,6 +894,51 @@ ul.docs-icons li span {
   &.show { opacity:1; }
 }
 
+
+// Nouveau menu
+
+#top-account {
+  margin: 12px 13px !important;
+  > .btn {
+    background: $jweb-blue;
+    color: white;
+    &:after {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin-left: .255em;
+      vertical-align: .255em;
+      content: "";
+      border-top: .3em solid;
+      border-right: .3em solid transparent;
+      border-bottom: 0;
+      border-left: .3em solid transparent;
+    }
+  }
+}
+
+#top-notify {
+  display: inline-block;
+  float: right;
+  margin: 12px 0 12px 13px !important;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 991px) {
+  #top-account {
+    position: static !important;
+  }
+  #primary-menu-trigger {
+    top: 5px !important;
+  }
+}
+@media only screen and (max-width: 767px) {
+  #primary-menu {
+    min-height: 60px !important;
+  }
+}
 
 
 /* ************************************************ */
