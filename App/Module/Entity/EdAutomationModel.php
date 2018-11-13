@@ -32,7 +32,39 @@ class EdAutomationModel extends Builder
         $this->build('vars')
             ->column(1, 3)
             ->isCheckbox()
-            ->ManyToMany('EdAutomationVar')
+            ->option( $this->getList_EdAutomationVar() )
             ->name("Variables d'environnements");
+    }
+
+    private function getList_EdAutomationVar()
+    {
+        $rst = [];
+
+        // Find all groups
+        $data_group = new \App\Kernel\Back\Data( "EdAutomationVarGroup" );
+        $data_group->find([]);
+        if( $data_group->getData() )
+        {
+            // For each group
+            foreach( $data_group->getData() as $group )
+            {
+                // Find all elements in group
+                $data_el = new \App\Kernel\Back\Data( "EdAutomationVar" );
+                $data_el->find([ 'parent_id' => $group->get("id") ]);
+                if( $data_el->getData() )
+                {
+                    $rst_temp = [];
+
+                    foreach( $data_el->getData() as $element )
+                    {
+                        $rst_temp[ $element->get("id") ] = $element->get("label");
+                    }
+
+                    $rst[ $group->get("name") ] = $rst_temp;
+                }
+            }
+        }
+
+        return $rst;
     }
 }

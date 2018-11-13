@@ -22,7 +22,7 @@
         {% for row in contentRows %}
             <div class="promo promo-light">
                 <div class="col_two_fifth">
-                    <span>{{ row.module_name }} <em style="font-weight: normal; color: #bbb;">({{ row.module_class_name }})</em></span>
+                    <span><i class="{{ row.module_icon }}"></i> {{ row.module_name }} <em style="font-weight: normal; color: #bbb;">({{ row.module_class_name }})</em></span>
                 </div>
                 <div class="col_three_fifth col_last">
                     <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
