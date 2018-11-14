@@ -422,8 +422,8 @@ $app->group('/langue', function () use ($app)
     })->name('langue_traduction');
 
     $app->post('/traduction/get-lang', function() use ($app) {
-        $lang = $this->getApp()->request->post('lang_locale');
-        $className = "\Project\Lang\\" . strtoupper( $lang ) ;
+        $lang_abbr = $this->getApp()->request->post('lang_locale');
+        $className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
         $class     = new $className ;
         $arrayTrad = $class->getVar();
 
@@ -440,7 +440,15 @@ $app->group('/langue', function () use ($app)
             }
         }
 
-        $lang = [ 'id' => 1, 'locale' => $lang, 'title' => "Français" ];
+        $req = \DB::for_table("lang")
+			->where_equal("lang_url", $lang_abbr)
+			->find_one();
+
+		$lang = [
+			'id' => $req ? $req->lang_id : 0,
+			'locale' => $lang_abbr,
+			'title' => $req ? $req->lang_display : "Langue"
+		];
 
         echo json_encode([
             'result' => true,
