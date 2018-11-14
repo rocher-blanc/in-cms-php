@@ -44,7 +44,7 @@ $(function() {
             data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
             $.ajax({
-                url     : "{{ siteUrl('ext/langue/traduction/add-key') }}",
+                url     : admin+"ext/langue/traduction/add-key",
                 data    : data,
                 method  : "POST",
                 dataType: 'json',
@@ -191,7 +191,7 @@ var saveCell = function( cell ) {
     data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
     $.ajax({
-        url     : "{{ siteUrl('ext/langue/traduction/update-translate') }}",
+        url     : admin+"ext/langue/traduction/update-translate",
         data    : data,
         method  : "POST",
         dataType: 'json',
@@ -266,7 +266,7 @@ var addKey = function( key ) {
     if( $("meta[name=isadmin]").attr("content") == "1" ) {
         $td.append(
             $("<a>")
-                .attr("href", "{{ siteUrl('ext/langue/traduction/remove-key/') }}" + key)
+                .attr("href", admin+"ext/langue/traduction/remove-key/" + key)
                 .attr("data-lightbox", "ajax")
                 .append(
                     $("<i>")
@@ -341,7 +341,7 @@ var requestGetLang = function( lang_locale ) {
 
 
     $.ajax({
-        url     : "{{ siteUrl('ext/langue/traduction/get-lang') }}",
+        url     : admin+"ext/langue/traduction/get-lang",
         data    : data,
         method  : "POST",
         dataType: 'json',
@@ -372,7 +372,7 @@ var deleteKey = function( key ) {
     data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
     $.ajax({
-        url     : "{{ siteUrl('ext/langue/traduction/remove-key-action') }}",
+        url     : admin+"ext/langue/traduction/remove-key-action",
         data    : data,
         method  : "POST",
         dataType: 'json',
