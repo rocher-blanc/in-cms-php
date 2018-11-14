@@ -430,8 +430,15 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                             else if ( $field->getType() == "date" )
                             {
-                                $date = new \DateTime( $row->get( $field->getColumn() ) );
-                                $value = $date->format('d/m/Y') ;
+                                if ( $row->get( $field->getColumn() ) === NULL )
+                                {
+                                    $value = "-" ;
+                                }
+                                else
+                                {
+                                    $date = new \DateTime( $row->get( $field->getColumn() ) );
+                                    $value = $date->format('d/m/Y') ;
+                                }
                             }
                             else if ( $field->getType() == "image" )
                             {

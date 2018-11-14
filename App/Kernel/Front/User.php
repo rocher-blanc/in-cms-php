@@ -855,20 +855,10 @@ class User extends \App\Kernel\Common\User
                     $user->user_front_token    = $this->getNewToken();
                     $user->save();
 
-                    /*
-                    $mail = new Mail;
-                    $mail->add( $login )
-                        ->setSubject( $this->text('user_mail_subjet_lost_password') )
-                        ->parse('lost-password', [
-                            'password' => $pass,
-                            'login' => $login,
-                        ]);
-                    */
-
                     $el = new Easyletter;
                     $rstMail = $el->automotion("lost_password" , $login , array_merge([
                         'password' => $pass,
-                        'email' => $login,
+                        'Email' => $login
                     ], $this->getEmailVariablePassword() ));
 
                     if ( $rstMail === false )
