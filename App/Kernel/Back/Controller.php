@@ -21,7 +21,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function __construct( $options = [] )
     {
-        $this->_options = $options ;
+        $this->_optiondate_updateds = $options ;
     }
 
     /* ************************************************** */

@@ -90,6 +90,12 @@ class Data
 
     public function save()
     {
+        if ( $this->add != true )
+        {
+            $this->set( "date_last_updated" , date('Y-m-d H:i:s') );
+            $this->set( "date_updated" , $this->get( "date_last_updated" ) );
+        }
+
         $rst = $this->data->save();
 
         $module = \DB::for_table('module')
@@ -176,6 +182,10 @@ class Data
     {
         $this->data = $this->getRepository()->create() ;
         $this->add  = true ;
+
+        $this->set( "date_created" , date('Y-m-d H:i:s') );
+        $this->set( "date_last_updated" , date('Y-m-d H:i:s') );
+        $this->set( "date_updated" , date('Y-m-d H:i:s') );
 
         if ( is_array( $value ) )
         {

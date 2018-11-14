@@ -921,6 +921,7 @@ class Controller extends \App\Kernel\Common\Controller
         switch( $type )
         {
             case "html" :
+                $this->setId( NULL );
                 if ( $id !== NULL )
                 {
                     $this->setId( $id );

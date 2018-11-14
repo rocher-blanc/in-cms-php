@@ -521,11 +521,18 @@ class Controller
                 }
             }
 		}
+		else
+        {
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                $this->getEntity()->build( $row->getName() )->field()->setValue( NULL ) ;
+            }
+        }
 
 		if ( !empty( $this->getEntity()->getField() ) )
 		{
-			foreach( $this->getEntity()->getField() as $row )
-			{
+            foreach( $this->getEntity()->getField() as $row )
+            {
 				if ( $row->isParent() == true )
 				{
 					$opt = $this->getParent();

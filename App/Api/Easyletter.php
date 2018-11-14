@@ -35,7 +35,6 @@ class Easyletter
     private function setError( $msg )
     {
         $this->error = $msg ;
-        dump( $msg );
         \App\Kernel\Utils\Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
     }
 
