@@ -904,7 +904,7 @@ class Builder extends Model
                     $this->build('user_front_id' , true )
                         ->isSelect()
                         ->user()
-                        ->ManyToMany(MODULE_USER )
+						->option( $this->getUserList() )
                         ->name('Utilisateur');
                 }
                 else
@@ -1113,6 +1113,17 @@ class Builder extends Model
         $this->build('date_last_updated' , true )->twig('date_last_updated')->isHiddenDate();
         $this->build('date_updated' , true )->twig('date_updated')->isHiddenDate();
     }
+
+    protected function getUserList()
+	{
+		$users = [];
+		$req_user = \DB::for_table("user_front")->find_many();
+		foreach( $req_user as $row )
+		{
+			$users[ $row->user_front_id ] = $row->user_front_login;
+		}
+		return $users;
+	}
 
     /* ************************************************** */
     /* ******************   CHAMPS   ******************** */
