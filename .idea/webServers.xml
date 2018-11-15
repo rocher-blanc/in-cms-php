@@ -10,6 +10,22 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="bd7b741a-98c4-4ea8-8ed6-adedc932a679" name="Ridup4" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www/vendor/JWebCreation/cms">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="20151765-49a1-4a2c-ad52-bca838defe33" name="FNH" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www/vendor/JWebCreation/cms">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
