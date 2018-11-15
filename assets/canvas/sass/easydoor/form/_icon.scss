@@ -1,0 +1,26 @@
+.list-icon {
+  
+  input {
+    display: none;
+  }
+
+  .icon {
+    display: inline-block;
+    float: left;
+    width: 60px;
+    height: 60px;
+    margin: 1px;
+    font-size: 40px;
+    border: 1px #c8c8c8 solid;
+    @include border-radius(5px);
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+
+    &.active {
+      border: 1px $theme-color solid;
+      color: $jweb-blue
+    }
+  }
+
+}

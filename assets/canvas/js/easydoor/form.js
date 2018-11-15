@@ -10,6 +10,7 @@ init = function( base ) {
     initDatePicker( base );
     initSelect( base );
     initLink( base );
+    initIcon( base );
     deleteValueMedia( base );
     checkImage( base );
     checkDocument( base );
@@ -817,6 +818,23 @@ updateLink = function( str ) {
 
     if ( str.val().substr( str.val().length - 1, 1) == '/' ) {
         str.val( str.val().substr(0, str.val().length - 1) );
+    }
+};
+
+/*
+#####################################################################################################################################
+#####################################################        ICON         ###########################################################
+#####################################################################################################################################
+*/
+
+initIcon = function(base) {
+    if ( $(base + ' .list-icon').length ) {
+        var $container = $(base + ' .list-icon');
+        $container.find(".icon").on("click", function() {
+            $container.find("input").val( $(this).data("icon") );
+            $container.find(".active").removeClass("active");
+            $(this).addClass("active");
+        });
     }
 };
 
