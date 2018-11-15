@@ -157,7 +157,7 @@ class Slim
         }
 
         $viewArray[] = TEMPLATES_PATH ;
-        if ( defined('THEME' ) )
+        if ( defined('THEME' ) && $this->_slim->config('config') == 'front' )
         {
             $viewArray[] = TEMPLATES_COMMON_TECH_PATH ;
         }

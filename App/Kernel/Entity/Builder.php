@@ -1227,6 +1227,16 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function isIcon( array $list , $libCss = [] )
+    {
+        $this->field()->setData( "SQL_VALUE" , 40 ) ;
+        $this->field()->setData( "SQL_TYPE" , "VARCHAR" ) ;
+        $this->field()->setData( "listIcons" , $list ) ;
+        $this->field()->setData( "libCss" ,$libCss ) ;
+        $this->field()->setData( "type" , "icon" ) ;
+        return $this ;
+    }
+
     protected function isBoolean()
     {
         $this->field()->setData( "SQL_VALUE" , 1 ) ;
