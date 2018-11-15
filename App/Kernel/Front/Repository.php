@@ -175,15 +175,19 @@ class Repository extends \App\Kernel\Common\Repository
         return $all;
     }
 
-    public function getValid()
+    public function getValid( $cats )
     {
         $rst = \DB::for_module( $this->getName() )
-            ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , 'id' )
-            ->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
+            ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , 'id' );
 
         if ( $this->getEntity()->isChild() )
         {
-            $rst = $rst->select( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , 'parent' );
+            $rst = $rst->where_in( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , $cats );
+        }
+
+        if ( $this->getEntity()->hasValidation() )
+        {
+            $rst = $rst->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
         }
 
         return $rst->find_many();
@@ -273,32 +277,15 @@ class Repository extends \App\Kernel\Common\Repository
 
             foreach( $tab as $ent )
             {
-                $mod = Container::getInstance()->module( $ent );
-                if ( $mod->getEntity()->hasValidation() )
-                {
-                    $nov = $mod->getRepository()->getValid();
-                    if ( $nov )
-                    {
-                        if ( ! $mod->getEntity()->hasModuleParent() )
-                        {
-                            foreach( $nov as $row )
-                            {
-                                if ( array_key_exists( $row->get('parent') , $cats ) )
-                                {
-                                    $arrCurrent[ $row->get('id') ] = $row->get('id') ;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach( $nov as $row )
-                            {
-                                $arrCurrent[ $row->get('id') ] = $row->get('id') ;
-                            }
-                        }
+                $mod  = Container::getInstance()->module( $ent );
+                $nov  = $mod->getRepository()->getValid( $cats );
+                $cats = [];
 
-                        $cats = [];
-                        $cats = $arrCurrent ;
+                if ( $nov )
+                {
+                    foreach( $nov as $row )
+                    {
+                        $cats[ $row->get('id') ] = $row->get('id') ;
                     }
                 }
             }
