@@ -904,7 +904,7 @@ class Builder extends Model
                     $this->build('user_front_id' , true )
                         ->isSelect()
                         ->user()
-						->option( $this->getUserList() )
+						->ManyToMany( MODULE_USER )
                         ->name('Utilisateur');
                 }
                 else

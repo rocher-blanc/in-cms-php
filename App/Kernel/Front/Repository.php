@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Container;
+
 class Repository extends \App\Kernel\Common\Repository
 {
     protected $_limit_get_all = NULL;
@@ -172,6 +174,20 @@ class Repository extends \App\Kernel\Common\Repository
 
         return $all;
     }
+
+    public function getValid()
+    {
+        $rst = \DB::for_module( $this->getName() )
+            ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , 'id' )
+            ->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
+
+        if ( $this->getEntity()->isChild() )
+        {
+            $rst = $rst->select( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->fieldSql() , 'parent' );
+        }
+
+        return $rst->find_many();
+    }
     
     public function lastUpdated()
     {
@@ -228,6 +244,70 @@ class Repository extends \App\Kernel\Common\Repository
         if ( array_key_exists( 'order' , $request ) ) $order = false ;
 
         $rst = $this->getKit( $order ) ;
+
+        $cats = [] ;
+        if ( $this->getEntity()->isChild() )
+        {
+            $tab        = [] ;
+            $remontada  = true ;
+            $parent     = $this->getEntity()->getModuleParentName() ;
+            $tab[]      = $parent ;
+
+            while( $remontada )
+            {
+                $Entity = \App\Kernel\Container::getInstance()->module( $parent )->getEntity();
+                if ( $Entity->isChild() )
+                {
+                    $parent = $Entity->getModuleParentName();
+                    $tab[] = $parent ;
+                }
+                else
+                {
+                    $remontada = false ;
+                }
+            }
+
+            $tab        = array_reverse( $tab );
+            $arrCurrent = [];
+            $cats       = [];
+
+            foreach( $tab as $ent )
+            {
+                $mod = Container::getInstance()->module( $ent );
+                if ( $mod->getEntity()->hasValidation() )
+                {
+                    $nov = $mod->getRepository()->getValid();
+                    if ( $nov )
+                    {
+                        if ( ! $mod->getEntity()->hasModuleParent() )
+                        {
+                            foreach( $nov as $row )
+                            {
+                                if ( array_key_exists( $row->get('parent') , $cats ) )
+                                {
+                                    $arrCurrent[ $row->get('id') ] = $row->get('id') ;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach( $nov as $row )
+                            {
+                                $arrCurrent[ $row->get('id') ] = $row->get('id') ;
+                            }
+                        }
+
+                        $cats = [];
+                        $cats = $arrCurrent ;
+                    }
+                }
+            }
+
+            if ( ! empty( $cats ) )
+            {
+                $rst->where_in( $this->field( $this->getEntity()->getModuleParentIdName() ) , $cats );
+            }
+        }
 
         if ( ! empty( $request ) )
         {
