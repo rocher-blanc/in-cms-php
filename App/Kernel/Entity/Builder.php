@@ -915,8 +915,6 @@ class Builder extends Model
                         ->isInteger()
                         ->name('Utilisateur');
                 }
-
-
             }
             else
             {
