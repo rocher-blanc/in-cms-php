@@ -18,8 +18,9 @@
     cursor: pointer;
 
     &.active {
+      background: rgba($jweb-blue, .1);
       border: 1px $theme-color solid;
-      color: $jweb-blue
+      color: $jweb-blue;
     }
 
     span {
@@ -29,6 +30,8 @@
 
     [class^="flaticon-"]:before {
       font-size: 40px;
+      margin: 0 !important;
+      padding: 0 !important;
     }
   }
 
