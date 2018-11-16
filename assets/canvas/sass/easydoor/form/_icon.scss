@@ -18,8 +18,9 @@
     cursor: pointer;
 
     &.active {
+      background: rgba($jweb-blue, .1);
       border: 1px $theme-color solid;
-      color: $jweb-blue
+      color: $jweb-blue;
     }
 
     span {
