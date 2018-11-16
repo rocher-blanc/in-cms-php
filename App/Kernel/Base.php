@@ -57,6 +57,7 @@ INSERT INTO `module` (`module_name`, `module_class_name`, `module_active`, `modu
 ('Planification des campagnes', 'NewsletterCampaign', 1, '', NULL, 0, 0, 0, 0, 0, 1),
 ('Gabarit', 'NewsletterModel', 1, '', NULL, 0, 0, 0, 0, 0, 1),
 ('Historique Emails automation', 'EdAutomationHistory', 1, '', NULL, 0, 0, 0, 0, 0, 1),
+('Désinscription', 'NewsletterCampaignGroupUnsubscribe', 1, '', NULL, 0, 0, 0, 0, 0, 1),
 ('Emails automation', 'EdAutomation', 1, '', NULL, 0, 0, 0, 0, 0, 1);
 
 INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES

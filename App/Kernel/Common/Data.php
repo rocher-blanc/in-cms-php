@@ -48,7 +48,14 @@ class Data
 
     public function get( $key )
     {
-        return $this->data->get( $this->getEntity()->get( $key )->getColumn() ) ;
+        if ( $this->getEntity()->get( $key )->getType() == 'checkbox' )
+        {
+            return $this->getRepository()->getAssocValue( $key , $this->get('id') , $this->getEntity()->get( $key )->getData('object') );
+        }
+        else
+        {
+            return $this->data->get( $this->getEntity()->get( $key )->getColumn() ) ;
+        }
     }
 
     public function getData()

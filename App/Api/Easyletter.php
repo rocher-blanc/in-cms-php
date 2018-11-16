@@ -129,9 +129,15 @@ class Easyletter
         return false ;
     }
 
-    public function newsletter( array $data )
+    public function newsletter( int $idNewsletter )
     {
-        $array = array_merge([
+        $NL = new Data('NewsletterCampaign');
+        $NL->find( $idNewsletter );
+
+        $Sender = new Data('NewsletterSender');
+        $Sender->find( $NL->get('sender') );
+
+        $response = $this->request([
             'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
@@ -143,9 +149,27 @@ class Easyletter
             'schedule' => '1',
             'sendingRate' => '0',
             'transactional' => '0',
-        ], $data );
 
-        return $this->request( $array );
+            'subject' => $NL->get('subject'),
+            'senderName' => $Sender->get('name'),
+            'senderEmail' => $Sender->get('email'),
+            'returnPathEmail' => $Sender->get('email_response'),
+
+            'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id'),
+            'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template'),
+        ]);
+
+        if ( $response !== false )
+        {
+            $NL->set('statut' , 2 ); // on passele statut a transferee
+            $NL->save();
+
+            return true ;
+        }
+        else
+        {
+            return false ;
+        }
     }
 
     private function request( array $data )

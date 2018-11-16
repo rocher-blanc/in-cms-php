@@ -74,7 +74,7 @@
                 {% endif %}
                 <div class="ed_field col_one_third col_last">
                     <label>Groupes d'utilisateurs autorisés</label>
-                    <select name="page_access_user_group" id="id_page_access_user_group" data-plugin-selectPicker multiple="multiple" data-live-search="true" data-all="true">
+                    <select name="page_access_user_group" id="id_page_access_user_group" data-plugin-multiselect multiple="multiple" data-live-search="true" data-all="true">
                         {% for group in groups %}
                             <option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
                         {% endfor %}
@@ -85,18 +85,4 @@
         </div>
     </div>
 </form>
-{% endblock %}
-
-
-{% block stylesheets %}
-    {{ parent() }}
-    <!-- Select -->
-    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-select.css') }}" />
-{% endblock %}
-
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('canvas/js/components/bs-select.js') }}"></script>
-    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
 {% endblock %}

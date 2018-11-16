@@ -54,8 +54,9 @@ class NewsletterCampaign extends Builder
             ->isSelect()
             ->option([
                 1 => "En attente",
-                2 => "Prête",
-                3 => "Envoyée"
+                2 => "Tranférée",
+                3 => "Prête",
+                4 => "Envoyée"
             ])
             ->notEmpty("Veuillez sélectionner un statut")
             ->name("Statut");

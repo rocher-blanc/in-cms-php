@@ -166,4 +166,25 @@ class Repository
             }
         }
     }
+
+    // Pour les checkbox dans le même module (systeme de table d'association)
+    protected function getAssocValue( $nameField , $id , $modAssoc )
+    {
+        $content = \DB::for_module_assoc( $this->getName() , $nameField )
+            ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) )
+            ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
+            ->find_many();
+
+        $result  = array() ;
+
+        if ( $content )
+        {
+            foreach( $content as $row )
+            {
+                $result[] = $row->get( \DB::getTableNameAssocValue( $this->getName() , $nameField ) ) ;
+            }
+        }
+
+        return $result ;
+    }
 }

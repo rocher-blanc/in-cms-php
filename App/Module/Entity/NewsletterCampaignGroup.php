@@ -8,6 +8,7 @@ class NewsletterCampaignGroup extends Builder
 {
     protected function load()
     {
+        $this->addDependency("NewsletterCampaignGroupUnsubscribe");
         $this->setModuleChild( 'NewsletterCampaign' );
         $this->setModuleChild( 'NewsletterModel' );
         $this->setFieldReference( 'name' );
