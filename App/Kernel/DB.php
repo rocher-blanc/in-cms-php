@@ -363,7 +363,7 @@ class DB extends ORM
     /* ******************  FUNCTIONS  ******************* */
     /* ************************************************** */
 
-    public static function find_all_for_select( $entity , $target , $alias , $idlang , $parent = NULL )
+    public static function find_all_for_select( $entity , $target , $alias , $idlang , $parent = NULL , $filter = NULL )
     {
         if ( $target->hasLang() )
         {
@@ -399,6 +399,10 @@ class DB extends ORM
         if ( $entity->hasOrder() )  $content = $content->order_by_asc( $table . "." . $entity->get( $entity->getOrderName() )->getColumn() )->order_by_asc( $table . "." . $entity->get( $entity->getIdName() )->getColumn() );
         else                        $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
 
+        if ( is_callable( $filter ) )
+        {
+            $content = $filter( $content );
+        }
 
         return $content->find_many() ;
     }

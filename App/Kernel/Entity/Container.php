@@ -81,6 +81,7 @@ class Container
             {
                 $name = "\Project\Module\Entity\\" . $this->getName() ;
             }
+
             $this->setEntity( new $name );
         }
 

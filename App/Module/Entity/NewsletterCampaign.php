@@ -29,21 +29,21 @@ class NewsletterCampaign extends Builder
             ->name("Date d'envoi");
 
         $this->build('sender')
-            ->column(1, 2)
+            ->column(1, 3)
             ->isSelect()
             ->ManyToMany( 'NewsletterSender', "name" )
             ->notEmpty("Veuillez sélectionner l'expéditeur")
             ->name("Expéditeur");
 
         $this->build('recipient')
-            ->column(1, 2)
+            ->column(1, 3)
             ->isCheckbox()
             ->ManyToMany( 'NewsletterGroup', "name" )
             ->notEmpty("Veuillez sélectionner les groupes de destinataires")
             ->name("Groupes de destinataires");
 
         $this->build('template')
-            ->column(1, 1)
+            ->column(1, 3)
             ->isSelect()
             ->ManyToMany( 'NewsletterModel', "name" )
             ->notEmpty("Veuillez sélectionner le gabarit")
@@ -58,7 +58,7 @@ class NewsletterCampaign extends Builder
                 3 => "Prête",
                 4 => "Envoyée"
             ])
-            ->notEmpty("Veuillez sélectionner un statut")
+            ->noBack()
             ->name("Statut");
     }
 }

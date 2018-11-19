@@ -39,9 +39,9 @@ class Repository
 		return \DB::for_module( $this->getName() )->count();
 	}
 
-    public function findAllForSelect( $target , $alias , $parentName )
+    public function findAllForSelect( $target , $alias , $parentName , $filter = NULL )
     {
-        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName ) ;
+        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName , $filter ) ;
     }
 
     public function countWhere( $where )
@@ -168,7 +168,7 @@ class Repository
     }
 
     // Pour les checkbox dans le même module (systeme de table d'association)
-    protected function getAssocSimpleValue( $nameField , $id )
+    public function getAssocSimpleValue( $nameField , $id )
     {
         $content = \DB::for_module_assoc( $this->getName() , $nameField )
             ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) )

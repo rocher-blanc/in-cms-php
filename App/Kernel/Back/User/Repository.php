@@ -33,7 +33,7 @@ class Repository extends \App\Kernel\Back\Repository
             ->find_one();
     }
 
-    public function findAllForSelect2( $alias = NULL )
+    public function findAllForSelect2( $alias = NULL , $filter = NULL )
     {
         if ( $alias === NULL ) $alias = 'titre' ;
 
@@ -89,6 +89,11 @@ class Repository extends \App\Kernel\Back\Repository
 
             if ( $this->getEntity()->hasOrder() ) 	$content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
             else									$content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+
+            if ( is_callable( $filter ) )
+            {
+                $content = $filter( $content );
+            }
 
             return $content->find_many() ;
         }

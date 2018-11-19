@@ -54,26 +54,27 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
 })->name('newsletter_recipient');
 
 $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
-    $Newsletter = new Data('NewsletterCampaign');
-    $rst = $Newsletter->find( $id );
+    $model = new Data('NewsletterModel');
+    $rstModel = $model->find( $id ) ;
 
-    if ( $rst )
+    if ( $rstModel )
     {
-        $model = new Data('NewsletterModel');
-        $rstModel = $model->find( $Newsletter->get('template') ) ;
-
-        if ( $rstModel )
-        {
-            echo $model->get('html');
-        }
+        echo $model->get('html');
     }
 })->name('newsletter_template');
 
 $app->get('/newsletter/unsubscribe/:id/:email', function ( $id , $email ) use ( $app ) {
+    $module = \DB::for_table('module')
+        ->select('module_id')
+        ->where(array('module_class_name' => "NewsletterCampaignGroup" , 'module_active' => 1))
+        ->find_one();
+
     $unsub = new Data('NewsletterCampaignGroupUnsubscribe');
-    $unsub->create([
+    $unsub->findOrCreate([
         'email' => $email,
-        'element_module_parent_id' => $id
+        'module_id' => $module->module_id,
+        'element_id' => $id
     ]);
     $unsub->save();
+
 })->name('newsletter_unsubscribe');

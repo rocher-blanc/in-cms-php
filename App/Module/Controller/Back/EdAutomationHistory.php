@@ -8,6 +8,22 @@ use App\Api\Easyletter;
 
 class EdAutomationHistory extends Controller
 {
+    protected function filterTable( $content )
+    {
+        $tab = [];
+        foreach( $content as $row )
+        {
+            $tab[] = $row->get( $this->getEntity()->get('id')->getColumn() ) ;
+        }
+
+        sort( $tab , SORT_NUMERIC );
+
+        $el = new Easyletter();
+        $rst = $el->stats( $tab );
+
+        return $content ;
+    }
+
     protected function statsAction()
     {
         $el = new Easyletter();

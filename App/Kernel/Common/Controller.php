@@ -398,12 +398,12 @@ class Controller
 
 	    if ( $name !== NULL )
         {
-            $target     = $this->getEntity()->get( $name );
-            $content    = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
+            $target  = $this->getEntity()->get( $name );
+            $content = $this->getRepository()->findAllForSelect( $target , $alias , $this->getEntity()->getParentName() ) ;
         }
         else
         {
-            $content    = $this->getRepository()->findAllForSelect2( $alias ) ;
+            $content = $this->getRepository()->findAllForSelect2( $alias ) ;
         }
 
 		switch( $returnType )

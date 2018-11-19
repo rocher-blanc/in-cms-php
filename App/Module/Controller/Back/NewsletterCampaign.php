@@ -10,14 +10,30 @@ class NewsletterCampaign extends Controller
 {
     public function hookAddSaveAfter()
     {
-        // j'envoi la rqt a api easyletter
-        $data = [];
-        $data['content'] = 'url';
-        $data['recipient'] = 'url';
-        $data['urlUnsubscribe'] = 'url';
-
         $EL = new Easyletter;
-        //$EL->newsletter($data);
+        $EL->newsletter( $this->getId() );
+    }
+
+    public function hookAddCheckAfter()
+    {
+        $date = $this->post( $this->getEntity()->get('date')->getColumn() );
+        list( $date , $hor ) = explode( " - " , $date );
+        list( $d,$m,$y ) = explode( '/' , $date );
+        list( $h,$i ) = explode( ":" , $hor );
+
+        $datetime = new \DateTime("$y-$m-$d $h:$i:00");
+
+        if ( $datetime->format('U') < time() )
+        {
+            return [
+                'msg' => "La date de programmation ne doit pas être inférieur à aujourd'hui",
+                "result" => false
+            ] ;
+        }
+        else
+        {
+            return true ;
+        }
     }
 
     protected function statsAction()

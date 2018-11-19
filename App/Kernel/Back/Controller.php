@@ -261,6 +261,11 @@ class Controller extends \App\Kernel\Common\Controller
         return $tab ;
     }
 
+    protected function filterTable( $content )
+    {
+        return $content ;
+    }
+
     protected function generateTable()
     {
         $rightArray     = [] ;
@@ -374,6 +379,8 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $content )
             {
+                $content = $this->filterTable( $content );
+
                 $paginator = new Paginator($count, $elmtPerPage, $page, '(:num)');
                 $paginator->setNextText('Suivant');
                 $paginator->setPreviousText('Précédent');

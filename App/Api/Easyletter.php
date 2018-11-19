@@ -137,7 +137,7 @@ class Easyletter
         $Sender = new Data('NewsletterSender');
         $Sender->find( $NL->get('sender') );
 
-        $response = $this->request([
+        $params = [
             'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
             'msgSMS' => "",
             'urlUnsubscribe' => "",
@@ -157,7 +157,9 @@ class Easyletter
 
             'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id'),
             'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template'),
-        ]);
+        ];
+
+        $response = $this->request( $params );
 
         if ( $response !== false )
         {
@@ -182,9 +184,20 @@ class Easyletter
         else                        return $response ;
     }
 
-    public function stats( int $id )
+    public function stats( $id )
     {
-        return $this->response( $this->client->get('v1/routage/stats/' . $id ) ) ;
+        if ( is_array( $id ) )
+        {
+            return $this->response( $this->client->get('v1/campaign/statsLight', [
+                'body' => json_encode([
+                    'id' => $id
+                ])
+            ]) ) ;
+        }
+        else
+        {
+            return $this->response( $this->client->get('v1/routage/stats/' . $id ) ) ;
+        }
     }
 
     public function credit()

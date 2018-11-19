@@ -50,15 +50,15 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
 ('user_front_group', 'Groupes d\'utilisateurs', 1, 1, 1, 1);
 
 INSERT INTO `module` (`module_name`, `module_class_name`, `module_active`, `module_icon`, `module_module_column_block_id`, `module_order`, `module_default`, `module_priority`, `module_index`, `module_index_elmt`, `module_kernel`) VALUES
-('NewsletterSender', 'NewsletterSender', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Groupe d\'abonnés', 'NewsletterGroup', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Abonnés', 'NewsletterSubscriber', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Newsletters', 'NewsletterCampaignGroup', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Planification des campagnes', 'NewsletterCampaign', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Gabarit', 'NewsletterModel', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Historique Emails automation', 'EdAutomationHistory', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Désinscription', 'NewsletterCampaignGroupUnsubscribe', 1, '', NULL, 0, 0, 0, 0, 0, 1),
-('Emails automation', 'EdAutomation', 1, '', NULL, 0, 0, 0, 0, 0, 1);
+('NewsletterSender', 'NewsletterSender', 1, 'icon-line2-users', NULL, 0, 0, 0, 0, 0, 1),
+('Groupe d\'abonnés', 'NewsletterGroup', 1, 'icon-users', NULL, 0, 0, 0, 0, 0, 1),
+('Abonnés', 'NewsletterSubscriber', 1, 'icon-user', NULL, 0, 0, 0, 0, 0, 1),
+('Newsletters', 'NewsletterCampaignGroup', 1, 'icon-folder', NULL, 0, 0, 0, 0, 0, 1),
+('Planification des campagnes', 'NewsletterCampaign', 1, 'icon-time', NULL, 0, 0, 0, 0, 0, 1),
+('Gabarit', 'NewsletterModel', 1, 'icon-picture', NULL, 0, 0, 0, 0, 0, 1),
+('Historique Emails automation', 'EdAutomationHistory', 1, 'icon-time', NULL, 0, 0, 0, 0, 0, 1),
+('Désinscription', 'NewsletterCampaignGroupUnsubscribe', 1, 'icon-enter', NULL, 0, 0, 0, 0, 0, 1),
+('Emails automation', 'EdAutomation', 1, 'icon-email3', NULL, 0, 0, 0, 0, 0, 1);
 
 INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES
 (1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1),
