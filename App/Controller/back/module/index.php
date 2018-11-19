@@ -60,6 +60,7 @@ $app->map('/:entity/:action/id/:id/depedency/:module(/:element)', function ( $en
 
 $app->map('/:entity(/:action(/:id(/:token(/:lang))))', function ( $entity , $action = "index" , $id = NULL , $token = NULL , $lang = NULL )
 {
+
     $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
     $Controller->setEntityName( $entity );
     $Controller->setActionName( $action );

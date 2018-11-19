@@ -66,7 +66,6 @@ $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
         {
             echo $model->get('html');
         }
-
     }
 })->name('newsletter_template');
 
