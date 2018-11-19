@@ -50,7 +50,7 @@ class Data
     {
         if ( $this->getEntity()->get( $key )->getType() == 'checkbox' )
         {
-            return $this->getRepository()->getAssocValue( $key , $this->get('id') , $this->getEntity()->get( $key )->getData('object') );
+            return $this->getRepository()->getAssocSimpleValue( $key , $this->get('id') );
         }
         else
         {

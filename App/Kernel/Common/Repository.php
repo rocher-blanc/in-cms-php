@@ -168,7 +168,7 @@ class Repository
     }
 
     // Pour les checkbox dans le même module (systeme de table d'association)
-    protected function getAssocValue( $nameField , $id , $modAssoc )
+    protected function getAssocSimpleValue( $nameField , $id )
     {
         $content = \DB::for_module_assoc( $this->getName() , $nameField )
             ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) )
