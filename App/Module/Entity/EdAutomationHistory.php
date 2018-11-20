@@ -3,6 +3,8 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Api\Easyletter;
+use App\Kernel\Front\Data;
 
 class EdAutomationHistory extends Builder
 {
@@ -11,7 +13,7 @@ class EdAutomationHistory extends Builder
         $this->setFieldReference( 'date' );
         $this->addAction( 'stats' );
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
-            return $c->id_easyletter !== NULL ? true : false ;
+            return $c->id_easyletter !== NULL && $c->stats['sent'] == 1 ? true : false ;
         });
 
         $this->build('email')
@@ -41,6 +43,12 @@ class EdAutomationHistory extends Builder
             ->noBack()
             ->name("ID Easyletter");
 
+        $this->build('error')
+            ->isVarchar("500")
+            ->noFront()
+            ->noBack()
+            ->name("Message d'erreur");
+
         $this->build('statut')
             ->column(1, 1)
             ->isInteger()
@@ -52,12 +60,29 @@ class EdAutomationHistory extends Builder
                 }
             })
             ->updateValue(function($c) {
-                $send = true ;
-                $delivery = false;
-                $open = false;
-                $clic = false;
-                $shield = true;
-                $error = false;
+                //dump( $c );
+                $send = ( $c->stats['sent'] == 1 ? true : false );
+                $delivery = ( $c->stats['sent'] == 1 && $c->stats['hard_bounces'] == 0 && $c->stats['soft_bounces'] == 0 ? true : false );
+                $open = ( $c->stats['reads'] > 0 ? true : false );
+                $clic = ( $c->stats['clicks'] > 0 ? true : false );
+                $shield = false;
+                $error = ( $c->stats['sent'] == 1 && ( $c->stats['hard_bounces'] > 0 || $c->stats['soft_bounces'] > 0 ) ? true : false );
+
+                if ( $c->stats !== NULL && $error == true && $c->error == '' )
+                {
+                    $el = new Easyletter();
+                    $stats = $el->stats( $c->id_easyletter );
+                    $transco = $stats['state_mailing'] ;
+
+                    $c->error = $transco[ $stats['destStats']['records'][0][3] ] ;
+
+                    $data = new Data("EdAutomationHistory");
+                    $data->find([
+                        'id_easyletter' => $c->id_easyletter
+                    ]);
+                    $data->set('error' , $c->error );
+                    $data->save();
+                }
 
                 if ( $send ) $str = '<i class="icon-email2" data-toggle="tooltip" data-placement="top" title="Envoyé" style="color: #007ca2;"></i>';
                 else         $str = '<i class="icon-email2" data-toggle="tooltip" data-placement="top" title="Non envoyé" style="color: #ddd;"></i>';
@@ -65,15 +90,16 @@ class EdAutomationHistory extends Builder
                 if ( $delivery ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Délivré" class="icon-check-sign" style="color: #449d44;"></i>' ;
                 else             $str.= '<i data-toggle="tooltip" data-placement="top" title="Non délivré" class="icon-check-sign" style="color: #ddd;"></i>' ;
 
-                if ( $open ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Ouvert le 00/00/0000 à 00:00" class="icon-email" style="color: darkorange;"></i>' ;
+                if ( $open ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Ouvert" class="icon-email" style="color: darkorange;"></i>' ;
                 else         $str.= '<i data-toggle="tooltip" data-placement="top" title="Jamais ouvert" class="icon-email" style="color: #ddd;"></i>' ;
 
-                if ( $clic ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Cliqué le 00/00/0000 à 00:00" class="icon-link" style="color: darkcyan;"></i>' ;
+                if ( $clic ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Cliqué" class="icon-link" style="color: darkcyan;"></i>' ;
                 else         $str.= '<i data-toggle="tooltip" data-placement="top" title="Aucun clic" class="icon-link" style="color: #ddd;"></i>' ;
 
                 if ( $shield ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Email bloqué : XXXXXXXXXXXXXXXX" class="icon-shield" style="color: darkred;"></i>' ;
 
-                if ( $error ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Erreur : XXXXXXXXXXXXXXXX" class="icon-warning-sign" style="color: darkred;"></i>' ;
+                if ( $error ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Erreur : ' . $c->error . '" class="icon-warning-sign" style="color: darkred;"></i>' ;
+                else          $str.= '<i data-toggle="tooltip" data-placement="top" title="Aucune erreur" class="icon-warning-sign" style="color: #ddd;"></i>' ;
 
                 return $str ;
             })

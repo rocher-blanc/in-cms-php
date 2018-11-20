@@ -266,6 +266,11 @@ class Controller extends \App\Kernel\Common\Controller
         return $content ;
     }
 
+    protected function filterContent( $content )
+    {
+        return $content ;
+    }
+
     protected function generateTable()
     {
         $rightArray     = [] ;
@@ -397,12 +402,13 @@ class Controller extends \App\Kernel\Common\Controller
                         $contentShow = new \stdClass;
                         foreach( $this->getEntity()->getField() as $f )
                         {
-                            if ( $f->getData( $this->getDataView() ) == true && ( ( $f->isParent() == true && $f->hasOption() == true ) or $f->isParent() != true ) && $f->getType() !== NULL )
+                            if ( ( ( $f->isParent() == true && $f->hasOption() == true ) or $f->isParent() != true ) && $f->getType() !== NULL )
                             {
                                 $name = $f->getName() ;
                                 $contentShow->$name = $row->get( $f->getColumn() );
                             }
                         }
+                        $contentShow = $this->filterContent( $contentShow );
                     }
 
                     foreach( $this->getEntity()->getField() as $field )
@@ -444,7 +450,8 @@ class Controller extends \App\Kernel\Common\Controller
                                 else
                                 {
                                     $date = new \DateTime( $row->get( $field->getColumn() ) );
-                                    $value = $date->format('d/m/Y') ;
+                                    if ( $field->getData('hour') == true )  $value = $date->format('d/m/Y - H\hi') ;
+                                    else                                    $value = $date->format('d/m/Y') ;
                                 }
                             }
                             else if ( $field->getType() == "image" )
