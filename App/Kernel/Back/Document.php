@@ -183,48 +183,87 @@ class Document extends \App\Kernel\Common\Document
         }
     }
 
-    public function upload( $path )
+    public function upload()
     {
-    	$ct  = count( $_FILES[ $this->post('field') ]["name"] );
-    	$tab = [];
+        $ct  = count( $_FILES[ $this->post('field') ]["name"] );
+        $tab = [];
 
-    	for( $i = 0; $i <= $ct; $i ++ )
-		{
-			$name       = basename($_FILES[ $this->post('field') ]["name"][$i]);
-			$ext        = explode( '.' , $name );
-			$extension  = end( $ext );
-			$name       = basename( $name , '.' . $extension );
-			$name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+        for( $i = 0; $i <= $ct; $i ++ )
+        {
+            $name       = basename($_FILES[ $this->post('field') ]["name"][$i]);
+            $ext        = explode( '.' , $name );
+            $extension  = end( $ext );
+            $name       = basename( $name , '.' . $extension );
+            $name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
-			$rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , $path . '/' . $name );
+            $rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , UPLOAD_PATH . '/' . $name );
 
-			if ( $rst !== false )
-			{
-				$document = \DB::for_table('document')->create() ;
-				$document->document_name 		= $name;
-				$document->document_size 		= $_FILES[ $this->post('field') ]["size"][$i];
-				$document->document_type 		= $_FILES[ $this->post('field') ]["type"][$i];
-				$document->document_module_id 	= $this->getModuleId();
-				$document->save() ;
+            if ( $rst !== false )
+            {
+                $document = \DB::for_table('document')->create() ;
+                $document->document_name 		= $name;
+                $document->document_size 		= $_FILES[ $this->post('field') ]["size"][$i];
+                $document->document_type 		= $_FILES[ $this->post('field') ]["type"][$i];
+                $document->document_module_id 	= $this->getModuleId();
+                $document->save() ;
 
-				$std = new \stdClass;
-				$std->id = $document->document_id;
-				$std->field = $this->post('field');
+                $std = new \stdClass;
+                $std->id = $document->document_id;
+                $std->field = $this->post('field');
 
-				$fieldEntityName = $std->field ;
-				$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
-				$this->setDocumentId( $std->id ) ;
-				$this->getNameById() ;
-				$source = $this->rename();
+                $fieldEntityName = $std->field ;
+                $entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
+                $this->setDocumentId( $std->id ) ;
+                $this->getNameById() ;
+                $source = $this->rename();
 
-				$std->name = $this->getDocumentName();
-				$std->ico  = $this->getIcon( $this->getDocumentName() );
-				$std->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletedocument/id/' . $std->id );
+                $std->name = $this->getDocumentName();
+                $std->ico  = $this->getIcon( $this->getDocumentName() );
+                $std->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletedocument/id/' . $std->id );
 
-				$tab[] = $std ;
-			}
-		}
+                $tab[] = $std ;
+            }
+        }
 
-		return $tab ;
+        return $tab ;
+    }
+
+    public function download( string $name , string $url )
+    {
+        $content = file_get_contents( $url ) ;
+
+        if ( $content !== false )
+        {
+            $extension  = end( explode( '.' , $name ) );
+            $name       = basename( $name , '.' . $extension );
+            $name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+            $filepath   = UPLOAD_PATH . '/' . $name ;
+
+            $rst = file_put_contents( $filepath , $content );
+
+            if ( $rst !== false )
+            {
+                $document = \DB::for_table('document')->create() ;
+                $document->document_name 		= $name;
+                $document->document_size 		= filesize( $filepath );
+                $document->document_type 		= mime_content_type( $filepath );
+                $document->document_module_id 	= $this->getModuleId();
+                $document->save() ;
+
+                $this->setDocumentId( $document->document_id ) ;
+                $this->getNameById() ;
+                $this->rename();
+
+                return $document->document_id ;
+            }
+            else
+            {
+                return false ;
+            }
+        }
+        else
+        {
+            return false ;
+        }
     }
 }

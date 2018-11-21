@@ -1760,7 +1760,7 @@ class Controller extends \App\Kernel\Common\Controller
 		$Doc->setModuleId( $this->getEntityId() ) ;
 		$Doc->setModuleName( $this->getEntityName() ) ;
 		$Doc->setFolder( $this->getEntity()->getFolder() ) ;
-		$rst = $Doc->upload( UPLOAD_PATH ) ;
+		$rst = $Doc->upload() ;
 
 		return $this->Factory()->Response()->printJSON( $rst ) ;
     }

@@ -21,6 +21,7 @@ class Rabbit
     {
         $this->conn = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
         $this->channel = $this->conn->channel();
+        $this->channel->basic_qos(null, 10000, null);
 
         $tab = unserialize(RABBIT_QUEUE ) ;
         if ( $tab )

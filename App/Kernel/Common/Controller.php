@@ -687,13 +687,13 @@ class Controller
 	/*  **** ADD **** */
 	protected function hookAddCheckBefore() { return true; }
 	protected function hookAddCheckAfter() { return true; }
-	protected function hookAddSaveAfter() { return true; }
+	protected function hookAddSaveAfter( $c ) { return true; }
 
 
 	/*  **** UPDATE **** */
 	protected function hookUpdateCheckBefore() { return true; }
 	protected function hookUpdateCheckAfter() { return true; }
-	protected function hookUpdateSaveAfter() { return true; }
+	protected function hookUpdateSaveAfter( $c ) { return true; }
 
 	/*  **** DELETE **** */
 	protected function hookDeleteBefore() { return true; }
