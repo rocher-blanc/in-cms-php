@@ -170,7 +170,7 @@
                                     <a href="{{ route( mod.name , 'duplicate' , uri_id_parent , content.id ) }}" class="duplicate"><i class="icon-files"></i></a>
                                 {% endif %}
                             {% endif %}
-                            {% if right.edit == true %}
+                            {% if right.edit == true and mod.canUpdate == true %}
                                 {% if depedency %}
                                     <a href="{{ dRoute( mod.name , 'edit' , dElement , dModule , content.id ) }}" data-modal="true"><i class="icon-pencil"></i></a>
                                 {% else %}

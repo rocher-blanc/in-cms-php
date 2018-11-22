@@ -8,7 +8,7 @@ use App\Api\Easyletter;
 
 class NewsletterCampaign extends Controller
 {
-    public function hookAddSaveAfter()
+    public function hookAddSaveAfter( $c )
     {
         $EL = new Easyletter;
         $EL->newsletter( $this->getId() );

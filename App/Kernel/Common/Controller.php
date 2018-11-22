@@ -213,7 +213,11 @@ class Controller
 
     protected function canCreate()
     {
-        if ( $this->getEntity()->getMaxElement() == 0 )
+        if ( $this->getEntity()->canCreate() == false )
+        {
+            return false ;
+        }
+        else if ( $this->getEntity()->getMaxElement() == 0 )
         {
             return true ;
         }
@@ -231,6 +235,7 @@ class Controller
         }
         else
         {
+            $this->getEntity()->removeAction('add');
             return false;
         }
     }
@@ -688,7 +693,6 @@ class Controller
 	protected function hookAddCheckBefore() { return true; }
 	protected function hookAddCheckAfter() { return true; }
 	protected function hookAddSaveAfter( $c ) { return true; }
-
 
 	/*  **** UPDATE **** */
 	protected function hookUpdateCheckBefore() { return true; }

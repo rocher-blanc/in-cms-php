@@ -10,6 +10,10 @@ class EdAutomationHistory extends Builder
 {
     protected function load()
     {
+        $this->disableUpdate();
+        $this->disableDelete();
+        $this->disableCreate();
+
         $this->setFieldReference( 'date' );
         $this->addAction( 'stats' );
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
@@ -51,7 +55,7 @@ class EdAutomationHistory extends Builder
 
         $this->build('statut')
             ->column(1, 1)
-            ->isInteger()
+            ->isHidden()
             ->style(function($c) {
                 switch( $c->statut )
                 {

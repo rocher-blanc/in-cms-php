@@ -661,7 +661,9 @@ class Controller extends \App\Kernel\Common\Controller
                     'title' 	    => $rst->module_name,
                     'icon'  	    => $rst->module_icon,
 					'canCreate'     => $this->canCreate(),
+					'canImport'     => $this->getEntity()->canImport(),
 					'canDelete'     => $this->getEntity()->canDelete(),
+					'canUpdate'     => $this->getEntity()->canUpdate(),
 					'canDuplicate'  => $this->getEntity()->canDuplicate()
 				],
                 'action'    => $this->getActionName(),

@@ -205,6 +205,24 @@ class Builder extends Model
     protected $_delete = true ;
 
     /*
+     * @boolean
+     * Désactive la modification
+     */
+    protected $_update = true ;
+
+    /*
+     * @boolean
+     * Désactive la creation
+     */
+    protected $_create = true ;
+
+    /*
+     * @boolean
+     * Désactive l'import
+     */
+    protected $_import = true ;
+
+    /*
      * @int
      * Définit le nombre maximum d'element dans un module
      * Si ce nombre est attient, l'ajout devient impossible
@@ -730,11 +748,67 @@ class Builder extends Model
     public function disableDelete()
     {
         $this->_delete = false ;
+        $this->removeAction('delete');
     }
 
     public function canDelete()
     {
         return $this->_delete ;
+    }
+
+    /* ************************************************** */
+    /* *****************     UPDATE      **************** */
+    /* ************************************************** */
+
+    /*
+     * Désactivation de la suppression
+     */
+    public function disableUpdate()
+    {
+        $this->_update = false ;
+        $this->removeAction('edit');
+    }
+
+    public function canUpdate()
+    {
+        return $this->_update ;
+    }
+
+    /* ************************************************** */
+    /* *****************     CREATE      **************** */
+    /* ************************************************** */
+
+    /*
+     * Désactivation de la suppression
+     */
+    public function disableCreate()
+    {
+        $this->_create = false ;
+        $this->removeAction('add');
+        $this->disableImport();
+    }
+
+    public function canCreate()
+    {
+        return $this->_create ;
+    }
+
+    /* ************************************************** */
+    /* *****************     IMPORT      **************** */
+    /* ************************************************** */
+
+    /*
+     * Désactivation de la suppression
+     */
+    public function disableImport()
+    {
+        $this->_import = false ;
+        $this->removeAction('import');
+    }
+
+    public function canImport()
+    {
+        return $this->_import ;
     }
 
     /* ************************************************** */
