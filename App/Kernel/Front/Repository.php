@@ -249,50 +249,53 @@ class Repository extends \App\Kernel\Common\Repository
 
         $rst = $this->getKit( $order ) ;
 
-        $cats = [] ;
-        if ( $this->getEntity()->isChild() )
+        if ( ! array_key_exists( 'force' , $request ) || $request['force'] == false )
         {
-            $tab        = [] ;
-            $remontada  = true ;
-            $parent     = $this->getEntity()->getModuleParentName() ;
-            $tab[]      = $parent ;
-
-            while( $remontada )
+            $cats = [] ;
+            if ( $this->getEntity()->isChild() )
             {
-                $Entity = \App\Kernel\Container::getInstance()->module( $parent )->getEntity();
-                if ( $Entity->isChild() )
-                {
-                    $parent = $Entity->getModuleParentName();
-                    $tab[] = $parent ;
-                }
-                else
-                {
-                    $remontada = false ;
-                }
-            }
+                $tab        = [] ;
+                $remontada  = true ;
+                $parent     = $this->getEntity()->getModuleParentName() ;
+                $tab[]      = $parent ;
 
-            $tab        = array_reverse( $tab );
-            $arrCurrent = [];
-            $cats       = [];
-
-            foreach( $tab as $ent )
-            {
-                $mod  = Container::getInstance()->module( $ent );
-                $nov  = $mod->getRepository()->getValid( $cats );
-                $cats = [];
-
-                if ( $nov )
+                while( $remontada )
                 {
-                    foreach( $nov as $row )
+                    $Entity = \App\Kernel\Container::getInstance()->module( $parent )->getEntity();
+                    if ( $Entity->isChild() )
                     {
-                        $cats[ $row->get('id') ] = $row->get('id') ;
+                        $parent = $Entity->getModuleParentName();
+                        $tab[] = $parent ;
+                    }
+                    else
+                    {
+                        $remontada = false ;
                     }
                 }
-            }
 
-            if ( ! empty( $cats ) )
-            {
-                $rst->where_in( $this->field( $this->getEntity()->getModuleParentIdName() ) , $cats );
+                $tab        = array_reverse( $tab );
+                $arrCurrent = [];
+                $cats       = [];
+
+                foreach( $tab as $ent )
+                {
+                    $mod  = Container::getInstance()->module( $ent );
+                    $nov  = $mod->getRepository()->getValid( $cats );
+                    $cats = [];
+
+                    if ( $nov )
+                    {
+                        foreach( $nov as $row )
+                        {
+                            $cats[ $row->get('id') ] = $row->get('id') ;
+                        }
+                    }
+                }
+
+                if ( ! empty( $cats ) )
+                {
+                    $rst->where_in( $this->field( $this->getEntity()->getModuleParentIdName() ) , $cats );
+                }
             }
         }
 

@@ -1027,7 +1027,7 @@ class Controller extends \App\Kernel\Common\Controller
 						$content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
 
 						// On ajoute les infos sans multi-langue
-						$content->save();
+                        $content->save();
 
 						if ($this->getId() === NULL) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
 
@@ -1062,7 +1062,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
                     else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
 
-                    $this->$hookAfterCheck();
+                    $this->$hookAfterCheck( $content );
 
 					foreach ($this->getEntity()->getField() as $nameField => $field)
 					{
@@ -1127,6 +1127,11 @@ class Controller extends \App\Kernel\Common\Controller
     protected function getUpdateSuccessMessage()
     {
         return '' ;
+    }
+
+    protected function _( $key , $var = [] )
+    {
+        return \App\Kernel\Front\Translate::getInstance()->getText( $key , $var ) ;
     }
 
     protected function getUrlRedirect()

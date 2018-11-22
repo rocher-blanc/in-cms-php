@@ -40,7 +40,7 @@ class Model
 		return \App\Kernel\Factory::getInstance() ;
 	}
 	
-	protected function getId()
+	public function getId()
 	{
         return $this->_id ;
     }

@@ -24,6 +24,7 @@ class Easyletter
         {
             $this->client = new Client([
                 'base_uri' => $this->urlApi,
+                'http_errors' => false,
                 'headers'  => [
                     'X-API-KEY'    => $this->token,
                     'Content-Type' => 'application/json'
@@ -188,15 +189,20 @@ class Easyletter
     {
         if ( is_array( $id ) )
         {
-            return $this->response( $this->client->get('v1/campaign/statsLight', [
-                'body' => json_encode([
-                    'id' => $id
-                ])
-            ]) ) ;
+            try {
+                return $this->response( $this->client->get('v1/campaign/statsLight', [
+                    'body' => json_encode([
+                        'id' => $id
+                    ])
+                ]) ) ;
+            }
+            catch ( \ErrorException $e ) {
+                return false ;
+            }
         }
         else
         {
-            return $this->response( $this->client->get('v1/routage/stats/' . $id ) ) ;
+            return $this->response( $this->client->get('v1/campaign/stats/' . $id ) ) ;
         }
     }
 
