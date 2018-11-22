@@ -935,7 +935,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
                     else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
 
-                    $this->$hookAfterCheck();
+                    $this->$hookAfterCheck( $content );
                 }
                 else
                 {
