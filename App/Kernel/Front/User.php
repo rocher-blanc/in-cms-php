@@ -247,7 +247,14 @@ class User extends \App\Kernel\Common\User
             'user' => $this->getTwig()
         ]);
 
-        $_SESSION['first_connection'] = true ;
+        if ( $_SESSION['first_connection'] == true && $_SESSION['first_connection_counter'] > 0 )
+        {
+            $_SESSION['first_connection_counter'] = $_SESSION['first_connection_counter'] - 1;
+        }
+        else
+        {
+            $_SESSION['first_connection'] = false ;
+        }
     }
 
     /* ************************************************** */
@@ -559,12 +566,15 @@ class User extends \App\Kernel\Common\User
         }
         else
         {
+            $rst = $this->sendWelcomeMail( $user ) ;
+
             if ( ACTIVE_USER_CONNECT_AFTER_REGISTER )
             {
                 $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
                 $user->save();
 
                 $_SESSION['first_connection'] = true ;
+                $_SESSION['first_connection_counter'] = 2 ;
 
                 $this->save( $user ) ;
             }
@@ -573,15 +583,30 @@ class User extends \App\Kernel\Common\User
         }
     }
 
+    protected function sendWelcomeMail( $user )
+    {
+        $el = new Easyletter;
+        $el->automotion("user_account_welcome" , $user->user_front_login , array_merge([
+            'email' => $user->user_front_login
+        ], $this->getEmailVariableWelcome() ));
+
+        return true ;
+    }
+
     protected function sendValidationMail( $user )
     {
         $el = new Easyletter;
         $el->automotion("user_account_validation" , $user->user_front_login , array_merge([
             'url_validation' => \App\Kernel\Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token,
-            'email' => $user->user_front_login,
+            'email' => $user->user_front_login
         ], $this->getEmailVariableValidation() ));
 
         return true ;
+    }
+
+    protected function getEmailVariableWelcome()
+    {
+        return [];
     }
 
     protected function getEmailVariableValidation()
@@ -596,7 +621,7 @@ class User extends \App\Kernel\Common\User
 
     protected function getDefaultGroup()
     {
-        return 0;
+        return 1;
     }
 
     public function checkRegister()
