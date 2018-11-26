@@ -234,17 +234,20 @@ class User extends \App\Kernel\Common\User
     public function appendVar()
     {
         $this->setTwig(array_merge([
-            'id'        => $this->getId(),
-            'login'     => $this->getLogin(),
-            'group'     => $this->getGroup(),
-            'fb_url'    => $this->getFacebookUrl(),
-            'isLogged'  => $this->isLogged(),
-            'profile'   => $this->getProfileData()
+            'id'                => $this->getId(),
+            'login'             => $this->getLogin(),
+            'group'             => $this->getGroup(),
+            'fb_url'            => $this->getFacebookUrl(),
+            'isLogged'          => $this->isLogged(),
+            'profile'           => $this->getProfileData(),
+            'first_connection'  => $_SESSION['first_connection'],
         ], $this->getVar() ));
 
         $this->CMS()->view()->appendData([
             'user' => $this->getTwig()
         ]);
+
+        if ( $_SESSION['first_connection'] == true ) $_SESSION['first_connection'] = false ;
     }
 
     /* ************************************************** */
@@ -560,6 +563,8 @@ class User extends \App\Kernel\Common\User
             {
                 $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
                 $user->save();
+
+                $_SESSION['first_connection'] = true ;
 
                 $this->save( $user ) ;
             }
