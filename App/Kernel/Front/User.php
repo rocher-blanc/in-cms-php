@@ -247,7 +247,7 @@ class User extends \App\Kernel\Common\User
             'user' => $this->getTwig()
         ]);
 
-        if ( $_SESSION['first_connection'] == true ) $_SESSION['first_connection'] = false ;
+        $_SESSION['first_connection'] = true ;
     }
 
     /* ************************************************** */
