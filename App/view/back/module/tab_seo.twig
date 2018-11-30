@@ -1,4 +1,4 @@
-<form method="post" action="{{ route( mod.name , 'edit' , uri_id_parent , id ) }}" class="form-vertical">
+<form method="post" id="form-seo-module" action="{{ route( mod.name , 'edit' , uri_id_parent , id ) }}" class="form-vertical">
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="ed_field col_full">
         <label>Title</label>
@@ -66,7 +66,5 @@
             <input id="index" class="bt-switch" data-on-text="<i class='icon-line-check'></i>" data-off-text="<i class='icon-line-cross'></i>" data-on-color="themecolor" name="index" value="1" type="checkbox"{{ index == 1 ? ' checked="checked"' : '' }}>
         </div>
     </div>
-    <div class="ed_field col_full">
-        <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
-    </div>
+    {% include 'form/generic/button.twig' %}
 </form>

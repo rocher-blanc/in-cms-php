@@ -360,6 +360,9 @@ checkDeleteDocument = function() {
 
 checkForm = function(base) {
     $(base + ' form').not('.submitReady').bind('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         var $form = $(this);
         var mod = $form.data('slug');
         if ( $(base + ' .'+mod+'-form-process').length ) {
@@ -368,11 +371,16 @@ checkForm = function(base) {
 
         $(base + ' .ed_field').removeClass('error');
 
+        var onglet    = $('#onglet-form-module .ui-state-active a').attr('id');
         var valbutton = $("button[type=submit]:focus").val();
         var serialize = $form.serialize() + "&buttonaction=" + valbutton;
 
-        e.preventDefault();
-        e.stopPropagation();
+        if ( $form.attr('id') == 'form-seo-module' ) {
+            serialize += "&" + $('#form-element-module').serialize();
+        }
+        else if ( $form.attr('id') == 'form-element-module' && $('#form-seo-module').length == 1 ) {
+            serialize += "&" + $('#form-seo-module').serialize();
+        }
 
         $.ajax({
             type: $form.attr('method'),
@@ -387,7 +395,12 @@ checkForm = function(base) {
                         loadTable( '#tabs-' + $form.data('slug') + ' .depedencyContent' );
                     }
                     else {
-                        redirect( data.url );
+                        if ( valbutton == 'stay' ) {
+                            redirect( data.url + "?o=" + onglet );
+                        }
+                        else {
+                            redirect( data.url );
+                        }
                     }
                 }
                 else {

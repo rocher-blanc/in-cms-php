@@ -23,20 +23,32 @@
         </div>
     {% else %}
         <div class="ed_element formulaire tabs tabs-bordered tabs-tb clearfix" data-active="1">
-            <ul class="tab-nav clearfix">
+            <ul class="tab-nav clearfix" id="onglet-form-module">
                 {% set first = false %}
+                {% set activeOnglet = false %}
+
                 {% for tab in tabs %}
+                    {% set nameOnglet = 'onglet-' ~ tab.key %}
+
                     {% if first == false and tab.show == true %}
                         {% set first = true %}
-                        <li class="ui-tabs-active" id="tabs-link-{{ tab.key }}">
-                    {% elseif tab.show == false %}
+                        {% set activeOnglet = tab.key %}
+                    {% endif %}
+
+                    {% if onglet != '' and onglet == nameOnglet and tab.show == true %}
+                        {% set activeOnglet = tab.key %}
+                    {% endif %}
+                {% endfor %}
+
+                {% for tab in tabs %}
+                    {% if tab.show == false %}
                         <li class="hide" id="tabs-link-{{ tab.key }}">
                     {% else %}
                         <li id="tabs-link-{{ tab.key }}">
                     {% endif %}
-                        <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}">
-                            <i class="{{ tab.icon }}"></i> {{ tab.name }}
-                        </a>
+                    <a href="#tabs-{{ tab.key }}" id="onglet-{{ tab.key }}" data-toggle="tab">
+                        <i class="{{ tab.icon }}"></i> {{ tab.name }}
+                    </a>
                     </li>
                 {% endfor %}
 
@@ -140,4 +152,14 @@
         <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
     {% endif %}
     <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
+{#
+    {% if onglet != '' %}
+        <script>
+            $(function() {
+                console.log($('#{{ onglet }}').length);
+                $('#{{ onglet }}').parent().tab('show');
+            });
+        </script>
+    {% endif %}
+#}
 {% endblock %}

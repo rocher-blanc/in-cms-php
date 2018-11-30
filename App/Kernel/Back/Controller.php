@@ -208,6 +208,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'form' , $this->renderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
+            'onglet' => $_GET['o'],
             'condition' => $form['condition'],
             'uri_id_parent' => $this->getUriParent(),
             'route' => $this->Factory()->Url()->route( $this->getEntityName() , ( $value == false ? 'add' : 'edit' ) , $this->getUriParent() , $form['id'] ),
@@ -1519,6 +1520,7 @@ class Controller extends \App\Kernel\Common\Controller
         $arrayParent = $this->getParentArray();
 
         $this->setRender( 'id' , $this->getId() ) ;
+        $this->setRender( 'onglet' , $_GET['o'] ) ;
         $this->setRender( 'lang' , $this->Lang()->getAll() ) ;
         $this->setRender( 'parentLine' , $arrayParent ) ;
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
