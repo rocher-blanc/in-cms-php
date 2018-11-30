@@ -152,14 +152,14 @@
         <script src="{{ asset('canvas/js/easydoor/table.js') }}"></script>
     {% endif %}
     <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
-{#
+
     {% if onglet != '' %}
         <script>
             $(function() {
                 console.log($('#{{ onglet }}').length);
-                $('#{{ onglet }}').parent().tab('show');
+                $('#{{ onglet }}').click();
             });
         </script>
     {% endif %}
-#}
+
 {% endblock %}
