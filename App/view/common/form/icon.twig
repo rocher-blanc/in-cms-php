@@ -1,6 +1,16 @@
-<div class="input-group">
-    <span class="input-group-addon">
-        <i class="fa fa-calendar"></i>
-    </span>
-    <input type="text" data-plugin-date{{ hour ? 'time' : '' }}picker class="form-control" name="{{ name }}" id="id_{{ column }}" value="{{ value }}" />
+<div class="list-icon">
+
+    <input type="text" value="{{ value }}" class="form-control input-value" name="{{ name }}" id="id_{{ name }}"/>
+
+    {#<input type="search" />#}
+
+    <div class="list-icon-grid">
+        {% for icon in listIcons %}
+            <div class="icon{% if icon == value %} active{% endif %}" data-icon="{{ icon }}">
+                <span class="{{ icon }}"></span>
+            </div>
+        {% endfor %}
+        <div class="clear"></div>
+    </div>
+
 </div>
