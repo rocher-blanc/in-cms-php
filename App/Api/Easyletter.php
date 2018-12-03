@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
+//use \Firebase\JWT\JWT;
 
 class Easyletter
 {
@@ -22,6 +23,11 @@ class Easyletter
         }
         else
         {
+            /*
+             * $_SERVER['SERVER_NAME']
+             * $jwt = JWT::encode($token, $key);
+             */
+
             $this->client = new Client([
                 'base_uri' => $this->urlApi,
                 'http_errors' => false,

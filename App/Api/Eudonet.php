@@ -260,7 +260,7 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId , $infos )['result'];
 
-        if ( $rst['ResultInfos']['Success'] == false )
+        if ( $rst['ResultInfos']['Success'] == false or ( $rst['ResultInfos']['Success'] == true && DEBUG_EUDONET == true ) )
         {
             $this->notif( "ADD" , $rst , $msg , $params , $tablId );
         }
@@ -289,14 +289,17 @@ class Eudonet
 
         $rst = $this->request("post" , 'CUD/' . $tablId . '/' . $id , $infos )['result'];
 
+        if ( $rst['ResultInfos']['Success'] == false or ( $rst['ResultInfos']['Success'] == true && DEBUG_EUDONET == true ) )
+        {
+            $this->notif( "UPDATE" , $rst , $msg , $params , $tablId , $id );
+        }
+
         if ( $rst['ResultInfos']['Success'] == true )
         {
             return $rst['ResultData'] ;
         }
         else
         {
-            $this->notif( "UPDATE" , $rst , $msg , $params , $tablId , $id );
-
             return false ;
         }
     }
