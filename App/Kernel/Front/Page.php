@@ -93,9 +93,9 @@ abstract class Page
     {
         $this->loadMeta() ;
 
-        if ( $this->CMS()->request()->isAjax() )    $this->controllerAJAX();
-        if ( $this->CMS()->request()->isPost() )    $this->controllerPOST();
-        if ( $this->CMS()->request()->isGet() )     $this->controllerGET();
+        if ( $this->CMS()->request()->isAjax() )         $this->controllerAJAX();
+        else if ( $this->CMS()->request()->isPost() )    $this->controllerPOST();
+        else if ( $this->CMS()->request()->isGet() )     $this->controllerGET();
 
         $this->render() ;
     }

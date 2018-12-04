@@ -20,13 +20,20 @@ class Eudonet
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
 
-    public function __construct()
+    public function __construct( $token = NULL )
     {
         $this->client = new Client([
             'base_uri' => 'https://xrm3.eudonet.com/EudoAPI/',
         ]);
 
-        $this->getToken();
+        if ( $token === NULL or $token == "" )
+        {
+            $this->getApiToken();
+        }
+        else
+        {
+            $this->headers['x-auth'] = $token ;
+        }
     }
 
     /* ************************************************** */
@@ -55,7 +62,7 @@ class Eudonet
     /* ****************      TOKEN     ****************** */
     /* ************************************************** */
 
-    private function getToken()
+    private function getApiToken()
     {
         $rst = $this->request("post" , 'Authenticate/Token' , [
             "SubscriberLogin"       => EUDO_SUBSCRIBER_LOGIN,
@@ -72,6 +79,11 @@ class Eudonet
             //dump( $rst['ResultData']['Token'] );
             $this->headers['x-auth'] = $rst['ResultData']['Token'] ;
         }
+    }
+
+    public function getToken()
+    {
+        return $this->headers['x-auth'] ;
     }
 
     /* ************************************************** */
