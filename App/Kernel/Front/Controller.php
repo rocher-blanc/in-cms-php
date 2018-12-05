@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use JasonGrimes\Paginator;
+use App\Kernel\Front\Translate;
 
 class Controller extends \App\Kernel\Common\Controller
 {
@@ -886,6 +887,18 @@ class Controller extends \App\Kernel\Common\Controller
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
     /* ************************************************** */
+
+    protected function getTitleField( $field )
+    {
+        if ( $this->Lang()->count() > 1 )
+        {
+            return Translate::getInstance()->getText(strtolower( 'field_' . $this->getEntityName() . '_' . $field->getName() ) );
+        }
+        else
+        {
+            return $field->getData('title') ;
+        }
+    }
 
     protected function generateForm( $value = false , $url = '' )
     {

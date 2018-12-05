@@ -8,7 +8,7 @@ $app->group('/user_front_group', function () use ($app)
                             ->order_by_asc('user_front_group_name')
                             ->find_many();
 		
-		$app->render('ext/user_front_group/index.twig.html', array( "contentRows" => $contentRows ));
+		$app->render('ext/user_front_group/index.twig', array( "contentRows" => $contentRows ));
 
 	})->name('user_front_index');
 
@@ -67,7 +67,7 @@ $app->group('/user_front_group', function () use ($app)
 				
 				$id = $contentRow->user_front_group_id ;
 				
-				$app->flash('__msg',addslashes( json_encode( "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
+				$app->flash('__msg', "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) );
 				$app->flash('__result',true);
 				
 				if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user_front_group/edit/' . $id );
@@ -75,7 +75,7 @@ $app->group('/user_front_group', function () use ($app)
 			}
 		}
 
-		$app->render('ext/user_front_group/edit.twig.html', array(
+		$app->render('ext/user_front_group/edit.twig', array(
 												"contentRow" => $contentRow,
 												"id" 		 => $id,
 												"post"		 => $post,
@@ -84,7 +84,13 @@ $app->group('/user_front_group', function () use ($app)
 
 	})->name('user_front_group_edit')->via('GET', 'POST');
 
-	$app->delete('/delete/:id', function ($id) use ($app)
+    $app->get('/delete/:id', function ($id) use ($app) {
+        $app->render('common/delete.twig', [
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/user_front_group/delete/' . $id)
+        ]);
+    });
+
+	$app->post('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
         $contentRow = \DB::for_table('user_front_group')
@@ -103,7 +109,14 @@ $app->group('/user_front_group', function () use ($app)
         {
             $msg = "Une erreur est survenue lors de la suppression" ;
         }
+
+        $app->flash('__msg', $msg );
+        $app->flash('__result',$ret);
 		
-		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+		echo json_encode([
+		    "msg" => $msg ,
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/user_front_group'),
+            "result" => $ret
+        ]) ;
 	})->name('user_front_group_delete');
 });

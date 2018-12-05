@@ -1,0 +1,30 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}Groupes d'utilisateurs{% endblock %}
+
+{% if id != -1 %}
+	{% set this_page = 'Modification' %}
+	{% set title_block_page = 'Modification d\'un groupe' %}
+{% else %}
+	{% set this_page = 'Ajout' %}
+	{% set title_block_page = 'Ajout d\'un nouveau groupe' %}
+{% endif %}
+
+{% block module %}
+<form name="form" method="post" action="{{ siteUrl('ext/user_front_group/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal">
+	<input type="hidden" name="{{csrf_key}}" id="{{csrf_key}}" value="{{csrf_token}}" />
+	<div class="fancy-title title-dotted-border">
+		<h3>{{ title_block_page }}</h3>
+	</div>
+	<div class="tab-content">
+		<div class="tab-pane active panel-body">
+			<div class="ed_field col_half">
+				<label>Nom</label>
+				<input type="text" id="user_front_group_name" name="user_front_group_name" class="form-control" value="{{ post.user_front_group_name }}" />
+			</div>
+			<div class="clear"></div>
+            {% include 'form/generic/button.twig' %}
+		</div>
+	</div>
+</form>
+{% endblock %}

@@ -187,6 +187,11 @@ class Controller extends \App\Kernel\Common\Controller
         return "back" ;
     }
 
+    protected function getTitleField( $field )
+    {
+        return $field->getData('title') ;
+    }
+
     protected function generateForm( $value = false )
     {
         $form = parent::generateForm( $value );

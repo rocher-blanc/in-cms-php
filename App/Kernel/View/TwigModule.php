@@ -43,7 +43,7 @@ class TwigModule extends \Twig_Extension
 
         $replaceString = '' ;
         $fullUrl = $this->Factory()->Url()->getFullUrl() ;
-        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
+        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->Lang()->getActive()->url . '/' ;
         $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
 
         $Controller = $this->Container()->module( $module )->getController();
@@ -58,7 +58,7 @@ class TwigModule extends \Twig_Extension
 
         $replaceString = '' ;
         $fullUrl = $this->Factory()->Url()->getFullUrl() ;
-        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->getUrl(0) . '/' ;
+        if ( $this->Lang()->count() > 1 ) $replaceString.= $this->Lang()->getActive()->url . '/' ;
         $url = ltrim( str_replace( "/" . $replaceString . "/" , '' , $fullUrl ) , '/') ;
 
         $Controller = $this->Container()->module( $module )->getController();

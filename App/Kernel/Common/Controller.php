@@ -609,7 +609,7 @@ class Controller
 						"name"      => $row->getName(),
 						"fieldname" => $row->getColumn(),
 						"Form_HTML" => $form->genHTML( $row ),
-						"title" 	=> $row->getData('title'),
+						"title" 	=> $this->getTitleField( $row ),
 						"type" 		=> $row->getType(),
 						"tab" 		=> $row->getTab(),
 						"visible"   => $row->visible(),

@@ -54,7 +54,7 @@ $app->group('/pageadmin', function () use ($app)
                 ->find_many();
         }
 		
-		$app->render('admin/pageadmin/index.twig.html', [
+		$app->render('admin/pageadmin/index.twig', [
             'domain' => $domain,
             'content' => $content
         ]);
@@ -91,7 +91,7 @@ $app->group('/pageadmin', function () use ($app)
 
 		if ( $app->request->isPost() )
 		{
-			$contentRow = \DB::for_table('page')->create();
+		    $contentRow = \DB::for_table('page')->create();
 
 			$ct = \DB::for_table('page')
                         ->where_equal('page_domain_id' , $app->request->post('page_domain_id'))
@@ -184,7 +184,7 @@ $app->group('/pageadmin', function () use ($app)
             ->order_by_asc('user_front_group_name')
             ->find_many();
 
-        $app->render('admin/pageadmin/edit.twig.html', array(
+        $app->render('admin/pageadmin/edit.twig', array(
             "post"       => $post,
             "id"         => -1,
             "domains"    => $domains,
@@ -195,11 +195,8 @@ $app->group('/pageadmin', function () use ($app)
 
 	})->name('page_add')->via('GET', 'POST');
 
-	$app->map('/edit/:id', function ( $id ) use ($app)
-	{
-		$error 	  = false ;
-		$tabError = array() ;
-
+    $app->get('/edit/:id', function ( $id ) use ($app)
+    {
         $domains = [];
         $reqDomains = \DB::for_table('domain')
             ->select('domain_id')
@@ -217,9 +214,9 @@ $app->group('/pageadmin', function () use ($app)
             }
         }
 
-		$contentRow = \DB::for_table('page')
-			->where_equal('page_id' , $id)
-			->find_one();
+        $contentRow = \DB::for_table('page')
+            ->where_equal('page_id' , $id)
+            ->find_one();
 
         $pageRedirect = \DB::for_table('page')
             ->select('page_id')
@@ -228,37 +225,60 @@ $app->group('/pageadmin', function () use ($app)
             ->where_not_equal('page_id', $contentRow->page_id)
             ->find_many();
 
-		$post = [
-			"page_name" => $contentRow->page_name,
-			"page_active" => $contentRow->page_active,
+        $post = [
+            "page_name" => $contentRow->page_name,
+            "page_active" => $contentRow->page_active,
             "page_domain_id" => $contentRow->page_domain_id,
             "page_access_user" => $contentRow->page_access_user,
             "page_access_user_redirect" => $contentRow->page_access_user_redirect,
             "page_access_user_group" => unserialize( $contentRow->page_access_user_group )
         ] ;
-        
+
         if( !empty($domains) && in_array( $post['page_domain_id'] , array_keys($domains) ) )
         {
             $domains[ $post['page_domain_id'] ]['selected'] = true;
         }
 
-		if ( $app->request->isPost() )
-		{
-			$post = array(
-				"page_name" => $app->request->post('page_name'),
-				"page_active" => $app->request->post('page_active'),
-				"page_domain_id" => $app->request->post('page_domain_id')
-			) ;
+        $groupRows = \DB::for_table('user_front_group')
+            ->order_by_asc('user_front_group_name')
+            ->find_many();
 
-			if ($app->request->post('page_name') == "") {
-				$error = true;
-				$tabError['page_name'] = "Veuillez remplir ce champ";
-			}
+        $app->render('admin/pageadmin/edit.twig', array(
+            "post"         => $post,
+            "id"           => $id,
+            "domains"      => $domains,
+            "pageRedirect" => $pageRedirect,
+            "groups"       => $groupRows
+        ));
 
-			if ($error == false) {
-				$contentRow->page_name = $app->request->post('page_name');
-				$contentRow->page_active = $app->request->post('page_active');
-				$contentRow->page_domain_id = $app->request->post('page_domain_id');
+    });
+
+    $app->post('/edit/:id', function ( $id ) use ($app)
+    {
+        $error 	  = false ;
+        $tabError = array() ;
+
+        $contentRow = \DB::for_table('page')
+            ->where_equal('page_id' , $id)
+            ->find_one();
+
+        if ( $app->request->isPost() )
+        {
+            $post = array(
+                "page_name" => $app->request->post('page_name'),
+                "page_active" => $app->request->post('page_active'),
+                "page_domain_id" => $app->request->post('page_domain_id')
+            ) ;
+
+            if ($app->request->post('page_name') == "") {
+                $error = true;
+                $tabError['page_name'] = "Veuillez remplir ce champ";
+            }
+
+            if ($error == false) {
+                $contentRow->page_name = $app->request->post('page_name');
+                $contentRow->page_active = $app->request->post('page_active');
+                $contentRow->page_domain_id = $app->request->post('page_domain_id');
 
                 if ( ACTIVE_USER )
                 {
@@ -267,33 +287,21 @@ $app->group('/pageadmin', function () use ($app)
                     $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
                 }
 
-				$contentRow->save();
+                $contentRow->save();
 
-				\App\Kernel\Back\Log::getInstance()->info(29, $contentRow->page_name);
+                \App\Kernel\Back\Log::getInstance()->info(29, $contentRow->page_name);
 
-				$id = $contentRow->page_id;
+                $id = $contentRow->page_id;
 
-				if ($app->request->post('submit') == "stay") $url = '/admin/pageadmin/edit/' . $id;
-				else                                         $url = '/admin/pageadmin';
+                if ($app->request->post('buttonaction') == "stay")  $url = '/admin/pageadmin/edit/' . $id;
+                else                                                $url = '/admin/pageadmin';
 
-				$Factory = \App\Kernel\Factory::getInstance();
-				$Factory->Response()->flashAndRedirect("La page spéciale a bien été ajoutée", true, $url);
-			}
-		}
+                $result['msg'] = "La page spéciale a bien été modifiée";
+                $result['result'] = true;
+                $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get( $url ) ;
 
-        $groupRows = \DB::for_table('user_front_group')
-            ->order_by_asc('user_front_group_name')
-            ->find_many();
-
-		$app->render('admin/pageadmin/edit.twig.html', array(
-			"post"         => $post,
-			"id"           => $id,
-            "domains"      => $domains,
-            "pageRedirect" => $pageRedirect,
-            "groups"       => $groupRows,
-			"error"		   => ( $error === false ? "0" : "1" ),
-			"tabError"	   => json_encode( $tabError )
-		));
-
-	})->name('page_edit')->via('GET', 'POST');
+                \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+            }
+        }
+    });
 });
