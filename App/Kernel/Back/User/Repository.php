@@ -9,7 +9,9 @@ class Repository extends \App\Kernel\Back\Repository
         $content = $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement )
             ->left_outer_join( 'user_front' , array( 'user_front.user_front_id' , '=', $this->getEntity()->get('user_front_id')->fieldSql() ) )
             ->select($this->getTbl() . '.*' )
-            ->select_expr('user_front.user_front_login', $this->getEntity()->get('user_login')->getColumn());
+            ->select_expr('user_front.user_front_login', $this->getEntity()->get('user_login')->getColumn())
+            ->select_expr('user_front.user_front_user_front_group_id', $this->getEntity()->get('user_front_user_front_group_id')->getColumn())
+            ->select_expr('user_front.user_front_active', $this->getEntity()->get('isValid')->getColumn());
 
         if ( $limit != 0 )
         {
@@ -21,7 +23,9 @@ class Repository extends \App\Kernel\Back\Repository
 
     public function countTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
     {
-        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement )->count();
+        return $this->requestGetAllTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule , $DepedencyElement )
+            ->left_outer_join( 'user_front' , array( 'user_front.user_front_id' , '=', $this->getEntity()->get('user_front_id')->fieldSql() ) )
+            ->count();
     }
 
     public function findOne( $id )
@@ -30,6 +34,8 @@ class Repository extends \App\Kernel\Back\Repository
             ->left_outer_join( 'user_front' , array( 'user_front.user_front_id' , '=', $this->getEntity()->get('user_front_id')->fieldSql() ) )
             ->select($this->getTbl() . '.*' )
             ->select_expr('user_front.user_front_login', $this->getEntity()->get('user_login')->getColumn())
+            ->select_expr('user_front.user_front_user_front_group_id', $this->getEntity()->get('user_front_user_front_group_id')->getColumn())
+            ->select_expr('user_front.user_front_active', $this->getEntity()->get('isValid')->getColumn())
             ->find_one();
     }
 

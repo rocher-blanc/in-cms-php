@@ -265,7 +265,7 @@ class Controller
 		return \App\Kernel\Container::getInstance() ;
 	}
 
-	public function getEntity()
+	public function getEntity(): \App\Kernel\Entity\Builder
 	{
 		return $this->Container()->module( $this->getEntityName() )->getEntity() ;
 	}

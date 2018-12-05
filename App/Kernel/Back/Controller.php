@@ -96,7 +96,7 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   CONTAINER   ******************** */
     /* ***************************************************** */
 
-    public function getRepository()
+    public function getRepository(): \App\Kernel\Back\Repository
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository( true ) ;
     }
@@ -567,10 +567,25 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     $tdArray[ $i ]['icons'] = $tabIcon ;
+                    if ( $this->getEntity()->hasValidation() )
+                    {
+                        $fieldValidation = $this->getEntity()->get( $this->getEntity()->getValidationName() ) ;
+                        $callableValue = $fieldValidation->getData('updateValue') ;
+
+                        if ( is_callable( $callableValue ) )
+                        {
+                            $value = $callableValue( $row );
+                        }
+                        else
+                        {
+                            $value = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
+                        }
+
+                        $tdArray[ $i ]['validation'] = $value ;
+                    }
 
                     if ( $this->getEntity()->hasParent() ) 		$tdArray[ $i ][ $this->getEntity()->getParentName() ] = $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasOrder() ) 		$tdArray[ $i ]['order'] = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
-                    if ( $this->getEntity()->hasValidation() ) 	$tdArray[ $i ]['validation'] = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasDefault() ) 	$tdArray[ $i ]['default'] = $row->get( $this->getEntity()->get( $this->getEntity()->getDefaultName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasUrl() )
                     {
@@ -691,7 +706,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         foreach( $this->getEntity()->getField() as $row )
         {
-            if ( $row->getTitle() != '' )
+            if ( $row->getTitle() != '' && $row->getData('noindex') !== true )
             {
                 $tabField[ $row->getName() ] = [
                     'table' => ( $row->getName() != $this->getEntity()->getValidationName() && $row->back() == true ? true : false ),
