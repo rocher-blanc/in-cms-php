@@ -23,6 +23,91 @@ class Base
             \DB::get_db()->exec( $this->getSql() ) ;
             \DB::get_db()->exec( $this->getTrigger() ) ;
         }
+
+        $this->checkModule();
+    }
+
+    public function getModule()
+    {
+        return [
+            'NewsletterSender' => [
+                'name' => "Expéditeurs",
+                'icon' => "icon-line2-users",
+            ],
+            'NewsletterGroup' => [
+                'name' => "Groupe d'abonnés",
+                'icon' => "icon-users",
+            ],
+            'NewsletterSubscriber' => [
+                'name' => "Abonnés",
+                'icon' => "icon-user",
+            ],
+            'NewsletterCampaignGroup' => [
+                'name' => "Newsletters",
+                'icon' => "icon-folder",
+            ],
+            'NewsletterCampaign' => [
+                'name' => "Planification des campagnes",
+                'icon' => "icon-time",
+            ],
+            'NewsletterModel' => [
+                'name' => "Gabarit",
+                'icon' => "icon-picture",
+            ],
+            'EdAutomation' => [
+                'name' => "Email automation",
+                'icon' => "icon-picture",
+            ],
+            'EdAutomationVarGroup' => [
+                'name' => "Groupe de variables",
+                'icon' => "icon-stack2",
+            ],
+            'EdAutomationVar' => [
+                'name' => "Variables d'environnement",
+                'icon' => "icon-atom",
+            ],
+            'EdAutomationModelGroup' => [
+                'name' => "Groupe de gabarits",
+                'icon' => "icon-stack",
+            ],
+            'EdAutomationModel' => [
+                'name' => "Modèle de gabarits",
+                'icon' => "icon-vcard",
+            ],
+            'EdEmail' => [
+                'name' => "Modèles d'email",
+                'icon' => "icon-news",
+            ],
+            'EdAutomationHistory' => [
+                'name' => "Historique Emails automation",
+                'icon' => "icon-line-clock",
+            ],
+            'NewsletterCampaignGroupUnsubscribe' => [
+                'name' => "Désinscription",
+                'icon' => "form-icon icon-enter",
+            ]
+        ];
+    }
+
+    public function checkModule()
+    {
+        foreach( $this->getModule() as $class => $row )
+        {
+            $rst = \DB::for_table('module')
+                ->where_equal( 'module_class_name' , $class )
+                ->where_equal( 'module_kernel' , 1 )
+                ->find_one();
+
+            if ( ! $rst ) $rst = \DB::for_table('module')->create();
+
+            $rst->module_class_name = $class ;
+            $rst->module_kernel = 1 ;
+            $rst->module_name = $row['name'] ;
+            $rst->module_icon = $row['icon'] ;
+            $rst->save();
+
+            \App\Kernel\Container::getInstance()->module( $class )->getRepository( true )->checkDatabase();
+        }
     }
 
     public function getTrigger()
