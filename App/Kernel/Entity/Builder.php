@@ -223,6 +223,12 @@ class Builder extends Model
     protected $_import = true ;
 
     /*
+     * @callable
+     * Affiche ou non le bouton de delete
+     */
+    protected $showDelete = NULL ;
+
+    /*
      * @int
      * Définit le nombre maximum d'element dans un module
      * Si ce nombre est attient, l'ajout devient impossible
@@ -732,7 +738,7 @@ class Builder extends Model
         $this->addAction('duplicate');
         $this->_dupliacate = true ;
     }
-
+ 
     public function canDuplicate()
     {
         return $this->_dupliacate ;
@@ -754,6 +760,16 @@ class Builder extends Model
     public function canDelete()
     {
         return $this->_delete ;
+    }
+
+    public function showDelete( callable $function )
+    {
+        $this->showDelete = $function ;
+    }
+
+    public function getShowDelete()
+    {
+        return $this->showDelete ;
     }
 
     /* ************************************************** */
