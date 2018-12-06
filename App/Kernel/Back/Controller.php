@@ -540,7 +540,6 @@ class Controller extends \App\Kernel\Common\Controller
 
                     $tdArray[ $i ]['id'] = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
 
-
                     /* *************************************************** */
                     /* *************************************************** */
                     /*                       DELETE                        */
