@@ -102,6 +102,7 @@ class Base
 
             $rst->module_class_name = $class ;
             $rst->module_kernel = 1 ;
+            $rst->module_active = 1 ;
             $rst->module_name = $row['name'] ;
             $rst->module_icon = $row['icon'] ;
             $rst->save();
