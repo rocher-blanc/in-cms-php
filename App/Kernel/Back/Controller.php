@@ -1305,7 +1305,7 @@ class Controller extends \App\Kernel\Common\Controller
                     $this->Factory()->Response()->redirect( $url );
                 }
             }
-            else if ( $count == 0 )
+            else if ( $count == 0 && $this->getEntity()->canCreate() == true )
             {
                 $url = $this->Factory()->Url()->route( $this->getEntityName() , 'add' , $this->getUriParent() ) ;
                 $this->Factory()->Response()->redirect( $url );
