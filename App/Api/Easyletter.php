@@ -13,13 +13,35 @@ class Easyletter
     private $urlApi = 'https://api.easyletter.fr/' ;
     private $token  = EL_TOKEN ;
     private $client ;
+    private $obj ;
     private $error = '' ;
 
     public function __construct()
     {
         if ( $this->token === NULL )
         {
+            $this->client = NULL ;
 
+            $this->obj = new \PHPMailer;
+            if ( MAIL_SMTP )
+            {
+                if ( DEBUG && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
+
+                $this->obj->isSMTP();                            // Set mailer to use SMTP
+                $this->obj->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
+                $this->obj->SMTPAuth     = true;                 // Enable SMTP authentication
+                $this->obj->Username     = MAIL_SMTP_USER ;      // SMTP username
+                $this->obj->Password     = MAIL_SMTP_PASSWORD ;  // SMTP password
+                $this->obj->SMTPSecure   = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
+                $this->obj->Port         = MAIL_SMTP_PORT ;      // TCP port to connect to
+            }
+            else
+            {
+                $this->obj->isSendmail();
+            }
+
+            $this->obj->isHTML(true);                            // Set email format to HTML
+            $this->obj->CharSet = 'UTF-8';
         }
         else
         {
@@ -92,33 +114,54 @@ class Easyletter
                 ]);
                 $AutomationHistory->save();
 
-                $response = $this->request([
-                    'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
-                    'msgSMS' => "",
-                    'urlUnsubscribe' => "",
-
-                    'txtOnlineViewTag' => "",
-                    'txtHtmlUnsubscribeTag' => "",
-                    'txtSendToAFriendTag' => "",
-
-                    'dateTimeUTC' => date("Y-m-d H:i:s"),
-                    'schedule' => '0',
-                    'sendingRate' => '0',
-                    'transactional' => '1',
-
-                    'subject' => $EdAutomationModel->get('subject'),
-                    'senderName' => $Sender->get('name'),
-                    'senderEmail' => $Sender->get('email'),
-                    'returnPathEmail' => $Sender->get('email_response'),
-
-                    'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
-                    'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id'),
-                ]);
-
-                if ( $response !== false )
+                if ( $this->client === NULL )
                 {
-                    $AutomationHistory->set('id_easyletter' , $response );
-                    $AutomationHistory->save();
+                    $this->obj->setFrom( $Sender->get('email') , $Sender->get('name') );
+                    $this->obj->addReplyTo( $Sender->get('email_response') , $Sender->get('name') );
+                    $this->obj->Subject = html_entity_decode( $EdAutomationModel->get('subject') ) ;
+                    $this->obj->addAddress( $email );
+
+                    $html = $EdAutomation->get('html');
+
+                    foreach( $tab[ $email ] as $key => $value )
+                    {
+                        $html = str_replace( '[' . $key . ']' , $value , $html ) ;
+                    }
+
+                    $this->obj->AltBody = strip_tags( $html ) ;
+                    $this->obj->Body = $html ;
+                    $ret = $this->obj->send();
+                }
+                else
+                {
+                    $response = $this->request([
+                        'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
+                        'msgSMS' => "",
+                        'urlUnsubscribe' => "",
+
+                        'txtOnlineViewTag' => "",
+                        'txtHtmlUnsubscribeTag' => "",
+                        'txtSendToAFriendTag' => "",
+
+                        'dateTimeUTC' => date("Y-m-d H:i:s"),
+                        'schedule' => '0',
+                        'sendingRate' => '0',
+                        'transactional' => '1',
+
+                        'subject' => $EdAutomationModel->get('subject'),
+                        'senderName' => $Sender->get('name'),
+                        'senderEmail' => $Sender->get('email'),
+                        'returnPathEmail' => $Sender->get('email_response'),
+
+                        'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
+                        'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id'),
+                    ]);
+
+                    if ( $response !== false )
+                    {
+                        $AutomationHistory->set('id_easyletter' , $response );
+                        $AutomationHistory->save();
+                    }
                 }
 
                 return $AutomationHistory->get('id');
