@@ -26,14 +26,6 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
-      <webServer id="d0e24715-0c07-4f6d-b2a2-818fe38e4acb" name="VPS1 - RIDUP4" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
-          <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
-          </advancedOptions>
-          <option name="port" value="21" />
-        </fileTransfer>
-      </webServer>
     </option>
   </component>
 </project>
