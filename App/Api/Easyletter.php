@@ -22,26 +22,26 @@ class Easyletter
         {
             $this->client = NULL ;
 
-            $this->obj = new \PHPMailer;
+            $this->phpmailer = new \PHPMailer;
             if ( MAIL_SMTP )
             {
-                if ( DEBUG && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
+                if ( DEBUG && SMTP_DEBUG ) $this->phpmailer->SMTPDebug = 3;          // Enable verbose debug output
 
-                $this->obj->isSMTP();                            // Set mailer to use SMTP
-                $this->obj->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
-                $this->obj->SMTPAuth     = true;                 // Enable SMTP authentication
-                $this->obj->Username     = MAIL_SMTP_USER ;      // SMTP username
-                $this->obj->Password     = MAIL_SMTP_PASSWORD ;  // SMTP password
-                $this->obj->SMTPSecure   = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
-                $this->obj->Port         = MAIL_SMTP_PORT ;      // TCP port to connect to
+                $this->phpmailer->isSMTP();                            // Set mailer to use SMTP
+                $this->phpmailer->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
+                $this->phpmailer->SMTPAuth     = true;                 // Enable SMTP authentication
+                $this->phpmailer->Username     = MAIL_SMTP_USER ;      // SMTP username
+                $this->phpmailer->Password     = MAIL_SMTP_PASSWORD ;  // SMTP password
+                $this->phpmailer->SMTPSecure   = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
+                $this->phpmailer->Port         = MAIL_SMTP_PORT ;      // TCP port to connect to
             }
             else
             {
-                $this->obj->isSendmail();
+                $this->phpmailer->isSendmail();
             }
 
-            $this->obj->isHTML(true);                            // Set email format to HTML
-            $this->obj->CharSet = 'UTF-8';
+            $this->phpmailer->isHTML(true);                            // Set email format to HTML
+            $this->phpmailer->CharSet = 'UTF-8';
         }
         else
         {
@@ -116,10 +116,10 @@ class Easyletter
 
                 if ( $this->client === NULL )
                 {
-                    $this->obj->setFrom( $Sender->get('email') , $Sender->get('name') );
-                    $this->obj->addReplyTo( $Sender->get('email_response') , $Sender->get('name') );
-                    $this->obj->Subject = html_entity_decode( $EdAutomationModel->get('subject') ) ;
-                    $this->obj->addAddress( $email );
+                    $this->phpmailer->setFrom( $Sender->get('email') , $Sender->get('name') );
+                    $this->phpmailer->addReplyTo( $Sender->get('email_response') , $Sender->get('name') );
+                    $this->phpmailer->Subject = html_entity_decode( $EdAutomationModel->get('subject') ) ;
+                    $this->phpmailer->addAddress( $email );
 
                     $html = $EdAutomation->get('html');
 
@@ -128,9 +128,9 @@ class Easyletter
                         $html = str_replace( '[' . $key . ']' , $value , $html ) ;
                     }
 
-                    $this->obj->AltBody = strip_tags( $html ) ;
-                    $this->obj->Body = $html ;
-                    $ret = $this->obj->send();
+                    $this->phpmailer->AltBody = strip_tags( $html ) ;
+                    $this->phpmailer->Body = $html ;
+                    $ret = $this->phpmailer->send();
                 }
                 else
                 {
