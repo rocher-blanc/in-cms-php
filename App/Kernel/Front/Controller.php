@@ -65,7 +65,7 @@ class Controller extends \App\Kernel\Common\Controller
         return [ $this->_get('parent') ] ;
     }
 
-    public function getRepository()
+    public function getRepository(): \App\Kernel\Front\Repository
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository() ;
     }

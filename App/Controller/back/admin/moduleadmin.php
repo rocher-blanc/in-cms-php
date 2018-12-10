@@ -128,7 +128,7 @@
 					if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
 				}
 
-				\App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
+                \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
 				\App\Kernel\Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
 				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le module a bien été installé" , true , '/admin/moduleadmin' );
 			}

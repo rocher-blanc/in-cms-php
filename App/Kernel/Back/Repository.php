@@ -161,22 +161,22 @@ class Repository extends \App\Kernel\Common\Repository
         {
             if ( $this->getEntity()->hasOrder() )
             {
-                $content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
+                $content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() ) ;
             }
             else
             {
-                $content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
+                $content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() ) ;
             }
         }
         else
         {
             if ( $by == 'desc' )
             {
-                $content = $content->order_by_desc( $this->getEntity()->get( $order )->getColumn() ) ;
+                $content = $content->order_by_desc( $this->getEntity()->get( $order )->fieldSql() ) ;
             }
             else
             {
-                $content = $content->order_by_asc( $this->getEntity()->get( $order )->getColumn() ) ;
+                $content = $content->order_by_asc( $this->getEntity()->get( $order )->fieldSql() ) ;
             }
         }
 

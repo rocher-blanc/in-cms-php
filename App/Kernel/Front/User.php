@@ -619,7 +619,7 @@ class User extends \App\Kernel\Common\User
         return 1;
     }
 
-    protected function getDefaultGroup()
+    public function getDefaultGroup()
     {
         return 1;
     }
@@ -932,7 +932,7 @@ class User extends \App\Kernel\Common\User
         return str_shuffle( $pw );
     }
 
-    protected function hashPassword( $pass )
+    public function hashPassword( $pass )
     {
         return password_hash( $pass , PASSWORD_BCRYPT , ['cost' => 9] ) ;
     }

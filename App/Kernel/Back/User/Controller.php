@@ -10,19 +10,68 @@ class Controller extends \App\Kernel\Back\Controller
     }
 
     /*  **** ADD **** */
-    protected function hookAddCheckBefore()
+    protected function hookAddCheckAfter()
     {
+        if ( ! $this->isUnique( true ) )
+        {
+            return $this->returnArrayError() ;
+        }
+        else
+        {
+            return true ;
+        }
+    }
 
+    protected function returnArrayError()
+    {
+        $result['msg']    = ( $this->getApp()->config('config') == 'front' ? \App\Kernel\Front\Translate::getInstance()->getText( "user_login_is_uniq" ) : "Cette adresse email est déja utilisée" ) ;
+        $result['field']  = 'user_login' ;
+        $result['tab']    = $this->field('user_login')->getTab() ;
+        $result['result'] = false;
 
-        return true ;
+        return $result;
+    }
+
+    protected function hookAddSaveAfter( $c )
+    {
+        $date = new \DateTime();
+
+        $user = \DB::for_table('user_front')->create();
+        $user->user_front_token                 = $this->User()->getNewToken();
+        $user->user_front_login                 = $this->post('user_login');
+        $user->user_front_password              = $this->User()->hashPassword( $this->post('user_password') );
+        $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
+        $user->user_front_active                = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
+        $user->user_front_user_front_group_id   = $this->post('user_front_user_front_group_id');
+        $user->save();
+
+        $c->set( $this->field( $this->getEntity()->getUserIdName() )->getColumn() , $user->user_front_id );
+        $c->save();
     }
 
     /*  **** UPDATE **** */
-    protected function hookUpdateCheckBefore()
+    protected function hookUpdateCheckAfter()
     {
+        if ( ! $this->isUnique() )
+        {
+            return $this->returnArrayError() ;
+        }
+        else
+        {
+            return true ;
+        }
+    }
 
+    protected function hookUpdateSaveAfter( $c )
+    {
+        $user = \DB::for_table('user_front')
+            ->where_id_is( $this->post( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )
+            ->find_one();
 
-        return true ;
+        $user->user_front_login              = $this->post('user_login');
+        $user->user_front_active             = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
+        $user->user_front_user_front_group_id = $this->post('user_front_user_front_group_id');
+        $user->save();
     }
 
     /*  **** DELETE **** */
@@ -32,7 +81,7 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $content )
         {
-            \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUsertIdName() )->getColumn() ) )->delete();
+            \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )->delete();
             return true ;
         }
         else
@@ -48,7 +97,7 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $content )
         {
-            $user = \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUsertIdName() )->getColumn() ) )->find_one();
+            $user = \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )->find_one();
             $user->user_front_active = 1;
             $user->save();
 
@@ -66,7 +115,7 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $content )
         {
-            $user = \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUsertIdName() )->getColumn() ) )->find_one();
+            $user = \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )->find_one();
             $user->user_front_active = 0;
             $user->save();
 
@@ -76,5 +125,20 @@ class Controller extends \App\Kernel\Back\Controller
         {
             return false ;
         }
+    }
+
+    public function isUnique( $add = false )
+    {
+        $ct = \DB::for_table('user_front');
+
+        if ( $add == false )
+        {
+            $ct = $ct->where_not_equal('user_front_id', $this->post($this->field( $this->getEntity()->getUserIdName() )->getColumn() ) );
+        }
+
+        $ct = $ct->where_equal('user_front_login', $this->post('user_login') )->count();
+
+        if ( $ct == 0 ) return true ;
+        else            return false ;
     }
 }

@@ -4,10 +4,28 @@ namespace App\Kernel\Back;
 
 class User extends \App\Kernel\Common\User
 {
+    /* ************************************************** */
+    /* ****************   VARIABLES   ******************* */
+    /* ************************************************** */
+
+    protected static $instance = NULL ;
     protected $id           = NULL ;
     protected $email        = '' ;
     protected $active       = 0 ;
     protected $entityName   = '' ;
+
+    /* ************************************************** */
+    /* **************    SINGLESTON    ****************** */
+    /* ************************************************** */
+
+    public static function getInstance()
+    {
+        if ( self::$instance === NULL )
+        {
+            self::$instance = new User;
+        }
+        return self::$instance ;
+    }
 
     /* ************************************************** */
     /* ****************     ISER      ******************* */
@@ -116,43 +134,21 @@ class User extends \App\Kernel\Common\User
         else            return false ;
     }
 
-    public function isFormated()
+    public function getGroups()
     {
-        return filter_var( $this->getEmail(), FILTER_VALIDATE_EMAIL );
-    }
-
-    public function add()
-    {
-        $rst = \DB::for_table('user_front')->create();
+        $tab = [];
+        $rst = \DB::for_table('user_front_group')
+            ->order_by_asc('user_front_group_name')
+            ->find_many();
 
         if ( $rst )
         {
-            $date = new \DateTime();
-
-            $rst->user_front_login = $this->getEmail() ;
-            $rst->user_front_token = $this->getNewToken() ;
-            $rst->user_front_active = $this->getEmail() ;
-            $rst->user_front_user_front_group_id = $this->getEmail() ;
-            $rst->user_front_date_created = $date->format('Y-m-d H:i:s');
-            $rst->save();
+            foreach( $rst as $row )
+            {
+                $tab[ $row->user_front_group_id ] = $row->user_front_group_name ;
+            }
         }
-    }
 
-    public function update()
-    {
-        $rst = \DB::for_table('user_front')
-            ->where_not_equal('user_front_id', $this->getId() )
-            ->find_one();
-
-        if ( $rst )
-        {
-            $rst->user_front_login = $this->getEmail() ;
-            $rst->save();
-        }
-    }
-
-    public function delete()
-    {
-        \DB::for_table('user_front')->where_id_is( $this->getId() )->delete();
+        return $tab ;
     }
 }

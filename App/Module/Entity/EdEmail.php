@@ -2,7 +2,7 @@
 
 namespace App\Module\Entity;
 
-use App\Kernel\Entity\Builder;
+use App\Kernel\Entity\Builder; 
 
 class EdEmail extends Builder
 {
@@ -17,6 +17,9 @@ class EdEmail extends Builder
             });
         }
 
+        $this->showDelete(function( $c ) {
+            return ( $c->blocked == 1 ? false : true ) ;
+        });
         $this->setFieldReference( 'name' );
 
         $this->build('name')

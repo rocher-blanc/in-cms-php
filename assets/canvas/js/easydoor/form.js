@@ -405,7 +405,14 @@ checkForm = function(base) {
                 }
                 else {
                     Notify(data.msg, data.result);
-                    if ( data.tab ) $('#onglet-' + data.tab ).click();
+                    try {
+                        if ( data.tab ) {
+                            $('#onglet-' + data.tab ).trigger('click');
+                        }
+                    }
+                    catch(e) {};
+
+                    $('.error').removeClass('error');
 
                     if ( data.field ) {
                         if ( $('#field-' + data.field).find('input[type=text]').length ) {
@@ -416,7 +423,7 @@ checkForm = function(base) {
                         }
                     }
 
-                    if ( data.fields ) {
+                    if ( typeof data.fields != 'undefined' ) {
                         $.each(data.fields, function( index, value ) {
                             $('#field-' + value.field).addClass('error');
                         });

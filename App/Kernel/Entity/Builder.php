@@ -223,6 +223,12 @@ class Builder extends Model
     protected $_import = true ;
 
     /*
+     * @callable
+     * Affiche ou non le bouton de delete
+     */
+    protected $showDelete = NULL ;
+
+    /*
      * @int
      * Définit le nombre maximum d'element dans un module
      * Si ce nombre est attient, l'ajout devient impossible
@@ -732,7 +738,7 @@ class Builder extends Model
         $this->addAction('duplicate');
         $this->_dupliacate = true ;
     }
-
+ 
     public function canDuplicate()
     {
         return $this->_dupliacate ;
@@ -754,6 +760,16 @@ class Builder extends Model
     public function canDelete()
     {
         return $this->_delete ;
+    }
+
+    public function showDelete( callable $function )
+    {
+        $this->showDelete = $function ;
+    }
+
+    public function getShowDelete()
+    {
+        return $this->showDelete ;
     }
 
     /* ************************************************** */
@@ -1013,6 +1029,8 @@ class Builder extends Model
         {
             $this->addGroup('connexion' , 'Informations de connexion');
             $this->setModuleUser() ;
+            $this->enableValidation();
+            //$this->disableCreate() ;
 
             $this->build('user_front_id' , true )
                 ->isHidden("INT" , 11)
@@ -1034,26 +1052,75 @@ class Builder extends Model
                 ->notEmpty('user_register_login_empty' , true )
                 ->noSave()
                 ->noRename()
+                ->formated(function( $c ) {
+                    return filter_var( $c, FILTER_VALIDATE_EMAIL ) ;
+                }, "user_login_not_valid" , "L'adresse email est invalide" )
                 ->setData('fieldSql' , 'user_front.user_front_login')
                 ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
                 ->name('Email');
 
-            if ( ! \App\Kernel\Front\User::getInstance()->isLogged() )
+            $this->build('user_front_user_front_group_id' , true )
+                ->isSelect()
+                ->option( \App\Kernel\Back\User::getInstance()->getGroups() )
+                ->group('connexion')
+                ->notEmpty("Merci d'indiquer le groupe d'utulisateur" )
+                ->noSave()
+                ->noFront()
+                ->noRename()
+                ->setData('fieldSql' , 'user_front.user_front_user_front_group_id')
+                ->defaut(function() {
+                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getGroup() : \App\Kernel\Front\User::getInstance()->getDefaultGroup() ) ;
+                } , true  )
+                ->name("Groupe d'utilisateurs");
+
+            if ( $this->getApp()->config('config') == 'front' )
+            {
+                if ( ! \App\Kernel\Front\User::getInstance()->isLogged() )
+                {
+                    $this->build('user_password' , true )
+                        ->isPassword()
+                        ->group('connexion')
+                        ->notEmpty('user_register_password_empty' , true )
+                        ->noRename()
+                        ->noBack()
+                        ->name('Mot de passe');
+
+                    $this->build('user_password_confirm' , true )
+                        ->isPassword()
+                        ->group('connexion')
+                        ->notEmpty('user_register_confirm_password_empty' , true )
+                        ->noRename()
+                        ->noBack()
+                        ->name('Confirmer votre mot de passe');
+                }
+            }
+            else
             {
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty('user_register_password_empty' , true )
+                    ->notEmpty("Veuillez indiquer le mot de passe" )
                     ->noRename()
-                    ->noBack()
+                    ->noFront()
+                    ->noindex()
+                    ->showIf(function($c) {
+                        return ( $c->user_front_id == '' ? true : false );
+                    })
                     ->name('Mot de passe');
 
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty('user_register_confirm_password_empty' , true )
+                    ->notEmpty("Veuillez confirmer le mot de passe" )
                     ->noRename()
-                    ->noBack()
+                    ->noFront()
+                    ->noindex()
+                    ->showIf(function($c) {
+                        return ( $c->user_front_id == '' ? true : false );
+                    })
+                    ->formated(function( $c ) {
+                        return ( $_POST['user_password_confirm'] != $_POST['user_password'] ? false : true ) ;
+                    }, "Les deux mots de passe sont différents" )
                     ->name('Confirmer votre mot de passe');
             }
         }
@@ -1173,7 +1240,7 @@ class Builder extends Model
         else													throw new \App\Kernel\Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
     }
 
-    public function get( $field )
+    public function get( $field ): \App\Kernel\Entity\Field
     {
         return $this->setLast( $field )->field() ;
     }
@@ -1553,6 +1620,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function noindex()
+    {
+        $this->field()->setData( "noindex" , true ) ;
+        return $this ;
+    }
+
     protected function showIf( callable $result )
     {
         $this->field()->setData( "showIf" , $result ) ;
@@ -1578,10 +1651,27 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function formated( callable $result , string $message )
+    protected function formated( callable $result , string $t , string $msg = "" )
     {
+        if ( $msg != '' )
+        {
+            if ( $this->getApp()->config('config') == 'back' )
+            {
+                $s = $msg;
+            }
+            else
+            {
+                $s = \App\Kernel\Front\Translate::getInstance()->getText( $t );
+            }
+        }
+        else
+        {
+            $s = $t;
+        }
+
         $this->field()->setData( "formated" , $result ) ;
-        $this->field()->setData( "notFormated_msg" , $message ) ;
+        $this->field()->setData( "notFormated_msg" , $s ) ;
+
         return $this ;
     }
 

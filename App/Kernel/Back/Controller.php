@@ -96,7 +96,7 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   CONTAINER   ******************** */
     /* ***************************************************** */
 
-    public function getRepository()
+    public function getRepository(): \App\Kernel\Back\Repository
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository( true ) ;
     }
@@ -403,7 +403,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $i = 0;
                 foreach( $content as $row )
                 {
-                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) )
+                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) or is_callable( $this->getEntity()->getShowDelete() ) )
                     {
                         $contentShow = new \stdClass;
                         foreach( $this->getEntity()->getField() as $f )
@@ -542,6 +542,22 @@ class Controller extends \App\Kernel\Common\Controller
 
                     /* *************************************************** */
                     /* *************************************************** */
+                    /*                       DELETE                        */
+                    /* *************************************************** */
+                    /* *************************************************** */
+
+                    $delete = true ;
+                    $callableDelete = $this->getEntity()->getShowDelete() ;
+
+                    if ( is_callable( $callableDelete ) )
+                    {
+                        $delete = $callableDelete( $contentShow );
+                    }
+
+                    $tdArray[ $i ]['delete'] = $delete ;
+
+                    /* *************************************************** */
+                    /* *************************************************** */
                     /*                       ICONS                         */
                     /* *************************************************** */
                     /* *************************************************** */
@@ -567,10 +583,25 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     $tdArray[ $i ]['icons'] = $tabIcon ;
+                    if ( $this->getEntity()->hasValidation() )
+                    {
+                        $fieldValidation = $this->getEntity()->get( $this->getEntity()->getValidationName() ) ;
+                        $callableValue = $fieldValidation->getData('updateValue') ;
+
+                        if ( is_callable( $callableValue ) )
+                        {
+                            $value = $callableValue( $row );
+                        }
+                        else
+                        {
+                            $value = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
+                        }
+
+                        $tdArray[ $i ]['validation'] = $value ;
+                    }
 
                     if ( $this->getEntity()->hasParent() ) 		$tdArray[ $i ][ $this->getEntity()->getParentName() ] = $row->get( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasOrder() ) 		$tdArray[ $i ]['order'] = $row->get( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() ) ;
-                    if ( $this->getEntity()->hasValidation() ) 	$tdArray[ $i ]['validation'] = $row->get( $this->getEntity()->get( $this->getEntity()->getValidationName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasDefault() ) 	$tdArray[ $i ]['default'] = $row->get( $this->getEntity()->get( $this->getEntity()->getDefaultName() )->getColumn() ) ;
                     if ( $this->getEntity()->hasUrl() )
                     {
@@ -691,7 +722,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         foreach( $this->getEntity()->getField() as $row )
         {
-            if ( $row->getTitle() != '' )
+            if ( $row->getTitle() != '' && $row->getData('noindex') !== true )
             {
                 $tabField[ $row->getName() ] = [
                     'table' => ( $row->getName() != $this->getEntity()->getValidationName() && $row->back() == true ? true : false ),
@@ -1281,16 +1312,13 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $count = $this->getRepository()->count() ;
 
-            if ( $this->getEntity()->getMaxElement() == 1 && $this->getEntity()->canDelete() == false )
+            if ( $this->getEntity()->getMaxElement() == 1 && $this->getEntity()->canDelete() == false && $count == 1 )
             {
-                if( $count == 1 )
-                {
-                    $first = $this->getRepository()->first();
-                    $url = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $first->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
-                    $this->Factory()->Response()->redirect( $url );
-                }
+                $first = $this->getRepository()->first();
+                $url = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $first->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+                $this->Factory()->Response()->redirect( $url );
             }
-            else if ( $count == 0 )
+            else if ( $count == 0 && $this->getEntity()->canCreate() == true )
             {
                 $url = $this->Factory()->Url()->route( $this->getEntityName() , 'add' , $this->getUriParent() ) ;
                 $this->Factory()->Response()->redirect( $url );
