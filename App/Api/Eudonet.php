@@ -23,7 +23,7 @@ class Eudonet
     public function __construct( $token = NULL )
     {
         $this->client = new Client([
-            'base_uri' => 'https://xrm3.eudonet.com/EudoAPI/',
+            'base_uri' => EUDO_URL,
         ]);
 
         if ( $token === NULL or $token == "" )

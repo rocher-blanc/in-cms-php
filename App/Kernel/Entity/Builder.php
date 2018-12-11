@@ -1029,7 +1029,6 @@ class Builder extends Model
         {
             $this->addGroup('connexion' , 'Informations de connexion');
             $this->setModuleUser() ;
-            $this->enableValidation();
             //$this->disableCreate() ;
 
             $this->build('user_front_id' , true )
@@ -1096,6 +1095,7 @@ class Builder extends Model
             }
             else
             {
+                $this->enableValidation();
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')

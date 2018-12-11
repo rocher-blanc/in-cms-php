@@ -63,18 +63,41 @@ $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
     }
 })->name('newsletter_template');
 
-$app->get('/newsletter/unsubscribe/:id/:email', function ( $id , $email ) use ( $app ) {
-    $module = \DB::for_table('module')
-        ->select('module_id')
-        ->where(array('module_class_name' => "NewsletterCampaignGroup" , 'module_active' => 1))
-        ->find_one();
+$app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $email , $confirm = 0 ) use ( $app ) {
+    $newsletter = new Data('NewsletterCampaignGroup');
+    $rstNewsletter = $newsletter->find( $id ) ;
 
-    $unsub = new Data('NewsletterCampaignGroupUnsubscribe');
-    $unsub->findOrCreate([
+    $module = new \App\Kernel\Common\Module;
+    $idModule = $module->getId('NewsletterCampaignGroup') ;
+
+    $unsubCt = new Data('NewsletterCampaignGroupUnsubscribe');
+    $rst = $unsubCt->count([
         'email' => $email,
-        'module_id' => $module->module_id,
+        'module_id' => $idModule,
         'element_id' => $id
     ]);
-    $unsub->save();
+
+    $unsub = false ;
+    if ( $confirm == 1 && $rst == 0 )
+    {
+        $unsub = new Data('NewsletterCampaignGroupUnsubscribe');
+        $unsub->findOrCreate([
+            'email' => $email,
+            'module_id' => $idModule,
+            'element_id' => $id
+        ]);
+        $unsub->save();
+        
+        $unsub = true ;
+        $rst   = 1 ;
+    }
+
+    $app->render('Newsletter/unsubscribe.twig' , [
+        'newsletter_name' => $newsletter->get('name'),
+        'idnl' => $id,
+        'email' => $email,
+        'unsub' => $unsub,
+        'unsubscribe' => ( $rst == 0 ? false : true )
+    ]);
 
 })->name('newsletter_unsubscribe');
