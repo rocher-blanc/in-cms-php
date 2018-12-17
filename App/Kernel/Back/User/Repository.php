@@ -35,7 +35,7 @@ class Repository extends \App\Kernel\Back\Repository
             ->select($this->getTbl() . '.*' )
             ->select_expr('user_front.user_front_login', $this->getEntity()->get('user_login')->getColumn())
             ->select_expr('user_front.user_front_user_front_group_id', $this->getEntity()->get('user_front_user_front_group_id')->getColumn())
-            ->select_expr('user_front.user_front_active', $this->getEntity()->get('isValid')->getColumn())
+            ->select_expr('user_front.user_front_active', \DB::getColumnName('isValid', $this->getName() ))
             ->find_one();
     }
 

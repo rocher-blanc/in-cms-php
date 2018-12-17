@@ -96,6 +96,7 @@ class Eudonet
         print_r( $array );
         //print_r( $var );
         $out1 = ob_get_contents();
+        ob_end_clean();
 
         $idt = '' ;
         if ( $id !== NULL ) $idt = "ID : $id - " ;
