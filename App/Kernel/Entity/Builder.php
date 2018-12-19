@@ -1095,6 +1095,7 @@ class Builder extends Model
             }
             else
             {
+
                 $this->enableValidation();
                 $this->build('user_password' , true )
                     ->isPassword()

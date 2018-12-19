@@ -200,6 +200,7 @@ class Easyletter
             'sendingRate' => '0',
             'transactional' => '0',
 
+            'dateTimeUTC' => $NL->get('date'),
             'subject' => $NL->get('subject'),
             'senderName' => $Sender->get('name'),
             'senderEmail' => $Sender->get('email'),
@@ -213,7 +214,8 @@ class Easyletter
 
         if ( $response !== false )
         {
-            $NL->set('statut' , 2 ); // on passele statut a transferee
+            $NL->set('id_easyletter' , $response );
+            $NL->set('statut' , 2 );
             $NL->save();
 
             return true ;
@@ -232,6 +234,11 @@ class Easyletter
 
         if ( $response !== false )  return $response['id'] ;
         else                        return $response ;
+    }
+
+    private function delete( int $id )
+    {
+        return $this->response( $this->client->delete('/v1/campaign/' . $id ) ) ;
     }
 
     public function stats( $id )

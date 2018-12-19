@@ -36,6 +36,15 @@ class NewsletterCampaign extends Controller
         }
     }
 
+    protected function hookDeleteBefore()
+    {
+        $data = new Data('NewsletterCampaign');
+        $data->find( $this->getId() );
+
+        $EL = new Easyletter;
+        return (bool) $EL->newsletter( $data->get('id_easyletter') );
+    }
+
     protected function statsAction()
     {
         $data = new Data( $this->getEntityName() );

@@ -60,5 +60,11 @@ class NewsletterCampaign extends Builder
             ])
             ->noBack()
             ->name("Statut");
+
+        $this->build('id_easyletter')
+            ->isInteger()
+            ->noFront()
+            ->noBack()
+            ->name("ID Easyletter");
     }
 }
