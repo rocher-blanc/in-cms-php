@@ -363,6 +363,12 @@ class Repository extends \App\Kernel\Common\Repository
                                     case "date_lte" :
                                         $rst = $rst->where_date_lte( $this->field( $key ) , $value );
                                         break;
+                                    case "like" :
+                                        $rst = $rst->where_like( $this->field( $key ) , $value );
+                                        break;
+                                    case "not_like" :
+                                        $rst = $rst->where_not_like( $this->field( $key ) , $value );
+                                        break;
                                     case "in" :
                                         $rst = $rst->where_in( $this->field( $key ) , explode( ',' , $value ) );
                                         break;
