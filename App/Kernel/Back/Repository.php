@@ -24,13 +24,27 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function findWhere( $where )
     {
+        $query = \DB::for_module( $this->getName() );
+
         $tab = [];
         foreach( $where as $key => $value )
         {
-            $tab[ $this->getEntity()->get( $key )->getColumn() ] = $value ;
+            if ( ! is_null( $value ) )
+            {
+                $tab[ $this->getEntity()->get( $key )->getColumn() ] = $value ;
+            }
+            else
+            {
+                $query = $query->where_null( $this->getEntity()->get( $key )->getColumn() );
+            }
         }
 
-        return \DB::for_module( $this->getName() )->where( $tab )->find_one();
+        if ( ! empty( $tab ) )
+        {
+            $query = $query->where( $tab );
+        }
+
+        return $query->find_one();
     }
 
     public function findOne( $id )
