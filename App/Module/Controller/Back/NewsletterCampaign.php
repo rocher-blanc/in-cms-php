@@ -8,6 +8,32 @@ use App\Api\Easyletter;
 
 class NewsletterCampaign extends Controller
 {
+    protected function filterTable( $content )
+    {
+        $tab = [];
+        foreach( $content as $row )
+        {
+            $tab[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+        }
+
+        sort( $tab , SORT_NUMERIC );
+
+        $el = new Easyletter();
+        $this->resultStats = $el->stats( $tab );
+
+        return $content ;
+    }
+
+    protected function filterContent( $content )
+    {
+        if ( $content )
+        {
+            $content->stats = $this->resultStats[ $content->id_easyletter ] ;
+        }
+
+        return $content ;
+    }
+
     public function hookAddSaveAfter( $c )
     {
         $EL = new Easyletter;

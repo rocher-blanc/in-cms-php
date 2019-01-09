@@ -50,15 +50,26 @@ class NewsletterCampaign extends Builder
             ->name("Gabarit email");
 
         $this->build('statut')
-            ->column(1, 1)
-            ->isSelect()
-            ->option([
-                1 => "En attente",
-                2 => "Tranférée",
-                3 => "Prête",
-                4 => "Envoyée"
-            ])
-            ->noBack()
+            ->isHidden()
+            ->style(function($c) {
+                switch( $c->statut )
+                {
+                    case 1 : return "" ; break;
+                    default : return 'text-center" style="margin: 0 auto; display: block; width: 180px;' ; break;
+                }
+            })
+            ->updateValue(function($c) {
+                switch( $c->stats['state'] )
+                {
+                    case 0 : $class = 'default'; break;
+                    case 1 : $class = 'success'; break;
+                    case 9 : $class = 'warning'; break;
+                    case 10 : $class = 'success'; break;
+                    case 11 : $class = 'danger'; break;
+                }
+
+                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $c->stats['state_str'] . '</span>';
+            })
             ->name("Statut");
 
         $this->build('id_easyletter')
