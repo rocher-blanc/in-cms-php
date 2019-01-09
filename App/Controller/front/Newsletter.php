@@ -26,7 +26,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
         {
             foreach( $rstRec as $email )
             {
-                $mail = $email->get( $r->getEntity()->get('email')->getColumn() ) ;
+                $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
                 $tab[ $mail ] = [
                     'Email' => $mail,
                     'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
