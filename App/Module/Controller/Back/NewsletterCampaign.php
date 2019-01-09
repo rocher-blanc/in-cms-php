@@ -78,84 +78,64 @@ class NewsletterCampaign extends Controller
             'id' => $this->getId()
         ]);
 
-        $this->setRender('id' , $this->getId() );
+        $grps = [];
+        foreach( $data->get('recipient') as $recpt )
+        {
+            $rec = new Data('NewsletterGroup');
+            $recrst = $rec->find( $recpt );
+            if ( $recrst ) $grps[] = $rec->get('name');
+        }
+
+        $el = new Easyletter();
+        $tabStats = $el->stats( $data->get('id_easyletter') );
+
+        $this->setRender('id' , $data->get('id') );
         $this->setRender('rst' , [
             'subject' => $data->get('subject'),
-            'destinataires' => [
-                "Groupe 1",
-                "Groupe 2",
-                "Groupe 3",
-            ],
+            'destinataires' => $grps
         ] );
-
-        $tclic = 0;
-        for( $i = 1; $i <= 7; $i++ )
+        $links = $tabStats['links']['records'];
+        for( $j = 0; $j <= count($links); $j++ )
         {
-            $clic = rand(0,10) ;
-            $tclic += $clic ;
             $tabLinks[] = [
-                "clicCount" => $clic,
-                "link" => "https://www.domaine.fr/lien-$i.html",
-                "recipientsClic" => rand(0,8)
+                "clicCount" => $links[$j][2],
+                "link" => $links[$j][1],
+                "recipientsClic" => $links[$j][3]
             ];
         }
-
+        $state = $tabStats['routage']['records'][0][1];
         $this->setRender('res' , [
-            'ToSend' => 234,
-            "Sent" => 234,
-            "HardBounces" => 2,
-            "RecipientsRead" => 35,
-            "RecipientsClic" => $tclic,
-            "SoftBounces" => 5,
-            "Unsubscribe" => 1,
-            "Sent" => 234,
-            "State" => 1,
-            "StateStr" => "Routage terminé",
+            'ToSend' => $tabStats['routage']['records'][0][2],
+            "Sent" => $tabStats['routage']['records'][0][3],
+            "HardBounces" => $tabStats['routage']['records'][0][8],
+            "RecipientsRead" => $tabStats['routage']['records'][0][4],
+            "RecipientsClic" => $tabStats['routage']['records'][0][5],
+            "SoftBounces" => $tabStats['routage']['records'][0][7],
+            "Unsubscribe" => $tabStats['routage']['records'][0][6],
+            "State" => $tabStats['routage']['records'][0][1],
+            "StateStr" => $tabStats['state_routage'][$state],
         ] );
 
-        $tabStatus = [
-            "0" => "Mail délivré",
-            "2" => "Nom de domaine inconnu",
-            "3" => "Adresse email inconnu",
-            "4" => "Relayage interdit",
-            "6" => "Boîte aux lettres pleines",
-            "7" => "Mail non délivré (refusé par le serveur distant)",
-            "8" => "Mail bloqué par l'antispam",
-            "9" => "Mail illisible (problème d'encodage des caractères)",
-            "10" => "Boîte aux lettres non disponible",
-            "11" => "Erreur temporaire",
-            "12" => "Boîte aux lettres inactives (inutilisée)",
-            "13" => "Destinataire absent (en congé ou autre)",
-        ] ;
-
-        for( $i = 1; $i <= 234; $i++ )
+        $records = $tabStats['destStats']['records'];
+        for( $i = 0; $i < count($records); $i++ )
         {
-            if( $i % 2 == 0 or $i == 1)
-            {
-                $state = 0;
-            }
-            else
-            {
-                $state = rand(0,13);
-            }
-
             $tabDests[] = [
-                "recipientId" => $i,
-                "email" => "email-$i@domain.com",
-                "MobilePhone" => null,
-                "state" => ( array_key_exists($state, $tabStatus) ? $state : 0 ),
-                "read" => rand(0,1),
-                "readDateUTC" => "2018-01-" . rand(1,31) . " " . rand(10,23) . ":" . rand(10,59) . ":00",
-                "unsubscribe" => "0",
-                "unsubscribeDateUTC" => null,
-                "vacation" => null,
-                "clicCount" => rand(0,5),
-                "linkClicCount" => 0
+                "recipientId" => $records[$i][0],
+                "email" => $records[$i][1],
+                "MobilePhone" => $records[$i][2],
+                "state" => $records[$i][3],
+                "read" => $records[$i][4],
+                "readDateUTC" => $records[$i][5],
+                "unsubscribe" => $records[$i][6],
+                "unsubscribeDateUTC" => $records[$i][7],
+                "vacation" => $records[$i][8],
+                "clicCount" => $records[$i][9],
+                "linkClicCount" => $records[$i][10]
             ];
         }
 
-        $this->setRender('status' , $tabStatus);
         $this->setRender('dests' , $tabDests );
+        $this->setRender('status' , $tabStats['state_mailing']);
         $this->setRender('links' , $tabLinks );
 
         $this->render('stats.twig');

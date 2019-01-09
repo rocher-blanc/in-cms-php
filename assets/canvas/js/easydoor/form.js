@@ -532,25 +532,12 @@ initDatePicker = function(base) {
 
     if ( $(base + " input[data-plugin-datetimepicker]").length ) {
         var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-
-        if(dd<10) {
-            dd = '0'+dd
-        }
-
-        if(mm<10) {
-            mm = '0'+mm
-        }
-
-        today = mm + '/' + dd + '/' + yyyy;
         $(base + " input[data-plugin-datetimepicker]").datetimepicker({
             format: "dd/mm/yyyy - hh:ii",
             autoclose: true,
             todayBtn: true,
             minuteStep: 10,
-            startDate: today + " 12:00",
+            startDate: new Date(today.setMinutes(today.getMinutes() + 5)),
             locale: 'fr'
         });
     }

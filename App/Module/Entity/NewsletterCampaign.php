@@ -13,7 +13,7 @@ class NewsletterCampaign extends Builder
 
         $this->addAction( 'stats' );
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
-            return $c->statut == 3 ? true : false ;
+            return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
         });
 
         $this->build('subject')
@@ -61,14 +61,14 @@ class NewsletterCampaign extends Builder
             ->updateValue(function($c) {
                 switch( $c->stats['state'] )
                 {
-                    case 0 : $class = 'default'; break;
-                    case 1 : $class = 'success'; break;
-                    case 9 : $class = 'warning'; break;
-                    case 10 : $class = 'success'; break;
-                    case 11 : $class = 'danger'; break;
+                    case 0 : $class = 'default'; break; // pret
+                    case 1 : $class = 'success'; break; // en cours
+                    case 9 : $class = 'warning'; break; // Suspendu
+                    case 10 : $class = 'success'; break; // envoyée
+                    case 11 : $class = 'danger'; break; // annulee
                 }
 
-                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $c->stats['state_str'] . '</span>';
+                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $c->stats['state_str'] . ( $c->stats['state'] == 1 ? ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")" : '' ) . '</span>';
             })
             ->name("Statut");
 

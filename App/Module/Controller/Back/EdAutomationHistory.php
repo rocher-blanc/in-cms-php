@@ -40,7 +40,7 @@ class EdAutomationHistory extends Controller
         $data->find([
             'id' => $this->getId()
         ]);
-        
+
         $el = new Easyletter();
         $tabStats = $el->stats( $data->get('id_easyletter') );
 
