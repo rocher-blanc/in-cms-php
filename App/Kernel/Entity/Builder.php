@@ -229,6 +229,12 @@ class Builder extends Model
     protected $showDelete = NULL ;
 
     /*
+     * @callable
+     * Affiche ou non le bouton d'edit
+     */
+    protected $showEdit = NULL ;
+
+    /*
      * @int
      * Définit le nombre maximum d'element dans un module
      * Si ce nombre est attient, l'ajout devient impossible
@@ -770,6 +776,16 @@ class Builder extends Model
     public function getShowDelete()
     {
         return $this->showDelete ;
+    }
+
+    public function showEdit( callable $function )
+    {
+        $this->showEdit = $function ;
+    }
+
+    public function getShowEdit()
+    {
+        return $this->showEdit ;
     }
 
     /* ************************************************** */

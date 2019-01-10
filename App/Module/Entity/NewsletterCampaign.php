@@ -15,6 +15,9 @@ class NewsletterCampaign extends Builder
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
         });
+        $this->showEdit(function( $c ) {
+            return false ;
+        });
 
         $this->build('subject')
             ->column(1, 2)

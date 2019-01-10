@@ -403,7 +403,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $i = 0;
                 foreach( $content as $row )
                 {
-                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) or is_callable( $this->getEntity()->getShowDelete() ) )
+                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) or is_callable( $this->getEntity()->getShowDelete() ) or is_callable( $this->getEntity()->getShowEdit() ) )
                     {
                         $contentShow = new \stdClass;
                         foreach( $this->getEntity()->getField() as $f )
@@ -555,6 +555,22 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     $tdArray[ $i ]['delete'] = $delete ;
+
+                    /* *************************************************** */
+                    /* *************************************************** */
+                    /*                       EDIT                          */
+                    /* *************************************************** */
+                    /* *************************************************** */
+
+                    $edit = true ;
+                    $callableEdit = $this->getEntity()->getShowEdit() ;
+
+                    if ( is_callable( $callableEdit ) )
+                    {
+                        $edit = $callableEdit( $contentShow );
+                    }
+
+                    $tdArray[ $i ]['edit'] = $edit ;
 
                     /* *************************************************** */
                     /* *************************************************** */

@@ -37,6 +37,20 @@ class Eudonet
     }
 
     /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance();
+    }
+
+    protected function Param()
+    {
+        return $this->Container()->param();
+    }
+
+    /* ************************************************** */
     /* ****************     SETTER    ******************* */
     /* ************************************************** */
 
@@ -64,6 +78,16 @@ class Eudonet
 
     private function getApiToken()
     {
+        if ( $this->Param()->get('EUDONET_TOKEN_DATE') != '' && $this->Param()->get('EUDONET_TOKEN') != '' )
+        {
+            if ( (new \DateTime( $this->Param()->get('EUDONET_TOKEN_DATE') ))->format('U') > ( time() + 7200 ) )
+            {
+                $this->headers['x-auth'] = $this->Param()->get('EUDONET_TOKEN') ;
+
+                return true ;
+            }
+        }
+
         $rst = $this->request("post" , 'Authenticate/Token' , [
             "SubscriberLogin"       => EUDO_SUBSCRIBER_LOGIN,
             "SubscriberPassword"    => EUDO_SUBSCRIBER_PASSWORD,
@@ -78,6 +102,13 @@ class Eudonet
         {
             //dump( $rst['ResultData']['Token'] );
             $this->headers['x-auth'] = $rst['ResultData']['Token'] ;
+
+            list( $date , $hour ) = explode( " " , $rst['ResultData']['ExpirationDate'] ) ;
+            list( $y , $m , $d ) = explode( "/" , $date );
+            list( $h , $i , $s ) = explode( ":" , $hour );
+
+            $this->Param()->set('EUDONET_TOKEN_DATE' , "$y-$m-$d $h:$i:$s" );
+            $this->Param()->set('EUDONET_TOKEN' , $rst['ResultData']['Token'] );
         }
     }
 
