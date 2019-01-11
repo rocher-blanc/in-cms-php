@@ -64,14 +64,25 @@ class NewsletterCampaign extends Builder
             ->updateValue(function($c) {
                 switch( $c->stats['state'] )
                 {
-                    case 0 : $class = 'default'; break; // pret
-                    case 1 : $class = 'success'; break; // en cours
+                    case 0 : $class = 'info'; break; // pret
+                    case 1 : $class = 'primary'; break; // en cours
                     case 9 : $class = 'warning'; break; // Suspendu
                     case 10 : $class = 'success'; break; // envoyée
                     case 11 : $class = 'danger'; break; // annulee
+                    default : $class = 'default'; break; // annulee
                 }
 
-                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $c->stats['state_str'] . ( $c->stats['state'] == 1 ? ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")" : '' ) . '</span>';
+                switch( $c->stats['state'] )
+                {
+                    case 0 :
+                    case 9 :
+                    case 10 :
+                    case 11 : $txt = $c->stats['state_str']; break; // annulee
+                    case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
+                    default : $txt = 'En attente'; break; // annulee
+                }
+
+                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
             })
             ->name("Statut");
 
