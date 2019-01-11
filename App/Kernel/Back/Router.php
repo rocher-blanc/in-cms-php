@@ -86,7 +86,7 @@ class Router
 		}
 		else
 		{
-			switch( $urlTab[0] ) 
+			switch( $urlTab[0] )
 			{
 				case "module" :
                     $folders = $this->folders ;
@@ -104,6 +104,7 @@ class Router
 				case "ext" :
 				case "admin" :
                     $folders = $this->folders ;
+
                     $app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $folders )
                     {
                         $file = '' ;
