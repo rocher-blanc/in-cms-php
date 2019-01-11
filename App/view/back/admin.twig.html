@@ -350,13 +350,12 @@
                                                 <div class="col_one_fourth text-center" style="padding-top: 10px;">
                                                     <i class="{{ el_credits <= 1000 ? 'icon-warning-sign' : 'icon-line2-check' }}" style="font-size: 50px; color: {{ el_credits <= 1000 ? '#8a6d3b;' : 'green' }};"></i>
                                                 </div>
-                                                <div class="col_one_fourth">
+                                                <div class="col_two_fourth col_last">
                                                     <div class="text-center text-uppercase" style="margin-bottom: 15px; font-size: 16px;">
                                                         <span style="font-weight: bold; font-size: 36px;">{{ el_credits|number_format(0, '', ' ') }}</span><br />
                                                         crédit{{ el_credits > 1 ? 's' : '' }}*
                                                     </div>
                                                 </div>
-                                                <div class="col_one_fourth col_last"></div>
 
                                                 <div class="col_full">
                                                     *Crédit{{ el_credits > 1 ? 's' : '' }} : Unité permettant d'envoyer avec tracking tous types de campagnes de newsletters et d'e-mails.

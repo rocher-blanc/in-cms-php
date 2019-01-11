@@ -16,6 +16,7 @@ class Container
     private $controller = NULL ;
     private $webservice = NULL ;
     private $name       = NULL ;
+    private $namespace  = ["App" , "Shop" , "Project"] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -73,13 +74,12 @@ class Container
     {
         if ( $this->entity === NULL )
         {
-            if ( file_exists( V_ENTITY_PATH . '/' . $this->getName() . '.php' ) )
+            foreach( $this->namespace as $namespace )
             {
-                $name = "\App\Module\Entity\\" . $this->getName() ;
-            }
-            else
-            {
-                $name = "\Project\Module\Entity\\" . $this->getName() ;
+                if ( class_exists( "\\" . $namespace . "\Module\Entity\\" . $this->getName() ) )
+                {
+                    $name = "\\" . $namespace . "\Module\Entity\\" . $this->getName() ;
+                }
             }
 
             $this->setEntity( new $name );
@@ -90,49 +90,35 @@ class Container
 
     public function getRepository( $admin = false )
     {
-        if ( $admin )
+        if ( ( $admin == true and $this->repositoryBack === NULL ) or ( $admin == false and $this->repositoryFront === NULL )  )
         {
-            if ( $this->repositoryBack === NULL )
+            foreach( $this->namespace as $namespace )
             {
-                if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
+                if ( class_exists( "\\" . $namespace . "\Module\Repository\\" . ( $admin ? 'Back' : 'Front') . "\\" . $this->getName() ) )
                 {
-                    $name = "\App\Module\Repository\Back\\" . $this->getName() ;
+                    $name = "\\" . $namespace . "\Module\Repository\\" . ( $admin ? 'Back' : 'Front') . "\\" . $this->getName() ;
                 }
-                else
-                {
-                    $name = "\Project\Module\Repository\Back\\" . $this->getName() ;
-                }
-
-                $this->setRepositoryBack( new $name( $this->getName() ) );
             }
 
-            return $this->repositoryBack ;
+            if ( $admin )   $this->setRepositoryBack( new $name( $this->getName() ) );
+            else            $this->setRepositoryFront( new $name( $this->getName() ) );
         }
-        else
-        {
-            if ( $this->repositoryFront === NULL )
-            {
-                if ( file_exists( V_REPOSITORY_PATH . '/' . $this->getName() . '.php' ) )
-                {
-                    $name = "\App\Module\Repository\Front\\" . $this->getName() ;
-                }
-                else
-                {
-                    $name = "\Project\Module\Repository\Front\\" . $this->getName() ;
-                }
 
-                $this->setRepositoryFront( new $name( $this->getName() ) );
-            }
-
-            return $this->repositoryFront ;
-        }
+        if ( $admin )   return $this->repositoryBack ;
+        else            return $this->repositoryFront ;
     }
 
     public function getWebservice()
     {
         if ( $this->webservice === NULL )
         {
-            $name = "\Project\Module\Webservice\\" . $this->getName() ;
+            foreach( $this->namespace as $namespace )
+            {
+                if ( class_exists( "\\" . $namespace . "\Module\Webservice\\" . $this->getName() ) )
+                {
+                    $name = "\\" . $namespace . "\Module\Webservice\\" . $this->getName() ;
+                }
+            }
 
             $this->setWebservice( new $name( $this->getName() ) );
         }
@@ -144,9 +130,13 @@ class Container
     {
         if ( $this->controller === NULL )
         {
-            if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )   $ControllerClass = "\Project\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
-            else if ( file_exists( V_CONTROLLER_PATH . '/' . $this->getName() . '.php' ) )    $ControllerClass = "\App\Module\Controller\\" . ( $admin ? "Back" : "Front" ) . "\\" . $this->getName() ;
-            else																			           $ControllerClass = '\App\Kernel\\' . ( $admin ? "Back" : "Front" ) . '\Controller' ;
+            foreach( $this->namespace as $namespace )
+            {
+                if ( class_exists( "\\" . $namespace . "\Module\Repository\\" . ( $admin ? 'Back' : 'Front') . "\\" . $this->getName() ) )
+                {
+                    $ControllerClass = "\\" . $namespace . "\Module\Controller\\" . ( $admin ? 'Back' : 'Front') . "\\" . $this->getName() ;
+                }
+            }
 
             $Controller = new $ControllerClass;
 
