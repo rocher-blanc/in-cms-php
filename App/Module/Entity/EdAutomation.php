@@ -13,6 +13,9 @@ class EdAutomation extends Builder
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
             $this->addIcon( 'icon-photo' , 'draw' );
+            $this->addIcon( 'icon-line-link' , 'view' , function( $c ) {
+                return ( $c->html != "" ? true : false );
+            } , true );
         }
 
         $this->setFieldReference( 'name' );
@@ -28,13 +31,13 @@ class EdAutomation extends Builder
         $this->build('html')
             ->noFront()
             ->noBack()
-            ->isText()
+            ->isText("LONG")
             ->name("HTML");
 
         $this->build('json')
             ->noFront()
             ->noBack()
-            ->isText()
+            ->isText("LONG")
             ->name("JSON");
     }
 }

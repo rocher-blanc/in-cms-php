@@ -356,7 +356,7 @@ class Controller
 		$this->setModule( $module ) ;
 		$this->setEntityId( $module->module_id ) ;
 
-		if ( ! file_exists( ENTITY_PATH . '/' . $this->getEntityName() . '.php' ) && ! file_exists( V_ENTITY_PATH . '/' . $this->getEntityName() . '.php' ) )
+		if ( $this->Container()->module( $this->getEntityName() )->getEntity() === NULL )
 		{
 			$this->Factory()->Response()->error("Le fichier '" . $this->getEntityName() . "' n'éxiste pas");
 			return false ;

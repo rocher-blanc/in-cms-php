@@ -75,7 +75,7 @@
       <paths name="VPS1 - RIDUP4">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
@@ -87,6 +87,13 @@
         </serverdata>
       </paths>
       <paths name="WAW - VPS1 - IFEC">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="WAW - VPS2 - IFEC">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

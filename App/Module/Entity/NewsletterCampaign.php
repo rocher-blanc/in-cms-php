@@ -15,6 +15,11 @@ class NewsletterCampaign extends Builder
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
         });
+
+        $this->addIcon( 'icon-line-square-cross" style="color: red;' , 'cancel' , function($c) {
+            return $c->id_easyletter !== NULL && $c->stats['state'] < 10 ? true : false ;
+        });
+
         $this->showEdit(function( $c ) {
             return false ;
         });
@@ -69,7 +74,7 @@ class NewsletterCampaign extends Builder
                     case 9 : $class = 'warning'; break; // Suspendu
                     case 10 : $class = 'success'; break; // envoyée
                     case 11 : $class = 'danger'; break; // annulee
-                    default : $class = 'default'; break; // annulee
+                    default : $class = 'default'; break; // en attente
                 }
 
                 switch( $c->stats['state'] )
@@ -79,7 +84,7 @@ class NewsletterCampaign extends Builder
                     case 10 :
                     case 11 : $txt = $c->stats['state_str']; break; // annulee
                     case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
-                    default : $txt = 'En attente'; break; // annulee
+                    default : $txt = 'En attente'; break; // en attente
                 }
 
                 return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';

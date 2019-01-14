@@ -22,6 +22,16 @@ class EdEmail extends Controller
         $this->render('draw.twig');
     }
 
+    protected function viewAction()
+    {
+        $data = new Data( $this->getEntityName() );
+        $data->find( $this->getId() );
+
+        $this->setRender( 'html' , $data->get('html') );
+
+        $this->render('view.twig');
+    }
+
     protected function duplicateAction()
     {
         $data = new Data( $this->getEntityName() );
@@ -38,10 +48,11 @@ class EdEmail extends Controller
             'id' => $this->getId()
         ]);
 
-        $data->set('html' , $_POST['html']);
         $res = (file_get_contents('php://input'));
-        list(, $json ) = explode( '&json=' , $res );
+        list(, $htmljson ) = explode( '&html=' , $res );
+        list($html,$json) = explode( '&json=' , $htmljson );
         $data->set('json' , $json);
+        $data->set('html' , $html);
         $data->save();
     }
 }

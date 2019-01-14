@@ -15,6 +15,9 @@ class EdEmail extends Builder
             $this->addIcon( 'icon-photo' , 'draw' , function($c) {
                 return ( $c->blocked == 0 ? true : false );
             });
+            $this->addIcon( 'icon-line-link' , 'view' , function( $c ) {
+                return ( $c->html != "" ? true : false );
+            } , true );
         }
 
         $this->showDelete(function( $c ) {
@@ -35,13 +38,13 @@ class EdEmail extends Builder
         $this->build('html')
             ->noFront()
             ->noBack()
-            ->isText()
+            ->isText("LONG")
             ->name("HTML");
 
         $this->build('json')
             ->noFront()
             ->noBack()
-            ->isText()
+            ->isText("LONG")
             ->name("JSON");
     }
 }

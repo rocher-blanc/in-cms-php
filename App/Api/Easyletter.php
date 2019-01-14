@@ -50,6 +50,7 @@ class Easyletter
              * $jwt = JWT::encode($token, $key);
              */
 
+
             $this->client = new Client([
                 'base_uri' => $this->urlApi,
                 'http_errors' => false,
@@ -192,7 +193,7 @@ class Easyletter
             'msgSMS' => "",
             'urlUnsubscribe' => "",
 
-            'txtOnlineViewTag' => "",
+            'txtOnlineViewTag' => "Cliquez ici pour visualiser cet email dans votre navigateur",
             'txtHtmlUnsubscribeTag' => "",
             'txtSendToAFriendTag' => "",
 
@@ -236,9 +237,18 @@ class Easyletter
         else                        return $response ;
     }
 
-    private function delete( int $id )
+    public function delete( int $id )
     {
         return $this->response( $this->client->delete('/v1/campaign/' . $id ) ) ;
+    }
+
+    public function cancel( int $id )
+    {
+        return $this->response( $this->client->put('/v1/campaign/cancel', [
+            'body' => json_encode([
+                'campaignId' => $id
+            ])
+        ]) ) ;
     }
 
     public function stats( $id )

@@ -911,13 +911,15 @@ class Builder extends Model
     /* *****************     ICONES      **************** */
     /* ************************************************** */
 
-    public function addIcon( $class , $action , $showIF = NULL )
+    public function addIcon( $class , $action , $showIF = NULL , $type = NULL )
     {
         $this->addAction( $action );
         $this->icon[ $action ] = [
             'action'   => $action,
             'class'    => $class,
-            'showIF' => $showIF
+            'blank'    => ( $type == 'blank' ? true : false ),
+            'ajax'     => ( $type == 'ajax' ? true : false ),
+            'showIF'   => $showIF
         ];
     }
 
@@ -1378,9 +1380,9 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isText()
+    protected function isText( $opt = '' )
     {
-        $this->field()->setData( "SQL_TYPE" , "TEXT" ) ;
+        $this->field()->setData( "SQL_TYPE" , $opt . "TEXT" ) ;
         $this->field()->setData( "type" , "textarea" ) ;
         return $this ;
     }

@@ -74,18 +74,25 @@ class Container
     {
         if ( $this->entity === NULL )
         {
-            foreach( $this->namespace as $namespace )
-            {
-                if ( class_exists( "\\" . $namespace . "\Module\Entity\\" . $this->getName() ) )
-                {
-                    $name = "\\" . $namespace . "\Module\Entity\\" . $this->getName() ;
-                }
-            }
+            $class = $this->getEntityClassName() ;
 
-            $this->setEntity( new $name );
+            if ( $class !== NULL ) $this->setEntity( new $class );
         }
 
         return $this->entity ;
+    }
+
+    public function getEntityClassName()
+    {
+        foreach( $this->namespace as $namespace )
+        {
+            if ( class_exists( "\\" . $namespace . "\Module\Entity\\" . $this->getName() ) )
+            {
+                return "\\" . $namespace . "\Module\Entity\\" . $this->getName() ;
+            }
+        }
+
+        return NULL ;
     }
 
     public function getRepository( $admin = false )

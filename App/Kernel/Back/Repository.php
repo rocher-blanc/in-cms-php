@@ -4,21 +4,39 @@ namespace App\Kernel\Back;
 
 class Repository extends \App\Kernel\Common\Repository
 {
+
+    /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
+    protected function Container()
+    {
+        return \App\Kernel\Container::getInstance();
+    }
+
+    /* ************************************************** */
+    /* ****************** FUNCTIONS ********************* */
+    /* ************************************************** */
+
     public function checkIfPatchTable( $id )
     {
-        if ( file_exists( ENTITY_PATH . '/' . $this->getName() . '.php' ) )
+        $class = $this->Container()->module( $this->getName() )->getEntityClassName() ;
+        $files[] = _PATH_ . "" . str_replace( "\\" , "/" , $class ) ;
+        $files[] = VENDOR_PATH . '/JWebCreation/cms' . str_replace( "\\" , "/" , $class ) ;
+        $files[] = VENDOR_PATH . '/JWebCreation/jshop' . str_replace( "\\" , "/" , $class ) ;
+
+        foreach( $files as $file )
         {
-            $file = ENTITY_PATH . "/" . $this->getName() . ".php";
-        }
-        else if ( file_exists( V_ENTITY_PATH . '/' . $this->getName() . '.php' ) )
-        {
-            $file = V_ENTITY_PATH . "/" . $this->getName() . ".php";
+            if ( file_exists( $file . '.php' ) )
+            {
+                $file = $file . ".php";
+            }
         }
 
-        if ( \App\Kernel\Container::getInstance()->param()->get('key_module_' . $id ) != md5_file( $file ) )
+        if ( $this->Container()->param()->get('key_module_' . $id ) != md5_file( $file ) )
         {
             \DB::patchModuleTable( $this->getName() ) ;
-            \App\Kernel\Container::getInstance()->param()->set('key_module_' . $id , md5_file( $file ) );
+            $this->Container()->param()->set('key_module_' . $id , md5_file( $file ) );
         }
     }
 

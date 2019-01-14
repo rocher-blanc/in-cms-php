@@ -91,6 +91,27 @@ listenFormTable = function( base ) {
             });
         });
 
+        /** GESTION DES ICONS AJAX **/
+        $form.find('.ajaxtable').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $link = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: $link.attr('href'),
+                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content"),
+                success: function(data) {
+                    Notify(data.msg, data.result);
+                    reloadTable( $form , base );
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Notify(errorThrown, false);
+                }
+            });
+        });
+
         /** GESTION DES DEFAUT **/
         $form.find('.default').click(function(e) {
             e.preventDefault();
