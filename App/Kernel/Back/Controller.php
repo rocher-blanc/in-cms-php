@@ -21,7 +21,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function __construct( $options = [] )
     {
-        $this->_optiondate_updateds = $options ;
+        $this->_options = $options ;
     }
 
     /* ************************************************** */
@@ -1653,6 +1653,19 @@ class Controller extends \App\Kernel\Common\Controller
 
             return $this->Factory()->Response()->returnJSON( $this->m("default_success") , true ) ;
         }
+    }
+
+    /* ************************************************** */
+    /* ***********    UPLOAD IMAGE EDITOR    ************ */
+    /* ************************************************** */
+
+    public function editorAction()
+    {
+        $Media = new Media;
+        $Media->setModuleId( $this->getEntityId() ) ;
+        $Media->setModuleName( $this->getEntityName() ) ;
+        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+        return $Media->editor();
     }
 
     /* ************************************************** */

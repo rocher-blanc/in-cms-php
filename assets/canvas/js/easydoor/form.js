@@ -578,73 +578,81 @@ initCounterString = function(base) {
 
 checkEditor = function(base) {
     if ( $(base + ' .wysiwyg').length ) {
-        $(base + ' .wysiwyg').summernote({
-            lang: 'fr-FR',
-            toolbar: [
-                ['hx', ['style']],
-                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
-                ['clear', ['clear']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview']],
-                ['misc', ['print']],
-            ],
-            popover: {
-                image: [
-                    ['custom', ['imageAttributes']],
-                    ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
-                    ['remove', ['removeMedia']]
-                ],
-            },
-            imageAttributes:{
-                imageDialogLayout:'default', // default|horizontal
-                icon:'<i class="note-icon-pencil"/>',
-                removeEmpty:false // true = remove attributes | false = leave empty if present
-            },
-            displayFields:{
-                imageBasic:true,  // show/hide Title, Source, Alt fields
-                imageExtra:false, // show/hide Alt, Class, Style, Role fields
-                linkBasic:true,   // show/hide URL and Target fields for link
-                linkExtra:false   // show/hide Class, Rel, Role fields for link
-            },
-            onCreateLink : function(linkUrl) {
-                var has_protocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
-                var is_mailto = /^mailto\:/.test(linkUrl);
-                var is_relative = /^\//.test(linkUrl);
+        var token = $("meta[name=token]").attr("content") ;
 
-                if (!has_protocol && !is_mailto) {
-                    return "{{ host }}" + linkUrl;
-                }
-                else {
-                    return linkUrl;
-                }
-            },
-            callbacks: {
-                onImageUpload: function (files) {
-                    let form_data = new FormData();
-                    let file = files[0];
-                    form_data.append('filewysiwyg', file);
-                    let $this = $(this);
-                    $.ajax({
-                        url: "/ajax/wysiwyg.php?dir=" + $this.attr('data-dir'),
-                        data: form_data,
-                        type: "POST",
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        success: function (data) {
-                            $this.summernote("insertImage", data);
-                        }
-                    });
+        $(base + ' .wysiwyg').each(function() {
+            var $textarea = $(this);
+
+            $textarea.summernote({
+                lang: 'fr-FR',
+                toolbar: [
+                    ['hx', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
+                    ['clear', ['clear']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview']],
+                    ['misc', ['print']],
+                ],
+                popover: {
+                    image: [
+                        ['custom', ['imageAttributes']],
+                        ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+                        ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                        ['remove', ['removeMedia']]
+                    ],
                 },
-                onPaste : function(e) {
-                    var thisNote = $(this).next(".note-editor").find(".note-editable");
-                    setTimeout(function() {
-                        thisNote.html( CleanPastedHTML( thisNote.html() ) );
-                    }, 50);
+                imageAttributes:{
+                    imageDialogLayout:'default', // default|horizontal
+                    icon:'<i class="note-icon-pencil"/>',
+                    removeEmpty:false // true = remove attributes | false = leave empty if present
+                },
+                displayFields:{
+                    imageBasic:true,  // show/hide Title, Source, Alt fields
+                    imageExtra:false, // show/hide Alt, Class, Style, Role fields
+                    linkBasic:true,   // show/hide URL and Target fields for link
+                    linkExtra:false   // show/hide Class, Rel, Role fields for link
+                },
+                onCreateLink : function(linkUrl) {
+                    var has_protocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
+                    var is_mailto = /^mailto\:/.test(linkUrl);
+                    var is_relative = /^\//.test(linkUrl);
+
+                    if (!has_protocol && !is_mailto) {
+                        return "{{ host }}" + linkUrl;
+                    }
+                    else {
+                        return linkUrl;
+                    }
+                },
+                callbacks: {
+                    onImageUpload: function (files) {
+                        let form_data = new FormData();
+                        let file = files[0];
+                        form_data.append('filewysiwyg', file);
+                        form_data.append('csrf_token', token);
+                        let $this = $(this);
+                        console.log(form_data);
+                        $.ajax({
+                            url: $textarea.data('url'),
+                            data: form_data,
+                            type: "POST",
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                $this.summernote("insertImage", data);
+                            }
+                        });
+                    },
+                    onPaste : function(e) {
+                        var thisNote = $(this).next(".note-editor").find(".note-editable");
+                        setTimeout(function() {
+                            thisNote.html( CleanPastedHTML( thisNote.html() ) );
+                        }, 50);
+                    }
                 }
-            }
+            });
         });
     }
 };

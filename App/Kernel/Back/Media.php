@@ -121,50 +121,66 @@ class Media extends \App\Kernel\Common\Media
 		return $media->media_id;
 	}
 
-	public function upload( $path )
-	{
-		foreach( $_FILES as $key => $value )
-		{
-			$fieldName = $key ;
-		}
+    public function upload( $path )
+    {
+        foreach( $_FILES as $key => $value )
+        {
+            $fieldName = $key ;
+        }
 
-		$upload_dir 	= $path . '/' ;
-		$upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
-		$img = new Image([
-			'module_id'   => $this->getModuleId(),
+        $upload_dir 	= $path . '/' ;
+        $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
+        $img = new Image([
+            'module_id'   => $this->getModuleId(),
             'upload_dir'  => $upload_dir,
             'field'       => $this->getApp()->request->post('model') == 1 ? $this->getApp()->request->post('field') : NULL,
             'upload_url'  => $this->Factory()->Url()->get( $upload_url , true ),
             'param_name'  => $fieldName,
-		]);
+        ]);
 
-		$rst = $img->upload() ;
+        $rst = $img->upload() ;
 
-		if ( $rst !== false )
-		{
-			$fieldEntityName = $this->getApp()->request->post('field') ;
-			$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
-			$field = $entity->build( $fieldEntityName )->field();
-			$this->setImageId( $rst->id ) ;
-			$this->getNameById() ;
-			$source = $this->rename();
+        if ( $rst !== false )
+        {
+            $fieldEntityName = $this->getApp()->request->post('field') ;
+            $entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
+            $field = $entity->build( $fieldEntityName )->field();
+            $this->setImageId( $rst->id ) ;
+            $this->getNameById() ;
+            $source = $this->rename();
 
-			$rst->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletemedia/' . $rst->id );
-			$rst->caption = $source;
-			$rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
+            $rst->url  = $this->Factory()->Url()->get('module/' . $entity->getClassName() . '/deletemedia/' . $rst->id );
+            $rst->caption = $source;
+            $rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
-			if ( $field->hasThumb() )
-			{
-				foreach( $field->getThumb() as $thumb )
-				{
-					// width, height
-					$this->genThumb( $thumb[0] , $thumb[1] ) ;
-				}
-			}
-		}
+            if ( $field->hasThumb() )
+            {
+                foreach( $field->getThumb() as $thumb )
+                {
+                    // width, height
+                    $this->genThumb( $thumb[0] , $thumb[1] ) ;
+                }
+            }
+        }
 
-		return $rst ;
-	}
+        return $rst ;
+    }
+
+
+
+    public function editor()
+    {
+
+        $name       = basename($_FILES['filewysiwyg']["name"]);
+        $ext        = explode( '.' , $name );
+        $extension  = end( $ext );
+        $name       = basename( $name , '.' . $extension );
+        $name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+
+
+        //$rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , UPLOAD_PATH . '/' . $name );
+
+    }
 	
 	public function delete()
 	{

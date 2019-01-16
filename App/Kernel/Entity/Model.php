@@ -111,9 +111,9 @@ class Model
 
 		if ( $this->hasImage() == true )
 		{
-			if ( !is_dir( $this->getPathImage() ) )
-			{
-				mkdir( $this->getPathImage() , 0755 );
+            if ( !is_dir( $this->getPathImage() ) )
+            {
+                mkdir( $this->getPathImage() , 0755 );
 				mkdir( $this->getPathImage() . '/c' , 0755 ); // Crope
 				mkdir( $this->getPathImage() . '/t', 0755 ); // Thumb
 			}
@@ -131,6 +131,19 @@ class Model
         {
             $this->addAction('form');
         }
+
+        if ( in_array( 'editor' , $this->_setting["action"] ) )
+        {
+            if ( !is_dir( $this->getPathImage() . '/e' ) )
+            {
+                if ( !is_dir( $this->getPathImage() ) )
+                {
+                    mkdir( $this->getPathImage() , 0755 );
+                }
+                mkdir( $this->getPathImage() . '/e' , 0755 );
+            }
+
+        }
 	}
 	
 	/* ************************************************** */
@@ -139,7 +152,7 @@ class Model
 
     public function addAction( $action )
 	{
-		if ( ! in_array( $action , $this->_setting["action"] ) ) $this->_setting["action"][ $action ] = $action ;
+        if ( ! in_array( $action , $this->_setting["action"] ) ) $this->_setting["action"][ $action ] = $action ;
 	}
 
     public function removeAction( $action )

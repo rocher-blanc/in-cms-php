@@ -1780,6 +1780,7 @@ class Builder extends Model
 
     protected function editor()
     {
+        $this->addAction("editor") ;
         $this->field()->setData( "editor" , true ) ;
         return $this ;
     }
