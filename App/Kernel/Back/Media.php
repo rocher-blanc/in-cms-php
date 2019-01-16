@@ -170,21 +170,35 @@ class Media extends \App\Kernel\Common\Media
 
     public function editor()
     {
-        dump( $_FILES['filewysiwyg'] );
-
+        $folder     = IMAGE_PATH . "/" . $this->getFolder() . "/e" ;
         $name       = basename($_FILES['filewysiwyg']["name"]);
         $ext        = explode( '.' , $name );
         $extension  = end( $ext );
         $name       = basename( $name , '.' . $extension );
         $name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
+        if ( ! file_exists( $folder . "/" . $name ) )
+        {
+            $exist = true ;
+            $i     = 1 ;
+            while( $exist == true )
+            {
+                $name = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '-' . $i . '.' . $extension ;
+                if ( file_exists( $folder . "/" . $name ) )
+                {
+                    $i++;
+                }
+                else
+                {
+                    $exist = false ;
+                }
+            }
+        }
 
-        dump( UPLOAD_PATH );
-        dump( UPLOAD_PATH . "/" . $this->getFolder() );
-        dump( $name );
-        dump( $this->getFolder() );
-        //$rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , UPLOAD_PATH . '/' . $name );
+        $rst = move_uploaded_file( $_FILES['filewysiwyg']["tmp_name"] , $folder . "/" . $name );
 
+        if ( $rst ) return str_replace( WEB_PATH , '' , $folder . "/" . $name );
+        else        return false ;
     }
 	
 	public function delete()

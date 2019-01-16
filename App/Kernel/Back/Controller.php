@@ -1665,7 +1665,8 @@ class Controller extends \App\Kernel\Common\Controller
         $Media->setModuleId( $this->getEntityId() ) ;
         $Media->setModuleName( $this->getEntityName() ) ;
         $Media->setFolder( $this->getEntity()->getFolder() ) ;
-        return $Media->editor();
+
+        $this->Factory()->Response()->show( $Media->editor() );
     }
 
     /* ************************************************** */
