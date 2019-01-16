@@ -170,6 +170,7 @@ class Media extends \App\Kernel\Common\Media
 
     public function editor()
     {
+        dump( $_FILES['filewysiwyg'] );
 
         $name       = basename($_FILES['filewysiwyg']["name"]);
         $ext        = explode( '.' , $name );
@@ -178,6 +179,10 @@ class Media extends \App\Kernel\Common\Media
         $name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
 
+        dump( UPLOAD_PATH );
+        dump( UPLOAD_PATH . "/" . $this->getFolder() );
+        dump( $name );
+        dump( $this->getFolder() );
         //$rst = move_uploaded_file( $_FILES[ $this->post('field') ]["tmp_name"][$i] , UPLOAD_PATH . '/' . $name );
 
     }
