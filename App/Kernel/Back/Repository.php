@@ -25,11 +25,11 @@ class Repository extends \App\Kernel\Common\Repository
         $files[] = VENDOR_PATH . '/JWebCreation/cms' . str_replace( "\\" , "/" , $class ) ;
         $files[] = VENDOR_PATH . '/JWebCreation/jshop' . str_replace( "\\" , "/" , $class ) ;
 
-        foreach( $files as $file )
+        foreach( $files as $fileforeach )
         {
-            if ( file_exists( $file . '.php' ) )
+            if ( file_exists( $fileforeach . '.php' ) )
             {
-                $file = $file . ".php";
+                $file = $fileforeach . ".php";
             }
         }
 
