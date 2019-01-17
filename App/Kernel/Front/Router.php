@@ -525,9 +525,20 @@ class Router
 
                     $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
 
-                    $pageClass = new $ControllerClass;
-                    $pageClass->setId( $page->page_id );
-                    $pageClass->execute();
+                    if ( class_exists( $ControllerClass ) )
+                    {
+                        $pageClass = new $ControllerClass;
+                        $pageClass->setId( $page->page_id );
+                        $pageClass->execute();
+                    }
+                    else
+                    {
+                        if ( PRODUCTION )
+                        {
+                            \App\Kernel\Factory::getInstance()->Response()->show404();
+                        }
+                    }
+
 
                 })->conditions(['lang' => '[a-z]+'])->via('GET', 'POST');
             }

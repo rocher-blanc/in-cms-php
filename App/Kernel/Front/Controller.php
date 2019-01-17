@@ -104,6 +104,11 @@ class Controller extends \App\Kernel\Common\Controller
             $this->init() ;
             $ct = count( $this->getUrl() ) ;
 
+
+
+
+
+
             if ( $ct == 0 )
             {
                 $this->setActionName('getall');
