@@ -140,7 +140,13 @@ class Model
                 {
                     mkdir( $this->getPathImage() , 0755 );
                 }
-                mkdir( $this->getPathImage() . '/e' , 0755 );
+
+                $rst = @mkdir( $this->getPathImage() . '/e' , 0755 );
+
+                if ( $rst === false )
+                {
+                    throw new \App\Kernel\Exception("Creating folder is broken  \"" . $this->getPathImage() . "/e\"") ;
+                }
             }
 
         }
