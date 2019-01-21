@@ -11,13 +11,18 @@ use App\Kernel\Container;
 class Easyletter
 {
     private $urlApi = 'https://api.easyletter.fr/' ;
-    private $token  = EL_TOKEN ;
+    private $token = NULL ;
     private $client ;
     private $obj ;
     private $error = '' ;
 
     public function __construct()
     {
+    	if( defined('EL_TOKEN') )
+		{
+			$this->token = EL_TOKEN;
+		}
+
         if ( $this->token === NULL )
         {
             $this->client = NULL ;
@@ -132,6 +137,7 @@ class Easyletter
                     $this->phpmailer->AltBody = strip_tags( $html ) ;
                     $this->phpmailer->Body = $html ;
                     $ret = $this->phpmailer->send();
+
                 }
                 else
                 {
