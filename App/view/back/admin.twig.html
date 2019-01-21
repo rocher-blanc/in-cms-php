@@ -172,16 +172,11 @@
                                             </li>
                                         </ul>
 
-                                        {% if active_user == true %}
-                                            <ul class="mega-menu-column col-lg-3">
+                                        <ul class="mega-menu-column col-lg-3">
+                                            {% if active_user == true %}
                                                 <li class="mega-menu-title sub-menu">
                                                     <a href="#" class="sf-with-ul"><div>Utilisateurs</div></a>
                                                     <ul>
-                                                        {#<li>
-                                                        <a href="{{ siteUrl('/ext/user_front') }}">
-                                                            <div>Utilisateurs</div>
-                                                        </a>
-                                                    </li>#}
                                                         <li>
                                                             <a href="{{ siteUrl('/ext/user_front_group') }}">
                                                                 <div>Groupes d'utilisateurs</div>
@@ -189,8 +184,18 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-                                            </ul>
-                                        {% endif %}
+                                            {% endif %}
+                                            {#<li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Galeries d'immage</div></a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="{{ siteUrl('/module/gallerycategory') }}">
+                                                            <div>Catégories</div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>#}
+                                        </ul>
 
                                         {% if user.admin == true %}
                                             <ul class="mega-menu-column col-lg-3">
