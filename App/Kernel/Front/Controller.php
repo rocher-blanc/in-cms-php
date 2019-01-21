@@ -1025,7 +1025,7 @@ class Controller extends \App\Kernel\Common\Controller
                             {
                                 $content->set($row->getColumn(), $row->getDefault());
                             }
-                            else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                            else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
                             {
                                 $content->set($row->getColumn(), $row->getValue());
                             }
@@ -1047,7 +1047,7 @@ class Controller extends \App\Kernel\Common\Controller
 						// On ajoute les infos sans multi-langue
                         $content->save();
 
-						if ($this->getId() === NULL) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+						if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
 
 						foreach( $this->getEntity()->getField() as $nameField => $field )
 						{
