@@ -316,12 +316,9 @@ class User extends \App\Kernel\Common\User
             {
                 $login = htmlentities( $login, ENT_QUOTES ) ;
 
-                $user = \DB::for_table('user_front')
-                    ->where_equal('user_front_login', $login)
-                    ->where_equal('user_front_active', 1)
-                    ->find_one();
+                $user = $this->getAccount( $login ) ;
 
-                if ( is_object( $user ) && $user->user_front_login === $login && $this->checkPassword( $user->user_front_password , $password ) == true )
+                if ( is_object( $user ) && $this->checkPassword( $user->user_front_password , $password ) == true )
                 {
                     $date = new \DateTime();
                     $user->user_front_last_connection = $date->format('Y-m-d H:i:s');
@@ -346,6 +343,14 @@ class User extends \App\Kernel\Common\User
         {
             $this->returnError( "user_login_successful" , true , true ) ;
         }
+    }
+
+    protected function getAccount( $login )
+    {
+        return \DB::for_table('user_front')
+            ->where_equal('user_front_login', $login)
+            ->where_equal('user_front_active', 1)
+            ->find_one();
     }
 
     ###################################################################################################################################

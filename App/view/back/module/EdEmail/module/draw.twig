@@ -30,37 +30,9 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('canvas/js/easydoor/topol.js') }}"></script>
     <script>
-        saveTemplate = function( html , json , redirect ) {
-            $.ajax({
-                type: "POST",
-                url: '{{ route( mod.name , 'saveMail' , uri_id_parent , id ) }}',
-                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html + '&json=' + JSON.stringify(json),
-                success: function(data){
-                    if ( redirect ) {
-                        document.location.href = '{{ route( mod.name , 'index' , uri_id_parent ) }}';
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Notify(errorThrown, false);
-                }
-            });
-        };
 
-        duplicateTemplate = function( idt ) {
-            $.ajax({
-                type: "POST",
-                url: '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}',
-                data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&template=' + idt,
-                success: function(data){
-                    const json = JSON.parse(JSON.stringify(data));
-                    TopolPlugin.load(json);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Notify(errorThrown, false);
-                }
-            });
-        };
 
         $(function() {
             $('#loadDupication').click(function() {
@@ -82,7 +54,7 @@
                 templateId: {{ idtopol }},
                 removeTopBar: false, // Hides the top bar of the email editor
                 light: true, // set the editor theme to be light
-                customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below
+                customFileManager: true, // sets the build in file manager to be disabled and change to call the callbacks provided below
                 // URL or Callback when clicked on Save & close
                 callbacks: {
                     onSaveAndClose: function (json, html) {
@@ -101,7 +73,7 @@
                         // Callback when send test email button is clicked
                     },
                     onOpenFileManager: function () {
-                        // Implement your own file manager open callback
+                        Topol();
                     },
                     onAutoSave(json) {
                         // Called when the editor decides that it needs an autosave. Mostly when the user makes a change and does not save it immedietly.
