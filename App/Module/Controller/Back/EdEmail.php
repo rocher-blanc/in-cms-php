@@ -41,6 +41,11 @@ class EdEmail extends Controller
         echo $data->get('json');
     }
 
+    protected function testAction()
+    {
+
+    }
+
     protected function saveMailAction()
     {
         $data = new Data( $this->getEntityName() );

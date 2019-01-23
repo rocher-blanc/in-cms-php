@@ -1913,4 +1913,14 @@ class Controller extends \App\Kernel\Common\Controller
         ]) ;
 
     }
+
+    protected function topolFileManagerAction()
+    {
+        $this->render('topol-filemanager.twig') ;
+    }
+
+    protected function topolFileUploadAction()
+    {
+        $this->render('topol-upload.twig') ;
+    }
 }

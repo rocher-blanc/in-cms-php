@@ -1,16 +1,7 @@
-let Topol = function() {
-    $.magnificPopup.open({
-        items: {
-            src: '/test'
-        },
-        type:'ajax',
-    });
-};
-
 let saveTemplate = function( url_post , url_redirect , html , json , redirect ) {
     $.ajax({
         type: "POST",
-        url: url_ajax,
+        url: url_post,
         data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&html=' + html + '&json=' + JSON.stringify(json),
         success: function(data){
             if ( redirect ) {
@@ -22,8 +13,6 @@ let saveTemplate = function( url_post , url_redirect , html , json , redirect ) 
         }
     });
 };
-// '{{ route( mod.name , 'saveMail' , uri_id_parent , id ) }}'
-// '{{ route( mod.name , 'index' , uri_id_parent ) }}' // redirect
 
 let duplicateTemplate = function( idt , url_ajax ) {
     $.ajax({
@@ -40,18 +29,42 @@ let duplicateTemplate = function( idt , url_ajax ) {
     });
 };
 
-//'{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}'
-
 let sendTest = function( url_send , html, json, email ) {
 
 };
 
-//'{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}'
+let fileManager = function( url_file_manager , url_upload ) {
+    $.magnificPopup.open({
+        items: {
+            src: url_file_manager
+        },
+        type:'ajax',
+        callbacks: {
+            ajaxContentAdded: function() {
+                $('#content-media a.insert').each(function() {
+                    $(this).click(function() {
+                        TopolPlugin.chooseFile( $(this).find('img').attr('src') );
+                        $.magnificPopup.close();
+                    });
+                });
+            }
+        }
+    });
+};
 
 let drawTopol = function( config ) {
+    if ( typeof config.duplicateId == 'string' && typeof config.duplicateSelect == 'string' ) {
+        $( config.duplicateId ).click(function() {
+            let template = $( config.duplicateSelect ).val() ;
+            if ( template != null ) {
+                duplicateTemplate( template , config.urlDuplicate );
+            }
+        });
+    }
+
     // Plugin Settings
     var TOPOL_OPTIONS = {
-        id: "#topolcontent",
+        id: config.id,
         authorize: {
             apiKey: config.apiKey,
             userId: config.userId
@@ -73,11 +86,11 @@ let drawTopol = function( config ) {
                 sendTest( config.urlSend , html, json, email);
             },
             onOpenFileManager: function () {
-                Topol();
+                fileManager( config.urlFileManager , config.urlUpload );
             },
             onAutoSave(json) {
                 // Called when the editor decides that it needs an autosave. Mostly when the user makes a change and does not save it immedietly.
-                console.log(json);
+                //console.log(json);
             }
         }
     };

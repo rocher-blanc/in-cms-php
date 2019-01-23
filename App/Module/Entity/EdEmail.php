@@ -12,6 +12,9 @@ class EdEmail extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
+            $this->addAction( 'topolFileManager' );
+            $this->addAction( 'topolFileUpload' );
+
             $this->addIcon( 'icon-photo' , 'draw' , function($c) {
                 return ( $c->blocked == 0 ? true : false );
             });

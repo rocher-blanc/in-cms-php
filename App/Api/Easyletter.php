@@ -186,6 +186,87 @@ class Easyletter
         return false ;
     }
 
+    public function test( string $email , int $id , string $module )
+    {
+        $Sender = new Data('NewsletterSender');
+        $Sender->find([
+            "default" => 1
+        ]);
+
+
+        $EdAutomation = new Data('EdAutomation');
+        $rstAutomation = $EdAutomation->find([
+            'element_module_parent_id' => $EdAutomationModel->get('id'),
+            'default' => 1
+        ]);
+
+        if ( $rstAutomation )
+        {
+            $tab = [] ;
+            $tab[ $email ] = array_merge( $data , [ 'Email' => $email ]) ;
+
+            if ( $this->client === NULL )
+            {
+                $this->phpmailer->setFrom( $Sender->get('email') , $Sender->get('name') );
+                $this->phpmailer->addReplyTo( $Sender->get('email_response') , $Sender->get('name') );
+                $this->phpmailer->Subject = html_entity_decode("Test email") ;
+                $this->phpmailer->addAddress( $email );
+
+                $html = $EdAutomation->get('html');
+
+                foreach( $tab[ $email ] as $key => $value )
+                {
+                    $html = str_replace( '[' . $key . ']' , $value , $html ) ;
+                }
+
+                $this->phpmailer->AltBody = strip_tags( $html ) ;
+                $this->phpmailer->Body = $html ;
+                $ret = $this->phpmailer->send();
+
+            }
+            else
+            {
+                $response = $this->request([
+                    'msgType' => '0', // 0 = HTML ; 1 = TXT ; 2 = SMS
+                    'msgSMS' => "",
+                    'urlUnsubscribe' => "",
+
+                    'txtOnlineViewTag' => "",
+                    'txtHtmlUnsubscribeTag' => "",
+                    'txtSendToAFriendTag' => "",
+
+                    'dateTimeUTC' => date("Y-m-d H:i:s"),
+                    'schedule' => '0',
+                    'sendingRate' => '0',
+                    'transactional' => '1',
+
+                    'subject' => "Test email",
+                    'senderName' => $Sender->get('name'),
+                    'senderEmail' => $Sender->get('email'),
+                    'returnPathEmail' => $Sender->get('email_response'),
+
+                    'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/test/recipient/" . $email,
+                    'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/test/template/" . $module . "/" . $id ,
+                ]);
+
+                if ( $response !== false )
+                {
+                    return true ;
+                }
+                else
+                {
+                    return false ;
+                }
+            }
+        }
+        else
+        {
+            $this->setError("Aucun automation n'est disponible dans la catégorie \"" . $EdAutomationModel->get('name') . "\"") ;
+        }
+
+        return false ;
+    }
+
     public function newsletter( int $idNewsletter )
     {
         $NL = new Data('NewsletterCampaign');
