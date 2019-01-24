@@ -58,7 +58,8 @@ class NewsletterCampaign extends Builder
             ->name("Gabarit email");
 
         $this->build('statut')
-            ->isHidden()
+            ->isHidden('INT',11)
+            ->noSave()
             ->style(function($c) {
                 switch( $c->statut )
                 {
