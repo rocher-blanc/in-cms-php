@@ -1,0 +1,15 @@
+{% extends 'modal.twig' %}
+
+{% block title_page %}Gestionnaire d'images{% endblock %}
+
+{% block module %}
+    <div class="row">
+        {% for i in 1..12 %}
+        <div class="col-lg-1">
+            <a href="#" class="insert">
+                <img alt="100%x180" src="https://fakeimg.pl/96x96/" class="img-thumbnail" style="height: 96px; width: 96px; display: block;">
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -22,3 +22,6 @@ defined('ASSET_JS_VAR') || define('ASSET_JS_VAR',"__asset_js_var__");
 defined('FB_APP_ID') || define('FB_APP_ID', NULL );
 defined('FB_APP_SECRET') || define('FB_APP_SECRET', NULL );
 defined('FB_APP_PAGE') || define('FB_APP_PAGE', NULL );
+
+defined('RECAPTCHA_PUBLIC') || define('RECAPTCHA_PUBLIC', NULL );
+defined('RECAPTCHA_SECRET') || define('RECAPTCHA_SECRET', NULL );

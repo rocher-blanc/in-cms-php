@@ -68,9 +68,12 @@ class Controller extends \App\Kernel\Back\Controller
             ->where_id_is( $this->post( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )
             ->find_one();
 
-        $user->user_front_login              = $this->post('user_login');
-        $user->user_front_active             = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
+        $user->user_front_login               = $this->post('user_login');
+        $user->user_front_active              = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
         $user->user_front_user_front_group_id = $this->post('user_front_user_front_group_id');
+
+        if ( $this->post('user_password') != '' ) $user->user_front_password = $this->User()->hashPassword( $this->post('user_password') );
+
         $user->save();
     }
 
@@ -81,7 +84,15 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $content )
         {
-            \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )->delete();
+            $rst = \DB::for_table('user_front')
+                ->where_equal( $this->getEntity()->getUserIdName() , $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )
+                ->find_one();
+
+            if ( $rst )
+            {
+                $rst->delete();
+            }
+
             return true ;
         }
         else

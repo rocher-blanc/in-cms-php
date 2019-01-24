@@ -84,7 +84,11 @@ class Base
             ],
             'NewsletterCampaignGroupUnsubscribe' => [
                 'name' => "Désinscription",
-                'icon' => "form-icon icon-enter",
+                'icon' => "icon-enter",
+            ],
+            'GalleryCategory' => [
+                'name' => "Catégories",
+                'icon' => "icon-line-grid",
             ]
         ];
     }

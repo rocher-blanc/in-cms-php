@@ -104,6 +104,11 @@ class Controller extends \App\Kernel\Common\Controller
             $this->init() ;
             $ct = count( $this->getUrl() ) ;
 
+
+
+
+
+
             if ( $ct == 0 )
             {
                 $this->setActionName('getall');
@@ -911,15 +916,17 @@ class Controller extends \App\Kernel\Common\Controller
 
         return array_merge( $form , [
             'form' => $this->renderForm([
-                'field' => $form['field'],
-                'tabs' => $form['tabs'],
-                'condition' => $form['condition'],
-                'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
-                'id' => $form['id'],
-                'module' => $this->getEntityName(),
-                'redirect' => $url,
-                'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
-                'result' => $this->result_form,
+                'field'                 => $form['field'],
+                'tabs'                  => $form['tabs'],
+                'condition'             => $form['condition'],
+                'route'                 => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+                'id'                    => $form['id'],
+                'module'                => $this->getEntityName(),
+                'recaptcha'             => $this->getEntity()->reCAPTCHA(),
+                'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
+                'redirect'              => $url,
+                'keyControl'            => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
+                'result'                => $this->result_form,
             ])
         ]);
     }
@@ -982,120 +989,130 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $this->checkForm() )
             {
-				if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
-				else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
+                $recaptcha = $this->checkReCAPTCHA() ;
 
-				$resultHook = $this->$hookAfterCheck();
+                if ( $recaptcha === true )
+                {
+                    if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
+                    else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
 
-				if ( $resultHook === true )
-				{
-					if ( ! empty( $this->getEntity()->getField() ) )
-					{
-						if ( $this->getId() !== NULL )
-						{
-							$content = $this->getRepository()->findOne($this->getId());
-							if ( ! $content )
-							{
-								$result['msg'] = $this->m("have_no_content");
-							}
-						}
-						else
-						{
-							$content = $this->getRepository()->create();
-						}
+                    $resultHook = $this->$hookAfterCheck();
 
-                        foreach( $this->getEntity()->getField() as $row )
+                    if ( $resultHook === true )
+                    {
+                        if ( ! empty( $this->getEntity()->getField() ) )
                         {
-                            if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
+                            if ( $this->getId() !== NULL )
                             {
-                                $Media = new Media;
-                                $Media->setModuleId( $this->getEntityId() ) ;
-                                $Media->setModuleName( $this->getEntityName() ) ;
-                                $Media->setFolder( $this->getEntity()->getFolder() ) ;
-                                $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+                                $content = $this->getRepository()->findOne($this->getId());
+                                if ( ! $content )
+                                {
+                                    $result['msg'] = $this->m("have_no_content");
+                                }
+                            }
+                            else
+                            {
+                                $content = $this->getRepository()->create();
+                            }
 
-                                $content->set($row->getColumn(), $Media->getImageId() );
-                            }
-                            else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
+                            foreach( $this->getEntity()->getField() as $row )
                             {
-                                $content->set($row->getColumn(), $row->getDefault());
+                                if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
+                                {
+                                    $Media = new Media;
+                                    $Media->setModuleId( $this->getEntityId() ) ;
+                                    $Media->setModuleName( $this->getEntityName() ) ;
+                                    $Media->setFolder( $this->getEntity()->getFolder() ) ;
+                                    $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+
+                                    $content->set($row->getColumn(), $Media->getImageId() );
+                                }
+                                else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
+                                {
+                                    $content->set($row->getColumn(), $row->getDefault());
+                                }
+                                else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
+                                {
+                                    $content->set($row->getColumn(), $row->getValue());
+                                }
                             }
-                            else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+
+                            $date = new \DateTime();
+
+                            if ( $add == true )
                             {
-                                $content->set($row->getColumn(), $row->getValue());
+                                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
+                                $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') );
+                            }
+                            else
+                            {
+                                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get($this->getEntity()->get('date_updated')->getColumn() ) );
+                            }
+                            $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
+
+                            // On ajoute les infos sans multi-langue
+                            $content->save();
+
+                            if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+
+                            foreach( $this->getEntity()->getField() as $nameField => $field )
+                            {
+                                if ( $field->getType() == "checkbox" )
+                                {
+                                    $this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
+                                }
+                                else if ( $field->getType() == "gallery" && $add == true )
+                                {
+                                    // On met a jour les 0
+                                    $Gallery = new \App\Kernel\Back\Gallery;
+                                    $Gallery->setElementId($this->getId());
+                                    $Gallery->setField($field->getName());
+                                    $Gallery->setModuleId($this->getEntityId());
+                                    $Gallery->updateZero();
+                                }
+                            }
+
+                            if ( $this->getEntity()->hasUrl() && $add == true )
+                            {
+                                $seo = new \App\Kernel\Back\Seo;
+                                $seo->setElementId($this->getId());
+                                $seo->setModuleId($this->getEntityId());
+                                $seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());
+                                $seo->setLangId($this->Lang()->getDefault()->id);
+                                $seo->save();
                             }
                         }
 
-						$date = new \DateTime();
+                        if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
+                        else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
 
-						if ( $add == true )
-						{
-							$content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
-							$content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') );
-						}
-						else
-						{
-							$content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get($this->getEntity()->get('date_updated')->getColumn() ) );
-						}
-						$content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
+                        $this->$hookAfterCheck( $content );
 
-						// On ajoute les infos sans multi-langue
-                        $content->save();
+                        foreach ($this->getEntity()->getField() as $nameField => $field)
+                        {
+                            $this->field( $field->getname() )->clearValue();
+                        }
 
-						if ($this->getId() === NULL) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+                        //$this->Factory()->Response()->flash( $result['msg'] , true );
 
-						foreach( $this->getEntity()->getField() as $nameField => $field )
-						{
-							if ( $field->getType() == "checkbox" )
-							{
-								$this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
-							}
-							else if ( $field->getType() == "gallery" && $add == true )
-							{
-								// On met a jour les 0
-								$Gallery = new \App\Kernel\Back\Gallery;
-								$Gallery->setElementId($this->getId());
-								$Gallery->setField($field->getName());
-								$Gallery->setModuleId($this->getEntityId());
-								$Gallery->updateZero();
-							}
-						}
+                        $result['result'] = true;
+                        $result['msg']    = ( $add ? $this->getAddSuccessMessage() : $this->getUpdateSuccessMessage() );
 
-						if ( $this->getEntity()->hasUrl() && $add == true )
-						{
-							$seo = new \App\Kernel\Back\Seo;
-							$seo->setElementId($this->getId());
-							$seo->setModuleId($this->getEntityId());
-							$seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());
-							$seo->setLangId($this->Lang()->getDefault()->id);
-							$seo->save();
-						}
-					}
-
-                    if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
-                    else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
-
-                    $this->$hookAfterCheck( $content );
-
-					foreach ($this->getEntity()->getField() as $nameField => $field)
-					{
-						$this->field( $field->getname() )->clearValue();
-					}
-
-					//$this->Factory()->Response()->flash( $result['msg'] , true );
-
-					$result['result'] = true;
-					$result['msg']    = ( $add ? $this->getAddSuccessMessage() : $this->getUpdateSuccessMessage() );
-
-					if ( $this->post('redirect') != '' )
-                    {
-                        $result['url'] = $this->getUrlRedirect();
+                        if ( $this->post('redirect') != '' )
+                        {
+                            $result['url'] = $this->getUrlRedirect();
+                        }
                     }
-				}
-				else
-				{
-					$result = $resultHook ;
-				}
+                    else
+                    {
+                        $result = $resultHook ;
+                    }
+                }
+                else
+                {
+                    $result['result'] = true;
+                    $result['msg']    = $this->getRecaptchaMessage();
+                }
             }
             else
             {
@@ -1132,6 +1149,36 @@ class Controller extends \App\Kernel\Common\Controller
         return $result ;
     }
 
+    protected function checkReCAPTCHA()
+    {
+        if ( $this->getEntity()->reCAPTCHA() == true )
+        {
+            $reCaptcha = new \ReCaptcha\ReCaptcha( RECAPTCHA_SECRET );
+
+            if ( isset( $_POST["g-recaptcha-response"] ) )
+            {
+                $resp = $reCaptcha->verify( $_POST["g-recaptcha-response"] , $this->CMS()->getIp() );
+
+                if ( ! $resp->isSuccess() )
+                {
+                    return false ;
+                }
+                else
+                {
+                    return true ;
+                }
+            }
+            else
+            {
+                return false ;
+            }
+        }
+        else
+        {
+            return true ;
+        }
+    }
+
     protected function getAddSuccessMessage()
     {
         return '' ;
@@ -1140,6 +1187,11 @@ class Controller extends \App\Kernel\Common\Controller
     protected function getUpdateSuccessMessage()
     {
         return '' ;
+    }
+
+    protected function getRecaptchaMessage()
+    {
+        return $this->_('error_recaptcha');
     }
 
     protected function _( $key , $var = [] )

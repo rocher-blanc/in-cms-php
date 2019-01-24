@@ -20,7 +20,8 @@
     "yusukezzz/slim-debugbar": "1.*",
     "jdorn/sql-formatter": "dev-master",
     "guzzlehttp/guzzle": "^6.3",
-    "firebase/php-jwt": "~5.0"
+    "firebase/php-jwt": "~5.0",
+    "google/recaptcha": "^1.2"
   },
   "authors": [
     {

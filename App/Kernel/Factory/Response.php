@@ -36,6 +36,12 @@ class Response
         $this->getApp()->flash('__result', $result );
     }
 
+    /* Echo pour etre compatible slim */
+    public function show( $msg )
+    {
+        $this->getApp()->response->body( $msg );
+    }
+
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
     public function redirect( $url = '' , $status = 302 )
     {

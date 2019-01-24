@@ -99,7 +99,7 @@
                 data = addCSRF(data);
 
                 $.ajax({
-                    url     : '/admin-site/admin/groupmodule/order-module',
+                    url     : '{{ siteUrl('admin/groupmodule/order-module') }}',
                     data    : data,
                     method  : "POST",
                     dataType: 'json',

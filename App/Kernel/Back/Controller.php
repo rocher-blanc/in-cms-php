@@ -21,7 +21,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function __construct( $options = [] )
     {
-        $this->_optiondate_updateds = $options ;
+        $this->_options = $options ;
     }
 
     /* ************************************************** */
@@ -1656,6 +1656,20 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     /* ************************************************** */
+    /* ***********    UPLOAD IMAGE EDITOR    ************ */
+    /* ************************************************** */
+
+    public function editorAction()
+    {
+        $Media = new Media;
+        $Media->setModuleId( $this->getEntityId() ) ;
+        $Media->setModuleName( $this->getEntityName() ) ;
+        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+
+        $this->Factory()->Response()->show( $Media->editor() );
+    }
+
+    /* ************************************************** */
     /* ******************    MEDIA    ******************* */
     /* ************************************************** */
 
@@ -1898,5 +1912,15 @@ class Controller extends \App\Kernel\Common\Controller
             'id' => $form['id']
         ]) ;
 
+    }
+
+    protected function topolFileManagerAction()
+    {
+        $this->render('topol-filemanager.twig') ;
+    }
+
+    protected function topolFileUploadAction()
+    {
+        $this->render('topol-upload.twig') ;
     }
 }

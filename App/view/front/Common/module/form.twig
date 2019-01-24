@@ -125,6 +125,12 @@
                     {% endfor %}
                 {% endif %}
 
+                {% if recaptcha == true %}
+                    <div class="ed_field">
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
+                    </div>
+                {% endif %}
+
                 <div class="ed_field col_full">
                     <button class="ed-button button button-rounded button-reveal button-large button-3d"><i class="icon-save"></i><span>Enregistrer</span></button>
                 </div>

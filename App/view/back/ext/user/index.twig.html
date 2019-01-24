@@ -29,7 +29,7 @@
             {% for row in contentRows %}
                 <tr class="tr1">
                     <td>
-                        <a href="{{ siteUrl('ext/user/edit/' ~  row.user_id) }}">{F/{ row.user_name }}</a>
+                        <a href="{{ siteUrl('ext/user/edit/' ~  row.user_id) }}">{{ row.user_name }}</a>
                     </td>
                     <td>
                         <a href="{{ siteUrl('ext/user/edit/' ~  row.user_id) }}">{{ row.user_lname }}</a>

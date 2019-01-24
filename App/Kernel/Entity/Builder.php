@@ -114,6 +114,12 @@ class Builder extends Model
     public $_isDependency = false;
 
     /*
+     * @boolean
+     * Définit si on active le recaptcha
+     */
+    public $_reCAPTCHA = false;
+
+    /*
      * @array
      * Variable contenant tous les messages d'erreurs par défaut
      */
@@ -736,6 +742,20 @@ class Builder extends Model
     }
 
     /* ************************************************** */
+    /* *****************    reCAPTCHA    **************** */
+    /* ************************************************** */
+
+    public function activeReCAPTCHA()
+    {
+        $this->_reCAPTCHA = true ;
+    }
+
+    public function reCAPTCHA()
+    {
+        return $this->_reCAPTCHA ;
+    }
+
+    /* ************************************************** */
     /* *****************    DUPLICATE    **************** */
     /* ************************************************** */
 
@@ -1113,32 +1133,75 @@ class Builder extends Model
             }
             else
             {
-
                 $this->enableValidation();
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty("Veuillez indiquer le mot de passe" )
+                    //->notEmpty("Veuillez indiquer le mot de passe" )
                     ->noRename()
                     ->noFront()
-                    ->noindex()
+                    ->noindex()/*
                     ->showIf(function($c) {
                         return ( $c->user_front_id == '' ? true : false );
-                    })
+                    })*/
+                    ->formated(function( $c ) {
+                        if ( $_POST['id_element'] == '' ) {
+                            if ( empty( $_POST['user_password'] ) ) {
+                                return false ;
+                            }
+
+                            return true ;
+                        }
+                        else
+                        {
+                            if ( ( empty( $_POST['user_password'] ) && ! empty( $_POST['user_password_confirm'] ) ) or ( ! empty( $_POST['user_password'] ) && empty( $_POST['user_password_confirm'] ) ) )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
+                    }, "Veuillez indiquer les mot de passe" )
+
                     ->name('Mot de passe');
 
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty("Veuillez confirmer le mot de passe" )
+                    //->notEmpty("Veuillez confirmer le mot de passe" )
                     ->noRename()
                     ->noFront()
-                    ->noindex()
+                    ->noindex()/*
                     ->showIf(function($c) {
                         return ( $c->user_front_id == '' ? true : false );
-                    })
+                    })*/
                     ->formated(function( $c ) {
-                        return ( $_POST['user_password_confirm'] != $_POST['user_password'] ? false : true ) ;
+                        if ( $_POST['id_element'] == '' ) {
+                            if ( empty( $_POST['user_password'] ) ) {
+                                return false ;
+                            }
+                            else if ( $_POST['user_password_confirm'] != $_POST['user_password'] )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
+                        else
+                        {
+                            if ( $_POST['user_password_confirm'] != $_POST['user_password'] )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
                     }, "Les deux mots de passe sont différents" )
                     ->name('Confirmer votre mot de passe');
             }
@@ -1780,6 +1843,7 @@ class Builder extends Model
 
     protected function editor()
     {
+        $this->addAction("editor") ;
         $this->field()->setData( "editor" , true ) ;
         return $this ;
     }
