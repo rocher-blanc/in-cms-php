@@ -1133,32 +1133,75 @@ class Builder extends Model
             }
             else
             {
-
                 $this->enableValidation();
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty("Veuillez indiquer le mot de passe" )
+                    //->notEmpty("Veuillez indiquer le mot de passe" )
                     ->noRename()
                     ->noFront()
-                    ->noindex()
+                    ->noindex()/*
                     ->showIf(function($c) {
                         return ( $c->user_front_id == '' ? true : false );
-                    })
+                    })*/
+                    ->formated(function( $c ) {
+                        if ( $_POST['id_element'] == '' ) {
+                            if ( empty( $_POST['user_password'] ) ) {
+                                return false ;
+                            }
+
+                            return true ;
+                        }
+                        else
+                        {
+                            if ( ( empty( $_POST['user_password'] ) && ! empty( $_POST['user_password_confirm'] ) ) or ( ! empty( $_POST['user_password'] ) && empty( $_POST['user_password_confirm'] ) ) )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
+                    }, "Veuillez indiquer les mot de passe" )
+
                     ->name('Mot de passe');
 
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    ->notEmpty("Veuillez confirmer le mot de passe" )
+                    //->notEmpty("Veuillez confirmer le mot de passe" )
                     ->noRename()
                     ->noFront()
-                    ->noindex()
+                    ->noindex()/*
                     ->showIf(function($c) {
                         return ( $c->user_front_id == '' ? true : false );
-                    })
+                    })*/
                     ->formated(function( $c ) {
-                        return ( $_POST['user_password_confirm'] != $_POST['user_password'] ? false : true ) ;
+                        if ( $_POST['id_element'] == '' ) {
+                            if ( empty( $_POST['user_password'] ) ) {
+                                return false ;
+                            }
+                            else if ( $_POST['user_password_confirm'] != $_POST['user_password'] )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
+                        else
+                        {
+                            if ( $_POST['user_password_confirm'] != $_POST['user_password'] )
+                            {
+                                return false ;
+                            }
+                            else
+                            {
+                                return true ;
+                            }
+                        }
                     }, "Les deux mots de passe sont différents" )
                     ->name('Confirmer votre mot de passe');
             }

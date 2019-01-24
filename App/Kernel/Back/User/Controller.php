@@ -15,7 +15,11 @@ class Controller extends \App\Kernel\Back\Controller
         if ( ! $this->isUnique( true ) )
         {
             return $this->returnArrayError() ;
-        }
+        }/*
+        else if ( $this->checkPasswordUpdate( $this->post('user_password') , $this->post('user_password_confirm') ) == false )
+        {
+            return $this->returnArrayPasswordError() ;
+        }*/
         else
         {
             return true ;
@@ -27,6 +31,16 @@ class Controller extends \App\Kernel\Back\Controller
         $result['msg']    = ( $this->getApp()->config('config') == 'front' ? \App\Kernel\Front\Translate::getInstance()->getText( "user_login_is_uniq" ) : "Cette adresse email est déja utilisée" ) ;
         $result['field']  = 'user_login' ;
         $result['tab']    = $this->field('user_login')->getTab() ;
+        $result['result'] = false;
+
+        return $result;
+    }
+
+    protected function returnArrayPasswordError()
+    {
+        $result['msg']    = "Merci d'indiquer les mots de passe" ;
+        $result['field']  = 'user_password' ;
+        $result['tab']    = $this->field('user_password')->getTab() ;
         $result['result'] = false;
 
         return $result;
@@ -55,7 +69,11 @@ class Controller extends \App\Kernel\Back\Controller
         if ( ! $this->isUnique() )
         {
             return $this->returnArrayError() ;
-        }
+        }/*
+        else if ( $this->checkPasswordUpdate( $this->post('user_password') , $this->post('user_password_confirm') ) == false )
+        {
+            return $this->returnArrayPasswordError() ;
+        }*/
         else
         {
             return true ;
@@ -68,9 +86,12 @@ class Controller extends \App\Kernel\Back\Controller
             ->where_id_is( $this->post( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )
             ->find_one();
 
-        $user->user_front_login              = $this->post('user_login');
-        $user->user_front_active             = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
+        $user->user_front_login               = $this->post('user_login');
+        $user->user_front_active              = $this->post( $this->field( $this->getEntity()->getValidationName() )->getColumn() );
         $user->user_front_user_front_group_id = $this->post('user_front_user_front_group_id');
+
+        if ( $this->post('user_password') != '' ) $user->user_front_password = $this->User()->hashPassword( $this->post('user_password') );
+
         $user->save();
     }
 
@@ -81,7 +102,16 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $content )
         {
-            \DB::for_table('user_front')->where_id_is( $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )->delete();
+            dump($content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ));
+            $rst = \DB::for_table('user_front')
+                ->where_equal( $this->getEntity()->getUserIdName() , $content->get( $this->field( $this->getEntity()->getUserIdName() )->getColumn() ) )
+                ->find_one();
+
+            if ( $rst )
+            {
+                $rst->delete();
+            }
+
             return true ;
         }
         else
@@ -140,5 +170,33 @@ class Controller extends \App\Kernel\Back\Controller
 
         if ( $ct == 0 ) return true ;
         else            return false ;
+    }
+
+    public function checkPasswordUpdate( $pass , $pass1 )
+    {
+        if ( ( ! empty( $pass ) && empty( $pass1 ) ) or ( empty( $pass ) && ! empty( $pass1 ) ) )
+        {
+            if ( $pass == $pass1 )
+            {
+                return true ;
+            }
+        }
+
+        return false ;
+    }
+
+    public function checkPasswordAdd( $pass , $pass1 )
+    {
+        if ( ( empty( $pass ) && empty( $pass1 ) ) or ( ! empty( $pass ) && empty( $pass1 ) ) or ( empty( $pass ) && ! empty( $pass1 ) ) )
+        {
+            return false ;
+        }
+        else
+        {
+            if ( $pass == $pass1 )
+            {
+                return true ;
+            }
+        }
     }
 }
