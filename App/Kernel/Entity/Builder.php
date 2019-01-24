@@ -114,6 +114,12 @@ class Builder extends Model
     public $_isDependency = false;
 
     /*
+     * @boolean
+     * Définit si on active le recaptcha
+     */
+    public $_reCAPTCHA = false;
+
+    /*
      * @array
      * Variable contenant tous les messages d'erreurs par défaut
      */
@@ -733,6 +739,20 @@ class Builder extends Model
     public function getFolder()
     {
         return $this->_folder_name ;
+    }
+
+    /* ************************************************** */
+    /* *****************    reCAPTCHA    **************** */
+    /* ************************************************** */
+
+    public function activeReCAPTCHA()
+    {
+        $this->_reCAPTCHA = true ;
+    }
+
+    public function reCAPTCHA()
+    {
+        return $this->_reCAPTCHA ;
     }
 
     /* ************************************************** */
