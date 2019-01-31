@@ -29,8 +29,20 @@ let duplicateTemplate = function( idt , url_ajax ) {
     });
 };
 
-let sendTest = function( url_send , html, json, email ) {
+let sendTest = function( url_send , email ) {
+    TopolPlugin.save();
 
+    $.ajax({
+        type: "POST",
+        url: url_send,
+        data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&email=' + email,
+        success: function(data){
+            Notify('Un email de test vient d\'être envoyé', true);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            Notify(errorThrown, false);
+        }
+    });
 };
 
 let fileManager = function( url_file_manager , url_upload ) {
@@ -83,7 +95,7 @@ let drawTopol = function( config ) {
                 saveTemplate( config.urlSave , '' , html, json, false);
             },
             onTestSend: function (email, json, html) {
-                sendTest( config.urlSend , html, json, email);
+                sendTest( config.urlSend , email);
             },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );

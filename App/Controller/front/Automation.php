@@ -2,18 +2,18 @@
 
 use App\Kernel\Front\Data;
 
-$app->get('/email/automation/recipient/:id', function ( $id ) use ( $app ) {
+$app->get('/email/automation/recipient/:email', function ( $email ) use ( $app ) {
     $app->contentType('application/json');
 
-    $Automation = new Data('EdAutomationHistory');
-    $Automation->find( $id );
+    $tab = [] ;
+    $tab[ $email ] = [ 'Email' => $email ] ;
 
-    echo $Automation->get('information');
+    echo json_encode( $tab );
 })->name('email_automation_recipient');
 
-$app->get('/email/automation/template/:id', function ( $id ) use ( $app ) {
-    $Automation = new Data('EdAutomation');
-    $rst = $Automation->find( $id );
+$app->get('/email/automation/template/:module/:id', function ( $module , $id ) use ( $app ) {
+    $Model = new Data( $module );
+    $rst = $Model->find( $id );
 
-    if ( $rst ) echo $Automation->get('html');
+    if ( $rst ) echo $Model->get('html');
 })->name('email_automation_template');

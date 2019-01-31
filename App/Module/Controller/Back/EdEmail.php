@@ -4,6 +4,7 @@ namespace App\Module\Controller\Back;
 
 use App\Kernel\Back\Controller;
 use App\Kernel\Back\Data;
+use App\Api\Easyletter;
 
 class EdEmail extends Controller
 {
@@ -13,7 +14,7 @@ class EdEmail extends Controller
         $this->setRender('idtopol' , $this->getId() + ( 100000 * $this->getEntityId() ) );
         $this->setRender('apiKey' , TOPOL_API_KEY);
         $this->setRender('userId' , TOPOL_USER_ID);
-        $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
+        $this->setRender('uri_id_parent' , $this->getUriParent() ) ;
 
         $select = $this->getElementForAssociation(NULL, "array");
 
@@ -41,9 +42,10 @@ class EdEmail extends Controller
         echo $data->get('json');
     }
 
-    protected function testAction()
+    protected function sendMailAction()
     {
-
+        $EL = new Easyletter;
+        $EL->test( $_POST['email'] , $this->getId() , $this->getEntityName() );
     }
 
     protected function saveMailAction()

@@ -11,6 +11,7 @@ class EdEmail extends Builder
         if ( TOPOL_USER_ID !== NULL && TOPOL_API_KEY !== NULL )
         {
             $this->addAction( 'saveMail' );
+            $this->addAction( 'sendMail' );
             $this->addAction( 'duplicate' );
             $this->addAction( 'topolFileManager' );
             $this->addAction( 'topolFileUpload' );

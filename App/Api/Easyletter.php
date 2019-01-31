@@ -193,36 +193,23 @@ class Easyletter
             "default" => 1
         ]);
 
+        $Model = new Data( $module );
+        $rstModel = $Model->find($id);
 
-        $EdAutomation = new Data('EdAutomation');
-        $rstAutomation = $EdAutomation->find([
-            'element_module_parent_id' => $EdAutomationModel->get('id'),
-            'default' => 1
-        ]);
-
-        if ( $rstAutomation )
+        if ( $rstModel )
         {
-            $tab = [] ;
-            $tab[ $email ] = array_merge( $data , [ 'Email' => $email ]) ;
-
             if ( $this->client === NULL )
             {
                 $this->phpmailer->setFrom( $Sender->get('email') , $Sender->get('name') );
                 $this->phpmailer->addReplyTo( $Sender->get('email_response') , $Sender->get('name') );
-                $this->phpmailer->Subject = html_entity_decode("Test email") ;
+                $this->phpmailer->Subject = html_entity_decode("Test - " . $Model->get('name') ) ;
                 $this->phpmailer->addAddress( $email );
 
-                $html = $EdAutomation->get('html');
-
-                foreach( $tab[ $email ] as $key => $value )
-                {
-                    $html = str_replace( '[' . $key . ']' , $value , $html ) ;
-                }
+                $html = $Model->get('html');
 
                 $this->phpmailer->AltBody = strip_tags( $html ) ;
                 $this->phpmailer->Body = $html ;
-                $ret = $this->phpmailer->send();
-
+                return $this->phpmailer->send();
             }
             else
             {
@@ -261,7 +248,7 @@ class Easyletter
         }
         else
         {
-            $this->setError("Aucun automation n'est disponible dans la catégorie \"" . $EdAutomationModel->get('name') . "\"") ;
+            $this->setError("Aucun automation n'est disponible dans la catégorie \"" . $Model->get('name') . "\"") ;
         }
 
         return false ;
