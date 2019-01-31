@@ -100,7 +100,7 @@ let drawTopol = function( config ) {
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
             },
-            onAutoSave(json) {
+            onAutoSave: function (json) {
                 // Called when the editor decides that it needs an autosave. Mostly when the user makes a change and does not save it immedietly.
                 //console.log(json);
             }
