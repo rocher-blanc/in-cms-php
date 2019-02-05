@@ -940,6 +940,12 @@ ul.docs-icons li span {
   }
 }
 
+// Bug
+.dropup.show .dropdown-menu {
+  bottom: initial;
+  margin-bottom: 0;
+}
+
 
 /* ************************************************ */
 /* Responsive                                       */
