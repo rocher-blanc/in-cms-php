@@ -129,8 +129,11 @@ class Eudonet
         $out1 = ob_get_contents();
         ob_end_clean();
 
+        $idt = '' ;
+        if ( $id !== NULL ) $idt = "ID : $id - " ;
+
         ob_start();
-        echo "[$type] Table : $table - " . $idt . $message . "\n\n" . $var['ResultInfos']['ApiMessage'] . "\n\n" . $var['ResultInfos']['ErrorMessage'] . "\n\n";
+        echo "[$type] Table : $table - " . $id . $message . "\n\n" . $var['ResultInfos']['ApiMessage'] . "\n\n" . $var['ResultInfos']['ErrorMessage'] . "\n\n";
         print_r( $array );
         //print_r( $var );
         $out2 = ob_get_contents();
@@ -140,9 +143,6 @@ class Eudonet
         $el->automotion("debug_eudonet" , "rserougne@ifec.fr" , [
             'debug' => $out2
         ]);
-
-        $idt = '' ;
-        if ( $id !== NULL ) $idt = "ID : $id - " ;
 
         $slack   = new \App\Kernel\Utils\Slack;
         $slack->notify( "[$type] Table : $table - " . $idt . $message . "\n\n" . $var['ResultInfos']['ApiMessage'], "" , "logs-ifec" , $var['ResultInfos']['ErrorMessage'] . "\n\n" . $out1 );
