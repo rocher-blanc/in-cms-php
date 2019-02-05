@@ -4,6 +4,7 @@ namespace App\Module\Controller\Back;
 
 use App\Kernel\Back\Controller;
 use App\Kernel\Back\Data;
+use App\Api\Easyletter;
 
 class EdAutomation extends Controller
 {
@@ -135,6 +136,12 @@ class EdAutomation extends Controller
         ]);
 
         echo $data->get('json');
+    }
+
+    protected function sendMailAction()
+    {
+        $EL = new Easyletter;
+        $EL->test( $_POST['email'] , $this->getId() , $this->getEntityName() );
     }
 
     protected function saveMailAction()

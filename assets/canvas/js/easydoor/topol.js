@@ -29,8 +29,20 @@ let duplicateTemplate = function( idt , url_ajax ) {
     });
 };
 
-let sendTest = function( url_send , html, json, email ) {
+let sendTest = function( url_send , email ) {
+    TopolPlugin.save();
 
+    $.ajax({
+        type: "POST",
+        url: url_send,
+        data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&email=' + email,
+        success: function(data){
+            Notify('Un email de test vient d\'être envoyé', true);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            Notify(errorThrown, false);
+        }
+    });
 };
 
 let fileManager = function( url_file_manager , url_upload ) {
@@ -72,10 +84,10 @@ let drawTopol = function( config ) {
         language: "fr",
         templateId: config.idTopol,
         removeTopBar: false, // Hides the top bar of the email editor
-            light: true, // set the editor theme to be light
-            customFileManager: true, // sets the build in file manager to be disabled and change to call the callbacks provided below
-            // URL or Callback when clicked on Save & close
-            callbacks: {
+        light: true, // set the editor theme to be light
+        customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below
+        // URL or Callback when clicked on Save & close
+        callbacks: {
             onSaveAndClose: function (json, html) {
                 saveTemplate( config.urlSave , config.urlRedirect , html, json, true);
             },
@@ -83,12 +95,12 @@ let drawTopol = function( config ) {
                 saveTemplate( config.urlSave , '' , html, json, false);
             },
             onTestSend: function (email, json, html) {
-                sendTest( config.urlSend , html, json, email);
+                sendTest( config.urlSend , email);
             },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
             },
-            onAutoSave(json) {
+            onAutoSave: function (json) {
                 // Called when the editor decides that it needs an autosave. Mostly when the user makes a change and does not save it immedietly.
                 //console.log(json);
             }

@@ -12,6 +12,11 @@ class EdAutomation extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
+
+            $this->addAction( 'sendMail' );
+            $this->addAction( 'topolFileManager' );
+            $this->addAction( 'topolFileUpload' );
+
             $this->addIcon( 'icon-photo' , 'draw' );
             $this->addIcon( 'icon-line-link' , 'view' , function( $c ) {
                 return ( $c->html != "" ? true : false );

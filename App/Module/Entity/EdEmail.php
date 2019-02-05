@@ -12,6 +12,8 @@ class EdEmail extends Builder
         {
             $this->addAction( 'saveMail' );
             $this->addAction( 'duplicate' );
+
+            $this->addAction( 'sendMail' );
             $this->addAction( 'topolFileManager' );
             $this->addAction( 'topolFileUpload' );
 
