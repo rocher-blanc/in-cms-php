@@ -1481,7 +1481,14 @@ class Controller extends \App\Kernel\Common\Controller
 
                     foreach( $td['td'] as $key => $row )
                     {
-                        $sheet->setCellValue($alphas[ $col ] . $line, $row['value'] );
+                        if ( $row['type'] == "boolean" )
+                        {
+                            $sheet->setCellValue($alphas[ $col ] . $line, ( $row['value'] == 0 ? "Non" : "Oui" ) );
+                        }
+                        else
+                        {
+                            $sheet->setCellValue($alphas[ $col ] . $line, $row['value'] );
+                        }
                         $col++;
                     }
 
@@ -1490,7 +1497,7 @@ class Controller extends \App\Kernel\Common\Controller
             }
         }
 
-        header('Content-Disposition: attachment; filename=' . $this->getEntityName() . '-' . date('Y-m-d-H-i-s') . '.xlsx;' );
+        header('Content-Disposition: attachment; filename=' . $this->getEntityName() . '-' . date('Y-m-d-H_i_s') . '.xlsx;' );
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
         header('Content-Transfer-Encoding: binary;');
         header('Cache-Control: must-revalidate;');
