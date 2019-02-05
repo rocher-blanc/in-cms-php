@@ -16,10 +16,6 @@ class NewsletterCampaign extends Builder
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
         });
 
-        $this->addIcon( 'icon-line-square-cross" style="color: red;' , 'cancel' , function($c) {
-            return $c->id_easyletter !== NULL && $c->stats['state'] < 10 ? true : false ;
-        });
-
         $this->showEdit(function( $c ) {
             return false ;
         });

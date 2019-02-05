@@ -62,20 +62,6 @@ class NewsletterCampaign extends Controller
         }
     }
 
-    protected function cancelAction()
-    {
-        $data = new Data('NewsletterCampaign');
-        $data->find( $this->getId() );
-
-        if ( $data->get('id_easyletter') != '' )
-        {
-            $EL = new Easyletter;
-            return (bool) $EL->cancel( $data->get('id_easyletter') );
-        }
-
-        return false ;
-    }
-
     protected function hookDeleteBefore()
     {
         $data = new Data('NewsletterCampaign');
@@ -84,7 +70,7 @@ class NewsletterCampaign extends Controller
         if ( $data->get('id_easyletter') != '' )
         {
             $EL = new Easyletter;
-            return (bool) $EL->delete( $data->get('id_easyletter') );
+            return (bool) $EL->cancel( $data->get('id_easyletter') );
         }
 
         return false ;

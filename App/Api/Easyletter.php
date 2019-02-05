@@ -318,11 +318,7 @@ class Easyletter
 
     public function cancel( int $id )
     {
-        return $this->response( $this->client->put('/v1/campaign/cancel', [
-            'body' => json_encode([
-                'campaignId' => $id
-            ])
-        ]) ) ;
+        return $this->response( $this->client->put('/v1/campaign/' . $id . '/cancel') ) ;
     }
 
     public function stats( $id )
