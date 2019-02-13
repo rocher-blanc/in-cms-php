@@ -416,11 +416,31 @@ class Controller
             case "array" :
                 $tab = [];
 
-                if ( $content )
+                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->isUser() && defined('MODULE_USER') )
                 {
-                    foreach( $content as $row )
+                    $secondTab = $this->Container()->module( MODULE_USER )->getRepository(true)->findAllForSelect2();
+
+                    if ( !empty( $secondTab ) && !empty( $content ) )
                     {
-                        $tab[ $row->id ] = $row->get( $alias );
+                        foreach( $secondTab as $row )
+                        {
+                            $userTab[ $row->id ] = $row->get( $alias );
+                        }
+
+                        foreach( $content as $row )
+                        {
+                            $tab[ $row->id ] = $userTab[ $row->get( $alias ) ];
+                        }
+                    }
+                }
+                else
+                {
+                    if ( $content )
+                    {
+                        foreach( $content as $row )
+                        {
+                            $tab[ $row->id ] = $row->get( $alias );
+                        }
                     }
                 }
 

@@ -53,11 +53,6 @@ class Repository extends \App\Kernel\Back\Repository
 
             if ( $ct == 1 )
             {
-                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->isUser() && defined('MODULE_USER') )
-                {
-                    return \App\Kernel\Container::getInstance()->module( MODULE_USER )->getRepository(true)->findAllForSelect2();
-                }
-
                 if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->hasLang() ) $lang = true ;
                 $content = $content->select( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->fieldSql() , $alias );
             }
