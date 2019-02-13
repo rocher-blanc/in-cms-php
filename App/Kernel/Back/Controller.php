@@ -3,6 +3,8 @@
 namespace App\Kernel\Back;
 
 use JasonGrimes\Paginator;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Controller extends \App\Kernel\Common\Controller
 {
@@ -14,6 +16,7 @@ class Controller extends \App\Kernel\Common\Controller
 	protected $_lang 		= NULL ;
     protected $_id_parent 	= [] ;
     protected $_options 	= [] ;
+    protected $table     	= [] ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -292,7 +295,7 @@ class Controller extends \App\Kernel\Common\Controller
 
         if ( $elmtPerPage == 'all' ) $elmtPerPage = 0;
 
-        $offset      = $elmtPerPage * ( $page - 1 );
+        $offset = $elmtPerPage * ( $page - 1 );
 
         if ( $order === NULL && $by === NULL )
         {
@@ -667,6 +670,11 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'type' , $typeArray ) ;
         $this->setRender( 'search' , $this->getApp()->request->get('search') == 1 ? 1 : 0 ) ;
         $this->setRender( 'elmt_per_page' , ( $elmtPerPage == 0 ? 'all' : $elmtPerPage ) ) ;
+
+        $this->table = [
+            'th' => $thArray,
+            'td' => $tdArray
+        ];
     }
 
     protected function getTreeTableParent( $rows, $parent_id = -1 )
@@ -1432,6 +1440,71 @@ class Controller extends \App\Kernel\Common\Controller
 
         $this->render( $template . '.twig');
     }
+
+    /* ************************************************** */
+    /* ******************    TABLE    ******************* */
+    /* ************************************************** */
+
+    protected function exportAction()
+    {
+        $this->getGlobalVar() ;
+        $this->generateTable() ;
+
+        $alphas = range('A', 'Z');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $writer = new Xlsx($spreadsheet);
+
+        if ( ! $this->getEntity()->hasParent() )
+        {
+            if ( ! empty( $this->table['th'] ) )
+            {
+                $col = 0;
+                foreach( $this->table['th'] as $th )
+                {
+                    $sheet->setCellValue($alphas[ $col ] . '1', $th['title'] );
+                    $col++;
+                }
+
+                $col--;
+                $spreadsheet->getActiveSheet()->setAutoFilter('A1:' . $alphas[ $col ] . "1");
+            }
+
+            if ( ! empty( $this->table['td'] ) )
+            {
+                $line = 2 ;
+                foreach( $this->table['td'] as $td )
+                {
+                    $letter = $alphas[ $col ] ;
+                    $col    = 0;
+
+                    foreach( $td['td'] as $key => $row )
+                    {
+                        if ( $row['type'] == "boolean" )
+                        {
+                            $sheet->setCellValue($alphas[ $col ] . $line, ( $row['value'] == 0 ? "Non" : "Oui" ) );
+                        }
+                        else
+                        {
+                            $sheet->setCellValue($alphas[ $col ] . $line, $row['value'] );
+                        }
+                        $col++;
+                    }
+
+                    $line++;
+                }
+            }
+        }
+
+        header('Content-Disposition: attachment; filename=' . $this->getEntityName() . '-' . date('Y-m-d-H_i_s') . '.xlsx;' );
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
+        header('Content-Transfer-Encoding: binary;');
+        header('Cache-Control: must-revalidate;');
+        header('Pragma: public');
+
+        $writer = new Xlsx( $spreadsheet );
+        $writer->save('php://output');    }
 
     protected function importAction()
     {

@@ -1,5 +1,5 @@
 {% if parentLine.array|length > 0 %}
-        {% set count = parentLine.array|length + 1 %}
+    {% set count = parentLine.array|length + 1 %}
     <ul class="process-steps process-{{ count }} clearfix" style="margin-bottom: 10px;">
         {% for parent in parentLine.array %}
             <li{{ parent.current == true ? ' class="active"' : '' }}>
@@ -15,25 +15,25 @@
 {% endif %}
 
 {% if menu != false and depedency == false %}
-<input type="hidden" id="module4JS" name="module4JS" value="{{ mod.name }}" />
-<div class="ed-menu">
-    <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
-    {% if mod.canCreate == true %}<a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>{% endif %}
-    {#{% if menu != false %}<a href="{{ route( mod.name , 'export' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-outbox"></i>Exporter</a>{% endif %}#}
-    {% if menu != false and mod.canImport == true %}<a href="{{ route( mod.name , 'import' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-inbox"></i>Importer</a>{% endif %}
-    {% if libimage != false %}<a href="{{ route( mod.name , 'libimagesupdate' , uri_id_parent ) }}" class="button button-mini"><i class="icon-image"></i>Banque d'images</a>{% endif %}
-    {% if isIndex == true %}
-        <div class="btn-group">
-            <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
-            </button>
-            <div class="dropdown-menu" data-action="{{ route( mod.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ mod.name }}">
-                {% for name, field in fields if field.table == true %}
-                    <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
-                {% endfor %}
+    <div class="ed-menu">
+        <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+        {% if mod.canCreate == true %}<a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>{% endif %}
+        {#{% if menu != false %}<a href="{{ route( mod.name , 'export' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-outbox"></i>Exporter</a>{% endif %}#}
+        {% if libimage != false %}<a href="{{ route( mod.name , 'libimagesupdate' , uri_id_parent ) }}" class="button button-mini"><i class="icon-image"></i>Banque d'images</a>{% endif %}
+        {% if menu != false and mod.canImport == true %}<a href="{{ route( mod.name , 'import' , uri_id_parent ) }}" class="button button-mini"><i class="icon-cloud-upload"></i>Importer</a>{% endif %}
+        {% if isIndex == true %}
+            <a href="{{ route( mod.name , 'export' , uri_id_parent ) }}?elmt_per_page=all" class="button button-mini"><i class="icon-cloud-download"></i>Exporter</a>
+            <div class="btn-group">
+                <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
+                </button>
+                <div class="dropdown-menu" data-action="{{ route( mod.name , 'customization' , uri_id_parent ) }}" data-table="table-content-{{ mod.name }}">
+                    {% for name, field in fields if field.table == true %}
+                        <a class="dropdown-item{{ field.active ? ' active' : '' }}" href="javascript:;" data-name="{{ name }}">{{ field.title }}</a>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-    {% endif %}
-</div>
-<div class="divider divider-center ed-divider"><i class="{{ mod.icon }}"></i></div>
+        {% endif %}
+    </div>
+    <div class="divider divider-center ed-divider"><i class="{{ mod.icon }}"></i></div>
 {% endif %}

@@ -123,7 +123,7 @@ class Checkbox extends \App\Kernel\Back\Form
         }
 
         return '
-        <select name="' . $name . '[]" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options">
+        <select name="' . $name . '[]" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2">
             ' . $select . '
         </select>' ;
     }

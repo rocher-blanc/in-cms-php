@@ -90,7 +90,15 @@ checkBox = function( base ) {
     if ( $(base + ' select[data-plugin-selectPicker]').length ) {
         $(base + ' select[data-plugin-selectPicker]').selectpicker({
             iconBase: '',
-            tickIcon: 'icon-line-check'
+            tickIcon: 'icon-line-check',
+            countSelectedText: function(num) {
+                if (num === 0) {
+                    return 'Aucune sélection';
+                }
+                else if (num > 1) {
+                    return '{0} options sélectionnées';
+                }
+            }
         });
     }
 };

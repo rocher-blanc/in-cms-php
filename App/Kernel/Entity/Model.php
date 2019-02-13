@@ -74,7 +74,7 @@ class Model
 		if ( $lower )	return strtolower( $content ) ;
 		else			return $content ;
     }
-	
+
 	/* ************************************************** */
 	/* ******************  SETTINGS  ******************** */
 	/* ************************************************** */
@@ -86,6 +86,7 @@ class Model
 				'index',
 				'table',
                 'import',
+                'export',
                 'customization',
 				'add',
 				'edit',
