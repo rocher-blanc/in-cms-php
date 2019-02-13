@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use App\Kernel\Front\Data;
+
 class Newsletter
 {
     /* ************************************************** */
@@ -101,10 +103,11 @@ class Newsletter
 
     protected function exist()
     {
-        $ct = \DB::for_table('newsletter_sub')
-                ->where_equal('newsletter_sub_email', $this->getEmail() )
-                ->where_equal('newsletter_sub_newsletter_group_sub_id', $this->getGroupId() )
-                ->count();
+        $data = new Data('NewsletterSubscriber');
+        $ct = $data->count([
+            'email' => $this->getEmail(),
+            'parent' => $this->getGroupId()
+        ]);
 
         if ( $ct == 0 ) return false ;
         else            return true ;
@@ -112,9 +115,11 @@ class Newsletter
 
     protected function insert()
     {
-        $row = \DB::for_table('newsletter_sub')->create();
-        $row->newsletter_sub_newsletter_group_sub_id = $this->getGroupId() ;
-        $row->newsletter_sub_email = $this->getEmail() ;
-        $row->save();
+        $data = new Data('NewsletterSubscriber');
+        $data->create([
+            'email' => $this->getEmail(),
+            'parent' => $this->getGroupId()
+        ]);
+        $data->save();
     }
 }
