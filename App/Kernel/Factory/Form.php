@@ -269,6 +269,11 @@ class Form
         $this->_cdn_css = [] ;
     }
 
+    public function activeRecaptcha()
+    {
+        $this->setCdnJS("https://www.google.com/recaptcha/api.js");
+    }
+
     public function site( $url )
     {
         return $this->getApp()->request()->getUrl() . '/assets/vendor/' . ltrim($url, '/');

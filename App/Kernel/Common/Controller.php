@@ -471,6 +471,11 @@ class Controller
         $form->setModuleId( $this->getEntityId() );
         $form->setElementId( $this->getId() );
 
+        if ( $this->getEntity()->reCAPTCHA() == true )
+        {
+            $form->activeRecaptcha() ;
+        }
+
         $contentShow = new \stdClass;
 
         if ( $valueF == true )

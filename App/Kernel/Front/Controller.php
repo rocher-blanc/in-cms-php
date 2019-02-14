@@ -1111,7 +1111,7 @@ class Controller extends \App\Kernel\Common\Controller
                 }
                 else
                 {
-                    $result['result'] = true;
+                    $result['result'] = false;
                     $result['msg']    = $this->getRecaptchaMessage();
                 }
             }
