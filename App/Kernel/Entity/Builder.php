@@ -190,7 +190,7 @@ class Builder extends Model
      * @array
      * Variable contenant le ou les champs de références quand un autre module appel celui ci
      */
-    protected $_field_reference ;
+    protected $_field_reference = ["id"] ;
 
     /*
      * @int
