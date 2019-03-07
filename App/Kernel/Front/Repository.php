@@ -318,14 +318,21 @@ class Repository extends \App\Kernel\Common\Repository
                         $rst->limit( $rqt )->offset(0);
                     break;
                     case "order" :
-                        list( $key , $by ) = explode( ":" , $rqt );
-                        if ( $by == 'asc' )
+                        if ( $rqt == 'rand' )
                         {
-                            $rst->order_by_asc( $this->field( $key ) );
+                            $rst->order_by_rand();
                         }
-                        else if ( $by == 'desc' )
+                        else
                         {
-                            $rst->order_by_desc( $this->field( $key ) );
+                            list( $key , $by ) = explode( ":" , $rqt );
+                            if ( $by == 'asc' )
+                            {
+                                $rst->order_by_asc( $this->field( $key ) );
+                            }
+                            else if ( $by == 'desc' )
+                            {
+                                $rst->order_by_desc( $this->field( $key ) );
+                            }
                         }
                     break;
 					case "where" :
