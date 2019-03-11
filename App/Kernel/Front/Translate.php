@@ -62,6 +62,16 @@ class Translate
         return $str ;
     }
 
+    public function exist( $key )
+    {
+        if ( $this->language !== NULL )
+        {
+            return $this->language->exist( $key ) ;
+        }
+
+        return false ;
+    }
+
 	/* ************************************************** */
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */

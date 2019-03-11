@@ -17,11 +17,11 @@ if (typeof redirect !== "function") {
 }
 
 init = function( base ) {
-    checkForm( base );
     checkBox( base );
     checkboxSwitch( base );
     initDatePicker( base );
     initSelect( base );
+    checkForm( base );
 };
 
 checkBox = function( base ) {
