@@ -95,6 +95,7 @@ class Meta
 
         $this->CMS()->view()->appendData([
             'site' => [
+                'full_url'          => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'url'               => $this->Factory()->Url()->getFullUrl(),
                 'referer'           => $this->exist( "HTTP_REFERER" , $_SERVER ),
                 'referer_external'  => $this->exist( "referer" , $_SESSION ),
@@ -105,7 +106,7 @@ class Meta
 			'meta' => [
 				'title'          => "",
 				'language'       => $this->Lang()->getActive()->url,
-				'identifier-url' => \App\Kernel\Http::getInstance()->getUrl() . '/',
+                'identifier-url' => \App\Kernel\Http::getInstance()->getUrl() . '/',
 				'description'    => "",
 				'author'         => $this->exist( "seo_author" , $tab ),
 				'robots'         => ( $tab['seo_robots'] == '0' ? 'noindex,nofollow' : 'index,follow' ),
