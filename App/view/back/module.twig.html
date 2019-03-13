@@ -19,17 +19,26 @@
 
     <div class="row">
         <div class="col-md-2">
+            <a class="help-online" href="mailto:content@easydoor.pr">
+                <span class="top">
+                    <i class="icon-info-sign"></i>
+                </span>
+                <span class="title">Besoin d'aide ?</span>
+                <span class="description">
+                    Vous souhaitez signaler une erreur technique ? Nous sommes à votre écoute.
+                </span>
+            </a>
+            {#
             <a class="help-online" href="{{ siteUrl('modal/help') }}" data-lightbox="ajax">
                 <span class="top">
                     <i class="icon-info-sign"></i>
                 </span>
                 <span class="title">Besoin d'aide ?</span>
-                <span class="description text-center">
-                    Vous souhaitez signaler une erreur technique ? Nous sommes à votre écoute.<br />
-                    <br />
-                    <a href="mailto:content@easydoor.pro" style="color:white;font-weight:bold;font-size:14px;">Contactez-nous</a>
+                <span class="description">
+                    Et olim licet otiosae sint tribus pacataeque centuriae et nulla suffragiorum certamina set Pompiliani redierit securitas temporis, per omnes tamen quotquot sunt partes terrarum
                 </span>
             </a>
+            #}
             {% include 'menu/' ~ cat ~ '.twig' %}
         </div>
         <div class="col-md-10 clearfix" id="module-content">
