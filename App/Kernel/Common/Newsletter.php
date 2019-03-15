@@ -106,7 +106,7 @@ class Newsletter
         $data = new Data('NewsletterSubscriber');
         $ct = $data->count([
             'email' => $this->getEmail(),
-            'parent' => $this->getGroupId()
+            'element_module_parent_id' => $this->getGroupId()
         ]);
 
         if ( $ct == 0 ) return false ;
@@ -118,7 +118,7 @@ class Newsletter
         $data = new Data('NewsletterSubscriber');
         $data->create([
             'email' => $this->getEmail(),
-            'parent' => $this->getGroupId()
+            'element_module_parent_id' => $this->getGroupId()
         ]);
         $data->save();
     }
