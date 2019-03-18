@@ -124,6 +124,7 @@ class Eudonet
     protected function notif( $type , $var , $message , $array , $table , $id = NULL )
     {
         ob_start();
+        echo json_encode( $array ) . "\n\n";
         print_r( $array );
         //print_r( $var );
         $out1 = ob_get_contents();
@@ -134,6 +135,7 @@ class Eudonet
 
         ob_start();
         echo "[$type] Table : $table - " . $id . $message . "\n\n" . $var['ResultInfos']['ApiMessage'] . "\n\n" . $var['ResultInfos']['ErrorMessage'] . "\n\n";
+        echo json_encode( $array ) . "\n\n";
         print_r( $array );
         //print_r( $var );
         $out2 = ob_get_contents();
@@ -269,7 +271,10 @@ class Eudonet
     }
   ]
 }' ;
+        if ( isset( $_GET['request'] ) ) echo "<pre>" .$str ;
+
         $params = json_decode( $str );
+
         $tab    = [];
         $rst    = $this->request("post" , 'Search/' . $tablId , $params )['result'];
 
