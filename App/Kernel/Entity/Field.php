@@ -670,8 +670,15 @@ class Field
 		}
 		else
 		{
-			if ( $this->rename() )  $this->setValue( $this->getApp()->request->post( $this->getColumn() ) ) ;
-			else					$this->setValue( $this->getApp()->request->post( $this->getName() ) ) ;
+			if ( $this->rename() )  $key = $this->getColumn() ;
+			else					$key = $this->getName() ;
+
+            $this->setValue( $this->getApp()->request->post( $key ) ) ;
+
+            if ( isset( $_FILES[ $key ] ) && $this->getType() == 'document' )
+            {
+                $this->setValue( $_FILES[ $key ] ) ;
+            }
 
             if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
             {

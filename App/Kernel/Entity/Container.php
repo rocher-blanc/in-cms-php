@@ -70,6 +70,16 @@ class Container
         return $this->name ;
     }
 
+    public function getRepositoryFront()
+    {
+        return $this->repositoryFront;
+    }
+
+    public function getRepositoryBack()
+    {
+        return $this->repositoryBack;
+    }
+
     public function getEntity()
     {
         if ( $this->entity === NULL )
@@ -82,6 +92,9 @@ class Container
         return $this->entity ;
     }
 
+    /**
+     * @return Builder
+     */
     public function getEntityClassName()
     {
         foreach( $this->namespace as $namespace )
