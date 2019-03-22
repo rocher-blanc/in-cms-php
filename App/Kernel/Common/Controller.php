@@ -470,6 +470,7 @@ class Controller
         $form->initLib();
         $form->setModuleId( $this->getEntityId() );
         $form->setElementId( $this->getId() );
+        $form->setFolder( $this->getEntity()->getFolder() );
 
         if ( $this->getEntity()->reCAPTCHA() == true )
         {

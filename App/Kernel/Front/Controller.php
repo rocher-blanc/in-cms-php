@@ -1028,6 +1028,16 @@ class Controller extends \App\Kernel\Common\Controller
 
                                     $content->set($row->getColumn(), $Media->getImageId() );
                                 }
+                                else if ( $row->getType() == "document" && !empty( $_FILES[ $row->getColumn() ]['name'] ) )
+                                {
+                                    $Doc = new Document;
+                                    $Doc->setModuleId( $this->getEntityId() ) ;
+                                    $Doc->setModuleName( $this->getEntityName() ) ;
+                                    $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+                                    $rst = $Doc->upload( $row->getColumn() ) ;
+
+                                    $content->set($row->getColumn(), $Doc->getDocumentId() );
+                                }
                                 else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
                                 {
                                     $content->set($row->getColumn(), $row->getDefault());

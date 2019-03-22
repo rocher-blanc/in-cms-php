@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Form;
 
+use App\Kernel\Http;
+
 class Document extends \App\Kernel\Back\Form
 {
 	public function __construct()
@@ -40,6 +42,7 @@ class Document extends \App\Kernel\Back\Form
 					$ico = $this->_doc->getIcon( $this->_doc->getDocumentName() );
 
 					$tab[ $row ] = [
+						'url'   => Http::getInstance()->getUrl() . str_replace( WEB_PATH , '' , DOCUMENT_PATH ) . "/" . $this->getFolder() . "/" . $this->_doc->getDocumentName(),
 						'name'  => $this->_doc->getDocumentName(),
 						'title' => $this->_doc->getAltText(),
 						'id'    => $row,

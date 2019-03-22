@@ -16,6 +16,7 @@ class Form
     protected $view       = NULL ;
     protected $module_id  = NULL ;
     protected $element_id = NULL ;
+    protected $folder     = NULL ;
 
     /* ************************************************** */
     /* ******************   TOOLS   ********************* */
@@ -60,9 +61,25 @@ class Form
         $this->element_id = $id ;
     }
 
+    /**
+     * @param null $folder
+     */
+    public function setFolder($folder)
+    {
+        $this->folder = $folder;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    /**
+     * @return null
+     */
+    public function getFolder()
+    {
+        return $this->folder;
+    }
 
     public function getModuleId()
     {

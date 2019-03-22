@@ -10,6 +10,7 @@ class Form
 
     protected $module_id    = NULL ;
     protected $element_id   = NULL ;
+    protected $folder       = NULL ;
     protected $_lib_js      = [];
     protected $_lib_css     = [];
     protected $_cdn_js      = [];
@@ -41,6 +42,14 @@ class Form
     public function setElementId( $id )
     {
         $this->element_id = $id ;
+    }
+
+    /**
+     * @param null $folder
+     */
+    public function setFolder($folder)
+    {
+        $this->folder = $folder;
     }
 
     private function setLibJS( $var )
@@ -115,6 +124,14 @@ class Form
     public function getElementId()
     {
         return $this->element_id ;
+    }
+
+    /**
+     * @return null
+     */
+    public function getFolder()
+    {
+        return $this->folder;
     }
 
     public function getLibCSS()
@@ -243,6 +260,7 @@ class Form
             $obj = new $className ;
             $obj->setModuleId( $this->getModuleId() );
             $obj->setElementId( $this->getElementId() );
+            $obj->setFolder( $this->getFolder() );
 
             $html = $obj->html( $field , $name , $value );
 

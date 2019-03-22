@@ -5,48 +5,8 @@ namespace App\Kernel\Back;
 class Document extends \App\Kernel\Common\Document
 {
     /* ************************************************** */
-    /* ****************   VARIABLES   ******************* */
+    /* ******************   TOOLS    ******************** */
     /* ************************************************** */
-
-    private $module_id   = NULL ;
-	private $module_name = NULL ;
-
-	/* ************************************************** */
-	/* ******************   SETTER   ******************** */
-	/* ************************************************** */
-
-	public function setModuleId( $var )
-    {
-        $this->module_id = $var ;
-    }
-
-	public function setModuleName( $var )
-	{
-		$this->module_name = $var ;
-	}
-
-	/* ************************************************** */
-	/* ******************   GETTER   ******************** */
-	/* ************************************************** */
-
-    public function getModuleId()
-    {
-        return $this->module_id ;
-    }
-
-    public function getModuleName()
-    {
-        return $this->module_name ;
-    }
-
-	/* ************************************************** */
-	/* ******************   TOOLS    ******************** */
-	/* ************************************************** */
-
-    protected function Factory()
-    {
-        return \App\Kernel\Factory::getInstance() ;
-    }
 
     protected function getApp()
     {
@@ -131,18 +91,6 @@ class Document extends \App\Kernel\Common\Document
         return false ;
     }
 
-    private function updateName()
-    {
-        $exp 	= explode( "." , $this->getDocumentName() ) ;
-        $ext 	= end( $exp ) ;
-        $extlen = ( strlen( $ext ) + 1 ) * -1 ;
-
-        $name = substr( $this->getDocumentName() , 0 , $extlen ) ;
-        $name = $this->Factory()->Url()->encode( $this->getDocumentId() . "-" . $name ) . "." . $ext ;
-
-        return $name ;
-    }
-
     public function updateAlt()
     {
         $rst = \DB::for_table('document')
@@ -159,27 +107,6 @@ class Document extends \App\Kernel\Common\Document
         else
         {
             return false ;
-        }
-    }
-
-    public function rename()
-    {
-        $path = DOCUMENT_PATH . '/' . $this->getFolder() . '/' ;
-        $doc  = UPLOAD_PATH . '/' . $this->getDocumentName() ;
-
-        if ( file_exists( $doc ) )
-        {
-            $name = $this->updateName();
-            rename( $doc , $path . $name ) ;
-
-            $my = \DB::for_table('document')
-                ->where_id_is( $this->getDocumentId() )
-                ->find_one();
-
-            $my->document_name = $name;
-            $my->save() ;
-
-            $this->setDocumentName( $name ) ;
         }
     }
 

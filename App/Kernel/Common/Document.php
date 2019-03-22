@@ -12,6 +12,8 @@ class Document
     protected $document_name    = NULL ;
     protected $folder_name      = NULL ;
     protected $alt              = NULL ;
+    protected $module_name      = NULL ;
+    protected $module_id        = NULL ;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -43,9 +45,24 @@ class Document
         $this->alt = $var ;
     }
 
+    public function setModuleName( $var )
+    {
+        $this->module_name = $var ;
+    }
+
+    public function setModuleId( $var )
+    {
+        $this->module_id = $var ;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    public function getModuleId()
+    {
+        return $this->module_id ;
+    }
 
     public function getDocumentId()
     {
@@ -67,9 +84,56 @@ class Document
         return $this->alt ;
     }
 
+    public function getModuleName()
+    {
+        return $this->module_name ;
+    }
+
+    /* ************************************************** */
+    /* ******************   TOOLS    ******************** */
+    /* ************************************************** */
+
+    protected function Factory()
+    {
+        return \App\Kernel\Factory::getInstance() ;
+    }
+
     /* ************************************************** */
     /* *****************   FUNCTION   ******************* */
     /* ************************************************** */
+
+    public function rename()
+    {
+        $path = DOCUMENT_PATH . '/' . $this->getFolder() . '/' ;
+        $doc  = UPLOAD_PATH . '/' . $this->getDocumentName() ;
+
+        if ( file_exists( $doc ) )
+        {
+            $name = $this->updateName();
+            rename( $doc , $path . $name ) ;
+
+            $my = \DB::for_table('document')
+                ->where_id_is( $this->getDocumentId() )
+                ->find_one();
+
+            $my->document_name = $name;
+            $my->save() ;
+
+            $this->setDocumentName( $name ) ;
+        }
+    }
+
+    private function updateName()
+    {
+        $exp 	= explode( "." , $this->getDocumentName() ) ;
+        $ext 	= end( $exp ) ;
+        $extlen = ( strlen( $ext ) + 1 ) * -1 ;
+
+        $name = substr( $this->getDocumentName() , 0 , $extlen ) ;
+        $name = $this->Factory()->Url()->encode( $this->getDocumentId() . "-" . $name ) . "." . $ext ;
+
+        return $name ;
+    }
 
     public function getIcon( $name )
     {

@@ -4,6 +4,9 @@
         <li id="document_{{ doc.id }}">
             <div class="input-group">
                 <span class="input-group-addon">
+                    <a target="_blank" href="{{ doc.url }}" title="Télécharger le document {{ doc.name }}"><i class="fa fa-download" title="{{ doc.name }}"></i></a>
+                </span>
+                <span class="input-group-addon" style="border-right: 0;">
                     <i class="fa fa-file{{ doc.ico.class }}-o" title="{{ doc.name }}" style="cursor: help;"></i>
                 </span>
                 <input type="hidden" name="{{ name }}[{{ doc.id }}]" value="{{ doc.id }}">

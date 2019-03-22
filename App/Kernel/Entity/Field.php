@@ -185,12 +185,17 @@ class Field
 
 	public function isEmpty( $lang = NULL )
 	{
-		if ( is_string( $this->getValue( $lang ) ) )
-		{
-			if ( trim( $this->getValue( $lang ) ) === '' or $this->getValue( $lang ) === '' )   return true ;
-			else                                                                                return false ;
-		}
-		else
+        if ( is_string( $this->getValue( $lang ) ) )
+        {
+            if ( trim( $this->getValue( $lang ) ) === '' or $this->getValue( $lang ) === '' )   return true ;
+            else                                                                                return false ;
+        }
+        elseif ( is_array( $this->getValue( $lang ) ) && $this->getType() == "document" )
+        {
+            if ( empty( $this->getValue( $lang )['name'] ) ) return true ;
+            else                                             return false ;
+        }
+        else
 		{
 			if ( empty( $this->getValue( $lang ) ) )    return true ;
 			else                                        return false ;
@@ -679,6 +684,10 @@ class Field
             {
                 $this->setValue( $_FILES[ $key ] ) ;
             }
+            else if ( isset( $_FILES[ "upload_" . $key ] ) && $this->getType() == 'image' )
+            {
+                $this->setValue( $_FILES[ "upload_" . $key ] ) ;
+            }
 
             if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
             {
@@ -716,15 +725,29 @@ class Field
 
 			if ( $this->getType() == 'image' && $this->isRequired() == true )
 			{
-				$Media = new \App\Kernel\Back\Media;
-				$Media->setImageId( $this->getValue() ) ;
 
-				if ( $Media->exist() == false )
-				{
-					$this->setValue( NULL ) ;
-					$this->setError( $this->Message()->get('deletemedia_media_not_found') ) ;
-					$return = false ;
-				}
+				if ( is_array( $this->getValue() ) )
+                {
+                    if ( empty( $this->getValue()['name'] ) )
+                    {
+                        $this->setValue( NULL ) ;
+                        $this->setError( $this->getData('notEmpty_msg') ) ;
+                        $this->setData( 'front-error' , ( $this->rename() ? $this->getColumn() : $this->getName() ) . '_empty' ) ;
+                        $return = false ;
+                    }
+                }
+                else
+                {
+                    $Media = new \App\Kernel\Back\Media;
+                    $Media->setImageId( $this->getValue() ) ;
+
+                    if ( $Media->exist() == false )
+                    {
+                        $this->setValue( NULL ) ;
+                        $this->setError( $this->Message()->get('deletemedia_media_not_found') ) ;
+                        $return = false ;
+                    }
+                }
 			}
 			else if ( $this->getType() == 'link' )
 			{
@@ -733,10 +756,10 @@ class Field
 					$this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
 				}
 			}
-			else if ( $this->getType() == 'document' && is_array( $this->getValue() ) && !empty( $this->getValue() ) )
-			{
-				$this->setValue( implode( ',' , $this->getValue() ) ) ;
-			}
+            else if ( $this->getType() == 'document' && is_array( $this->getValue() ) && !empty( $this->getValue() ) )
+            {
+                $this->setValue( implode( ',' , $this->getValue() ) ) ;
+            }
 
 			if ( $this->isParent() == true && $this->getValue() == '' )
 			{
