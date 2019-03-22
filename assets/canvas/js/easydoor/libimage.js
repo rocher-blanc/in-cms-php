@@ -4,6 +4,7 @@ $(function() {
 
 init = function( base ) {
     checkImageLib( base );
+    deleteImageLib( base );
 };
 
 checkImageLib = function(base) {
@@ -56,6 +57,32 @@ checkImageLib = function(base) {
                 console.log('test filebeforedelete');
             }).on('filedeleted', function() {
                 console.log('test filedeleted');
+            });
+        });
+    }
+};
+
+deleteImageLib = function(base) {
+    if ( $(base + ' .deletelibimage').length ) {
+        $(base + ' .deletelibimage').bind('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $div = $(this).parent();
+
+            $.ajax({
+                url: $(this).attr('href'),
+                type: "get",
+                dataType: 'json',
+                success: function( data ) {
+                    Notify(data.msg, data.result);
+
+                    if ( data.result == true ) {
+                        $div.fadeOut(400, function(){
+                            $div.remove();
+                        });
+                    }
+                }
             });
         });
     }

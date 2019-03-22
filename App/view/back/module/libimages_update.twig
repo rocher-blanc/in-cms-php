@@ -9,21 +9,18 @@
         <h3>Librairie d'images</h3>
     </div>
 
-    <p>
-        Sed maximum est in amicitia parem esse inferiori. Saepe enim excellentiae quaedam sunt, qualis erat Scipionis in nostro, ut ita dicam, grege. Numquam se ille Philo, numquam Rupilio, numquam Mummio anteposuit, numquam inferioris ordinis amicis, Q. vero Maximum fratrem, egregium virum omnino, sibi nequaquam parem, quod is anteibat aetate, tamquam superiorem colebat suosque omnes per se posse esse ampliores volebat.
-    </p>
-
     {% for key, img in fields %}
         <div class="field">
             <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
             <div class="fancy-title title-double-border title-center topmargin-sm"><h4><span>{{ img.title }}</span></h4></div>
+
             {% for img in img.images %}
-                <div class="mini" style="width: 100px; height: 100px; float: left; margin: 0 5px 5px 0; background: url('{{ asset('canvas/img/ajax-loader.gif') }}') center center no-repeat;">
-                    <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
-                        <img src="{{ img.media_mini_name }}" class="" />
-                    </a>
+                <div class="mini lib-picture">
+                    <img src="{{ img.media_mini_name }}" class="" />
+                    <a href="{{ route( mod.name , 'deletemedia' , '' , img.media_id , csrf_token ) }}" class="overlay-picture deletelibimage"><i class="icon-trash"></i></a>
                 </div>
             {% endfor %}
+
             <div class="clear"></div>
             <div class="text-center">
                 <input id="upload_{{ key }}" type="file" data-upload-image class="file-loading" data-fieldname="id_{{ key }}" data-imgname="source_{{ key }}" data-field="{{ key }}" data-uploadurl="{{ route( mod.name , 'upload' ) }}">
@@ -33,7 +30,41 @@
 {% endblock %}
 
 {% block icon_page %}{{ mod.icon }}{% endblock %}
-{% block stylesheets %}<link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}"/>{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}"/>
+    <style>
+        .overlay-picture {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: 0;
+            left: 0;
+            padding: 30px 0;
+            text-align: center;
+            background-color: rgba(255,255,255, 0.8);
+            font-size: 26px;
+            display: none;
+        }
+        .overlay-picture i {
+            color: #c02942;
+        }
+
+        .mini:hover .overlay-picture {
+            display: block;
+        }
+
+        .lib-picture {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            float: left;
+            margin: 0 5px 5px 0;
+            background: url('{{ asset('canvas/img/ajax-loader.gif') }}') center center no-repeat;
+        }
+    </style>
+{% endblock %}
+
 {% block javascripts %}
     <script src="{{ asset('canvas/js/components/bs-filestyle.js') }}"></script>
     <script src="{{ asset('canvas/js/easydoor/locales/fileinput/fr.js') }}"></script>
