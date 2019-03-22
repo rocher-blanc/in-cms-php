@@ -2,6 +2,7 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\Front\Translate;
 use Slim\Slim;
 
 class TwigLang extends \Twig_Extension
@@ -21,11 +22,11 @@ class TwigLang extends \Twig_Extension
 
     public function trad( $key , $var = [] )
     {
-        return \App\Kernel\Front\Translate::getInstance()->getText( $key , $var ) ;
+        return Translate::getInstance()->getText( $key , $var ) ;
     }
 
     public function exist( $key )
     {
-        return \App\Kernel\Front\Translate::getInstance()->exist( $key ) ;
+        return Translate::getInstance()->exist( $key ) ;
     }
 }

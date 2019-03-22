@@ -64,7 +64,7 @@ class Response
         $this->getApp()->contentType('application/json');
 		$this->getApp()->response()->body( json_encode( $array ) );
 
-		if ( array_key_exists( 'msg' , $array ) && array_key_exists( 'result' , $array ) )
+		if ( array_key_exists( 'msg' , $array ) && array_key_exists( 'result' , $array ) && $array['noflash'] != true )
         {
             $this->flash( $array['msg'] , $array['result'] );
         }
