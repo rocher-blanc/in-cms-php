@@ -91,7 +91,7 @@
                                     <div class="depedencyForm" id="form-content-{{ dependency.class }}" data-form="{{ dRoute(dependency.class , 'form' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
                                 {% else %}
                                     <div class="ed-menu bottommargin-sm">
-                                        <a data-modal="true" href="{{ dRoute(dependency.class , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+                                    {% if dependency.add == true %}<a data-modal="true" href="{{ dRoute(dependency.class , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>{% endif %}
                                         <div class="btn-group">
                                             <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>

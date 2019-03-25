@@ -1058,7 +1058,8 @@ class Controller extends \App\Kernel\Common\Controller
                     'icon'   => $depedency['icon'],
                     'fields' => $this->Container()->module( $depedency['class'] )->getController(true)->getImportFiled(),
                     'max'    => $this->Container()->module( $depedency['class'] )->getEntity()->getMaxElement(),
-                    'delete' => $this->Container()->module( $depedency['class'] )->getEntity()->canDelete()
+                    'delete' => $this->Container()->module( $depedency['class'] )->getEntity()->canDelete(),
+                    'add'    => $this->Container()->module( $depedency['class'] )->getEntity()->canCreate(),
                 ];
             }
         }
