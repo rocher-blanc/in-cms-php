@@ -397,8 +397,21 @@ class Eudonet
                 'json' => $params
             ]);
 
+            $result = json_decode($authResponse->getBody(), true) ;
+
+            $log = \DB::for_table('eudonet')->create();
+            $log->date = date('Y-m-d H:i:s');
+            $log->type = strtoupper( $type );
+            $log->route = $route ;
+            $log->headers = json_encode($this->headers) ;
+            $log->body = json_encode($params) ;
+            $log->response = $result['ResultInfos']['ApiMessage'] ;
+            $log->error = $result['ResultInfos']['ErrorMessage'] ;
+            $log->success = $result['ResultInfos']['Success'] ;
+            $log->save();
+
             return [
-                'result' => json_decode($authResponse->getBody(), true),
+                'result' => $result,
                 'remain' => $authResponse->getHeader('X-CALL-REMAIN')[0]
             ];
         } catch ( Exception $e )

@@ -2,6 +2,8 @@
 
 namespace App\Kernel;
 
+use App\Kernel\Param;
+
 class Container
 {
     /* ************************************************** */
@@ -13,26 +15,10 @@ class Container
     private $entity = [] ;
 
     /* ************************************************** */
-    /* ****************   CONSTRUCT   ******************* */
-    /* ************************************************** */
-
-    public function __construct() {}
-
-    /* ************************************************** */
-    /* ****************     SETTER    ******************* */
-    /* ************************************************** */
-
-
-
-    /* ************************************************** */
-    /* ****************     GETTER    ******************* */
-    /* ************************************************** */
-
-    /* ************************************************** */
     /* ****************    SINGLETON   ****************** */
     /* ************************************************** */
 
-    public static function getInstance()
+    public static function getInstance():Container
     {
         if ( self::$instance === NULL ) self::$instance = new Container;
         return self::$instance ;
@@ -42,9 +28,11 @@ class Container
     /* ****************     MODULE    ******************* */
     /* ************************************************** */
 
-    public function module( $name )
+    public function module( $name ):\App\Kernel\Entity\Container
     {
         $name = ucfirst( $name );
+
+        if ( empty( $name ) ) throw new \App\Kernel\Exception("Module is undefined #1") ;
 
         if ( array_key_exists( $name , $this->entity ) )
         {
@@ -80,11 +68,11 @@ class Container
     /* ****************       PARAM      ******************* */
     /* ***************************************************** */
 
-    public function param()
+    public function param():Param
     {
         if ( $this->param === NULL )
         {
-            $this->param = new \App\Kernel\Param;
+            $this->param = new Param;
         }
 
         return $this->param;

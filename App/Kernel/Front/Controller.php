@@ -496,10 +496,17 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getSelectValue( $module , $value )
     {
-        $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
+        if ( ! empty( $module ) )
+        {
+            $result = $this->Container()->module( $module )->getRepository()->findOne( $value );
 
-        if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
-        else            return NULL ;
+            if ( $result )  return $this->Container()->module( $module )->getController()->parseValue( $result );
+            else            return NULL ;
+        }
+        else
+        {
+            throw new \App\Kernel\Exception("Module is undefined") ;
+        }
     }
 
     public function subParse( $object )
