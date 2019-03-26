@@ -2,5 +2,5 @@
     <span class="input-group-addon">
         <i class="fa fa-calendar"></i>
     </span>
-    <input type="text" data-plugin-date{{ hour ? 'time' : '' }}picker class="form-control" autocomplete="off" name="{{ name }}" id="id_{{ column }}" value="{{ value }}" />
+    <input type="text" data-plugin-{{ old ? 'old' : '' }}date{{ hour ? 'time' : '' }}picker class="form-control" autocomplete="off" name="{{ name }}" id="id_{{ column }}" value="{{ value }}" />
 </div>

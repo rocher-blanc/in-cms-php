@@ -550,6 +550,17 @@ initDatePicker = function(base) {
         });
     }
 
+    if ( $(base + " input[data-plugin-olddatetimepicker]").length ) {
+        var today = new Date();
+        $(base + " input[data-plugin-olddatetimepicker]").datetimepicker({
+            format: "dd/mm/yyyy - hh:ii",
+            autoclose: true,
+            todayBtn: true,
+            minuteStep: 10,
+            locale: 'fr'
+        });
+    }
+
     if ( $(base + " .date-range").length ) {
         $(base + " .date-range").datepicker({
             language: 'fr',

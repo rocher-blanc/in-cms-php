@@ -1427,11 +1427,12 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isDate( $hour = false )
+    protected function isDate( $hour = false , $old = false )
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;
         $this->field()->setData( "hour" , $hour ) ;
+        $this->field()->setData( "old" , $old ) ;
         return $this ;
     }
 
