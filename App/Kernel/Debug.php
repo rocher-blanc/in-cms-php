@@ -92,15 +92,12 @@ class Debug
     public static function view( $var = NULL )
     {
         if ( $var !== NULL ) self::save( $var );
-        if ( !empty( self::$sql ) ) self::dump( self::$sql , "SQL" , false , true ) ;
+        if ( !empty( self::$sql ) ) dump( self::$sql ) ;
         if ( !empty( self::$value ) )
         {
-            $ct = count( self::$value ) ;
-            $index = 1;
             foreach( self::$value as $row )
             {
-                self::dump( $row , null , ( $index == $ct ? true : false ) , false ) ;
-                $index++;
+                dump( $row ) ;
             }
         }
     }

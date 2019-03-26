@@ -65,7 +65,7 @@ class Controller extends \App\Kernel\Common\Controller
         return [ $this->_get('parent') ] ;
     }
 
-    public function getRepository(): \App\Kernel\Front\Repository
+    public function getRepository()
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository() ;
     }
@@ -103,11 +103,6 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $this->init() ;
             $ct = count( $this->getUrl() ) ;
-
-
-
-
-
 
             if ( $ct == 0 )
             {
@@ -803,13 +798,14 @@ class Controller extends \App\Kernel\Common\Controller
     public function getElementComponent( $type , $request )
     {
         $elmts 		= [] ;
+        $result     = [] ;
         $pagination = false ;
 
         switch( $type )
         {
             case "one" :
                 $result = $this->getRepository()->requestOne( $request );
-                break;
+            break;
             case "all" :
                 $currentPage = NULL ;
 
@@ -834,14 +830,14 @@ class Controller extends \App\Kernel\Common\Controller
                     $totalItems = $this->getRepository()->requestCount( $request );
 
                     if ( array_key_exists('pagination' , $request ) )	$itemsPerPage = $request['pagination'];
-                    else													$itemsPerPage = $this->getEntity()->getPagination();
+                    else												$itemsPerPage = $this->getEntity()->getPagination();
 
                     $paginator  = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
                     $pagination = $this->parsePagination( $paginator );
                 }
 
                 $result = $this->getRepository()->requestAll( $request , $currentPage );
-                break;
+            break;
         }
 
         if ( $result )

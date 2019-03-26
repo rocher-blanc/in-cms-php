@@ -215,9 +215,9 @@ class Repository extends \App\Kernel\Common\Repository
             ->find_many();
     }
 
-    public function requestAll( $request , $currentPage = NULL )
+    public function requestAll( array $request , $currentPage = NULL )
     {
-    	$rst = $this->request( $request ) ;
+        $rst = $this->request( $request ) ;
 
 		if ( $currentPage !== NULL )
 		{
@@ -229,20 +229,20 @@ class Repository extends \App\Kernel\Common\Repository
 				->offset( ( $pagination * $currentPage ) - $pagination );
 		}
 
-		return $rst->find_many();
+        return $rst->find_many();
     }
 
-	public function requestOne( $request )
+	public function requestOne( array $request )
 	{
 		return $this->request( $request )->find_one();
 	}
 
-	public function requestCount( $request )
+	public function requestCount( array $request ):int
 	{
 		return $this->request( $request )->count();
 	}
 
-    public function request( $request )
+    public function request( array $request )
     {
         $order = true ;
         if ( array_key_exists( 'order' , $request ) ) $order = false ;

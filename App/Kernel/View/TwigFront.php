@@ -53,12 +53,18 @@ class TwigFront extends \Twig_Extension
         $this->tab = [];
 
         return array(
+            new \Twig_SimpleFunction('addslashes', array($this, 'slashes')),
             new \Twig_SimpleFunction('env', array($this, 'env')),
             new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
             new \Twig_SimpleFunction('asset', array($this, 'asset')),
             new \Twig_SimpleFunction('css', array($this, 'getCssVar')),
             new \Twig_SimpleFunction('javascript', array($this, 'getJsVar'))
         );
+    }
+
+    public function slashes( $str )
+    {
+        return addslashes($str) ;
     }
 
     public function env()

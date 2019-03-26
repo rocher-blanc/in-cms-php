@@ -22,9 +22,14 @@ class PrettyExceptions extends \Slim\Middleware
             $env['slim.log'] = $log;
             $env['slim.log']->error($e);
 
+            ob_start();
+            \App\Kernel\Debug::view();
+            $out1 = ob_get_contents();
+            ob_end_clean();
+
             $this->app->contentType('text/html');
             $this->app->response()->status(500);
-            $this->app->response()->body($this->renderBody($env, $e));
+            $this->app->response()->body( $out1 . $this->renderBody($env, $e) );
         }
     }
 

@@ -139,7 +139,7 @@
                 data = addCSRF(data);
 
                 $.ajax({
-                    url     : '/admin-site/admin/groupmodule/order-block',
+                    url     : '{{ siteUrl('admin/groupmodule/order-block') }}',
                     data    : data,
                     method  : "POST",
                     dataType: 'json',
@@ -210,7 +210,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '/admin-site/admin/groupmodule/add-column',
+            url     : '{{ siteUrl('admin/groupmodule/add-column') }}',
             data    : data,
             method  : "POST",
             dataType: 'json',
@@ -233,7 +233,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '/admin-site/admin/groupmodule/delete-column',
+            url     : '{{ siteUrl('admin/groupmodule/delete-column') }},
             data    : data,
             method  : "POST",
             dataType: 'json',
@@ -324,7 +324,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '/admin-site/admin/groupmodule/add-block',
+            url     : '{{ siteUrl('admin/groupmodule/add-block') }}',
             data    : data,
             method  : "POST",
             dataType: 'json',
@@ -346,7 +346,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '/admin-site/admin/groupmodule/delete-block',
+            url     : '{{ siteUrl('admin/groupmodule/delete-block') }}',
             data    : data,
             method  : "POST",
             dataType: 'json',
@@ -406,7 +406,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '/admin-site/admin/groupmodule/rename-block',
+            url     : '{{ siteUrl('admin/groupmodule/rename-block') }}',
             data    : data,
             method  : "POST",
             dataType: 'json',

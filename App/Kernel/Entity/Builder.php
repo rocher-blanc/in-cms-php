@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Entity;
 
+use App\Kernel\Entity\Field;
+
 class Builder extends Model
 {
     /*
@@ -283,6 +285,8 @@ class Builder extends Model
         'date_updated',
         'isValid'
     ];
+    private $_id_name;
+    private $_default_name;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -666,7 +670,10 @@ class Builder extends Model
         return $this->_last ;
     }
 
-    public function getField()
+    /**
+     * @return array
+     */
+    public function getField():array
     {
         return $this->_field ;
     }
@@ -1308,7 +1315,7 @@ class Builder extends Model
     protected function initField( $name )
     {
         /* On initialiste tout par défaut */
-        $field = new \App\Kernel\Entity\Field;
+        $field = new Field;
         $field->setEntityName( $this->getClassName() );
         $field->setName( $name );
 
@@ -1322,7 +1329,7 @@ class Builder extends Model
         else													throw new \App\Kernel\Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
     }
 
-    public function get( $field ): \App\Kernel\Entity\Field
+    public function get( $field ): Field
     {
         return $this->setLast( $field )->field() ;
     }
