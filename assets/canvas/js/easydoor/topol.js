@@ -83,6 +83,7 @@ let drawTopol = function( config ) {
         },
         language: "fr",
         templateId: config.idTopol,
+        mergeTags: config.tags,
         removeTopBar: false, // Hides the top bar of the email editor
         light: true, // set the editor theme to be light
         customFileManager: false, // sets the build in file manager to be disabled and change to call the callbacks provided below

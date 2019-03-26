@@ -43,6 +43,7 @@
                 apiKey: "{{ apiKey }}",
                 userId: "{{ userId }}",
                 idTopol: {{ idtopol }},
+                tags: {{ mergeTags }},
                 urlDuplicate: '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}',
                 urlSave: '{{ route( mod.name , 'saveMail' , uri_id_parent , id ) }}',
                 urlRedirect: '{{ route( mod.name , 'index' , uri_id_parent ) }}',
