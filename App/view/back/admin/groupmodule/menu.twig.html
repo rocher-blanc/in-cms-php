@@ -233,7 +233,7 @@
         data = addCSRF(data);
 
         $.ajax({
-            url     : '{{ siteUrl('admin/groupmodule/delete-column') }},
+            url     : '{{ siteUrl('admin/groupmodule/delete-column') }}',
             data    : data,
             method  : "POST",
             dataType: 'json',
