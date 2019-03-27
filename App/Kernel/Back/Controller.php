@@ -806,6 +806,14 @@ class Controller extends \App\Kernel\Common\Controller
                             {
                                 $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
                             }
+                            else
+                            {
+                                if ( $this->getEntity()->itsDepedency() )
+                                {
+                                    $this->setDepedencyElement( $content->get( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->getColumn() ) );
+                                    $this->setDepedencyModule( $content->get( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->getColumn() ) );
+                                }
+                            }
                         }
                         else
                         {
@@ -979,11 +987,13 @@ class Controller extends \App\Kernel\Common\Controller
 
                     if ( $this->getApp()->request->post('buttonaction') == "stay" )
                     {
-                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() ) ;
+                        if ( $this->getEntity()->itsDepedency() )   $result['url'] = $this->Factory()->Url()->depedencyRoute( $this->getEntityName() , 'edit' , $this->getDepedencyElement() , $this->getDepedencyModule() , $this->getId() ) ;
+                        else                                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , $this->getUriParent() , $this->getId() ) ;
                     }
                     else
                     {
-                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) ;
+                        if ( $this->getEntity()->itsDepedency() )   $result['url'] = $this->Factory()->Url()->depedencyRoute( $this->getEntityName() , 'index' , $this->getDepedencyElement() , $this->getDepedencyModule() , $this->getId() ) ;
+                        else                                        $result['url'] = $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) ;
                     }
 
                     if ( $add ) $result['msg'] = $this->m("add_success") ;

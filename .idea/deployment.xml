@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="WAW - VPS2 - IFEC">
+  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Myautov2">
     <serverData>
       <paths name="EASYLETTER">
         <serverdata>
@@ -24,6 +24,13 @@
         </serverdata>
       </paths>
       <paths name="Mutu - Boutique">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="PROD - FNH">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -59,13 +66,6 @@
         </serverdata>
       </paths>
       <paths name="VPS - DOCv2">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="VPS - FNH">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

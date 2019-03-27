@@ -1,3 +1,7 @@
+/*
+    Version 1.01.2
+ */
+
 $(function() {
     init('body');
 });
@@ -21,30 +25,38 @@ init = function( base ) {
     checkVideo( base );
 };
 
+modalConfig = function( onglet ) {
+    return {
+        type: 'ajax',
+        closeBtnInside: false,
+        callbacks: {
+            ajaxContentAdded: function(mfpResponse) {
+                SEMICOLON.widget.loadFlexSlider();
+                SEMICOLON.initialize.resizeVideos();
+                SEMICOLON.widget.masonryThumbs();
+                checkboxSwitch('#myModal1');
+                init('#myModal1');
+                if( $("#myModal1 .tabs").length ) {
+                    $("#myModal1 .tabs").tabs();
+                }
+
+                if ( typeof onglet !== 'undefined' ) {
+                    $('#myModal1 #' + onglet ).trigger('click');
+                }
+            },
+            open: function() {
+                $('body').addClass('ohidden');
+            },
+            close: function() {
+                $('body').removeClass('ohidden');
+            }
+        }
+    };
+};
+
 modalDepedency = function ( base ) {
     if( $(base).find('a[data-modal="true"]').length > 0 ) {
-        $(base).find('a[data-modal="true"]').magnificPopup({
-            type: 'ajax',
-            closeBtnInside: false,
-            callbacks: {
-                ajaxContentAdded: function(mfpResponse) {
-                    SEMICOLON.widget.loadFlexSlider();
-                    SEMICOLON.initialize.resizeVideos();
-                    SEMICOLON.widget.masonryThumbs();
-                    checkboxSwitch('#myModal1');
-                    init('#myModal1');
-                    if( $("#myModal1 .tabs").length ) {
-                        $("#myModal1 .tabs").tabs();
-                    }
-                },
-                open: function() {
-                    $('body').addClass('ohidden');
-                },
-                close: function() {
-                    $('body').removeClass('ohidden');
-                }
-            }
-        });
+        $(base).find('a[data-modal="true"]').magnificPopup( modalConfig() );
     }
 };
 
@@ -398,9 +410,23 @@ checkForm = function(base) {
             success: function(data) {
                 if(data.result == true && data.url != '') {
                     if ( $form.data('depedency') == true ) {
-                        $.magnificPopup.close();
-                        Notify(data.msg, data.result);
-                        loadTable( '#tabs-' + $form.data('slug') + ' .depedencyContent' );
+                        if ( valbutton == 'stay' ) {
+                            $.magnificPopup.close();
+                            Notify(data.msg, data.result);
+                            loadTable( '#tabs-' + $form.data('slug') + ' .depedencyContent' );
+
+                            var config = modalConfig( onglet ) ;
+                            config.items = {
+                                src: data.url + "?o=" + onglet
+                            };
+
+                            $.magnificPopup.open(config);
+                        }
+                        else {
+                            $.magnificPopup.close();
+                            Notify(data.msg, data.result);
+                            loadTable( '#tabs-' + $form.data('slug') + ' .depedencyContent' );
+                        }
                     }
                     else {
                         if ( valbutton == 'stay' ) {
