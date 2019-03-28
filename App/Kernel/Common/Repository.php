@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use App\Kernel\Container;
+
 class Repository
 {
     public function __construct( $name )
@@ -26,7 +28,12 @@ class Repository
 
     public function getEntity()
     {
-        return \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity() ;
+        return Container::getInstance()->module( $this->getName() )->getEntity() ;
+    }
+
+    public function getBackController()
+    {
+        return Container::getInstance()->module( $this->getName() )->getController(true) ;
     }
 
     public function create()
@@ -65,30 +72,13 @@ class Repository
             $content = \DB::for_module( $this->getName() )
                 ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , 'id' ) ;
 
-            $ct = count( $this->getEntity()->getFieldReference() );
-
-            if ( $ct == 1 )
+            foreach( $this->getEntity()->getFieldReference() as $field )
             {
-                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->hasLang() ) $lang = true ;
-                $content = $content->select( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->fieldSql() , $alias );
-            }
-            else
-            {
-                $i = 0;
-                $str = "CONCAT(";
-                foreach( $this->getEntity()->getFieldReference() as $field )
-                {
-                    if ( $this->getEntity()->get( $field )->hasLang() ) $lang = true ;
-
-                    if ( $i > 0 ) $str.= ",' ',"; ;
-                    $str.= $this->getEntity()->get( $field )->fieldSql() ;
-                    $i++;
-                }
-
-                $str.= ")" ;
-                $content = $content->select_expr( $str , $alias );
+                if ( $this->getEntity()->get( $field )->hasLang() ) $lang = true ;
+                $content = $content->select( $this->getEntity()->get( $field )->fieldSql() );
             }
 
+            $content = $content->select_expr( $this->getEntity()->get( $field )->fieldSql() , $alias );
 
             if ( $lang )
             {
@@ -108,7 +98,49 @@ class Repository
             if ( $this->getEntity()->hasOrder() ) 	$content = $content->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
             else									$content = $content->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
 
-            return $content->find_many() ;
+            $rst = $content->find_many() ;
+
+            if ( $rst )
+            {
+                $final = [];
+                $asso  = [];
+                foreach( $rst as $row )
+                {
+                    $rstTab = [];
+                    foreach( $this->getEntity()->getFieldReference() as $field )
+                    {
+                        if ( $this->getEntity()->get( $field )->getType() == 'date' )
+                        {
+                            $value = $row->get($this->getEntity()->get( $field )->getColumn() );
+                            $rstTab[] = (new \DateTime($value))->format( ( $this->getEntity()->get( $field )->getData('hour') ? 'd/m/Y - H:i' : 'd/m/Y' ) );
+                        }
+                        else if ( $this->getEntity()->get( $field )->getType() == 'select' && $this->getEntity()->get( $field )->isAssociated() == true )
+                        {
+                            $value = $row->get($this->getEntity()->get( $field )->getColumn() );
+
+                            if ( ! array_key_exists( $field , $asso ) )
+                            {
+                                $asso[ $field ] = $this->getBackController()->getValueAssociated( $this->getEntity()->get( $field ) , 'array' );
+                            }
+
+                            $rstTab[] = $asso[ $field ][ $value ];
+                        }
+                        else
+                        {
+                            $rstTab[] = $row->get( $this->getEntity()->get( $field )->getColumn() );
+                        }
+                    }
+
+                    $row->set( $alias , implode( " " , $rstTab ) );
+                    $final[] = $row ;
+                }
+
+                return $final ;
+            }
+            else
+            {
+                return false ;
+            }
         }
         else
         {

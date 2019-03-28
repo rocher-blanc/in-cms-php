@@ -371,7 +371,7 @@ class Controller
     /* ************************************************** */
 
     // Systeme de many / one TO many / one
-    protected function getValueAssociated( $row , $returnType = NULL , $form = false )
+    public function getValueAssociated( $row , $returnType = NULL , $form = false )
     {
         $Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
