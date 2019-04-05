@@ -95,7 +95,15 @@ class NewsletterCampaign extends Builder
                 }
                 else
                 {
-                    return '<span class="badge badge-danger" style="font-size: 14px;">Erreur</span>';
+                    $date = (new \DateTime($c->date_created))->format('U') + 120;
+                    if ( time() > $date )
+                    {
+                        return '<span class="badge badge-danger" style="font-size: 14px;">Erreur</span>';
+                    }
+                    else
+                    {
+                        return '<span class="badge badge-info" style="font-size: 14px;">En attente</span>';
+                    }
                 }
             })
             ->name("Statut");

@@ -417,6 +417,8 @@ class Controller extends \App\Kernel\Common\Controller
                                 $contentShow->$name = $row->get( $f->getColumn() );
                             }
                         }
+                        $contentShow->date_created = $row->get( $this->getEntity()->get('date_created')->getColumn() );
+
                         $contentShow = $this->filterContent( $contentShow );
                     }
 
