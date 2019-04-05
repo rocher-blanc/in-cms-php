@@ -2,6 +2,8 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\Factory;
+use App\Kernel\Http;
 use Slim\Slim;
 
 class TwigAdmin extends \Twig_Extension
@@ -23,17 +25,17 @@ class TwigAdmin extends \Twig_Extension
 
 	public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
 	{
-		return \App\Kernel\Factory::getInstance()->Url()->route( $module , $type , $parent , $id , $token ) ;
+		return Factory::getInstance()->Url()->route( $module , $type , $parent , $id , $token ) ;
 	}
 
 	public function depedencyRoute( $module , $action , $id , $id_module , $id_element = NULL )
 	{
-		return \App\Kernel\Factory::getInstance()->Url()->depedencyRoute( $module , $action , $id , $id_module , $id_element ) ;
+		return Factory::getInstance()->Url()->depedencyRoute( $module , $action , $id , $id_module , $id_element ) ;
 	}
 
     public function vendor( $url )
     {
-        return \App\Kernel\Http::getInstance()->vendor( $url ) ;
+        return Http::getInstance()->vendor( $url ) ;
     }
 
     public function asset($url)

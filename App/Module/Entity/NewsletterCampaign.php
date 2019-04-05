@@ -12,8 +12,13 @@ class NewsletterCampaign extends Builder
         $this->setFieldReference( 'subject' );
 
         $this->addAction( 'stats' );
+
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
+        });
+
+        $this->addIcon( 'icon-reply' , 'resend' , function($c) {
+            return $c->stats === NULL ? true : false ;
         });
 
         $this->showEdit(function( $c ) {
@@ -64,27 +69,34 @@ class NewsletterCampaign extends Builder
                 }
             })
             ->updateValue(function($c) {
-                switch( $c->stats['state'] )
+                if ( is_array( $c->stats ) )
                 {
-                    case 0 : $class = 'info'; break; // pret
-                    case 1 : $class = 'primary'; break; // en cours
-                    case 9 : $class = 'warning'; break; // Suspendu
-                    case 10 : $class = 'success'; break; // envoyée
-                    case 11 : $class = 'danger'; break; // annulee
-                    default : $class = 'default'; break; // en attente
-                }
+                    switch( $c->stats['state'] )
+                    {
+                        case 0 : $class = 'info'; break; // pret
+                        case 1 : $class = 'primary'; break; // en cours
+                        case 9 : $class = 'warning'; break; // Suspendu
+                        case 10 : $class = 'success'; break; // envoyée
+                        case 11 : $class = 'danger'; break; // annulee
+                        default : $class = 'default'; break; // en attente
+                    }
 
-                switch( $c->stats['state'] )
+                    switch( $c->stats['state'] )
+                    {
+                        case 0 :
+                        case 9 :
+                        case 10 :
+                        case 11 : $txt = $c->stats['state_str']; break; // annulee
+                        case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
+                        default : $txt = 'En attente'; break; // en attente
+                    }
+
+                    return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
+                }
+                else
                 {
-                    case 0 :
-                    case 9 :
-                    case 10 :
-                    case 11 : $txt = $c->stats['state_str']; break; // annulee
-                    case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
-                    default : $txt = 'En attente'; break; // en attente
+                    return '<span class="badge badge-danger" style="font-size: 14px;">Erreur</span>';
                 }
-
-                return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
             })
             ->name("Statut");
 

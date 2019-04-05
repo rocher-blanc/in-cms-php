@@ -145,4 +145,12 @@ class NewsletterCampaign extends Controller
 
         $this->render('stats.twig');
     }
+
+    protected function resendAction()
+    {
+        $EL = new Easyletter;
+        $EL->newsletter( $this->getId() );
+
+        $this->Factory()->Response()->flashAndRedirect( "La nouvelle demande de campagne est en cours ..." , true , $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) );
+    }
 }
