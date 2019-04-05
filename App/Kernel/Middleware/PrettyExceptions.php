@@ -2,7 +2,9 @@
 
 namespace App\Kernel\Middleware;
 
-class PrettyExceptions extends \Slim\Middleware
+use Slim\Middleware;
+
+class PrettyExceptions extends Middleware
 {
     protected $settings;
 
