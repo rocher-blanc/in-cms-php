@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Factory;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -79,7 +80,7 @@ class Import
         $ext = explode( '.' , $name );
         $extension = end( $ext );
         $name = basename( $name , '.' . $extension );
-        $name = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+        $name = Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
         $this->setFile( UPLOAD_PATH . "/" . $name );
 
