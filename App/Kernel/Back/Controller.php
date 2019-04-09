@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Back\Gallery;
+use App\Kernel\Back\Seo;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -926,7 +928,7 @@ class Controller extends \App\Kernel\Common\Controller
                             else if ( $field->getType() == "gallery" && $add == true )
                             {
                                 // On met a jour les -1
-                                $Gallery = new \App\Kernel\Back\Gallery;
+                                $Gallery = new Gallery;
                                 $Gallery->setElementId( $this->getId() );
                                 $Gallery->setField( $field->getName() );
                                 $Gallery->setModuleId( $this->getEntityId() );
@@ -957,7 +959,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                                 foreach( $this->Lang()->getAll() as $lang )
                                 {
-                                    $seo = new \App\Kernel\Back\Seo;
+                                    $seo = new Seo;
                                     $seo->setElementId( $this->getId() );
                                     $seo->setModuleId( $this->getEntityId() );
                                     $seo->setTitle( $field->getValue( $lang->url ) );
@@ -967,7 +969,7 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                             else
                             {
-                                $seo = new \App\Kernel\Back\Seo;
+                                $seo = new Seo;
                                 $seo->setElementId( $this->getId() );
                                 $seo->setModuleId( $this->getEntityId() );
                                 $seo->setTitle( $this->getEntity()->build( $this->getEntity()->getUrlName() )->field()->getValue() );
@@ -1630,7 +1632,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
 		if ( $this->getEntity()->hasUrl() )
         {
-            $seo = new \App\Kernel\Back\Seo;
+            $seo = new Seo;
             $seo->setElementId( $this->getId() );
             $seo->setModuleId( $this->getEntityId() );
 
@@ -1926,7 +1928,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
         $field = $this->getEntity()->get( $this->getApp()->request->post('fieldname') );
 
-        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery = new Gallery;
         $Gallery->setElementId( $this->getApp()->request->post('id') );
         $Gallery->setModuleId( $this->getEntityId() );
         $Gallery->setField( $this->getApp()->request->post('fieldname') );
@@ -1948,7 +1950,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function deletegalleryAction()
     {
-        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery = new Gallery;
         $Gallery->setImageId( $this->getApp()->request->post('id') );
         $Gallery->setFolder( $this->getEntity()->getFolder() );
         $Gallery->delete();
@@ -1958,7 +1960,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function ordergalleryAction()
     {
-        $Gallery = new \App\Kernel\Back\Gallery;
+        $Gallery = new Gallery;
         $Gallery->setElementId( $this->getApp()->request->post('id') );
         $Gallery->setField( $this->getApp()->request->post('field') );
         $Gallery->setOrder( $this->getApp()->request->post('order') );
