@@ -101,7 +101,7 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   CONTAINER   ******************** */
     /* ***************************************************** */
 
-    public function getRepository(): \App\Kernel\Back\Repository
+    public function getRepository()
     {
         return $this->Container()->module( $this->getEntityName() )->getRepository( true ) ;
     }
