@@ -18,6 +18,7 @@ class User extends \App\Kernel\Common\User
     protected $date_join    = NULL;
     protected $group        = NULL;
     protected $facebook_url = NULL;
+    protected $silence      = false;
     protected $_var         = [];
     protected $_twig        = [];
     protected $_error       = false;
@@ -149,6 +150,16 @@ class User extends \App\Kernel\Common\User
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
 
+    public function silence()
+    {
+        return $this->silence = true ;
+    }
+
+    public function hasSilence()
+    {
+        return $this->silence ;
+    }
+
     public function hasError()
     {
         return $this->_error ;
@@ -168,6 +179,8 @@ class User extends \App\Kernel\Common\User
             'result' => $result,
             'msg' => $this->text( $key )
         ];
+
+        if ( $this->hasSilence() ) return $result ;
 
         if ( $this->isAjax() )
         {
