@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Container;
 use App\Kernel\Factory;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -33,7 +34,7 @@ class Import
 
 	public function Container()
 	{
-		return \App\Kernel\Container::getInstance();
+		return Container::getInstance();
 	}
 
 	/* ************************************************** */
@@ -100,7 +101,7 @@ class Import
     {
         try {
             $fileType = IOFactory::identify( $this->getFile() );
-            return IOFactory::createReader($fileType)->load( $this->getFile() )->getActiveSheet()->toArray(null, true, true, true);;
+            return IOFactory::createReader($fileType)->load( $this->getFile() )->getActiveSheet()->toArray(null, true, true, true);
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -121,7 +122,7 @@ class Import
         {
             foreach( $line as $letter => $value )
             {
-				$newTab[ $number ][ $arrayField[ $letter ] ] = $value ;
+                $newTab[ $number ][ $arrayField[ $letter ] ] = $value ;
             }
         }
 
