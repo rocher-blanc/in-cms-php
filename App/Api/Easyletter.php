@@ -287,7 +287,7 @@ class Easyletter
         if ( $response !== false )
         {
             $NL->set('id_easyletter' , $response );
-            $NL->set('statut' , 2 );
+            //$NL->set('statut' , 2 );
             $NL->save();
 
             return true ;
