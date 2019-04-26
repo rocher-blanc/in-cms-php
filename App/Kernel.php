@@ -2,6 +2,11 @@
 
 namespace App;
 
+use App\Kernel\Database;
+use App\Kernel\Lang;
+use App\Kernel\Slim;
+use App\Kernel\View\TwigFront;
+
 class Kernel
 {
     /* ************************************************** */
@@ -127,7 +132,7 @@ class Kernel
     {
         if ( $this->_slim === NULL )
         {
-            $this->_slim = new \App\Kernel\Slim;
+            $this->_slim = new Slim;
             $this->_slim->load();
         }
 
@@ -136,7 +141,7 @@ class Kernel
 
     public function getDb()
     {
-        if ( $this->_db === NULL ) $this->_db = new \App\Kernel\Database;
+        if ( $this->_db === NULL ) $this->_db = new Database;
         return $this->_db ;
     }
 
@@ -188,7 +193,7 @@ class Kernel
     {
         date_default_timezone_set( TIMEZONE );
 
-        $locale = strtolower( \App\Kernel\Lang::getInstance()->getActive()->locale ) . '_' . strtoupper( COUNTRY );
+        $locale = strtolower( Lang::getInstance()->getActive()->locale ) . '_' . strtoupper( COUNTRY );
 
         setlocale( LC_COLLATE, $locale . '.UTF-8', $locale . '.utf8' );
         setlocale( LC_CTYPE, $locale . '.UTF-8', $locale . '.utf8' );
@@ -294,7 +299,7 @@ class Kernel
     {
         if ( $this->config('config') == 'front' )
         {
-            \App\Kernel\Lang::getInstance()->setFront();
+            Lang::getInstance()->setFront();
         }
     }
 
@@ -394,7 +399,7 @@ class Kernel
 
     protected function viewTemplateError( $tpl , $arg = [] )
     {
-        $this->setParserExtension(new \App\Kernel\View\TwigFront);
+        $this->setParserExtension(new TwigFront);
         $this->initSlim() ;
 
         if ( $this->config('config') == 'back' )
