@@ -153,4 +153,15 @@ class NewsletterCampaign extends Controller
 
         $this->Factory()->Response()->flashAndRedirect( "La nouvelle demande de campagne est en cours ..." , true , $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) );
     }
+
+    protected function downloadStatisticAction()
+    {
+        $EL = new Easyletter;
+        $rst = $EL->downloadStats( $this->getId() );
+
+        $this->getApp()->contentType('application/json');
+        $this->getApp()->contentType('application/json');
+        $this->getApp()->response()->body( json_encode( $array ) );
+
+    }
 }

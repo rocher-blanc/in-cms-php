@@ -3,6 +3,7 @@
 namespace App\Api;
 
 use App\Kernel\Http;
+use App\Kernel\Utils\Slack;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use App\Kernel\Front\Data;
@@ -71,7 +72,7 @@ class Easyletter
     private function setError( $msg )
     {
         $this->error = $msg ;
-        \App\Kernel\Utils\Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
+        Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
     }
 
     public function getError()
@@ -336,6 +337,35 @@ class Easyletter
         else
         {
             return $this->response( $this->client->get('v1/campaign/stats/' . $id ) ) ;
+        }
+    }
+
+    public function downloadStats( $id )
+    {
+        if ( ! empty( $id ) )
+        {
+            try {
+                $response = $this->client->get('v1/campaign/export/pdf/' . $id) ;
+
+                if ( $response->getStatusCode() == 200 )
+                {
+                    header("Content-type:application/pdf");
+                    header("Content-Disposition:attachment;filename='statistics_newsletter_'.$id.'.pdf'");
+
+                    echo $response->getBody()->getContents() ;
+                }
+                else
+                {
+                    return $this->response( $response ) ;
+                }
+            }
+            catch ( \ErrorException $e ) {
+                return false ;
+            }
+        }
+        else
+        {
+            return false ;
         }
     }
 

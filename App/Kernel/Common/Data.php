@@ -203,7 +203,7 @@ class Data
         }
     }
 
-    public function getDataArray()
+    public function getDataArray( $prefix = '' )
     {
         $tab = [];
 
@@ -211,7 +211,7 @@ class Data
         {
             foreach( $this->getEntity()->getField() as $field )
             {
-                $tab[ $field->getName() ] = $this->get( $field->getName() );
+                $tab[ $prefix . $field->getName() ] = $this->get( $field->getName() );
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Api;
 
+use App\Kernel\Container;
 use GuzzleHttp\Client;
 
 class Eudonet
@@ -42,7 +43,7 @@ class Eudonet
 
     protected function Container()
     {
-        return \App\Kernel\Container::getInstance();
+        return Container::getInstance();
     }
 
     protected function Param()
@@ -314,7 +315,7 @@ class Eudonet
             {
                 $infos['Fields'][] = [
                     "DescId" => $descId,
-                    "Value"  => $value
+                    "Value"  => ( $value === NULL ? '' : $value )
                 ];
             }
         }
@@ -343,7 +344,7 @@ class Eudonet
             {
                 $infos['Fields'][] = [
                     "DescId" => $descId,
-                    "Value"  => $value
+                    "Value"  => ( $value === NULL ? '' : $value )
                 ];
             }
         }
