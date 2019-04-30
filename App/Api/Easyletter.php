@@ -349,10 +349,10 @@ class Easyletter
 
                 if ( $response->getStatusCode() == 200 )
                 {
-                    header("Content-type:application/pdf");
-                    header("Content-Disposition:attachment;filename='statistics_newsletter_'.$id.'.pdf'");
+//                    header("Content-type:application/pdf");
+//                    header("Content-Disposition:attachment;filename='statistics_newsletter_'.$id.'.pdf'");
 
-                    echo $response->getBody()->getContents() ;
+                    return $response->getBody()->getContents() ;
                 }
                 else
                 {

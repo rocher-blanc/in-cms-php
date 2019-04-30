@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use Slim\Slim;
+
 class Controller
 {
     /* ************************************************** */
@@ -202,9 +204,9 @@ class Controller
         return \App\Kernel\CMS::getInstance() ;
     }
 
-    protected function getApp()
+    protected function getApp(): Slim
     {
-        return \Slim\Slim::getInstance() ;
+        return Slim::getInstance() ;
     }
 
     /* ************************************************** */

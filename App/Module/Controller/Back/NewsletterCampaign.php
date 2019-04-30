@@ -159,9 +159,15 @@ class NewsletterCampaign extends Controller
         $EL = new Easyletter;
         $rst = $EL->downloadStats( $this->getId() );
 
-        $this->getApp()->contentType('application/json');
-        $this->getApp()->contentType('application/json');
-        $this->getApp()->response()->body( json_encode( $array ) );
+        if ( is_array( $rst ) || $rst === false )
+        {
 
+        }
+        else
+        {
+            $this->getApp()->->contentType('application/json');
+            $this->getApp()->contentType('application/json');
+            $this->getApp()->response()->body( json_encode( $array ) );
+        }
     }
 }
