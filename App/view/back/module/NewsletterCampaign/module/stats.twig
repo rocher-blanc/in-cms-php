@@ -34,7 +34,7 @@
             <h3><span>Actions</span></h3>
         </div>
         <div class="text-center" style="margin-bottom: 15px;">
-            <a class="button button-3d button-small button-amber button-rounded"><i class="icon-download"></i> Télécharger les statistiques</a>
+            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques</a>
             <a class="button button-3d button-small button-rounded" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>
             <a class="button button-3d button-small button-rounded"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>
         </div>

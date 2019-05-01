@@ -156,18 +156,20 @@ class NewsletterCampaign extends Controller
 
     protected function downloadStatisticAction()
     {
+        $this->duplicateAction();
+
         $EL = new Easyletter;
         $rst = $EL->downloadStats( $this->getId() );
 
         if ( is_array( $rst ) || $rst === false )
         {
-
+            die('error');
         }
         else
         {
-            $this->getApp()->->contentType('application/json');
-            $this->getApp()->contentType('application/json');
-            $this->getApp()->response()->body( json_encode( $array ) );
+            $this->getApp()->contentType('application/pdf');
+            $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".pdf");
+            $this->getApp()->response()->body( $rst );
         }
     }
 }
