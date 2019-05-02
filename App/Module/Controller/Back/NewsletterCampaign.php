@@ -146,30 +146,99 @@ class NewsletterCampaign extends Controller
         $this->render('stats.twig');
     }
 
-    protected function resendAction()
+    protected function resendNoClickViewAction()
     {
-        $EL = new Easyletter;
-        $EL->newsletter( $this->getId() );
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoClick.twig') ;
+    }
 
-        $this->Factory()->Response()->flashAndRedirect( "La nouvelle demande de campagne est en cours ..." , true , $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) );
+    protected function resendNoReadViewAction()
+    {
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoRead.twig') ;
+    }
+
+    protected function resendNoReadAction()
+    {
+        $rst = $this->duplicate();
+
+        if ( $rst['result'] == true )
+        {
+            $data = \DB::for_module( $this->getEntityName() )->where_id_is( $rst['id'] )->find_one();
+            if ( $data )
+            {
+                $data->mod_newslettercampaign_type = 2 ;
+                $data->mod_newslettercampaign_newsletter_parent = $this->getId() ;
+                $data->save();
+
+                $EL = new Easyletter;
+                $EL->newsletter( $rst['id'] );
+
+                $this->Factory()->Response()->printJSON( ['msg' => 'La campagne est en cours de programmation', 'result' => true, 'url' => $this->Factory()->Url()->route( $this->getEntityName() , "index" , $this->getUriParent() ) ] );
+            }
+            else
+            {
+                $this->Factory()->Response()->printJSON( $rst );
+            }
+        }
+        else
+        {
+            $this->Factory()->Response()->printJSON( $rst );
+        }
     }
 
     protected function downloadStatisticAction()
     {
-        $this->duplicateAction();
+        $one = $this->getRepository()->findOne( $this->getId() );
 
-        $EL = new Easyletter;
-        $rst = $EL->downloadStats( $this->getId() );
-
-        if ( is_array( $rst ) || $rst === false )
+        if ( $one )
         {
-            die('error');
+            $EL = new Easyletter;
+            $rst = $EL->downloadStats( $one->mod_newslettercampaign_id_easyletter , 'pdf' );
+
+            if ( is_array( $rst ) || $rst === false )
+            {
+                die('error');
+            }
+            else
+            {
+                $this->getApp()->contentType('application/pdf');
+                $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".pdf");
+                $this->getApp()->response()->body( $rst );
+            }
         }
         else
         {
-            $this->getApp()->contentType('application/pdf');
-            $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".pdf");
-            $this->getApp()->response()->body( $rst );
+            die('error');
         }
+    }
+
+    protected function downloadStatisticDestAction()
+    {
+        $one = $this->getRepository()->findOne( $this->getId() );
+
+        if ( $one )
+        {
+            $EL = new Easyletter;
+            $rst = $EL->downloadStats( $one->mod_newslettercampaign_id_easyletter , 'excel' );
+
+            if ( is_array( $rst ) || $rst === false )
+            {
+                die('error');
+            }
+            else
+            {
+                $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".xls");
+                $this->getApp()->response()->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0");
+                $this->getApp()->response()->headers->set('Expires', "0");
+                $this->getApp()->response()->headers->set('Content-Type', "application/vnd.ms-excel; charset=utf-8");
+                $this->getApp()->response()->body( $rst );
+            }
+        }
+        else
+        {
+            die('error');
+        }
+
     }
 }

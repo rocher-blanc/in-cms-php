@@ -340,18 +340,15 @@ class Easyletter
         }
     }
 
-    public function downloadStats( $id )
+    public function downloadStats( $id , $format )
     {
         if ( ! empty( $id ) )
         {
             try {
-                $response = $this->client->get('v1/campaign/export/pdf/' . $id) ;
+                $response = $this->client->get('v1/campaign/export/' . $format . '/' . $id) ;
 
                 if ( $response->getStatusCode() == 200 )
                 {
-//                    header("Content-type:application/pdf");
-//                    header("Content-Disposition:attachment;filename='statistics_newsletter_'.$id.'.pdf'");
-
                     return $response->getBody()->getContents() ;
                 }
                 else

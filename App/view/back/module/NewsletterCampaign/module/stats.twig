@@ -14,6 +14,12 @@
             {% set pourcentRead = 0 %}
         {% endif %}
 
+        {% if res.Sent > 0 %}
+            {% set pourcentClick = res.RecipientsClic/res.Sent*100 %}
+        {% else %}
+            {% set pourcentClick = 0 %}
+        {% endif %}
+
         <div class="dark bottommargin-lg">
             <div class="text-center">
                 <div class="counter counter-large color"><span data-from="0" data-to="{{ res.Sent }}" data-refresh-interval="5" data-speed="500">0</span> / {{ res.ToSend }}</div>
@@ -34,9 +40,10 @@
             <h3><span>Actions</span></h3>
         </div>
         <div class="text-center" style="margin-bottom: 15px;">
-            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques</a>
-            <a class="button button-3d button-small button-rounded" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>
-            <a class="button button-3d button-small button-rounded"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>
+            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques globales (.PDF)</a>
+            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques destinataires (.XLS)</a>
+            {% if pourcentRead < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoReadView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>{% endif %}
+            {% if pourcentClick < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoClickView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>{% endif %}
         </div>
 
         <div class="fancy-title title-dotted-border title-center">
@@ -83,14 +90,8 @@
                 </tr>
                 <tr>
                     <td>Nombre de clics net & Taux de clic</td>
-                    {% if res.Sent > 0 %}
-                        {% set pourcent = res.RecipientsClic/res.Sent*100 %}
-                    {% else %}
-                        {% set pourcent = 0 %}
-                    {% endif %}
-
                     <td class="center">{{ res.RecipientsClic }}</td>
-                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                    <td class="center">{{ pourcentClick|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
                     <td>Taux de réactivité (nombre de cliqueurs / nombre d'ouvreurs)</td>

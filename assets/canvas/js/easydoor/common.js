@@ -79,6 +79,37 @@ deleteElementExt = function( url ) {
     });
 };
 
+
+
+aAjax = function( url , modal ) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        success: function(data) {
+            if ( modal ) {
+                $.magnificPopup.close();
+            }
+
+            if( data.result == true ) {
+                if (data.url != '') {
+                    redirect(data.url);
+                }
+            }
+            else {
+                Notify(data.msg, false);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if ( modal ) {
+                $.magnificPopup.close();
+            }
+
+            Notify(errorThrown, false);
+        }
+    });
+};
+
 headerResizing = function() {
     if( $("#primary-menu").find("ul").length > 0 ) {
         var width = $("body").width();

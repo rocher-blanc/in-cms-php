@@ -13,6 +13,11 @@ class NewsletterCampaign extends Builder
 
         $this->addAction( 'stats' );
         $this->addAction( 'downloadStatistic' );
+        $this->addAction( 'downloadStatisticDest' );
+        $this->addAction( 'resendNoRead' );
+        $this->addAction( 'resendNoReadView' );
+        $this->addAction( 'resendNoClick' );
+        $this->addAction( 'resendNoClickView' );
 
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;

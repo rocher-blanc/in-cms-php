@@ -1384,11 +1384,18 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function duplicateAction()
     {
+        $rst = $this->duplicate() ;
+
+        return $this->Factory()->Response()->printJSON( $rst ) ;
+    }
+
+    protected function duplicate()
+    {
         $content = $this->getRepository()->findOne( $this->getId() );
 
         if ( ! $content )
         {
-            $rst = [
+            return [
                 'result' => false,
                 'msg' => "Le contenu n'est plus disponible",
             ];
@@ -1430,13 +1437,12 @@ class Controller extends \App\Kernel\Common\Controller
 
             $data->save();
 
-            $rst = [
+            return [
                 'result' => true,
-                'msg' => "Le contenu a bien été dupliqué",
+                'id'     => $data->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ),
+                'msg'    => "Le contenu a bien été dupliqué",
             ];
         }
-
-        return $this->Factory()->Response()->printJSON( $rst ) ;
     }
 
     /* ************************************************** */
