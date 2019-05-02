@@ -36,6 +36,15 @@ class NewsletterCampaign extends Controller
 
     public function hookAddSaveAfter( $c )
     {
+        $data = new Data('NewsletterCampaign');
+        $data->find( $this->getId() );
+
+        if ( $data->get('type') == NULL )
+        {
+            $data->set('type' , 1);
+            $data->save();
+        }
+
         $EL = new Easyletter;
         $EL->newsletter( $this->getId() );
     }

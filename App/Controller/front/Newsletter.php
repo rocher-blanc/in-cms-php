@@ -37,21 +37,6 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                 }
             }
         }
-
-        $u = Container::getInstance()->module('NewsletterCampaignGroupUnsubscribe');
-
-        $rstUn = $u->getRepository()
-            ->getKit()
-            ->where_equal( $u->getEntity()->get('element_id')->getColumn() , $Newsletter->get('element_module_parent_id') )
-            ->find_many();
-
-        if ( $rstUn )
-        {
-            foreach( $rstUn as $email )
-            {
-                unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ; ;
-            }
-        }
     }
     else if ( $Newsletter->get('type') == 2 )
     {
@@ -99,6 +84,21 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                     ] ;
                 }
             }
+        }
+    }
+
+    $u = Container::getInstance()->module('NewsletterCampaignGroupUnsubscribe');
+
+    $rstUn = $u->getRepository()
+        ->getKit()
+        ->where_equal( $u->getEntity()->get('element_id')->getColumn() , $Newsletter->get('element_module_parent_id') )
+        ->find_many();
+
+    if ( $rstUn )
+    {
+        foreach( $rstUn as $email )
+        {
+            unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ;
         }
     }
 

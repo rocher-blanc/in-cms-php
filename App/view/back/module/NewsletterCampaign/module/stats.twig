@@ -40,8 +40,8 @@
             <h3><span>Actions</span></h3>
         </div>
         <div class="text-center" style="margin-bottom: 15px;">
-            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques globales (.PDF)</a>
-            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Télécharger les statistiques destinataires (.XLS)</a>
+            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques globales (.PDF)</a>
+            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques destinataires (.XLS)</a>
             {% if pourcentRead < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoReadView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>{% endif %}
             {% if pourcentClick < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoClickView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>{% endif %}
         </div>
