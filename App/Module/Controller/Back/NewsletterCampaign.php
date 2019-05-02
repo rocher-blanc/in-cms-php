@@ -146,19 +146,7 @@ class NewsletterCampaign extends Controller
         $this->render('stats.twig');
     }
 
-    protected function resendNoClickViewAction()
-    {
-        $this->setRender( 'id' , $this->getId() ) ;
-        $this->render('sendNoClick.twig') ;
-    }
-
-    protected function resendNoReadViewAction()
-    {
-        $this->setRender( 'id' , $this->getId() ) ;
-        $this->render('sendNoRead.twig') ;
-    }
-
-    protected function resendNoReadAction()
+    protected function resend( $type )
     {
         $rst = $this->duplicate();
 
@@ -167,7 +155,11 @@ class NewsletterCampaign extends Controller
             $data = \DB::for_module( $this->getEntityName() )->where_id_is( $rst['id'] )->find_one();
             if ( $data )
             {
-                $data->mod_newslettercampaign_type = 2 ;
+                $one = $this->getRepository()->findOne( $this->getId() );
+
+                $data->mod_newslettercampaign_subject = $one->mod_newslettercampaign_subject ;
+                $data->mod_newslettercampaign_type = $type ;
+                $data->mod_newslettercampaign_id_easyletter = NULL ;
                 $data->mod_newslettercampaign_newsletter_parent = $this->getId() ;
                 $data->save();
 
@@ -185,6 +177,28 @@ class NewsletterCampaign extends Controller
         {
             $this->Factory()->Response()->printJSON( $rst );
         }
+    }
+
+    protected function resendNoClickAction()
+    {
+        return $this->resend( 3 );
+    }
+
+    protected function resendNoReadAction()
+    {
+        return $this->resend( 2 );
+    }
+
+    protected function resendNoReadViewAction()
+    {
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoRead.twig') ;
+    }
+
+    protected function resendNoClickViewAction()
+    {
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoClick.twig') ;
     }
 
     protected function downloadStatisticAction()

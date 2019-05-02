@@ -1439,7 +1439,7 @@ class Controller extends \App\Kernel\Common\Controller
 
             return [
                 'result' => true,
-                'id'     => $data->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ),
+                'id'     => $data->get('id'),
                 'msg'    => "Le contenu a bien été dupliqué",
             ];
         }

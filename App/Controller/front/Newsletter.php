@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\Easyletter;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
 use App\Kernel\Http;
@@ -10,43 +11,94 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
     $Newsletter = new Data('NewsletterCampaign');
     $Newsletter->find( $id );
 
-    $tab = [];
-
-    $r = Container::getInstance()->module('NewsletterSubscriber');
-
-    foreach( $Newsletter->get('recipient') as $group )
+    if ( $Newsletter->get('type') == 1 )
     {
-        // on va chercher tous les destinataires
-        $rstRec = $r->getRepository()
+        $tab = [];
+
+        $r = Container::getInstance()->module('NewsletterSubscriber');
+
+        foreach( $Newsletter->get('recipient') as $group )
+        {
+            // on va chercher tous les destinataires
+            $rstRec = $r->getRepository()
+                ->getKit()
+                ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
+                ->find_many();
+
+            if ( $rstRec )
+            {
+                foreach( $rstRec as $email )
+                {
+                    $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
+            }
+        }
+
+        $u = Container::getInstance()->module('NewsletterCampaignGroupUnsubscribe');
+
+        $rstUn = $u->getRepository()
             ->getKit()
-            ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
+            ->where_equal( $u->getEntity()->get('element_id')->getColumn() , $Newsletter->get('element_module_parent_id') )
             ->find_many();
 
-        if ( $rstRec )
+        if ( $rstUn )
         {
-            foreach( $rstRec as $email )
+            foreach( $rstUn as $email )
             {
-                $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
-                $tab[ $mail ] = [
-                    'Email' => $mail,
-                    'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                ] ;
+                unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ; ;
             }
         }
     }
-
-    $u = Container::getInstance()->module('NewsletterCampaignGroupUnsubscribe');
-
-    $rstUn = $u->getRepository()
-        ->getKit()
-        ->where_equal( $u->getEntity()->get('element_id')->getColumn() , $Newsletter->get('element_module_parent_id') )
-        ->find_many();
-
-    if ( $rstUn )
+    else if ( $Newsletter->get('type') == 2 )
     {
-        foreach( $rstUn as $email )
+        $Parent = new Data('NewsletterCampaign');
+        $Parent->find( $Newsletter->get('newsletter_parent') );
+
+        $el = new Easyletter;
+        $tabStats = $el->stats( $Parent->get('id_easyletter') );
+
+        if ( $tabStats )
         {
-            unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ; ;
+            $records = $tabStats['destStats']['records'];
+            for( $i = 0; $i < count($records); $i++ )
+            {
+                if ( $records[$i][4] == 0 )
+                {
+                    $mail = $records[$i][1] ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
+            }
+        }
+    }
+    else if ( $Newsletter->get('type') == 3 )
+    {
+        $Parent = new Data('NewsletterCampaign');
+        $Parent->find( $Newsletter->get('newsletter_parent') );
+
+        $el = new Easyletter;
+        $tabStats = $el->stats( $Parent->get('id_easyletter') );
+
+        if ( $tabStats )
+        {
+            $records = $tabStats['destStats']['records'];
+            for( $i = 0; $i < count($records); $i++ )
+            {
+                if ( $records[$i][9] == 0 )
+                {
+                    $mail = $records[$i][1] ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
+            }
         }
     }
 
