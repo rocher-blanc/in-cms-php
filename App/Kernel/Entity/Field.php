@@ -2,6 +2,9 @@
 
 namespace App\Kernel\Entity;
 
+use App\Kernel\Back\Gallery;
+use App\Kernel\Back\Media;
+
 class Field
 {
 	/* ************************************************** */
@@ -192,8 +195,8 @@ class Field
         }
         elseif ( is_array( $this->getValue( $lang ) ) && $this->getType() == "document" )
         {
-            if ( empty( $this->getValue( $lang )['name'] ) ) return true ;
-            else                                             return false ;
+            if ( empty( $this->getValue( $lang ) ) ) return true ;
+            else                                     return false ;
         }
         else
 		{
@@ -627,7 +630,7 @@ class Field
 			case "image" :
 				if ( !empty( $value ) )
 				{
-					$Media = new \App\Kernel\Back\Media;
+					$Media = new Media;
 					$Media->setModuleName( $mName );
 					$Media->setModuleId( $mId );
 					$Media->setFolder( \App\Kernel\Container::getInstance()->module( $mName )->getEntity()->getFolder() );
@@ -691,7 +694,7 @@ class Field
 
             if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
             {
-                $Gal = new \App\Kernel\Back\Gallery;
+                $Gal = new Gallery;
                 $Gal->setElementId( $this->getData('id') == '' ? -1 : $this->getData('id') );
                 $Gal->setModuleId( $this->getData('entity_id') );
                 $Gal->setField( $this->getName() );
@@ -738,7 +741,7 @@ class Field
                 }
                 else
                 {
-                    $Media = new \App\Kernel\Back\Media;
+                    $Media = new Media;
                     $Media->setImageId( $this->getValue() ) ;
 
                     if ( $Media->exist() == false )
