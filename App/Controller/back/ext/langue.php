@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Factory;
+
 $app->group('/langue', function () use ($app)
 {
     $app->get('/', function () use ($app) {
@@ -79,7 +81,7 @@ $app->group('/langue', function () use ($app)
                 $src.= "\t];\n";
                 $src.= "}\n";
 
-                if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
+                if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
             }
 
             $login = strtolower( $_SESSION[ $app->config('session') ]['username'] ) ;
@@ -90,7 +92,7 @@ $app->group('/langue', function () use ($app)
 
             rename( UPLOAD_PATH . '/' . $file , TRAD_PATH . "/" . $date . "-" . $login . "-import." . $ext ) ;
 
-            \App\Kernel\Factory::getInstance()->Response()->returnJSON( "Les traductions ont bien été importées" , true );
+            Factory::getInstance()->Response()->returnJSON( "Les traductions ont bien été importées" , true );
         });
     });
 
@@ -186,7 +188,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+            Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_up');
 
         $app->get('/down/:id/:token', function ($id,$token) use ($app)
@@ -231,7 +233,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+            Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_down');
 
     });
@@ -265,7 +267,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+            Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_active');
 
         $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -310,7 +312,7 @@ $app->group('/langue', function () use ($app)
                 $ret = false;
             }
 
-            \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+            Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
         })->name('langue_disactive');
     });
 
@@ -350,7 +352,7 @@ $app->group('/langue', function () use ($app)
             $ret = false;
         }
 
-        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+        Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_active');
 
     $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -407,7 +409,7 @@ $app->group('/langue', function () use ($app)
             $ret = false;
         }
 
-        \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
+        Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_disactive');
 
 
@@ -487,7 +489,7 @@ $app->group('/langue', function () use ($app)
 
         if ( ! empty( $lang ) )
         {
-            \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
+            Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
         }
 
         echo json_encode([
@@ -502,9 +504,18 @@ $app->group('/langue', function () use ($app)
         $langs = \App\Kernel\Lang::getInstance()->getAll();
         foreach( $langs as $lang )
         {
-            $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
-            $class     = new $className ;
-            $arrayTrad = $class->getVar();
+            $filename = LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" ;
+
+            if ( file_exists( $filename ) )
+            {
+                $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
+                $class     = new $className ;
+                $arrayTrad = $class->getVar();
+            }
+            else
+            {
+                $arrayTrad = [];
+            }
 
             $arrayTrad[$new_key] = "";
 
@@ -523,7 +534,7 @@ $app->group('/langue', function () use ($app)
             $src.= "\t];\n";
             $src.= "}\n";
 
-            if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
+            if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( $filename , $src );
         }
 
         echo json_encode([
@@ -565,7 +576,7 @@ $app->group('/langue', function () use ($app)
             $src.= "\t];\n";
             $src.= "}\n";
 
-            if ( ! empty( $lang ) ) \App\Kernel\Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
+            if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
         }
 
         echo json_encode([
