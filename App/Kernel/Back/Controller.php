@@ -215,7 +215,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'tabs' , $form['tabs'] ) ;
         $this->setRender( 'condition' , $form['condition'] ) ;
 
-        $this->setRender( 'form' , $this->renderForm([
+        $this->setRender( 'form' , $this->r enderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
             'onglet' => $_GET['o'],
