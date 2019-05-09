@@ -315,7 +315,10 @@ class Repository extends \App\Kernel\Common\Repository
                         $rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
                     break;
                     case "limit" :
-                        $rst->limit( $rqt )->offset(0);
+                        $rst->limit( $rqt );
+                    break;
+                    case "offset" :
+                        $rst->offset( $rqt );
                     break;
                     case "order" :
                         if ( $rqt == 'rand' )
