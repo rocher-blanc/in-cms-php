@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\Easyletter;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
 use App\Kernel\Http;
@@ -10,27 +11,78 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
     $Newsletter = new Data('NewsletterCampaign');
     $Newsletter->find( $id );
 
-    $tab = [];
-
-    $r = Container::getInstance()->module('NewsletterSubscriber');
-
-    foreach( $Newsletter->get('recipient') as $group )
+    if ( $Newsletter->get('type') == 1 )
     {
-        // on va chercher tous les destinataires
-        $rstRec = $r->getRepository()
-            ->getKit()
-            ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
-            ->find_many();
+        $tab = [];
 
-        if ( $rstRec )
+        $r = Container::getInstance()->module('NewsletterSubscriber');
+
+        foreach( $Newsletter->get('recipient') as $group )
         {
-            foreach( $rstRec as $email )
+            // on va chercher tous les destinataires
+            $rstRec = $r->getRepository()
+                ->getKit()
+                ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
+                ->find_many();
+
+            if ( $rstRec )
             {
-                $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
-                $tab[ $mail ] = [
-                    'Email' => $mail,
-                    'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                ] ;
+                foreach( $rstRec as $email )
+                {
+                    $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
+            }
+        }
+    }
+    else if ( $Newsletter->get('type') == 2 )
+    {
+        $Parent = new Data('NewsletterCampaign');
+        $Parent->find( $Newsletter->get('newsletter_parent') );
+
+        $el = new Easyletter;
+        $tabStats = $el->stats( $Parent->get('id_easyletter') );
+
+        if ( $tabStats )
+        {
+            $records = $tabStats['destStats']['records'];
+            for( $i = 0; $i < count($records); $i++ )
+            {
+                if ( $records[$i][4] == 0 )
+                {
+                    $mail = $records[$i][1] ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
+            }
+        }
+    }
+    else if ( $Newsletter->get('type') == 3 )
+    {
+        $Parent = new Data('NewsletterCampaign');
+        $Parent->find( $Newsletter->get('newsletter_parent') );
+
+        $el = new Easyletter;
+        $tabStats = $el->stats( $Parent->get('id_easyletter') );
+
+        if ( $tabStats )
+        {
+            $records = $tabStats['destStats']['records'];
+            for( $i = 0; $i < count($records); $i++ )
+            {
+                if ( $records[$i][9] == 0 )
+                {
+                    $mail = $records[$i][1] ;
+                    $tab[ $mail ] = [
+                        'Email' => $mail,
+                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                    ] ;
+                }
             }
         }
     }
@@ -46,7 +98,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
     {
         foreach( $rstUn as $email )
         {
-            unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ; ;
+            unset( $tab[ $email->get('mod_newslettercampaigngroupunsubscribe_email') ] ) ;
         }
     }
 

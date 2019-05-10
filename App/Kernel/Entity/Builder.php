@@ -1321,6 +1321,7 @@ class Builder extends Model
 
         $this->_field[ $name ] = $field;
         $this->column( 1 , 2 ) ;
+        $this->twig( $name ) ;
     }
 
     public function field()

@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\Kernel\Http;
+use App\Kernel\Utils\Slack;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use App\Kernel\Front\Data;
@@ -70,7 +72,7 @@ class Easyletter
     private function setError( $msg )
     {
         $this->error = $msg ;
-        \App\Kernel\Utils\Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
+        Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
     }
 
     public function getError()
@@ -160,8 +162,8 @@ class Easyletter
                         'senderEmail' => $Sender->get('email'),
                         'returnPathEmail' => $Sender->get('email_response'),
 
-                        'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
-                        'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id'),
+                        'recipient' => Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
+                        'content' => Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id'),
                     ]);
 
                     if ( $response !== false )
@@ -232,17 +234,13 @@ class Easyletter
                     'senderEmail' => $Sender->get('email'),
                     'returnPathEmail' => $Sender->get('email_response'),
 
-                    'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/test/recipient/" . $email,
-                    'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/test/template/" . $module . "/" . $id ,
+                    'recipient' => Http::getInstance()->getUrl() . "/email/test/recipient/" . $email,
+                    'content' => Http::getInstance()->getUrl() . "/email/test/template/" . $module . "/" . $id ,
                 ]);
 
                 if ( $response !== false )
                 {
                     return true ;
-                }
-                else
-                {
-                    return false ;
                 }
             }
         }
@@ -281,8 +279,8 @@ class Easyletter
             'senderEmail' => $Sender->get('email'),
             'returnPathEmail' => $Sender->get('email_response'),
 
-            'recipient' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id'),
-            'content' => \App\Kernel\Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template'),
+            'recipient' => Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id'),
+            'content' => Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template'),
         ];
 
         $response = $this->request( $params );
@@ -290,7 +288,7 @@ class Easyletter
         if ( $response !== false )
         {
             $NL->set('id_easyletter' , $response );
-            $NL->set('statut' , 2 );
+            //$NL->set('statut' , 2 );
             $NL->save();
 
             return true ;
@@ -339,6 +337,32 @@ class Easyletter
         else
         {
             return $this->response( $this->client->get('v1/campaign/stats/' . $id ) ) ;
+        }
+    }
+
+    public function downloadStats( $id , $format )
+    {
+        if ( ! empty( $id ) )
+        {
+            try {
+                $response = $this->client->get('v1/campaign/export/' . $format . '/' . $id) ;
+
+                if ( $response->getStatusCode() == 200 )
+                {
+                    return $response->getBody()->getContents() ;
+                }
+                else
+                {
+                    return $this->response( $response ) ;
+                }
+            }
+            catch ( \ErrorException $e ) {
+                return false ;
+            }
+        }
+        else
+        {
+            return false ;
         }
     }
 

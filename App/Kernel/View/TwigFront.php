@@ -2,6 +2,7 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\Factory;
 use Slim\Slim;
 
 class TwigFront extends \Twig_Extension
@@ -20,7 +21,7 @@ class TwigFront extends \Twig_Extension
 
     private function Factory()
     {
-        return \App\Kernel\Factory::getInstance() ;
+        return Factory::getInstance() ;
     }
 
     /* ************************************************** */

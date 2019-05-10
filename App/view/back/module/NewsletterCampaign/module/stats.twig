@@ -8,6 +8,17 @@
     <h4 class="ed-h4"><i class="icon-users"></i>{% for dest in rst.destinataires %}{% if not loop.first %}, {% endif %}{{ dest }}{% endfor %}</h4>
 
     {% if res.State != 11 %}
+        {% if res.Sent > 0 %}
+            {% set pourcentRead = res.RecipientsRead/res.Sent*100 %}
+        {% else %}
+            {% set pourcentRead = 0 %}
+        {% endif %}
+
+        {% if res.Sent > 0 %}
+            {% set pourcentClick = res.RecipientsClic/res.Sent*100 %}
+        {% else %}
+            {% set pourcentClick = 0 %}
+        {% endif %}
 
         <div class="dark bottommargin-lg">
             <div class="text-center">
@@ -24,6 +35,16 @@
             <h3><span>État</span></h3>
         </div>
         <h4 class="text-center"><span style="color:{% if res.State == 10 %}#3c763d{% else %}#31708f{% endif %};">{{ res.StateStr }}</span></h4>
+
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>Actions</span></h3>
+        </div>
+        <div class="text-center" style="margin-bottom: 15px;">
+            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques globales (.PDF)</a>
+            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques destinataires (.XLS)</a>
+            {% if pourcentRead < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoReadView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>{% endif %}
+            {% if pourcentClick < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoClickView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>{% endif %}
+        </div>
 
         <div class="fancy-title title-dotted-border title-center">
             <h3><span>Statistiques</span></h3>
@@ -55,13 +76,8 @@
                 </tr>
                 <tr>
                     <td>Nombre d'emails ouverts & Taux d'ouverture</td>
-                    {% if res.Sent > 0 %}
-                        {% set pourcent = res.RecipientsRead/res.Sent*100 %}
-                    {% else %}
-                        {% set pourcent = 0 %}
-                    {% endif %}
                     <td class="center">{{ res.RecipientsRead }}</td>
-                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                    <td class="center">{{ pourcentRead|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
                     <td>Nombre de clics total</td>
@@ -74,14 +90,8 @@
                 </tr>
                 <tr>
                     <td>Nombre de clics net & Taux de clic</td>
-                    {% if res.Sent > 0 %}
-                        {% set pourcent = res.RecipientsClic/res.Sent*100 %}
-                    {% else %}
-                        {% set pourcent = 0 %}
-                    {% endif %}
-
                     <td class="center">{{ res.RecipientsClic }}</td>
-                    <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
+                    <td class="center">{{ pourcentClick|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
                     <td>Taux de réactivité (nombre de cliqueurs / nombre d'ouvreurs)</td>

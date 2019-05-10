@@ -25,7 +25,7 @@ class Factory
 			$fileName = FACTORY_PATH . "/" . $name . ".php" ;
 			if ( ! file_exists( $fileName ) ) $this->Response()->error('Impossible de créer la Factory "' . $name . '" car le fichier n\'éxiste pas') ;
 			
-			$className = "App\Kernel\Factory\\$name" ;
+			$className = "\App\Kernel\Factory\\$name" ;
 			$this->arrayFactory[ $name ] = new $className ;
 		}
 		

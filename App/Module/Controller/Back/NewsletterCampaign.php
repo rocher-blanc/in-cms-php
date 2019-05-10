@@ -36,6 +36,15 @@ class NewsletterCampaign extends Controller
 
     public function hookAddSaveAfter( $c )
     {
+        $data = new Data('NewsletterCampaign');
+        $data->find( $this->getId() );
+
+        if ( $data->get('type') == NULL )
+        {
+            $data->set('type' , 1);
+            $data->save();
+        }
+
         $EL = new Easyletter;
         $EL->newsletter( $this->getId() );
     }
@@ -146,11 +155,113 @@ class NewsletterCampaign extends Controller
         $this->render('stats.twig');
     }
 
-    protected function resendAction()
+    protected function resend( $type )
     {
-        $EL = new Easyletter;
-        $EL->newsletter( $this->getId() );
+        $rst = $this->duplicate();
 
-        $this->Factory()->Response()->flashAndRedirect( "La nouvelle demande de campagne est en cours ..." , true , $this->Factory()->Url()->route( $this->getEntityName() , 'index' , $this->getUriParent() ) );
+        if ( $rst['result'] == true )
+        {
+            $data = \DB::for_module( $this->getEntityName() )->where_id_is( $rst['id'] )->find_one();
+            if ( $data )
+            {
+                $one = $this->getRepository()->findOne( $this->getId() );
+
+                $data->mod_newslettercampaign_subject = $one->mod_newslettercampaign_subject ;
+                $data->mod_newslettercampaign_type = $type ;
+                $data->mod_newslettercampaign_id_easyletter = NULL ;
+                $data->mod_newslettercampaign_newsletter_parent = $this->getId() ;
+                $data->save();
+
+                $EL = new Easyletter;
+                $EL->newsletter( $rst['id'] );
+
+                $this->Factory()->Response()->printJSON( ['msg' => 'La campagne est en cours de programmation', 'result' => true, 'url' => $this->Factory()->Url()->route( $this->getEntityName() , "index" , $this->getUriParent() ) ] );
+            }
+            else
+            {
+                $this->Factory()->Response()->printJSON( $rst );
+            }
+        }
+        else
+        {
+            $this->Factory()->Response()->printJSON( $rst );
+        }
+    }
+
+    protected function resendNoClickAction()
+    {
+        return $this->resend( 3 );
+    }
+
+    protected function resendNoReadAction()
+    {
+        return $this->resend( 2 );
+    }
+
+    protected function resendNoReadViewAction()
+    {
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoRead.twig') ;
+    }
+
+    protected function resendNoClickViewAction()
+    {
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('sendNoClick.twig') ;
+    }
+
+    protected function downloadStatisticAction()
+    {
+        $one = $this->getRepository()->findOne( $this->getId() );
+
+        if ( $one )
+        {
+            $EL = new Easyletter;
+            $rst = $EL->downloadStats( $one->mod_newslettercampaign_id_easyletter , 'pdf' );
+
+            if ( is_array( $rst ) || $rst === false )
+            {
+                die('error');
+            }
+            else
+            {
+                $this->getApp()->contentType('application/pdf');
+                $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".pdf");
+                $this->getApp()->response()->body( $rst );
+            }
+        }
+        else
+        {
+            die('error');
+        }
+    }
+
+    protected function downloadStatisticDestAction()
+    {
+        $one = $this->getRepository()->findOne( $this->getId() );
+
+        if ( $one )
+        {
+            $EL = new Easyletter;
+            $rst = $EL->downloadStats( $one->mod_newslettercampaign_id_easyletter , 'excel' );
+
+            if ( is_array( $rst ) || $rst === false )
+            {
+                die('error');
+            }
+            else
+            {
+                $this->getApp()->response()->headers->set('Content-Disposition', "attachment;filename=statistics_newsletter_".$this->getId().".xls");
+                $this->getApp()->response()->headers->set('Cache-Control', "must-revalidate, post-check=0, pre-check=0");
+                $this->getApp()->response()->headers->set('Expires', "0");
+                $this->getApp()->response()->headers->set('Content-Type', "application/vnd.ms-excel; charset=utf-8");
+                $this->getApp()->response()->body( $rst );
+            }
+        }
+        else
+        {
+            die('error');
+        }
+
     }
 }

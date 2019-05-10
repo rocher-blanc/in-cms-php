@@ -12,6 +12,12 @@ class NewsletterCampaign extends Builder
         $this->setFieldReference( 'subject' );
 
         $this->addAction( 'stats' );
+        $this->addAction( 'downloadStatistic' );
+        $this->addAction( 'downloadStatisticDest' );
+        $this->addAction( 'resendNoRead' );
+        $this->addAction( 'resendNoReadView' );
+        $this->addAction( 'resendNoClick' );
+        $this->addAction( 'resendNoClickView' );
 
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
@@ -57,6 +63,31 @@ class NewsletterCampaign extends Builder
             ->ManyToMany( 'NewsletterModel', "name" )
             ->notEmpty("Veuillez sélectionner le gabarit")
             ->name("Gabarit email");
+
+        $this->build('type')
+            ->column(1, 2)
+            ->isSelect( true )
+            ->defaut(1)
+            ->option([
+                1 => 'Normal',
+                2 => 'Renvoi des non lus',
+                3 => 'Renvoi des non cliqués',
+            ])
+            ->showIf(function($c) {
+                return false ;
+            })
+            ->notEmpty("Veuillez sélectionner le type de newsletter")
+            ->name("Type");
+
+        $this->build('newsletter_parent')
+            ->column(1, 2)
+            ->isSelect()
+            ->ManyToMany( 'NewsletterCampaign' )
+            ->showIf(function($c) {
+                return false ;
+            })
+            ->notEmpty("Veuillez sélectionner la newsletter parent")
+            ->name("Newsletter parent");
 
         $this->build('statut')
             ->isHidden('INT',11)

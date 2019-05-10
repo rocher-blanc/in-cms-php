@@ -300,6 +300,13 @@
                                         <li class="mega-menu-title sub-menu">
                                             <a href="#" class="sf-with-ul"><div>Automation</div></a>
                                             <ul>
+                                                {% if active_newsletter != true %}
+                                                <li>
+                                                    <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
+                                                        <div>Expéditeurs</div>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationModelGroup' , 'index' ) }}">
                                                         <div>Groupe d'emails</div>

@@ -2,6 +2,7 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\Factory;
 use Slim\Slim;
 
 class TwigUrl extends \Twig_Extension
@@ -13,7 +14,7 @@ class TwigUrl extends \Twig_Extension
 
     private function Factory()
     {
-        return \App\Kernel\Factory::getInstance() ;
+        return Factory::getInstance() ;
     }
 
     public function getFunctions()
