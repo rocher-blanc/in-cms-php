@@ -181,6 +181,7 @@ checkImage = function(base) {
 checkDocument = function(base) {
     if ( $(base + ' input[data-upload-document]').length ) {
         checkDeleteDocument();
+        checkOrderDocument();
 
         $(base + ' input[data-upload-document]').each(function(){
             var $this = $(this);
@@ -233,6 +234,7 @@ checkDocument = function(base) {
                 });
 
                 checkDeleteDocument();
+                checkOrderDocument();
                 myForm.find('.form-process').fadeOut();
             }).on('fileclear', function(event, id, index) {
                 $($this.attr('data-bdd')).val('');
@@ -376,6 +378,43 @@ checkDeleteDocument = function() {
             }
         });
     }).addClass('deleteReady');
+};
+
+checkOrderDocument = function() {
+    if ( $('.list-document').length ) {
+        $('.list-document').each(function() {
+            var $ul = $(this).find("ul");
+            $ul.sortable({
+                start: function(event, ui) {
+                },
+                stop: function(event, ui) {
+                },
+                update: function(event, ui) {
+                    var $item = $(ui.item[0]);
+                    var $list = $item.parents(".list-document");
+
+                    var newOrder = [];
+                    $list.find(".orderdoc").each(function(index, el) {
+                        newOrder.push( $(el).attr("data-id") );
+                    });
+
+                    var data = {};
+                    data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
+                    data['field']                                    = $item.find(".orderdoc").data("field");
+                    data['element']                                  = $('#id_element').val();
+                    data['order']                                    = newOrder;
+                    console.log( data );
+                    $.ajax({
+                        url     : $item.find(".orderdoc").data("url"),
+                        data    : data,
+                        method  : "POST",
+                        dataType: 'json',
+                        success: function (response) {}
+                    });
+                }
+            });
+        });
+    }
 };
 
 checkForm = function(base) {

@@ -38,7 +38,7 @@ class Document extends \App\Kernel\Common\Document
                 $std->document_name 	= $row->document_name;
                 $std->document_id 	 	= $row->document_id;
                 $std->document_type 	= $row->document_type;
-                $std->document_icon 	= $this->getIcon( $row->document_name );
+				$std->document_icon 	= $this->getIcon( $row->document_name );
 
                 if ( $row->document_size > 1000 )
                 {

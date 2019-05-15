@@ -4,7 +4,12 @@
         <li id="document_{{ doc.id }}">
             <div class="input-group">
                 <span class="input-group-addon">
-                    <a target="_blank" href="{{ doc.url }}" title="Télécharger le document {{ doc.name }}"><i class="fa fa-download" title="{{ doc.name }}"></i></a>
+                    <i class="fa fa-arrows orderdoc" title="{{ doc.name }}" data-id="{{ doc.id }}" data-field="{{ field_name }}" data-url="{{ route( mod.name , 'orderdocument' , '' , doc.id ) }}" style="cursor:pointer;"></i>
+                </span>
+                <span class="input-group-addon">
+                    <a target="_blank" href="{{ doc.url }}" title="Télécharger le document {{ doc.name }}">
+                        <i class="fa fa-download" title="{{ doc.name }}"></i>
+                    </a>
                 </span>
                 <span class="input-group-addon" style="border-right: 0;">
                     <i class="fa fa-file{{ doc.ico.class }}-o" title="{{ doc.name }}" style="cursor: help;"></i>

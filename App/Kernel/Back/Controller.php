@@ -215,7 +215,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'tabs' , $form['tabs'] ) ;
         $this->setRender( 'condition' , $form['condition'] ) ;
 
-        $this->setRender( 'form' , $this->r enderForm([
+        $this->setRender( 'form' , $this->renderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
             'onglet' => $_GET['o'],
@@ -1864,8 +1864,39 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************   DOCUMENT   ******************* */
     /* ************************************************** */
 
+    protected function orderdocumentAction()
+	{
+		$Doc = new Document;
+		$Doc->setModuleId( $this->getEntityId() ) ;
+		$Doc->setDocumentId( $this->getId() );
+		$Doc->setFolder( $this->getEntity()->getFolder() ) ;
+		$docs = $Doc->getAll() ;
+
+		if( $docs )
+		{
+			if( $this->post('order') != NULL )
+			{
+				$result = implode( "," , $this->post('order') );
+				$content = $this->getRepository()->findOne( $this->getApp()->request->post('element') );
+				$content->set( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() , $result );
+				$content->save();
+
+				$this->Factory()->Response()->returnJSON( $this->m("orderdocument_success") , true ) ;
+			}
+			else
+			{
+				$this->Factory()->Response()->returnJSON( $this->m("orderdocument_no_orderlist") ) ;
+			}
+		}
+		else
+		{
+			$this->Factory()->Response()->returnJSON( $this->m("orderdocument_no_ressource") ) ;
+		}
+	}
+
+
     protected function deletedocumentAction()
-    {
+	{
         $Doc = new Document;
         $Doc->setModuleId( $this->getEntityId() ) ;
         $Doc->setDocumentId( $this->getId() );

@@ -1406,6 +1406,7 @@ class Builder extends Model
         $this->setDocumentField( $this->field()->getData("columnName") ) ;
 
         $this->addAction("uploaddocument") ;
+        $this->addAction("orderdocument") ;
         $this->addAction("deletedocument") ;
 
         return $this ;
