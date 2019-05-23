@@ -340,6 +340,7 @@ class User extends \App\Kernel\Common\User
                     $saveSession = $this->save( $user ) ;
 
                     $this->returnError( "user_login_successful" , true , true ) ;
+
                     return $saveSession;
                 }
                 else

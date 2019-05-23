@@ -683,11 +683,11 @@ class Field
 
             $this->setValue( $this->getApp()->request->post( $key ) ) ;
 
-            if ( isset( $_FILES[ $key ] ) && $this->getType() == 'document' )
+            if ( isset( $_FILES[ $key ] ) && !empty( $_FILES[ $key ]['tmp_name'] ) && $this->getType() == 'document' )
             {
                 $this->setValue( $_FILES[ $key ] ) ;
             }
-            else if ( isset( $_FILES[ "upload_" . $key ] ) && $this->getType() == 'image' )
+            else if ( isset( $_FILES[ "upload_" . $key ] ) && !empty( $_FILES[ "upload_" . $key ]['tmp_name'] ) && $this->getType() == 'image' )
             {
                 $this->setValue( $_FILES[ "upload_" . $key ] ) ;
             }
