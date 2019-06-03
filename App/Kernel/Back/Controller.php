@@ -1800,13 +1800,33 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function libimagesAction()
     {
-        $Media = new Media;
-        $Media->setModuleId( $this->getEntityId() ) ;
-        $Media->setModuleName( $this->getEntityName() ) ;
-        $Media->setFolder( $this->getEntity()->getFolder() ) ;
-        $Media->setField( $_GET['field_name'] ) ;
+    	$galleries = [];
+    	$images    = [];
+    	// Get galleries list
+    	$mod = \App\Kernel\Container::getInstance()->module("GalleryCategory");
 
-        $this->setRender( 'images' , $Media->getAllModel() );
+		$galleries = \DB::for_table( $mod->getRepository(true)->getTbl() )
+			->select( $mod->getEntity()->get("id"     )->getColumn(), "id"      )
+			->select( $mod->getEntity()->get("name"   )->getColumn(), "name"    )
+			->select( $mod->getEntity()->get("comment")->getColumn(), "comment" )
+			->order_by_asc( $mod->getEntity()->get("name")->getColumn() )
+			->find_array();
+
+		if( isset($galleries[0]) )
+		{
+			$gallery_id = $galleries[0]['id'];
+
+			$Media = new Media;
+			$Media->setGalleryId( $gallery_id );
+			$images = $Media->getAllModel();
+			dump( [
+				"Id galerie" => $gallery_id,
+				"Images trouvées" => $images
+			] );
+		}
+
+        $this->setRender( 'galleries' , $galleries );
+		$this->setRender( 'images' , $images );
         $this->setRender( 'name' , $_GET['name'] );
         $this->setRender( 'field_name' , $_GET['field_name'] );
         $this->render('libimages.twig') ;
@@ -1864,39 +1884,8 @@ class Controller extends \App\Kernel\Common\Controller
     /* *****************   DOCUMENT   ******************* */
     /* ************************************************** */
 
-    protected function orderdocumentAction()
-	{
-		$Doc = new Document;
-		$Doc->setModuleId( $this->getEntityId() ) ;
-		$Doc->setDocumentId( $this->getId() );
-		$Doc->setFolder( $this->getEntity()->getFolder() ) ;
-		$docs = $Doc->getAll() ;
-
-		if( $docs )
-		{
-			if( $this->post('order') != NULL )
-			{
-				$result = implode( "," , $this->post('order') );
-				$content = $this->getRepository()->findOne( $this->getApp()->request->post('element') );
-				$content->set( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() , $result );
-				$content->save();
-
-				$this->Factory()->Response()->returnJSON( $this->m("orderdocument_success") , true ) ;
-			}
-			else
-			{
-				$this->Factory()->Response()->returnJSON( $this->m("orderdocument_no_orderlist") ) ;
-			}
-		}
-		else
-		{
-			$this->Factory()->Response()->returnJSON( $this->m("orderdocument_no_ressource") ) ;
-		}
-	}
-
-
     protected function deletedocumentAction()
-	{
+    {
         $Doc = new Document;
         $Doc->setModuleId( $this->getEntityId() ) ;
         $Doc->setDocumentId( $this->getId() );
