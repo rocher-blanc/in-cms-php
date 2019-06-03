@@ -4,34 +4,82 @@ namespace App\Kernel\Back;
 
 class Media extends \App\Kernel\Common\Media
 {
+    /* ************************************************** */
+    /* ****************   VARIABLES   ******************* */
+    /* ************************************************** */
+
+    private $gallery_id;
+
+    /* ************************************************** */
+    /* ******************   SETTER   ******************** */
+    /* ************************************************** */
+
+    public function setGalleryId($var )
+    {
+        $this->gallery_id = $var ;
+    }
+
+    /* ************************************************** */
+    /* ******************   GETTER   ******************** */
+    /* ************************************************** */
+
+    public function getGalleryId()
+    {
+        return $this->gallery_id ;
+    }
+
 	/* ************************************************** */
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */
-	
-	public function getAllModel()
-	{
-		$rst = \DB::for_table('media')
-			->where_equal( 'media_module_id' , $this->getModuleId() )
+
+    public function getAllByGallery()
+    {
+        $rst = \DB::for_table('media')
+            ->where_equal( 'media_gallery' , $this->getGalleryId() )
+            ->find_many();
+
+        $arrayMedia = [] ;
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $std = new \stdClass;
+                $std->media_delete 		= true;
+                $std->media_name 		= $row->media_name;
+                $std->media_id 	 		= $row->media_id;
+                $std->media_mini_name   = $this->Factory()->Url()->image( $this->getFolder() . '/' . $this->getMiniName( $row->media_name ) , true ) ;
+
+                $arrayMedia[ $std->media_id ] = $std ;
+            }
+        }
+
+        return $arrayMedia ;
+    }
+
+    public function getAllModel()
+    {
+        $rst = \DB::for_table('media')
+            ->where_equal( 'media_module_id' , $this->getModuleId() )
             ->where_equal( 'media_field' , $this->getField() )
             ->find_many();
 
-		$arrayMedia = [] ;
-		if ( $rst )
-		{
-			foreach( $rst as $row )
-			{
-				$std = new \stdClass;
-				$std->media_delete 		= true;
-				$std->media_name 		= $row->media_name;
-				$std->media_id 	 		= $row->media_id;
-				$std->media_mini_name   = $this->Factory()->Url()->image( $this->getFolder() . '/' . $this->getMiniName( $row->media_name ) , true ) ;
-				
-				$arrayMedia[ $std->media_id ] = $std ;
-			}
-		}
+        $arrayMedia = [] ;
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $std = new \stdClass;
+                $std->media_delete 		= true;
+                $std->media_name 		= $row->media_name;
+                $std->media_id 	 		= $row->media_id;
+                $std->media_mini_name   = $this->Factory()->Url()->image( $this->getFolder() . '/' . $this->getMiniName( $row->media_name ) , true ) ;
 
-		return $arrayMedia ;
-	}
+                $arrayMedia[ $std->media_id ] = $std ;
+            }
+        }
+
+        return $arrayMedia ;
+    }
 
 	public function getAll()
 	{

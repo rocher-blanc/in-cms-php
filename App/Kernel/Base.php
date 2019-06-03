@@ -311,6 +311,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "media_field" => $this->infoColumn( "VARCHAR" , "50" , NULL , true ),
                 "media_name" => $this->infoColumn( "VARCHAR" , "255" ),
                 "media_size" => $this->infoColumn( "INT" , "11" ),
+                "media_gallery" => $this->infoColumn( "INT" , "11" ),
                 "media_type" => $this->infoColumn( "VARCHAR" , "100" ),
             ],
             "media_alt" => [

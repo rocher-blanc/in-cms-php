@@ -29,6 +29,11 @@
         </a>
     </li>
     <li>
+        <a href="{{ siteUrl('/ext/langue/traduction') }}">
+            Traductions
+        </a>
+    </li>
+    <li>
         <a href="{{ siteUrl('/ext/metadata') }}">
             Métadonnées
         </a>
@@ -185,16 +190,22 @@
                                                     </ul>
                                                 </li>
                                             {% endif %}
-                                            {#<li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Galeries d'immage</div></a>
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>Bibliothèques</div></a>
                                                 <ul>
                                                     <li>
-                                                        <a href="{{ siteUrl('/module/gallerycategory') }}">
-                                                            <div>Catégories</div>
+                                                        <a href="{{ siteUrl('/module/GalleryCategory') }}">
+                                                            <div>Images</div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <!--<a href="{{ siteUrl('/module/DocumentsCategory') }}">-->
+                                                        <a href="#">
+                                                            <div>Documents</div>
                                                         </a>
                                                     </li>
                                                 </ul>
-                                            </li>#}
+                                            </li>
                                         </ul>
 
                                         {% if user.admin == true %}
