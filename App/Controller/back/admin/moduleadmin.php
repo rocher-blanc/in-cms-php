@@ -1,6 +1,8 @@
 <?php
 
-	$app->group('/moduleadmin', function () use ($app)
+use App\Kernel\Container;
+
+$app->group('/moduleadmin', function () use ($app)
 	{
         $app->get('/icon/:field', function ( $field ) use ($app)
         {
@@ -33,8 +35,11 @@
 			{
 				foreach( $contentRows as $row )
 				{
-					$entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
-					$img[ $row->module_id ] = $entity->hasImage();
+					$entity = Container::getInstance()->module( $row->module_class_name )->getEntity();
+					if ( $entity )
+                    {
+                        $img[ $row->module_id ] = $entity->hasImage();
+                    }
 				}
 			}
 
@@ -50,7 +55,7 @@
 
 					if ( ! array_key_exists( $name , $tab ) )
 					{
-						$entity = \App\Kernel\Container::getInstance()->module( $name )->getEntity();
+						$entity = Container::getInstance()->module( $name )->getEntity();
 						$entity->hasImage();
 
 						$list[] = $name ;
@@ -128,8 +133,8 @@
 					if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
 				}
 
-                \App\Kernel\Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
-				\App\Kernel\Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
+                Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
+				Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
 				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le module a bien été installé" , true , '/admin/moduleadmin' );
 			}
 			else
@@ -157,7 +162,7 @@
 
 			if ( $contentRow )
 			{
-				$entity = \App\Kernel\Container::getInstance()->module($contentRow->module_class_name)->getEntity();
+				$entity = Container::getInstance()->module($contentRow->module_class_name)->getEntity();
 				if ( $entity->hasImage() )
 				{
 					foreach( $entity->getField() as $field )

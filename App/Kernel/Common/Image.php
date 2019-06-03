@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use App\Kernel\Factory;
+
 class Image
 {
 	public function __construct( $options )
@@ -15,7 +17,7 @@ class Image
 		$ext        = explode( '.' , $name );
 		$extension  = end( $ext );
 		$name       = basename( $name , '.' . $extension );
-		$name       = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+		$name       = Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
 
 		$rst = move_uploaded_file( $_FILES[ $this->options['param_name'] ]["tmp_name"] , $this->options['upload_dir'] . "/" . $name );
 

@@ -169,6 +169,34 @@ class Media extends \App\Kernel\Common\Media
 		return $media->media_id;
 	}
 
+	public function uploadLib( $path )
+    {
+        $this->setFolder('_lib');
+
+        $upload_dir 	= $path . '/' ;
+        $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
+
+        $img = new Image([
+            'module_id'   => NULL,
+            'upload_dir'  => $upload_dir,
+            'field'       => NULL,
+            'param_name'  => 'file',
+        ]);
+
+        $rst = $img->upload() ;
+
+        if ( $rst !== false )
+        {
+            $this->setImageId( $rst->id ) ;
+            $this->getNameById() ;
+            $source = $this->rename();
+
+            return true ;
+        }
+
+        return false ;
+    }
+
     public function upload( $path )
     {
         foreach( $_FILES as $key => $value )

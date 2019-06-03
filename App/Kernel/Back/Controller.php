@@ -1812,13 +1812,13 @@ class Controller extends \App\Kernel\Common\Controller
 			->order_by_asc( $mod->getEntity()->get("name")->getColumn() )
 			->find_array();
 
-		if( isset($galleries[0]) )
+		if ( isset( $galleries[0] ) )
 		{
 			$gallery_id = $galleries[0]['id'];
 
 			$Media = new Media;
 			$Media->setGalleryId( $gallery_id );
-			$images = $Media->getAllModel();
+			$images = $Media->getAllByGallery();
 			dump( [
 				"Id galerie" => $gallery_id,
 				"Images trouvées" => $images

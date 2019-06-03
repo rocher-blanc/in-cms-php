@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Exception;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
 
@@ -500,7 +501,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
-            throw new \App\Kernel\Exception("Module is undefined") ;
+            throw new Exception("Module is undefined") ;
         }
     }
 

@@ -2,7 +2,9 @@
 
 namespace App\Kernel\Back;
 
-class Image extends \App\Kernel\Common\Image
+use App\Kernel\Common\Image as ImageCommon;
+
+class Image extends ImageCommon
 {
 	public function getAll()
 	{
