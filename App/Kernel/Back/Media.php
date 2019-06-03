@@ -178,6 +178,7 @@ class Media extends \App\Kernel\Common\Media
 
         $img = new Image([
             'module_id'   => NULL,
+            'gallery'     => $this->getGalleryId(),
             'upload_dir'  => $upload_dir,
             'field'       => NULL,
             'param_name'  => 'file',
@@ -209,6 +210,7 @@ class Media extends \App\Kernel\Common\Media
         $img = new Image([
             'module_id'   => $this->getModuleId(),
             'upload_dir'  => $upload_dir,
+            'gallery'     => NULL,
             'field'       => $this->getApp()->request->post('model') == 1 ? $this->getApp()->request->post('field') : NULL,
             'upload_url'  => $this->Factory()->Url()->get( $upload_url , true ),
             'param_name'  => $fieldName,

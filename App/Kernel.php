@@ -368,6 +368,7 @@ class Kernel
             "web/uploads" => false ,
             "web/images" => false ,
             "web/images/_lib" => false ,
+            "web/images/_lib/t" => false ,
             "web/documents" => false
 		] ;
 
