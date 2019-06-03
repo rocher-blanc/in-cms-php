@@ -4,22 +4,35 @@
 
 {% block module %}
     {% include 'module/header.twig' %}
-    <form action="{{ route( mod.name , 'draw' , uri_id_parent , id ) }}" id="form-upload-gallery" class="uploader">
-        <div class="message">
-                {{ _('test') }}
+    <form action="{{ route( mod.name , 'draw' , uri_id_parent , id ) }}" id="form-upload-gallery" class="dropzone">
+        <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+        <div class="dz-message" data-dz-message>
+            <i class="icon-cloud-download"></i><br />
+            <span>{{ _('upload_images') }}</span>
         </div>
     </form>
 
+    <div class="tab-container">
+        <div class="tab-content clearfix" id="gallery-{{ id }}">
+            {% for img in images %}
+                <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                    <img src="{{ img.media_mini_name }}" class="" />
+                </a>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('canvas/css/src/dropzone.min.css') }}" type="text/css" />
     <style>
-        .uploader {
-            min-height: 150px;
-            border: 2px solid rgba(0,0,0,0.3);
-            background: white;
-            padding: 20px 20px;
+        .dropzone {
+            border: 2px dashed #00afaf;
+            background: #eee;
+        }
+
+        .dropzone .dz-message i {
+            font-size: 60px;
         }
     </style>
 {% endblock %}
@@ -29,18 +42,14 @@
     <script src="{{ asset('canvas/js/dropzone.min.js') }}"></script>
     <script>
         $(function() {
-            $("#form-upload-gallery").dropzone({
-                url: $("#form-upload-gallery").attr('action'),
-                dictDefaultMessage: "Glisser dans cette zone vos images"
+            $('.select-picture').click(function(e) {
+                e.preventDefault();
+                $('#id_{{ name }}').val( $(this).data('id') ) ;
+                $('#source_{{ field_name }}').attr('src' ,  $(this).find('img').attr('src') ) ;
+                $.magnificPopup.close();
             });
-            console.log($("#form-upload-gallery"));
-            /*var zdrop = new Dropzone("#form-upload-gallery", {
-                dictDefaultMessage: "Glisser dans cette zone vos images"
-            }).on("complete", function(file) {
-                if ( file.status == 'success' ) {
-                    document.location.href = $("#form-upload-gallery").attr('action') ;
-                }
-            });*/
+
+            $("#lib-images").tabs();
         });
     </script>
 {% endblock %}

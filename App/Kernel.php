@@ -367,7 +367,7 @@ class Kernel
             "cache/save/traduction" => false ,
             "web/uploads" => false ,
             "web/images" => false ,
-            "web/images/_avatar" => false ,
+            "web/images/_lib" => false ,
             "web/documents" => false
 		] ;
 

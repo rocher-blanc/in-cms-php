@@ -307,11 +307,11 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
             ],
             "media" => [
                 "media_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
-                "media_module_id" => $this->infoColumn( "INT" , "11" ),
+                "media_module_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "media_field" => $this->infoColumn( "VARCHAR" , "50" , NULL , true ),
                 "media_name" => $this->infoColumn( "VARCHAR" , "255" ),
                 "media_size" => $this->infoColumn( "INT" , "11" ),
-                "media_gallery" => $this->infoColumn( "INT" , "11" ),
+                "media_gallery" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "media_type" => $this->infoColumn( "VARCHAR" , "100" ),
             ],
             "media_alt" => [

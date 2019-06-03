@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Entity;
 
+use App\Kernel\Exception;
+
 class Container
 {
     /* ************************************************** */
@@ -148,6 +150,8 @@ class Container
 
     public function getController( $admin = false , $opt = [] )
     {
+        $ControllerClass = '' ;
+        
         if ( $this->controller === NULL )
         {
             foreach( $this->namespace as $namespace )
@@ -158,6 +162,11 @@ class Container
                 }
             }
 
+            if ( empty( $ControllerClass ) )
+            {
+                throw new Exception("Class for module \"" . $this->getName() . "\" is not find") ;
+            }
+            
             $Controller = new $ControllerClass;
 
             $Controller->setEntityName( $this->getName() );
