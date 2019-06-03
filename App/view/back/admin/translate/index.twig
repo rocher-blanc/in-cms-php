@@ -1,0 +1,89 @@
+{% extends 'module.twig.html' %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="isadmin" content="{{ user.admin ? 1 : 0}}" />
+{% endblock %}
+
+{% block title_page %}Langues{% endblock %}
+{% set this_page = 'Traduction' %}
+
+{% block module %}
+    <div class="fancy-title title-dotted-border">
+        <h3>Traduction du Back-Office</h3>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="hot-container">
+            <div id="handsontable">
+                <div>
+                    <div class="col_three_fourth">
+                        {% if user.admin == 1 %}
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
+                                </div>
+                                <button class="button add-key">Ajouter une clé de traduction</button>
+                            </div>
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </div>
+                    <div class="col_one_fourth col_last">
+                        <select class="form-control translate-lang-select">
+                            <option value="">Afficher une langue</option>
+                            {% for row in contentRows %}
+                                <option value="{{ row.locale }}">{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-hover table-border" id="translate-table">
+                    <thead>
+                    <tr>
+                        <th width="300px">
+                            <input type="text" id="search-key" class="form-control" placeholder="Rechercher" />
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div>
+                    {% if user.admin == 1 %}
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
+                            </div>
+                            <button class="button add-key">Ajouter une clé de traduction</button>
+                        </div>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/handsontable.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/wysiwyg/summernote.css') }}" />
+    <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/easydoor/traduction.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('libs/handsontable.min.js') }}"></script>
+    <script src="{{ asset('js/handsontable.js') }}"></script>
+
+    <script>
+        var admin = "{{ siteUrl('/') }}";
+    </script>
+
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote.min.js') }}"></script>,
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/summernote-image-attributes.js') }}"></script>,
+    <script src="{{ vendor('cmsmedias/canvas/js/wysiwyg/lang/summernote-fr-FR.js') }}"></script>
+    <script src="{{ vendor('cmsmedias/canvas/js/easydoor/bo-translate.js') }}"></script>
+{% endblock %}
