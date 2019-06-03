@@ -14,7 +14,7 @@ class Media extends \App\Kernel\Common\Media
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
-    public function setGalleryId($var )
+    public function setGalleryId( $var )
     {
         $this->gallery_id = $var ;
     }

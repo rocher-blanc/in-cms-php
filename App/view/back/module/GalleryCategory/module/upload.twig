@@ -1,0 +1,46 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page = 'Gestion' %}
+
+{% block module %}
+    {% include 'module/header.twig' %}
+    <form action="{{ route( mod.name , 'draw' , uri_id_parent , id ) }}" id="form-upload-gallery" class="uploader">
+        <div class="message">
+                {{ _('test') }}
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/dropzone.min.css') }}" type="text/css" />
+    <style>
+        .uploader {
+            min-height: 150px;
+            border: 2px solid rgba(0,0,0,0.3);
+            background: white;
+            padding: 20px 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('canvas/js/dropzone.min.js') }}"></script>
+    <script>
+        $(function() {
+            $("#form-upload-gallery").dropzone({
+                url: $("#form-upload-gallery").attr('action'),
+                dictDefaultMessage: "Glisser dans cette zone vos images"
+            });
+            console.log($("#form-upload-gallery"));
+            /*var zdrop = new Dropzone("#form-upload-gallery", {
+                dictDefaultMessage: "Glisser dans cette zone vos images"
+            }).on("complete", function(file) {
+                if ( file.status == 'success' ) {
+                    document.location.href = $("#form-upload-gallery").attr('action') ;
+                }
+            });*/
+        });
+    </script>
+{% endblock %}

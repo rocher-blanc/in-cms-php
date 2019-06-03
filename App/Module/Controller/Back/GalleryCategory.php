@@ -6,5 +6,8 @@ use App\Kernel\Back\Controller;
 
 class GalleryCategory extends Controller
 {
-
+    public function drawAction()
+    {
+        $this->render('upload.twig');
+    }
 }

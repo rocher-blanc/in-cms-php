@@ -2,18 +2,28 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel;
+use App\Kernel\Install;
+use App\Kernel\Middleware\Back\Auth;
+use App\Kernel\Middleware\Back\Guard;
+use App\Kernel\Middleware\Back\User;
+use App\Kernel\Middleware\CsrfGuard;
+use App\Kernel\View\TwigAdmin;
+use App\Kernel\View\TwigDebug;
+use App\Kernel\View\TwigLang;
+
 class Loader
 {
     protected $kernel = NULL ;
 
     public function __construct()
     {
-        $this->kernel = new \App\Kernel();
+        $this->kernel = new Kernel();
     }
 
     protected function getAdminFolder()
     {
-        return "/" . \App\Kernel\Install::getAdminFolder() ;
+        return "/" . Install::getAdminFolder() ;
     }
 
     protected function getRouterFolder()
@@ -47,30 +57,30 @@ class Loader
         /* ****************   Middleware   ******************* */
         #########################################################
 
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\CsrfGuard( $this->kernel->config('token') ));
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Auth);
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\Guard);
-        $this->kernel->setMiddleware(new \App\Kernel\Middleware\Back\User);
+        $this->kernel->setMiddleware(new CsrfGuard( $this->kernel->config('token') ));
+        $this->kernel->setMiddleware(new Auth);
+        $this->kernel->setMiddleware(new Guard);
+        $this->kernel->setMiddleware(new User);
 
         #########################################################
         /* ****************   Extensions   ******************* */
         #########################################################
 
-        $this->kernel->setParserExtension(new \App\Kernel\View\TwigAdmin);
-        $this->kernel->setParserExtension(new \App\Kernel\View\TwigLang);
-        $this->kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
+        $this->kernel->setParserExtension(new TwigAdmin);
+        $this->kernel->setParserExtension(new TwigLang);
+        $this->kernel->setParserExtension(new TwigDebug);
 
         #########################################################
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $this->kernel->addPlugin(new \App\Kernel\Back\Router(array_merge([
+        $this->kernel->addPlugin(new Router(array_merge([
                 CONTROLLERS_PATH,
                 PROJECT_EXT_CONTROLLER_PATH
             ],
             $this->getRouterFolder()
         ))) ;
-        $this->kernel->addPlugin(new \App\Kernel\Back\Menu) ;
+        $this->kernel->addPlugin(new Menu) ;
     }
 
     public function index( $run = true )

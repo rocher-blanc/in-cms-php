@@ -2,6 +2,9 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\CMS;
+use App\Kernel\Lang;
+
 class Translate
 {
 	/* ************************************************** */
@@ -17,12 +20,39 @@ class Translate
 
 	public function __construct()
     {
-        $lang = strtoupper( $this->Lang()->getActive()->url ) ;
+        $type = CMS::getInstance()->getApp()->config('config') ;
 
-        if ( file_exists( LANG_PATH . '/' . $lang . '.php' ) )
+        if ( $type == 'front' )
         {
-            $class = "\Project\Lang\\" . $lang  ;
-            $this->language = new $class;
+            $lang = strtoupper( $this->Lang()->getActive()->url ) ;
+            if ( file_exists( LANG_PATH . '/' . $lang . '.php' ) )
+            {
+                $class = "\Project\Lang\\" . $lang  ;
+                $this->language = new $class;
+            }
+        }
+        else
+        {
+            $userId = $_SESSION[ CMS::getInstance()->getApp()->config('session') ]['id'] ;
+            $user = \DB::for_table('user')
+                ->where_equal('user_id', $userId)
+                ->find_one();
+
+            if ( $user )
+            {
+                if ( $user->user_lang_id == '' )
+                {
+                    $user->user_lang_id = 1 ;
+                    $user->save();
+                }
+            }
+
+            $lang = strtoupper( $this->Lang()->get( $user->user_lang_id )->url ) ;
+            if ( file_exists( LANG_PATH . '/BO' . $lang . '.php' ) )
+            {
+                $class = "\Project\Lang\BO" . $lang  ;
+                $this->language = new $class;
+            }
         }
     }
 
@@ -44,7 +74,7 @@ class Translate
 
     private function Lang()
     {
-        return \App\Kernel\Lang::getInstance() ;
+        return Lang::getInstance() ;
     }
 
     public function getText( $key , $var = [] )

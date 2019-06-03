@@ -9,6 +9,8 @@ class GalleryCategory extends Builder
     protected function load()
     {
         $this->setFieldReference( 'name' );
+        $this->addIcon( 'icon-photo' , 'draw' );
+
 
         $this->build('name')
             ->full()

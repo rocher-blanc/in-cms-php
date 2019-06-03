@@ -422,7 +422,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "user_password" => $this->infoColumn( "VARCHAR" , "60" ),
                 "user_fname" => $this->infoColumn( "VARCHAR" , "150" ),
                 "user_lname" => $this->infoColumn( "VARCHAR" , "150" ),
-                "user_photo" => $this->infoColumn( "VARCHAR" , "255" ),
+                "user_lang_id" => $this->infoColumn( "INT" , "11" , 1 , false),
                 "user_published" => $this->infoColumn( "TINYINT" , "1" )
             ],
             "user_group" => [
