@@ -2,11 +2,33 @@
 
 {% block title_page %}<h3>Librairie d'images</h3>{% endblock %}
 {% block module %}
-    {% for img in images %}
-        <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
-            <img src="{{ img.media_mini_name }}" class="" />
-        </a>
-    {% endfor %}
+
+    <div class="tabs side-tabs nobottommargin clearfix" id="lib-images">
+        <ul class="tab-nav tab-nav2 clearfix">
+            {% for gallery in galleries %}
+                <li><a href="#gallery-{{ gallery.id }}">{{ gallery.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <div class="tab-container">
+            {% for gallery in galleries %}
+                <div class="tab-content clearfix" id="gallery-{{ gallery }}">
+
+                    {% if gallery.comment | length > 0 %}
+                        <p>{{ gallery.comment }}</p>
+                    {% endif %}
+
+                    {% if loop.first %}
+                        {% for img in images %}
+                            <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                                <img src="{{ img.media_mini_name }}" class="" />
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
     <script>
         $(function() {
@@ -16,6 +38,8 @@
                $('#source_{{ field_name }}').attr('src' ,  $(this).find('img').attr('src') ) ;
                $.magnificPopup.close();
            });
+
+            $("#lib-images").tabs();
         });
     </script>
 {% endblock %}
