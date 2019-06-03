@@ -308,6 +308,7 @@ class Install
             "web/uploads",
             "web/images",
             "web/images/_lib",
+            "web/images/_lib/t",
             "web/documents",
             "web/assets",
             "web/assets/css",
