@@ -672,11 +672,13 @@ checkEditor = function(base) {
                 toolbar: [
                     ['hx', ['style']],
                     ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
+                    ['fontsize', ['fontsize']],
                     ['clear', ['clear']],
                     ['para', ['ul', 'ol', 'paragraph']],
                     ['insert', ['link', 'picture', 'video']],
                     ['view', ['fullscreen', 'codeview']],
                     ['misc', ['print']],
+                    ['height', ['height']]
                 ],
                 popover: {
                     image: [

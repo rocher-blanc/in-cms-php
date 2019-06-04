@@ -1,63 +1,37 @@
 {% extends 'module.twig.html' %}
 
-{% set this_page = 'Gestion' %}
+{% set this_page = 'Gestion de la bibliothèque' %}
 
 {% block module %}
     {% include 'module/header.twig' %}
-    <form action="{{ route( mod.name , 'draw' , uri_id_parent , id ) }}" id="form-upload-gallery" class="dropzone">
+    <form action="{{ route( mod.name , 'draw' , uri_id_parent , id ) }}" id="form-upload-gallery" class="uploader">
         <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
-        <div class="dz-message" data-dz-message>
+        <div class="dz-message" data-uploadmsg="{{ lib_upload_doing }}">
             <i class="icon-cloud-download"></i><br />
-            <span>{{ _('upload_images') }}</span>
+            <span>{{ lib_upload_msg }}</span>
         </div>
     </form>
 
     <div class="tab-container">
         <div class="tab-content clearfix" id="gallery-{{ id }}">
             {% for img in images %}
-                <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                <div class="mini lib-picture">
                     <img src="{{ img.media_mini_name }}" class="" />
-                </a>
+                    <a href="{{ route( mod.name , 'deletemedia' , '' , img.media_id , csrf_token ) }}" class="overlay-picture deletelibimage"><i class="icon-trash"></i></a>
+                </div>
             {% endfor %}
         </div>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('canvas/css/src/dropzone.min.css') }}" type="text/css" />
-    <style>
-        .dropzone {
-            border: 2px dashed #00afaf;
-            background: #eee;
-        }
-
-        .dropzone .dz-message i {
-            font-size: 60px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/easydoor/libimage.css') }}" type="text/css" />
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('canvas/js/dropzone.min.js') }}"></script>
-    <script>
-        $(function() {
-            $('.select-picture').click(function(e) {
-                e.preventDefault();
-                $('#id_{{ name }}').val( $(this).data('id') ) ;
-                $('#source_{{ field_name }}').attr('src' ,  $(this).find('img').attr('src') ) ;
-                $.magnificPopup.close();
-            });
-
-            Dropzone.options.filedrop = {
-                init: function () {
-                    this.on("complete", function (file) {
-                        if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                            alert('test');
-                        }
-                    });
-                }
-            };
-        });
-    </script>
+    <script src="{{ asset('canvas/js/easydoor/libimage.js') }}"></script>
 {% endblock %}

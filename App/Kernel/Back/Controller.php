@@ -1819,10 +1819,6 @@ class Controller extends \App\Kernel\Common\Controller
 			$Media = new Media;
 			$Media->setGalleryId( $gallery_id );
 			$images = $Media->getAllByGallery();
-			dump( [
-				"Id galerie" => $gallery_id,
-				"Images trouvées" => $images
-			] );
 		}
 
         $this->setRender( 'galleries' , $galleries );

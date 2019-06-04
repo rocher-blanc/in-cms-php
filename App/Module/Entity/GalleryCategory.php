@@ -10,6 +10,7 @@ class GalleryCategory extends Builder
     {
         $this->setFieldReference( 'name' );
         $this->addIcon( 'icon-photo' , 'draw' );
+        $this->addAction('deletemedia');
 
 
         $this->build('name')

@@ -1,0 +1,40 @@
+.uploader {
+    border: 2px dashed #00afaf;
+    background: #eee;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.uploader .dz-message i {
+    font-size: 60px;
+}
+
+.overlay-picture {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 0;
+    left: 0;
+    padding: 30px 0;
+    text-align: center;
+    background-color: rgba(255,255,255, 0.8);
+    font-size: 26px;
+    display: none;
+}
+.overlay-picture i {
+    color: #c02942;
+}
+
+.mini:hover .overlay-picture {
+    display: block;
+}
+
+.lib-picture {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    float: left;
+    margin: 0 5px 5px 0;
+    background: url('{{ asset('canvas/img/ajax-loader.gif') }}') center center no-repeat;
+}
