@@ -1,0 +1,5 @@
+{% for img in images %}
+    <a href="javascript:;" class="select-picture"  >
+        <img src="{{ img.media_mini_name }}" data-full="{{ img.media_mini_name | split("/t") | first }}/{{ img.media_name }}" class="" />
+    </a>
+{% endfor %}
