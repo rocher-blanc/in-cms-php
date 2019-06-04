@@ -26,7 +26,7 @@
       <paths name="socialter">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
