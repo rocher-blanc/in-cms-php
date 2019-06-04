@@ -3,43 +3,117 @@
 {% block title_page %}<h3>Bibliothèque d'images</h3>{% endblock %}
 {% block module %}
 
-    <div class="tabs side-tabs nobottommargin clearfix" id="lib-images">
-        <ul class="tab-nav tab-nav2 clearfix">
-            {% for gallery in galleries %}
-                <li><a href="#gallery-{{ gallery.id }}">{{ gallery.name }}</a></li>
-            {% endfor %}
-        </ul>
-        <div class="tab-container">
-            {% for gallery in galleries %}
-                <div class="tab-content clearfix" id="gallery-{{ gallery }}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-8">
 
-                    {% if gallery.comment | length > 0 %}
-                        <p>{{ gallery.comment }}</p>
-                    {% endif %}
-
-                    {% if loop.first %}
-                        {% for img in images %}
-                            <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
-                                <img src="{{ img.media_mini_name }}" class="" />
-                            </a>
+                <div class="tabs side-tabs nobottommargin clearfix" id="lib-images">
+                    <ul class="tab-nav tab-nav2 clearfix">
+                        {% for gallery in galleries %}
+                            <li><a href="#gallery-{{ gallery.id }}">{{ gallery.name }}</a></li>
                         {% endfor %}
-                    {% endif %}
+                    </ul>
+                    <div class="tab-container">
+                        {% for gallery in galleries %}
+                            <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
 
+                                {% if gallery.comment | length > 0 %}
+                                    <em>{{ gallery.comment }}</em>
+                                {% endif %}
+
+                                {% if loop.first %}
+                                    {% for img in images %}
+                                        <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                                            <img src="{{ img.media_mini_name }}" class="" />
+                                        </a>
+                                    {% endfor %}
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            {% endfor %}
+
+            </div>
+            <div class="col-xs-4">
+                <div id="lib-images-zoom"></div>
+            </div>
         </div>
     </div>
 
-    <script>
-        $(function() {
-           $('.select-picture').click(function(e) {
-               e.preventDefault();
-               $('#id_{{ name }}').val( $(this).data('id') ) ;
-               $('#source_{{ field_name }}').attr('src' ,  $(this).find('img').attr('src') ) ;
-               $.magnificPopup.close();
-           });
+    <style>
+        .select-picture img {
+            border: 1px #d6d6d6 solid;
+            margin-right: 3px;
+        }
 
-            $("#lib-images").tabs();
+        #lib-images-zoom {
+            position: relative;
+            border: 1px #d6d6d6 solid;
+            text-align: center;
+            height:400px;
+        }
+
+        #lib-images-zoom img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            transform: translate( -50%, -50% );
+        }
+    </style>
+
+
+    <script>
+        var initSelectPicture = function (base) {
+            $(base).find('.select-picture').click(function (e) {
+                e.preventDefault();
+                $('#id_{{ name }}').val($(this).data('id'));
+                $('#source_{{ field_name }}').attr('src', $(this).find('img').attr('src'));
+                $.magnificPopup.close();
+            });
+
+            $(base).find("img").on("mouseenter", function() {
+                $("#lib-images-zoom").html( '<div class="text-center"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>' );
+                var img = new Image();
+                img.src = $(this).attr("data-full");
+                img.onload = function() {
+                    $("#lib-images-zoom").html("").append( img );
+                };
+
+            }).on("mouseout", function() {
+                $("#lib-images-zoom").html("");
+            });
+        };
+
+        $(function () {
+            initSelectPicture( "#lib-images" );
+
+            $("#lib-images").tabs({
+                active: 0,
+                activate: function (event, ui) {
+                    var $panel = $(ui.newPanel).eq(0);
+                    if ($panel.attr("data-loaded") === "0") {
+
+                        $panel.html( '<div class="text-center"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>' );
+
+                        $.ajax({
+                            url: $panel.attr('data-url'),
+                            method: "GET",
+                            success: function (response) {
+                                $panel.html(response);
+                                $panel.attr("data-loaded", 1);
+
+                                initSelectPicture( $panel );
+                            }
+                        });
+
+                    }
+                }
+            });
         });
     </script>
 {% endblock %}

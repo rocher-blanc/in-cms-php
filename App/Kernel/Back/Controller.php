@@ -1817,6 +1817,7 @@ class Controller extends \App\Kernel\Common\Controller
 			$gallery_id = $galleries[0]['id'];
 
 			$Media = new Media;
+			$Media->setFolder( "_lib" );
 			$Media->setGalleryId( $gallery_id );
 			$images = $Media->getAllByGallery();
 		}
@@ -1826,6 +1827,20 @@ class Controller extends \App\Kernel\Common\Controller
         $this->setRender( 'name' , $_GET['name'] );
         $this->setRender( 'field_name' , $_GET['field_name'] );
         $this->render('libimages.twig') ;
+    }
+
+    protected function libimagesgalleryAction()
+    {
+    	$gallery_id = \App\Kernel\CMS::getInstance()->Request()->get('gallery_id');
+
+		$Media = new Media;
+		$Media->setGalleryId( $gallery_id );
+		$Media->setFolder( "_lib" );
+
+		$this->setRender( 'images' , $Media->getAllByGallery() );
+        $this->setRender( 'name' , $_GET['name'] );
+        $this->setRender( 'field_name' , $_GET['field_name'] );
+        $this->render('libimages_gallery.twig') ;
     }
 
     protected function uploadAction()
