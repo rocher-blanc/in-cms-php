@@ -1,0 +1,153 @@
+@import "variables";
+
+//header
+
+#page-menu-wrap{
+  background: linear-gradient(to right, $color4, $color1);
+}
+
+
+//menu
+
+#primary-menu ul li.website>a, #top-account>.btn{
+  background-color: $color2;
+}
+
+#primary-menu ul li .mega-menu-content.style-2 ul.mega-menu-column>li.mega-menu-title>a{
+  color: $color1;
+
+  &:hover{
+    color: $color2;
+  }
+}
+
+#primary-menu ul li>a:hover{
+  color: $color2;
+}
+
+#primary-menu ul ul li:hover>a{
+  color: $color2;
+}
+
+//buttons
+
+.button, .button-rounded, .button-reveal, .button-small, .button-3d, .button-add, .ed-button, .button.button-3d{
+  background-color: $color4 !important;
+
+  &:hover{
+    background-color: $color1 !important;
+  }
+}
+
+ul.tab-nav.tab-nav2 li.ui-state-active a{
+  background-color: $color4 !important;
+}
+
+.button-blue {
+  background-color: #1265A8 !important;
+}
+
+.button-black {
+  background-color: #111 !important;
+}
+
+.button-green{
+  background-color: #59BA41 !important;
+}
+
+.button-amber {
+  background-color: #EB9C4D !important;
+}
+
+.button-red {
+  background-color: #C02942 !important;
+}
+
+input.switch-toggle-round:checked + label:before{
+  background-color: $color1;
+}
+
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-themecolor{
+  background-color: $color1;
+}
+
+
+//text
+
+h3>span:not(.nocolor), h3{
+  color: $color3;
+}
+
+//icones
+
+.icon-asterisk, .icon-line-link, .icon-pencil, .icon-trash2, .icon-link, .icon-photo, a.color-theme > i.icon-move{
+  color: $color4;
+}
+
+.i-bordered:hover, .i-circled:hover{
+  background-color: $color1 !important;
+  border-color: $color1 !important;
+}
+
+.process-steps li.active a, .process-steps li.ui-tabs-active a{
+  background-color: $color4 !important;
+  border-color: $color4 !important;
+}
+
+
+
+// border
+
+.page-item.active .page-link, .page-link:hover, .page-link:focus{
+  background-color: $color4 !important;
+  border-color: $color4 !important;
+}
+
+.fancy-title.title-bottom-border h3{
+  border-bottom: 2px solid $color4;
+}
+
+.tabs.tabs-tb ul.tab-nav li.ui-tabs-active a{
+  border-top: 2px solid $color4;
+}
+
+.title-block{
+  border-left: 7px solid $color4;
+}
+
+
+//other
+
+.uploader {
+  border: 2px dashed $color1;
+}
+
+.pagination > li > a, .pagination > li > span{
+  color: $color2;
+}
+
+.sidenav li.parent a{
+  background-color: $color1;
+}
+
+//modal
+
+.modal1 .title-modal{
+  background-color: $color1;
+}
+
+.dropdown-item.active, .dropdown-item:active, .dropdown-item.selected:hover, .dropdown-item.selected:focus{
+  background-color: $color1 !important;
+}
+
+//message
+
+.toast { background-color: #030303; }
+
+.toast-success { background-color: #51a351; }
+
+.toast-error { background-color: #bd362f; }
+
+.toast-info { background-color: #2f96b4; }
+
+.toast-warning { background-color: #f89406; }

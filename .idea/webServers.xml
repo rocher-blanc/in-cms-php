@@ -27,7 +27,7 @@
         </fileTransfer>
       </webServer>
       <webServer id="03dd5020-78d1-40a7-8ded-0ac94a14a593" name="socialter" url="http://vps1.jweb-creation.fr">
-        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www/vendor/JWebCreation/cms">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
