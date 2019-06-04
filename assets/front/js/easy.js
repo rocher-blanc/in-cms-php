@@ -1,3 +1,5 @@
+var which;
+
 $(function() {
     init('body');
 });
@@ -40,13 +42,18 @@ checkboxSwitch = function( base ) {
 };
 
 checkForm = function(base) {
+    $("button, input").bind('click', function(e) {
+        which = $(this);
+    });
+
     $(base + ' form.ajax').not('.submitReady').bind('submit', function(e) {
+        which.prop("disabled",true);
+
         var $form = $(this);
         var mod = $form.data('slug');
         if ( $(base + ' .'+mod+'-form-process').length ) {
             $(base + ' .'+mod+'-form-process').show();
         }
-
         $(base + ' .ed_field').removeClass('error');
         var serialize = new FormData($form.get(0));
 
@@ -95,6 +102,9 @@ checkForm = function(base) {
                 Notify(data.msg, data.result);
             }
         });
+
+        which.prop("disabled",false);
+
         return false;
     }).addClass('submitReady');
 
