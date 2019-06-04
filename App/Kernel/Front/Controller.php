@@ -910,7 +910,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-    protected function generateForm( $value = false , $url = '' )
+    protected function generateForm( $value = false , $url = '' , $timer = '' )
     {
         $form = parent::generateForm( $value );
 
@@ -930,6 +930,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'recaptcha'             => $this->getEntity()->reCAPTCHA(),
                 'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
                 'redirect'              => $url,
+                'timer'                 => $timer,
                 'keyControl'            => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
                 'result'                => $this->result_form,
             ])
@@ -941,7 +942,7 @@ class Controller extends \App\Kernel\Common\Controller
         return "front" ;
     }
 
-    public function getForm( $type , $id , $url )
+    public function getForm( $type , $id , $url , $timer )
     {
         switch( $type )
         {
@@ -952,7 +953,7 @@ class Controller extends \App\Kernel\Common\Controller
                     $this->setId( $id );
                 }
 
-                return $this->generateForm( $id === NULL ? false : true , $url ) ;
+                return $this->generateForm( $id === NULL ? false : true , $url , $timer ) ;
             break;
             case "object" :
                 // a faire
@@ -1116,6 +1117,11 @@ class Controller extends \App\Kernel\Common\Controller
                         if ( $this->post('redirect') != '' )
                         {
                             $result['url'] = $this->getUrlRedirect();
+                        }
+
+                        if ( $this->post('timer') != '' )
+                        {
+                            $result['timer'] = $this->post('timer');
                         }
                     }
                     else

@@ -68,9 +68,9 @@ class TwigModule extends \Twig_Extension
         return $Controller->getComponent( $type , $request , $vars );
     }
 
-    public function form( $module , $id = NULL , $url = '', $type = 'html' )
+    public function form( $module , $id = NULL , $url = '', $timer = '' , $type = 'html' )
     {
-        return $this->Container()->module( $module )->getController()->getForm( $type , $id , $url );
+        return $this->Container()->module( $module )->getController()->getForm( $type , $id , $url , $timer );
     }
 
     public function formDelete( $module , $id , $var = [], $url = '' )
