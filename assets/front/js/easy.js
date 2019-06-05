@@ -75,7 +75,14 @@ checkForm = function(base) {
                 if( data.result ) {
                     // Test to redirection
                     if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
-                        redirect( data.url );
+                        if ( typeof data.timer !== "undefined" ) {
+                            redirect(data.url);
+                        }
+                        else {
+                            setTimeout(function(){
+                                redirect(data.url);
+                            }, data.timer);
+                        }
                     }
                 }
                 // Result is not success
