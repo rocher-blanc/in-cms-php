@@ -40,9 +40,6 @@
                 {% for user in users %}
                     <li>
                         <div class="testimonial text-center">
-                            <div class="testi-image" style="margin:0 auto; float: none;">
-                                <a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}"><img src="{{ user.user_photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.user_photo , false ) }}" alt="{{ user.user_name }}"></a>
-                            </div>
                             <div class="testi-meta">
                                 <a href="{{ siteUrl('ext/user/edit/' ~ user.user_id ) }}" class="user" title="{{ user.user_name }}">{{ user.user_name }}</a>
                             </div>

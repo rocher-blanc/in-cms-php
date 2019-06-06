@@ -104,7 +104,6 @@ $app->group('/secured', function () use ($app) {
                 $user->user_name  = $app->request->post('user_name');
                 $user->user_fname = $app->request->post('user_fname');
                 $user->user_lname = $app->request->post('user_lname');
-                $user->user_photo = $app->request->post('uphoto');
                 $user->save();
 
                 \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( "Votre profil est modifié" , true , '/secured/profile' );

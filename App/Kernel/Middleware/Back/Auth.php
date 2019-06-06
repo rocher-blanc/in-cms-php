@@ -185,7 +185,6 @@ class Auth extends \Slim\Middleware
 			'name' 	 	 => $user->user_name,
 			'lname' 	 => $user->user_lname,
 			'fname' 	 => $user->user_fname,
-			'photo' 	 => $user->user_photo,
 			'group_name' => $user->user_group_name,
 			'group_id' 	 => $user->user_group_id,
 			'admin' 	 => ( $user->user_group_id == 1 ? true : false )
