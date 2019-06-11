@@ -24,15 +24,18 @@ $app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $rec
 
         if ( $rstH )
         {
-            $json = json_decode( $History->get('information') , true );
-
-            foreach( $json[ $History->get('email') ] as $key => $value )
+            if ( ! empty( $History->get('information') ) )
             {
-                $html = str_replace( '[' . $key . ']' , $value , $html ) ;
-            }
+                $json = json_decode( $History->get('information') , true );
 
-            $History->set('information' , NULL );
-            $History->save();
+                foreach( $json[ $History->get('email') ] as $key => $value )
+                {
+                    $html = str_replace( '[' . $key . ']' , $value , $html ) ;
+                }
+
+                $History->set('information' , NULL );
+                $History->save();
+            }
         }
     }
 
