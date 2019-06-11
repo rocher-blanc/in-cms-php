@@ -33,7 +33,7 @@ class EdAutomationHistory extends Builder
         $this->build('information')
             ->noFront()
             ->noBack()
-            ->isText()
+            ->isText("LONG")
             ->name("JSON - Informations");
 
         $this->build('automation')
