@@ -24,7 +24,7 @@ $app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $rec
 
         if ( $rstH )
         {
-            $json = json_decode( $History->get('information') );
+            $json = json_decode( $History->get('information') , true );
 
             foreach( $json[ $History->get('email') ] as $key => $value )
             {
