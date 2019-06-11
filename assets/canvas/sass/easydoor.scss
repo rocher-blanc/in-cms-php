@@ -731,6 +731,10 @@ ul.docs-icons li span {
 /* Gestion du menu header                           */
 /* ************************************************ */
 
+#header.full-header #logo {
+  border-right: 0;
+}
+
 #header.full-header #primary-menu > ul {
   padding-right: 0;
 }
