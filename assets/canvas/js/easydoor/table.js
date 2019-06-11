@@ -237,7 +237,39 @@ listenFormTable = function( base ) {
         });
 
         /** GESTION DE L'ORDER **/
-        if ( $form.find('.table-dnd').length ) {
+        if ( $('.table-parent').length ) {
+            $form.find('.table-dnd').each(function() {
+                var $table = $(this);
+                $table.tableDnD({
+                    onDragStart: function (table, row) {
+                        var parent = $(row).parent().parent().data('parent');
+                        $("#" + $(row).data('tr')).addClass('myDragClass');
+                        $('.table-parent').find('tr').each(function () {
+                            if ($(this).data('parent') != parent) {
+                                $(this).hide();
+                            }
+                        });
+                    },
+                    dragHandle: '.orderTable',
+                    onDragClass: 'myDragClass',
+                    onDrop: function (table, row) {
+                        console.log($.tableDnD.serialize());
+                        $.ajax({
+                            type: 'POST',
+                            data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + $.tableDnD.serialize(),
+                            url: siteurl + "module/" + $table.data('name') + "/order/0/" + $("meta[name=token]").attr("content"),
+                            success: function (data) {
+                                Notify(data.msg, data.result);
+                                $('.table-parent').find('tr').each(function () {
+                                    $(this).show();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        else if ( $form.find('.table-dnd').length ) {
             $form.find('.table-dnd').each(function() {
                 var $table = $(this);
                 $table.tableDnD({

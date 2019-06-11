@@ -1,0 +1,169 @@
+{% macro display_tree(contentArray, level, hierarchy, hasOrder, right, hasValidation, csrf_token, mod, type) %}
+    {% set colors = ['info', 'warning', 'success', 'danger'] %}
+    {% for index,content in contentArray %}
+        <tr class="tr1" data-parent="{{ content.parent_id == '' ? 0 : content.parent_id }}" id="{{ content.id }}">
+
+            {% if level > 0 %}
+                {% for i in 0..(level - 1) %}
+                    <td style="width:30px;border-right-style:none;"></td>
+                {% endfor %}
+            {% endif %}
+
+            {% for index,row in content.td %}
+                {% if loop.first %}
+                    <td colspan="{{ 12 - level }}"{% if level > 0 %} style="padding-left: {{ 5 * level }}px;"{% endif %}>
+                        {% if hasOrder %}
+                            <a href="javascript:;" class="color-theme orderTable{% if contentArray|length == 1 %} disabled{% endif %}" data-tr="{{ content.id }}">
+                                <i class="icon-move"></i>
+                            </a>
+                        {% endif %}
+                        <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ index+1 }}.</span>&nbsp;{{ row.value }}
+                    </td>
+                {% else %}
+                    <td>
+                        {% if type[ index2 ] == "image" %}
+                            <img src="{{ row.value }}" alt="" class="img-responsive" />
+                        {% else %}
+                            {{ row.value }}
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+
+            {% if hasDefault %}
+                <td class="text-center" style="vertical-align: middle;">
+                    {% if right.edit == true %}
+                        {% if content.default == 1 %}
+                            <span class="button button-rounded button-mini button-green">Par défaut</span>
+                        {% else %}
+                            <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">Mettre par défaut</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            {% endif %}
+
+            {% if hasValidation %}
+                <td class="text-center" style="vertical-align: middle;">
+                    {% if right.validation == true %}
+                        <div class="switch text-center" data-urlenable="{{ route( mod.name , 'enable' , uri_id_parent , content.id , csrf_token ) }}" data-urldisable="{{ route( mod.name , 'disable' , uri_id_parent , content.id , csrf_token ) }}">
+                            <input id="switch-toggle-{{ content.id }}" class="switch-toggle switch-rounded-mini switch-toggle-round" name="active" type="checkbox"{{ content.validation == 1 ? ' checked' : '' }}>
+                            <label for="switch-toggle-{{ content.id }}"></label>
+                        </div>
+                    {% else %}
+                        <i class="{{ content.validation == 1 ? 'icon-line2-check success' : 'icon-line-circle-cross danger' }}"></i>
+                    {% endif %}
+                </td>
+            {% endif %}
+
+            <td class="text-right actionLink" style="vertical-align: middle;">
+                {% if content.icons|length > 0 and right.edit == true %}
+                    {% for icon in content.icons %}
+                        {% if depedency %}
+                            <a href="{{ dRoute( mod.name , icon.action , dElement , dModule , content.id ) }}"{% if icon.blank %} target="_blank"{% elseif icon.ajax %} class="ajaxtable"{% else %} data-modal="true"{% endif %}><i class="{{ icon.class }}"></i></a>
+                        {% else %}
+                            <a href="{{ route( mod.name , icon.action , uri_id_parent , content.id ) }}"{% if icon.blank %} target="_blank"{% elseif icon.ajax %} class="ajaxtable"{% endif %}><i class="{{ icon.class }}"></i></a>
+                        {% endif %}
+                    {%  endfor %}
+                {% endif %}
+                {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
+                {% if mod.canDuplicate == true %}
+                    {% if depedency %}
+                        <a href="{{ dRoute( mod.name , 'duplicate' , dElement , dModule , content.id ) }}" class="duplicate"><i class="icon-files"></i></a>
+                    {% else %}
+                        <a href="{{ route( mod.name , 'duplicate' , uri_id_parent , content.id ) }}" class="duplicate"><i class="icon-files"></i></a>
+                    {% endif %}
+                {% endif %}
+                {% if right.edit == true and mod.canUpdate == true and content.edit == true %}
+                    {% if depedency %}
+                        <a href="{{ dRoute( mod.name , 'edit' , dElement , dModule , content.id ) }}" data-modal="true"><i class="icon-pencil"></i></a>
+                    {% else %}
+                        <a href="{{ route( mod.name , 'edit' , uri_id_parent , content.id ) }}"><i class="icon-pencil"></i></a>
+                    {% endif %}
+                {% endif %}
+                {% if right.delete == true and mod.canDelete == true and content.delete == true %}<a href="{{ route( mod.name , 'delete' , '' , content.id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>{% endif %}
+            </td>
+
+        </tr>
+        {% if content.subpages|length > 0 %}
+            {{ _self.display_tree(content.subpages, level + 1, hierarchy ~ (index + 1) ~ '.', hasOrder, right, hasValidation, csrf_token, mod, type) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% if td|length > 0 %}
+    <form action="{% if depedency %}{{ dRoute( mod.name , 'table' , dElement , dModule ) }}{% else %}{{ route( mod.name , 'table' , uri_id_parent ) }}{% endif %}" method="get" class="tableFormSearch" data-container="table-content-{{ mod.name }}">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-parent{% if hasOrder and right.edit == true %} table-dnd{% endif %}" data-url="{{ siteUrl('/module/' ~ mod.name ~ '/order/0/' ~ csrf_token ) }}" id="table-{{ mod.name }}" data-name="{{ mod.name }}">
+                <thead>
+                    <tr>
+
+                        {% for thvalue in th %}
+                            <th{% if loop.first %} colspan="12"{% endif %}><strong>{{ thvalue.title }}</strong></th>
+                        {% endfor %}
+
+                        {% if hasDefault %}
+                            <th style="width: 100px;">
+                                Défaut<br />
+                            </th>
+                        {% endif %}
+
+                        {% if hasValidation %}
+                            <th style="width: 100px;">
+                                En ligne<br />
+                            </th>
+                        {% endif %}
+
+                        <th class="text-right" style="width: 220px;"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ _self.display_tree(td, 0, '', hasOrder, right, hasValidation, csrf_token, mod, type) }}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% else %}
+	<span>Pas de contenu enregistré.</span>
+{% endif %}
+
+
+{#<script>#}
+
+    {#listenOrderParent = function() {#}
+        {#if ( $('.table-parent').length ) {#}
+            {#$('.table-parent').tableDnD({#}
+                {#onDragStart: function(table, row) {#}
+                    {#var parent = $(row).parent().parent().data('parent') ;#}
+                    {#$( "#" + $(row).data('tr') ).addClass('myDragClass');#}
+                    {#$('.table-parent').find('tr').each(function() {#}
+                        {#if ( $(this).data('parent') != parent ) {#}
+                            {#$(this).remove();#}
+                        {#}#}
+                    {#});#}
+                {#},#}
+                {#dragHandle: '.orderTable',#}
+                {#onDragClass: 'myDragClass',#}
+                {#onDrop: function(table, row) {#}
+                    {#console.log( $.tableDnD.serialize() );#}
+                    {#$.ajax({#}
+                        {#type : 'get',#}
+                        {#dataType : 'text',#}
+                        {#data: $.tableDnD.serialize(),#}
+                        {#url : $('.table-parent').data('url'),#}
+                        {#success : function( data ) {#}
+                            {#try {#}
+                                {#var ret = jQuery.parseJSON( data ) ;#}
+                            {#} catch (e) {#}
+                                {#redirectHome();#}
+                                {#return false ;#}
+                            {#}#}
+                            {#Notify( data );#}
+                            {#reloadTable() ;#}
+                        {#}#}
+                    {#});#}
+                {#}#}
+            {#});#}
+        {#}#}
+    {#};#}
+{#</script>#}
