@@ -11,9 +11,30 @@ $app->get('/email/automation/recipient/:id', function ( $id ) use ( $app ) {
     echo $Automation->get('information');
 })->name('email_automation_recipient');
 
-$app->get('/email/automation/template/:id', function ( $id ) use ( $app ) {
+$app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $recipientId = NULL ) use ( $app ) {
     $Automation = new Data('EdAutomation');
     $rst = $Automation->find( $id );
 
-    if ( $rst ) echo $Automation->get('html');
+    $html = $Automation->get('html');
+
+    if ( $recipientId !== NULL )
+    {
+        $History = new Data('EdAutomationHistory');
+        $rstH = $History->find( $id );
+
+        if ( $rstH )
+        {
+            $json = json_decode( $History->get('information') );
+
+            foreach( $json[ $History->get('email') ] as $key => $value )
+            {
+                $html = str_replace( '[' . $key . ']' , $value , $html ) ;
+            }
+
+            $History->set('information' , NULL );
+            $History->save();
+        }
+    }
+
+    if ( $rst ) echo $html;
 })->name('email_automation_template');

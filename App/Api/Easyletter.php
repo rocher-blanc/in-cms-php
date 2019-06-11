@@ -163,7 +163,7 @@ class Easyletter
                         'returnPathEmail' => $Sender->get('email_response'),
 
                         'recipient' => Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
-                        'content' => Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id'),
+                        'content' => Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id') . "/" . $AutomationHistory->get('id'),
                     ]);
 
                     if ( $response !== false )
