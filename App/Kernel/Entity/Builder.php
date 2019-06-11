@@ -3,6 +3,7 @@
 namespace App\Kernel\Entity;
 
 use App\Kernel\Entity\Field;
+use App\Kernel\Exception;
 
 class Builder extends Model
 {
@@ -1306,7 +1307,7 @@ class Builder extends Model
         {
             if ( $force == false && in_array( $name , $this->forbidden_field ) )
             {
-                throw new \App\Kernel\Exception("Prohibit naming this field \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
+                throw new Exception("Prohibit naming this field \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
             }
             else
             {
@@ -1332,7 +1333,7 @@ class Builder extends Model
     public function field()
     {
         if ( is_object( $this->_field[ $this->getLast() ] ) ) 	return $this->_field[ $this->getLast() ] ;
-        else													throw new \App\Kernel\Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
+        else													throw new Exception("No field with that name \"" . $this->getLast() . "\" - Entity : " . $this->getClassName() ) ;
     }
 
     public function get( $field ): Field
