@@ -20,7 +20,7 @@ $app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $rec
     if ( $recipientId !== NULL )
     {
         $History = new Data('EdAutomationHistory');
-        $rstH = $History->find( $id );
+        $rstH = $History->find( $recipientId );
 
         if ( $rstH )
         {
