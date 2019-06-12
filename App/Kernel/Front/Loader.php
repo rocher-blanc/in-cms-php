@@ -58,14 +58,15 @@ class Loader
         $this->kernel->setParserExtension(new \App\Kernel\View\TwigHelper);
         $this->kernel->setParserExtension(new \App\Kernel\View\TwigLang);
         $this->kernel->setParserExtension(new \App\Kernel\View\TwigDebug);
+        $this->kernel->setParserExtension(new \App\Kernel\View\Form);
 
         #########################################################
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $this->kernel->addPlugin(new \App\Kernel\Front\Router) ;
-        $this->kernel->addPlugin(new \App\Kernel\Front\Language) ;
-        $this->kernel->addPlugin(new \App\Kernel\Front\Meta) ;
+        $this->kernel->addPlugin(new Router) ;
+        $this->kernel->addPlugin(new Language) ;
+        $this->kernel->addPlugin(new Meta) ;
     }
 
     public function index( $run = true )

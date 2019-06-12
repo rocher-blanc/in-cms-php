@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Kernel\Exception;
+use App\Kernel\Http;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
 
@@ -668,7 +669,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $Seo = new \App\Kernel\Front\Seo;
                 $Seo->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
                 $Seo->setModuleId( $this->getEntityId() ) ;
-                $arrayElement['url'] = \App\Kernel\Http::getInstance()->getUrl() . '/' ;
+                $arrayElement['url'] = Http::getInstance()->getUrl() . '/' ;
                 if ( $this->Lang()->count() > 1 )
                 {
                     $arrayElement['url'].= \App\Kernel\Lang::getInstance()->getActive()->url . "/" ;
@@ -924,7 +925,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'field'                 => $form['field'],
                 'tabs'                  => $form['tabs'],
                 'condition'             => $form['condition'],
-                'route'                 => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+                'route'                 => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'id'                    => $form['id'],
                 'module'                => $this->getEntityName(),
                 'recaptcha'             => $this->getEntity()->reCAPTCHA(),
@@ -942,30 +943,70 @@ class Controller extends \App\Kernel\Common\Controller
         return "front" ;
     }
 
-    public function getForm( $type , $id , $url , $timer )
+    public function getForm( $id , $url , $timer )
     {
-        switch( $type )
+        $this->setId( NULL );
+        if ( $id !== NULL )
         {
-            case "html" :
-                $this->setId( NULL );
-                if ( $id !== NULL )
-                {
-                    $this->setId( $id );
-                }
-
-                return $this->generateForm( $id === NULL ? false : true , $url , $timer ) ;
-            break;
-            case "object" :
-                // a faire
-            break;
+            $this->setId( $id );
         }
+
+        return $this->generateForm( $id === NULL ? false : true , $url , $timer ) ;
+    }
+
+    public function getCustomForm( $id , $url , $timer )
+    {
+        $this->setId( NULL );
+        if ( $id !== NULL )
+        {
+            $this->setId( $id );
+        }
+
+        $form  = parent::generateForm( $id === NULL ? false : true );
+        $View  = $this->Container()->newClass('App\Kernel\View');
+
+        $start = $View->fetch( 'module/widget/form/start.twig' , [
+            'field'      => $form['field'],
+            'condition'  => $form['condition'],
+            'route'      => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+            'id'         => $form['id'],
+            'module'     => $this->getEntityName(),
+            'redirect'   => $url,
+            'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) )
+        ]);
+
+        $end = $View->fetch( 'module/widget/form/end.twig' );
+
+        $fields = [];
+
+        if ( $form['field'] )
+        {
+            foreach( $form['field'] as $field )
+            {
+                $fields[ $field['name'] ] = [
+                   'label' => $field['title'],
+                   'error' => $field['error'],
+                   'help' => $field['comment'],
+                   'row' => $View->fetch( 'module/widget/form/field.twig', [ 'field' => $field ] ),
+                   'widget' => $field['Form_HTML'],
+               ];
+            }
+        }
+
+        return [
+            'css' => $form['cdn_css'] . $form['css'],
+            'js' => $form['cdn_js'] . $form['js'],
+            'start' => $start,
+            'end' => $end,
+            'field' => $fields,
+        ] ;
     }
 
     public function getFormDelete( $id , $var , $url )
     {
         $View = $this->Container()->newClass('App\Kernel\View');
         return $View->fetch( 'module/formDelete.twig' , [
-            'route' => \App\Kernel\Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+            'route' => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
             'id' => $id,
             'module' => $this->getEntityName(),
             'redirect' => $url,

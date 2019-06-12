@@ -1,0 +1,11 @@
+<form method="post" action="{{ route }}" data-route-condition="" data-condition="{{ condition ? "true" : "false" }}" class="form-vertical ajax" enctype="multipart/form-data" accept-charset="utf-8">
+    <input type="hidden" name="id_element" value="{{ id != NULL ? id : '-1' }}" />
+    <input type="hidden" name="moduleAction" value="1" />
+    <input type="hidden" name="moduleAction" value="1" />
+    <input type="hidden" name="moduleName" value="{{ module }}" />
+    <input type="hidden" name="keyControl" value="{{ keyControl }}" />
+    {% if redirect != '' %}<input type="hidden" name="redirect" value="{{ redirect }}" />{% endif %}
+
+    {% for c in field if c.type == 'hidden' %}
+        {{ c.Form_HTML }}
+    {% endfor %}

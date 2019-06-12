@@ -1,11 +1,4 @@
-{% macro field(c, counter, width) %}
-    <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}{% if c.show == false %} hide{% endif %}" id="field-{{ c.name }}" data-field="{{ c.fieldname }}">
-        <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>
-        {% if c.comment != '' %}<div class="comment">{{ c.comment }}</div>{% endif %}
-        {{ c.Form_HTML }}
-    </div>
-{% endmacro field %}
-{% import _self as form %}
+{% import "module/macro.twig" as form %}
 
 {% if tabs|length > 1 %}
 <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">

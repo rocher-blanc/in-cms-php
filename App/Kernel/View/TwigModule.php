@@ -2,6 +2,9 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\Container;
+use App\Kernel\Factory;
+use App\Kernel\Lang;
 use Slim\Slim;
 
 class TwigModule extends \Twig_Extension
@@ -13,17 +16,17 @@ class TwigModule extends \Twig_Extension
 
     private function Factory()
     {
-        return \App\Kernel\Factory::getInstance() ;
+        return Factory::getInstance() ;
     }
 
     private function Container()
     {
-        return \App\Kernel\Container::getInstance() ;
+        return Container::getInstance() ;
     }
 
     private function Lang()
     {
-        return \App\Kernel\Lang::getInstance() ;
+        return Lang::getInstance() ;
     }
 
     public function getFunctions()
@@ -31,8 +34,6 @@ class TwigModule extends \Twig_Extension
        return [
             new \Twig_SimpleFunction('component', [$this, 'component']),
             new \Twig_SimpleFunction('module', [$this, 'module']),
-            new \Twig_SimpleFunction('form', [$this, 'form']),
-            new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
             new \Twig_SimpleFunction('parse', [$this, 'parse']),
        ];
     }
@@ -66,16 +67,6 @@ class TwigModule extends \Twig_Extension
         $Controller->setComponentName( $component );
 
         return $Controller->getComponent( $type , $request , $vars );
-    }
-
-    public function form( $module , $id = NULL , $url = '', $timer = '' , $type = 'html' )
-    {
-        return $this->Container()->module( $module )->getController()->getForm( $type , $id , $url , $timer );
-    }
-
-    public function formDelete( $module , $id , $var = [], $url = '' )
-    {
-        return $this->Container()->module( $module )->getController()->getFormDelete( $id , $var , $url );
     }
 
     public function parse( $field )
