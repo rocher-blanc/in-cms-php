@@ -18,16 +18,16 @@
                             {% endif %}
                         </th>
                     {% endfor %}
+                    {% if hasDefault %}
+                        <th style="width: 100px;">
+                            Défaut<br />
+                        </th>
+                    {% endif %}
                     {% if hasValidation %}
                         <th style="width: 100px;">
                             En ligne<br />
                             <a data-filter data-by="desc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="icon-chevron-sign-down"></i></a>
                             <a data-filter data-by="asc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="icon-chevron-sign-up"></i></a>
-                        </th>
-                    {% endif %}
-                    {% if hasDefault %}
-                        <th style="width: 100px;">
-                            Défaut<br />
                         </th>
                     {% endif %}
                     <th class="text-right" style="width: 220px;">
