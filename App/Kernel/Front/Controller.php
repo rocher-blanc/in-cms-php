@@ -403,7 +403,7 @@ class Controller extends \App\Kernel\Common\Controller
 			],
 			'total' => $p->getTotalItems(),
 			'first' => $p->getPages()[0],
-			'last' => end( $p->getPages() )
+			'last'  => end( $p->getPages() )
 		];
 	}
 
