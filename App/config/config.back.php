@@ -9,7 +9,6 @@ defined('VIEW_PROJECT_PATH') || define('VIEW_PROJECT_PATH', PROJECT_PATH . '/vie
 defined('MIDDLEWARE_PROJECT_PATH') || define('MIDDLEWARE_PROJECT_PATH', PROJECT_PATH . '/Middleware/Back');
 defined('ASSETS_IMG_PATH') || define('ASSETS_IMG_PATH', WEB_PATH . '/' . \App\Kernel\Install::getAdminFolder() . '/assets/img');
 defined('CLASS_PROJECT_PATH') || define('CLASS_PROJECT_PATH', PROJECT_PATH . '/CustomClass/Back');
-defined('SAVE_PATH') || define('SAVE_PATH', _PATH_ . '/cache/save');
 defined('TRAD_PATH') || define('TRAD_PATH', SAVE_PATH . '/traduction');
 
 defined('V_CONTROLLER_PATH') || define('V_CONTROLLER_PATH', V_MODULE_PATH . '/Controller/Back');

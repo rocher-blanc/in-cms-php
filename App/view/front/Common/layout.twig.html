@@ -1,4 +1,4 @@
-{% if debug == true %}{% set ext = 'dev.twig.html' %}{% else %}{% set ext = 'prod.twig.html' %}{% endif %}{% extends ext %}{% block html_content %}{{ vendor([
+{% if env() == 'dev' %}{% set ext = 'dev.twig.html' %}{% else %}{% set ext = 'prod.twig.html' %}{% endif %}{% extends ext %}{% block html_content %}{{ vendor([
 'bootstrap/dist/css/bootstrap.min.css',
 'cmsmedias/libs/jquery.1.9.1.min.js',
 'bootstrap/dist/js/bootstrap.min.js'

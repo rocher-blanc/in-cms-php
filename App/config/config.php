@@ -19,6 +19,8 @@ defined('REPOSITORY_PROJECT_PATH') || define('REPOSITORY_PROJECT_PATH', MODULE_P
 defined('WEBSERVICE_PROJECT_PATH') || define('WEBSERVICE_PROJECT_PATH', MODULE_PATH . '/Webservice');
 defined('TEMPLATES_COMMON_TECH_PATH') || define('TEMPLATES_COMMON_TECH_PATH', APPLICATION_PATH . '/view/front/Common' );
 defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
+defined('SAVE_PATH') || define('SAVE_PATH', _PATH_ . '/cache/save');
+
 
 /* COMMON */
 defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJECT_PATH . '/CustomClass/Common');
