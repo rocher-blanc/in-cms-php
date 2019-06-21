@@ -4,6 +4,7 @@ namespace App\Kernel\Back;
 
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
+use App\Kernel\Container;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -1195,13 +1196,15 @@ class Controller extends \App\Kernel\Common\Controller
     {
         if ( ! $this->getEntity()->isChild() ) return [] ;
 
-        $tab = [] ;
-        $remontada = true ;
-        $parent = $this->getEntity()->getModuleParentName() ;
-        $tab[] = $parent ;
+        $tab        = [] ;
+        $empty      = false;
+        $remontada  = true ;
+        $parent     = $this->getEntity()->getModuleParentName() ;
+        $tab[]      = $parent ;
+
         while( $remontada )
         {
-            $Entity = \App\Kernel\Container::getInstance()->module( $parent )->getEntity();
+            $Entity = Container::getInstance()->module( $parent )->getEntity();
             if ( $Entity->isChild() )
             {
                 $parent = $Entity->getModuleParentName();
@@ -1239,6 +1242,11 @@ class Controller extends \App\Kernel\Common\Controller
                     'icon' => $module->module_icon
                 ];
 
+                if ( $newTab[ $j ]['id'] === NULL )
+                {
+                    $empty = true;
+                }
+
                 if ( $first == true )
                 {
                     $idParentSave[ $j - 1 ] = $idParent[ $j - 1 ] ;
@@ -1264,10 +1272,11 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         return [
-            'last' => $parent,
-            'current' => $currentModule,
-            'count' => count( $newTab ),
-            'array' => $newTab
+            'last'      => $parent,
+            'current'   => $currentModule,
+            'empty'     => $empty,
+            'count'     => count( $newTab ),
+            'array'     => $newTab
         ];
     }
 
@@ -1275,7 +1284,7 @@ class Controller extends \App\Kernel\Common\Controller
     {
         $arrayParent = $this->getParentArray();
 
-        $Controller = \App\Kernel\Container::getInstance()->module( $arrayParent['current'] )->getController( true );
+        $Controller = Container::getInstance()->module( $arrayParent['current'] )->getController( true );
         $Controller->setIdParent( $this->getIdParent() ) ;
         $Controller->setChild( $this->getEntityName() ) ;
         $parentContent = $Controller->getParentContent();
@@ -1615,6 +1624,13 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function addAction()
     {
+        $arrayParent = $this->getParentArray();
+
+        if ( $this->getEntity()->isChild() && $arrayParent['empty'] == true )
+        {
+            $this->Factory()->Response()->redirect( $this->Factory()->Url()->route( $this->getEntityName() , 'index' ) );
+        }
+
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
         {
             $rst = $this->pushData() ;
@@ -1627,15 +1643,68 @@ class Controller extends \App\Kernel\Common\Controller
         $this->loadDepedencies() ;
         $this->generateForm() ;
 
-        $arrayParent = $this->getParentArray();
         $this->setRender( 'uri_id_parent' , $this->getUriParent() ) ;
         $this->setRender( 'parentLine' , $arrayParent ) ;
 
         $this->render('formulaire.twig') ;
     }
 
+    protected function getRecursiveParentLink( $arrayParent )
+    {
+        $tab = [];
+        if ( ! empty( $arrayParent['array'] ) )
+        {
+            foreach( $arrayParent['array'] as $row )
+            {
+                $tab[] = $row['name'];
+            }
+        }
+
+        if ( ! empty( $tab ) )
+        {
+            $stop = false ;
+            $one = $this->getRepository()->findOne( $this->getId() );
+
+            if ( $one )
+            {
+                $key = 0;
+                while( $stop !== true )
+                {
+                    if ( $key != 0 )
+                    {
+                        $mod = Container::getInstance()->module( $tab[ $key ] );
+                        $one = $mod->getRepository()->findOne( $id );
+                        $id = $one->get( $mod->getEntity()->get( $mod->getEntity()->getModuleParentIdName() )->getColumn() );
+                    }
+                    else
+                    {
+                        $id = $one->get( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->getColumn() );
+                    }
+
+
+                    $result[] = $id ;
+
+                    unset( $tab[ $key ] );
+                    $key++;
+
+                    if ( empty( $tab ) ) $stop = true ;
+                }
+            }
+        }
+
+       return $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , implode( '/' , array_reverse( $result ) ) , $this->getId() );
+    }
+
     protected function editAction()
     {
+        $arrayParent = $this->getParentArray();
+
+        if ( $this->getEntity()->isChild() && $arrayParent['empty'] == true )
+        {
+            $uri = $this->getRecursiveParentLink( $arrayParent );
+            $this->Factory()->Response()->redirect( $uri );
+        }
+
 		if ( $this->getEntity()->hasUrl() )
         {
             $seo = new Seo;
@@ -1659,8 +1728,6 @@ class Controller extends \App\Kernel\Common\Controller
         $this->getGlobalVar() ;
         $this->loadDepedencies() ;
         $this->generateForm( true ) ;
-
-        $arrayParent = $this->getParentArray();
 
         $this->setRender( 'id' , $this->getId() ) ;
         $this->setRender( 'onglet' , $_GET['o'] ) ;
@@ -1803,7 +1870,7 @@ class Controller extends \App\Kernel\Common\Controller
     	$galleries = [];
     	$images    = [];
     	// Get galleries list
-    	$mod = \App\Kernel\Container::getInstance()->module("GalleryCategory");
+    	$mod = Container::getInstance()->module("GalleryCategory");
 
 		$galleries = \DB::for_table( $mod->getRepository(true)->getTbl() )
 			->select( $mod->getEntity()->get("id"     )->getColumn(), "id"      )

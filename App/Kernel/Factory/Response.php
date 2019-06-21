@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Factory;
 
+use App\Kernel\Factory;
+
 class Response
 {
     public function getApp()
@@ -11,7 +13,7 @@ class Response
 
     public function Factory()
     {
-        return \App\Kernel\Factory::getInstance() ;
+        return Factory::getInstance() ;
     }
 
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
