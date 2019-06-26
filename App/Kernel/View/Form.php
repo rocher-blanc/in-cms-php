@@ -24,20 +24,7 @@ class Form extends \Twig_Extension
        return [
             new \Twig_SimpleFunction('form', [$this, 'form']),
             new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
-
             new \Twig_SimpleFunction('form_init', [$this, 'formInit']),
-            new \Twig_SimpleFunction('form_start', [$this, 'formStart']),
-            new \Twig_SimpleFunction('form_end', [$this, 'formEnd']),
-            new \Twig_SimpleFunction('form_fields', [$this, 'formFields']),
-
-            new \Twig_SimpleFunction('form_row', [$this, 'formRow']),
-            new \Twig_SimpleFunction('form_label', [$this, 'formLabel']),
-            new \Twig_SimpleFunction('form_error', [$this, 'formError']),
-            new \Twig_SimpleFunction('form_widget', [$this, 'formWidget']),
-            new \Twig_SimpleFunction('form_help', [$this, 'formHelp']),
-
-            new \Twig_SimpleFunction('form_css', [$this, 'formCss']),
-            new \Twig_SimpleFunction('form_js', [$this, 'formJs']),
        ];
     }
 
