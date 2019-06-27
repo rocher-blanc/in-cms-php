@@ -1019,7 +1019,7 @@ class Controller extends \App\Kernel\Common\Controller
         ] );
     }
 
-    public function listenForm( $add = true )
+    public function listenForm( $add = true , $custom = false )
     {
 		if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
 		else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;

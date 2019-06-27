@@ -99,9 +99,9 @@ class Controller extends \App\Kernel\Front\Controller
         }
     }
 
-    public function listenForm( $add = true )
+    public function listenForm( $add = true , $custom = false )
     {
-        $rst = parent::listenForm( $add );
+        $rst = parent::listenForm( $add , $custom );
 
         if ( $rst['result'] == true )
         {
