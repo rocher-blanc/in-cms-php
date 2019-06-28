@@ -105,6 +105,11 @@ abstract class Page
         return $this->CMS()->request()->post( $key );
     }
 
+    public function get( $key )
+    {
+        return $this->CMS()->request()->get( $key );
+    }
+
     /* ************************************************** */
     /* *****************  CONTROLLER  ******************* */
     /* ************************************************** */
