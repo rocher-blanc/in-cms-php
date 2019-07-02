@@ -687,7 +687,7 @@ class Controller
     }
 
     protected function checkCustomField( $field )
-    { 
+    {
         if ( $this->_post('moduleCustom') == 1 )
         {
             if ( $field->getType() == 'hidden' )
@@ -696,7 +696,7 @@ class Controller
             }
             else if ( $field->getType() == 'document' )
             {
-                if ( in_array( "doc_" . $field->getName() , $this->_post() ) )
+                if ( array_key_exists( "doc_" . $field->getColumn() , $this->_post() ) )
                 {
                     return true ;
                 }
@@ -707,7 +707,7 @@ class Controller
             }
             else
             {
-                if ( in_array( $field->getName() , $this->_post() ) )
+                if ( array_key_exists( $field->getColumn() , $this->_post() ) )
                 {
                     return true ;
                 }

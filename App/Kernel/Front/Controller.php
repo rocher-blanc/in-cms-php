@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Back\Seo;
 use App\Kernel\Exception;
 use App\Kernel\Http;
 use JasonGrimes\Paginator;
@@ -972,7 +973,8 @@ class Controller extends \App\Kernel\Common\Controller
             'id'         => $form['id'],
             'module'     => $this->getEntityName(),
             'redirect'   => $url,
-            'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) )
+            'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
+            'result'     => $this->result_form,
         ]);
 
         $end = $View->fetch( 'module/widget/form/end.twig' );
@@ -1134,7 +1136,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                             if ( $this->getEntity()->hasUrl() && $add == true )
                             {
-                                $seo = new \App\Kernel\Back\Seo;
+                                $seo = new Seo;
                                 $seo->setElementId($this->getId());
                                 $seo->setModuleId($this->getEntityId());
                                 $seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());

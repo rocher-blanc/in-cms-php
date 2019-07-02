@@ -15,7 +15,7 @@ class Former
     {
         $rst = $this->get( $key , "row" , true );
 
-        unset( $this->form['field'][ $key ] );
+        $this->remove( $key ) ;
 
         return $rst ;
     }
@@ -45,24 +45,40 @@ class Former
         return $this->form['end'] ;
     }
 
-    public function label( $field )
+    public function label( $field , $remove = false )
     {
-        return $this->get( $field , "label" );
+        $rst = $this->get( $field , "label" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
     }
 
-    public function error( $field )
+    public function error( $field , $remove = false )
     {
-        return $this->get( $field , "error" );
+        $rst = $this->get( $field , "error" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
     }
 
-    public function help( $field )
+    public function help( $field , $remove = false )
     {
-        return $this->get( $field , "help" );
+        $rst = $this->get( $field , "help" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
     }
 
-    public function widget( $field )
+    public function widget( $field , $remove = false )
     {
-        return $this->get( $field , "widget" );
+        $rst = $this->get( $field , "widget" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
     }
 
     public function get( $field , $key , $unset = false )
