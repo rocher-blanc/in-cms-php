@@ -15,6 +15,6 @@ class NewsletterSubscriber extends Builder
             ->column(1, 1)
             ->isVarchar()
             ->notEmpty("Veuillez renseigner l'adresse email")
-            ->name("Email");
+            ->name("E-mail");
     }
 }

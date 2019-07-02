@@ -14,6 +14,6 @@ class NewsletterCampaignGroupUnsubscribe extends Builder
         $this->build('email')
             ->isVarchar(255, "email")
             ->notEmpty("Veuillez renseigner l'adresse email")
-            ->name("Email");
+            ->name("E-mail");
     }
 }
