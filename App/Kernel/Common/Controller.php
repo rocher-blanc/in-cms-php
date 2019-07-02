@@ -466,7 +466,7 @@ class Controller
         return $View->fetch( 'module/form.twig' , $values );
     }
 
-    protected function generateForm( $valueF = false )
+    protected function generateForm( $valueF = false , $data = [] )
     {
         $form = $this->Factory()->Form() ;
         $form->initLib();
@@ -551,6 +551,15 @@ class Controller
                     }
 
                     $this->getEntity()->build( $row->getName() )->field()->setValue( $value ) ;
+
+                    if ( $row->getName() == $this->getEntity()->getElementIdName() )
+                    {
+                        $this->setDepedencyElement( $value ) ;
+                    }
+                    else if ( $row->getName() == $this->getEntity()->getModuleIdName() )
+                    {
+                        $this->setDepedencyModule( $value ) ;
+                    }
                 }
             }
         }
@@ -616,6 +625,15 @@ class Controller
             }
         }
 
+        if ( ! empty( $data ) )
+        {
+            foreach( $data as $key => $value )
+            {
+                $this->getEntity()->build( $key )->field()->setValue( $value ) ;
+                $contentShow->$key = $value ;
+            }
+        }
+
         $shows      = $this->getShow( true , $contentShow );
         $condition  = false ;
         $arrayField = [] ;
@@ -668,6 +686,43 @@ class Controller
         ];
     }
 
+    protected function checkCustomField( $field )
+    { 
+        if ( $this->_post('moduleCustom') == 1 )
+        {
+            if ( $field->getType() == 'hidden' )
+            {
+                return false ;
+            }
+            else if ( $field->getType() == 'document' )
+            {
+                if ( in_array( "doc_" . $field->getName() , $this->_post() ) )
+                {
+                    return true ;
+                }
+                else
+                {
+                    return false ;
+                }
+            }
+            else
+            {
+                if ( in_array( $field->getName() , $this->_post() ) )
+                {
+                    return true ;
+                }
+                else
+                {
+                    return false ;
+                }
+            }
+        }
+        else
+        {
+            return true ;
+        }
+    }
+
     // Check si tous les champs sont corrects
     // Appelée dans la fonction "pushData" ; "listenForm" ; "User::register" ; "User::update"
     public function checkForm()
@@ -680,7 +735,7 @@ class Controller
         {
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' )
+                if ( ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' ) && $this->checkCustomField( $row ) )
                 {
                     if ( $row->getType() == 'gallery' )
                     {

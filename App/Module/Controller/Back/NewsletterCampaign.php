@@ -155,6 +155,24 @@ class NewsletterCampaign extends Controller
         $this->render('stats.twig');
     }
 
+    protected function cancelAction()
+    {
+        $data = new Data('NewsletterCampaign');
+        $rst = $data->find( $this->getId() );
+
+        if ( $rst == true )
+        {
+            $EL = new Easyletter;
+            $EL->cancel( $data->get('id_easyletter') );
+
+            $this->Factory()->Response()->printJSON( ['msg' => 'La campagne est en cours d\'annulation', 'result' => true, 'url' => $this->Factory()->Url()->route( $this->getEntityName() , "index" , $this->getUriParent() ) ] );
+        }
+        else
+        {
+            $this->Factory()->Response()->printJSON( ['msg' => 'Campagne introuvale', 'result' => false, 'url' => $this->Factory()->Url()->route( $this->getEntityName() , "index" , $this->getUriParent() ) ] );
+        }
+    }
+
     protected function resend( $type )
     {
         $rst = $this->duplicate();

@@ -7,8 +7,6 @@ use App\Kernel\Front\Former;
 
 class Form extends \Twig_Extension
 {
-    private $form ;
-
     public function getName()
     {
         return 'form';
@@ -28,9 +26,9 @@ class Form extends \Twig_Extension
        ];
     }
 
-    public function form( $module , $id = NULL , $url = '', $timer = '' )
+    public function form( $module , $id = NULL , $url = '', $timer = '' , $data = [] )
     {
-        return $this->Container()->module( $module )->getController()->getForm( $id , $url , $timer );
+        return $this->Container()->module( $module )->getController()->getForm( $id , $url , $timer , $data );
     }
 
     public function formDelete( $module , $id , $var = [], $url = '' )
@@ -38,9 +36,9 @@ class Form extends \Twig_Extension
         return $this->Container()->module( $module )->getController()->getFormDelete( $id , $var , $url );
     }
 
-    public function formInit( $module , $id = NULL , $url = '', $timer = '' )
+    public function formInit( $module , $id = NULL , $url = '', $timer = '' , $data = [] )
     {
-        $init = $this->Container()->module( $module )->getController()->getCustomForm( $id , $url , $timer );
+        $init = $this->Container()->module( $module )->getController()->getCustomForm( $id , $url , $timer , $data );
 
         return new Former( $init );
     }
