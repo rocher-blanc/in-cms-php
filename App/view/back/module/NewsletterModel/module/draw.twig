@@ -1,7 +1,6 @@
 {% extends 'module.twig.html' %}
 
 {% set this_page = 'Gestion' %}
-
 {% block module %}
     {% include 'module/header.twig' %}
     {% if select|length > 0 %}
@@ -24,7 +23,10 @@
         </div>
     {% endif %}
 
-    <div id="topolcontent"></div>
+    <div id="topolcontent">
+
+        <!--<div><h4>Lien de prévisualisation : </h4>{{ route( mod.name , 'draw' , uri_id_parent, id ) }}</div>-->
+        </div>
 {% endblock %}
 
 {% block stylesheets %}
@@ -54,4 +56,5 @@
             });
         });
     </script>
+
 {% endblock %}
