@@ -12,8 +12,10 @@ class NewsletterCampaign extends Builder
         $this->setFieldReference( 'subject' );
 
         $this->addAction( 'stats' );
+        $this->addAction( 'cancel' );
         $this->addAction( 'downloadStatistic' );
         $this->addAction( 'downloadStatisticDest' );
+
         $this->addAction( 'resendNoRead' );
         $this->addAction( 'resendNoReadView' );
         $this->addAction( 'resendNoClick' );
@@ -23,12 +25,20 @@ class NewsletterCampaign extends Builder
             return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
         });
 
+        $this->addIcon( 'icon-line-square-cross' , 'cancel' , function($c) {
+            return $c->id_easyletter !== NULL && $c->stats['state'] < 9 ? true : false ;
+        });
+/*
         $this->addIcon( 'icon-reply' , 'resend' , function($c) {
             return $c->stats === NULL ? true : false ;
         });
-
+*/
         $this->showEdit(function( $c ) {
             return false ;
+        });
+
+        $this->showDelete(function( $c ) {
+            return ( $c->stats['state'] == 1 ? false : true ) ;
         });
 
         $this->build('subject')

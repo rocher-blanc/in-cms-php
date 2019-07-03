@@ -284,7 +284,8 @@ class Builder extends Model
         'date_created',
         'date_last_updated',
         'date_updated',
-        'isValid'
+        'isValid',
+        'moduleCustom'
     ];
     private $_id_name;
     private $_default_name;

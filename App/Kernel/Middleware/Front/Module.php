@@ -62,10 +62,9 @@ class Module extends \Slim\Middleware
                     // ADD/UPDATE
                     default :
                         $add = ( $this->app->request->post('id_element') == '-1' ? true : false );
-                        $custom = ( $this->app->request->post('moduleCustom') == '1' ? true : false );
                         $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
                         if ( ! $add ) $Controller->setId( $this->app->request->post('id_element') );
-                        $rst = $Controller->listenForm( $add , $custom );
+                        $rst = $Controller->listenForm( $add );
                     break;
                 }
             }

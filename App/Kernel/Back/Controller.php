@@ -198,9 +198,9 @@ class Controller extends \App\Kernel\Common\Controller
         return $field->getData('title') ;
     }
 
-    protected function generateForm( $value = false )
+    protected function generateForm( $value = false , $data = [] )
     {
-        $form = parent::generateForm( $value );
+        $form = parent::generateForm( $value , $data );
 
         if ( $form === false )
         {

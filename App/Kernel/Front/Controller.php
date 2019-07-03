@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Back\Seo;
 use App\Kernel\Exception;
 use App\Kernel\Http;
 use JasonGrimes\Paginator;
@@ -911,9 +912,9 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-    protected function generateForm( $value = false , $url = '' , $timer = '' )
+    protected function generateForm( $value = false , $url = '' , $timer = '' , $data = [] )
     {
-        $form = parent::generateForm( $value );
+        $form = parent::generateForm( $value , $data );
 
         if ( $form === false )
         {
@@ -943,7 +944,7 @@ class Controller extends \App\Kernel\Common\Controller
         return "front" ;
     }
 
-    public function getForm( $id , $url , $timer )
+    public function getForm( $id , $url , $timer , $data = [] )
     {
         $this->setId( NULL );
         if ( $id !== NULL )
@@ -951,10 +952,10 @@ class Controller extends \App\Kernel\Common\Controller
             $this->setId( $id );
         }
 
-        return $this->generateForm( $id === NULL ? false : true , $url , $timer ) ;
+        return $this->generateForm( $id === NULL ? false : true , $url , $timer , $data ) ;
     }
 
-    public function getCustomForm( $id , $url , $timer )
+    public function getCustomForm( $id , $url , $timer , $data = [] )
     {
         $this->setId( NULL );
         if ( $id !== NULL )
@@ -962,7 +963,7 @@ class Controller extends \App\Kernel\Common\Controller
             $this->setId( $id );
         }
 
-        $form  = parent::generateForm( $id === NULL ? false : true );
+        $form  = parent::generateForm( $id === NULL ? false : true , $data );
         $View  = $this->Container()->newClass('App\Kernel\View');
 
         $start = $View->fetch( 'module/widget/form/start.twig' , [
@@ -972,7 +973,8 @@ class Controller extends \App\Kernel\Common\Controller
             'id'         => $form['id'],
             'module'     => $this->getEntityName(),
             'redirect'   => $url,
-            'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) )
+            'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
+            'result'     => $this->result_form,
         ]);
 
         $end = $View->fetch( 'module/widget/form/end.twig' );
@@ -1019,7 +1021,7 @@ class Controller extends \App\Kernel\Common\Controller
         ] );
     }
 
-    public function listenForm( $add = true , $custom = false )
+    public function listenForm( $add = true )
     {
 		if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
 		else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
@@ -1064,33 +1066,36 @@ class Controller extends \App\Kernel\Common\Controller
 
                             foreach( $this->getEntity()->getField() as $row )
                             {
-                                if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
+                                if ( $this->checkCustomField( $row ) == true )
                                 {
-                                    $Media = new Media;
-                                    $Media->setModuleId( $this->getEntityId() ) ;
-                                    $Media->setModuleName( $this->getEntityName() ) ;
-                                    $Media->setFolder( $this->getEntity()->getFolder() ) ;
-                                    $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+                                    if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
+                                    {
+                                        $Media = new Media;
+                                        $Media->setModuleId( $this->getEntityId() ) ;
+                                        $Media->setModuleName( $this->getEntityName() ) ;
+                                        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+                                        $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
 
-                                    $content->set($row->getColumn(), $Media->getImageId() );
-                                }
-                                else if ( $row->getType() == "document" && !empty( $_FILES[ $row->getColumn() ]['name'] ) )
-                                {
-                                    $Doc = new Document;
-                                    $Doc->setModuleId( $this->getEntityId() ) ;
-                                    $Doc->setModuleName( $this->getEntityName() ) ;
-                                    $Doc->setFolder( $this->getEntity()->getFolder() ) ;
-                                    $rst = $Doc->upload( $row->getColumn() ) ;
+                                        $content->set($row->getColumn(), $Media->getImageId() );
+                                    }
+                                    else if ( $row->getType() == "document" && !empty( $_FILES[ $row->getColumn() ]['name'] ) )
+                                    {
+                                        $Doc = new Document;
+                                        $Doc->setModuleId( $this->getEntityId() ) ;
+                                        $Doc->setModuleName( $this->getEntityName() ) ;
+                                        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+                                        $rst = $Doc->upload( $row->getColumn() ) ;
 
-                                    $content->set($row->getColumn(), $Doc->getDocumentId() );
-                                }
-                                else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
-                                {
-                                    $content->set($row->getColumn(), $row->getDefault());
-                                }
-                                else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
-                                {
-                                    $content->set($row->getColumn(), $row->getValue());
+                                        $content->set($row->getColumn(), $Doc->getDocumentId() );
+                                    }
+                                    else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
+                                    {
+                                        $content->set($row->getColumn(), $row->getDefault());
+                                    }
+                                    else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
+                                    {
+                                        $content->set($row->getColumn(), $row->getValue());
+                                    }
                                 }
                             }
 
@@ -1131,7 +1136,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                             if ( $this->getEntity()->hasUrl() && $add == true )
                             {
-                                $seo = new \App\Kernel\Back\Seo;
+                                $seo = new Seo;
                                 $seo->setElementId($this->getId());
                                 $seo->setModuleId($this->getEntityId());
                                 $seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());
