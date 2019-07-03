@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Front;
 
-class Data extends \App\Kernel\Common\Data
+use App\Kernel\Common\Data as DataCommon;
+
+class Data extends DataCommon
 {
 }

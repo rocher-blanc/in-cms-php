@@ -9,6 +9,10 @@
 namespace App\Kernel\Common;
 
 
+use App\Kernel\Back\Seo;
+use App\Kernel\Container;
+use App\Kernel\Lang;
+
 class Data
 {
     /* ************************************************** */
@@ -17,6 +21,7 @@ class Data
 
     protected $name;
     protected $data = false ;
+    protected $lang = [] ;
     protected $add  = false ;
 
     /* ************************************************** */
@@ -32,9 +37,21 @@ class Data
     /* ****************     SETTER    ******************* */
     /* ************************************************** */
 
-    public function set( $key , $value )
+    public function set( $key , $value , $lang = null )
     {
-        $this->data->set( $this->getEntity()->get( $key )->getColumn() , $value );
+        if ( ( $this->Lang()->count() == 1 or $lang !== null ) && $this->getEntity()->get( $key )->hasLang() )
+        {
+            if ( $this->Lang()->count() == 1 )
+            {
+                $lang = $this->Lang()->getDefault()->id ;
+            }
+
+            $this->lang[ $lang ]->set( $this->getEntity()->get( $key )->getColumn() , $value );
+        }
+        else
+        {
+            $this->data->set( $this->getEntity()->get( $key )->getColumn() , $value );
+        }
     }
 
     /* ************************************************** */
@@ -46,7 +63,7 @@ class Data
         return $this->name ;
     }
 
-    public function get( $key )
+    public function get( $key , $lang = null )
     {
         if ( $this->getEntity()->get( $key )->getType() == 'checkbox' )
         {
@@ -54,7 +71,14 @@ class Data
         }
         else
         {
-            return $this->data->get( $this->getEntity()->get( $key )->getColumn() ) ;
+            if ( $this->getEntity()->get( $key )->hasLang() )
+            {
+                return $this->lang[ $lang ]->get( $this->getEntity()->get( $key )->getColumn() ) ;
+            }
+            else
+            {
+                return $this->data->get( $this->getEntity()->get( $key )->getColumn() ) ;
+            }
         }
     }
 
@@ -65,12 +89,12 @@ class Data
 
     public function getEntity()
     {
-        return \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity() ;
+        return Container::getInstance()->module( $this->getName() )->getEntity() ;
     }
 
     public function getRepository()
     {
-        return \App\Kernel\Container::getInstance()->module( $this->getName() )->getRepository(true) ;
+        return Container::getInstance()->module( $this->getName() )->getRepository(true) ;
     }
 
     /* ************************************************** */
@@ -88,7 +112,7 @@ class Data
 
     protected function Lang()
     {
-        return \App\Kernel\Lang::getInstance() ;
+        return Lang::getInstance() ;
     }
 
     /* ************************************************** */
@@ -115,12 +139,26 @@ class Data
 
         if ( $this->getEntity()->hasUrl() && $this->add == true )
         {
-            $seo = new \App\Kernel\Back\Seo;
-            $seo->setElementId( $this->get('id') );
-            $seo->setModuleId( $module->module_id );
-            $seo->setTitle( $this->get( $this->getEntity()->getUrlName() ) );
-            $seo->setLangId( $this->Lang()->getDefault()->id );
-            $seo->save();
+            foreach( $this->Lang()->getAll() as $lang )
+            {
+                $seo = new Seo;
+                $seo->setElementId( $this->get('id') );
+                $seo->setModuleId( $module->module_id );
+                $seo->setTitle( $this->get( $this->getEntity()->getUrlName() , $lang->id ) );
+                $seo->setLangId( $lang->id );
+
+                if ( $this->isCreate() ) $seo->save();
+                else                     $seo->update() ;
+            }
+        }
+
+        if ( $this->getEntity()->hasMultilang() == true )
+        {
+            foreach( $this->Lang()->getAll() as $lang )
+            {
+                $this->lang[ $lang->id ]->set( \DB::getIdNameInLang( $this->getName() ) , $this->get('id') ) ;
+                $this->lang[ $lang->id ]->save() ;
+            }
         }
 
         return $rst ;
@@ -140,7 +178,7 @@ class Data
 
         if ( $this->getEntity()->hasUrl() )
         {
-            $seo = new \App\Kernel\Back\Seo;
+            $seo = new Seo;
             $seo->setElementId( $this->get('id') );
             $seo->setModuleId( $module->module_id );
             $seo->delete();
@@ -176,6 +214,14 @@ class Data
         }
         else
         {
+            if ( $this->getEntity()->hasMultilang() == true )
+            {
+                foreach( $this->Lang()->getAll() as $lang )
+                {
+                    $this->lang[ $lang->id ] = \DB::for_module_lang( $this->getName() , $this->get('id') , $lang->id )->find_one();
+                }
+            }
+
             return true ;
         }
     }
@@ -189,6 +235,15 @@ class Data
     {
         $this->data = $this->getRepository()->create() ;
         $this->add  = true ;
+
+        if ( $this->getEntity()->hasMultilang() == true )
+        {
+            foreach( $this->Lang()->getAll() as $lang )
+            {
+                $this->lang[ $lang->id ] = $this->getRepository()->createLang();
+                $this->lang[ $lang->id ]->set( \DB::getLangIdLangName( $this->getName() ) , $lang->id );
+            }
+        }
 
         $this->set( "date_created" , date('Y-m-d H:i:s') );
         $this->set( "date_last_updated" , date('Y-m-d H:i:s') );

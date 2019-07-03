@@ -4,12 +4,13 @@ namespace App\Kernel\Back;
 
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
+use App\Kernel\Common\Controller as ControllerCommon;
 use App\Kernel\Container;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class Controller extends \App\Kernel\Common\Controller
+class Controller extends ControllerCommon
 {
     /* ************************************************** */
     /* ****************   VARIABLES   ******************* */
