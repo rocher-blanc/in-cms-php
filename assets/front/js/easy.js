@@ -50,67 +50,76 @@ checkForm = function(base) {
         which.prop("disabled",true);
 
         var $form = $(this);
-        var mod = $form.data('slug');
-        if ( $(base + ' .'+mod+'-form-process').length ) {
-            $(base + ' .'+mod+'-form-process').show();
-        }
-        $(base + ' .ed_field').removeClass('error');
-        var serialize = new FormData($form.get(0));
 
-        e.preventDefault();
-        e.stopPropagation();
-
-        $(base + ' form.ajax').find('.error').removeClass('error');
-
-        $.ajax({
-            type: $form.attr('method'),
-            url: $form.attr('action'),
-            data: serialize,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            success: function(data) {
-                // Result is success
-                if( data.result ) {
-                    // Test to redirection
-                    if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
-                        if ( typeof data.timer !== "undefined" ) {
-                            redirect(data.url);
-                        }
-                        else {
-                            setTimeout(function(){
-                                redirect(data.url);
-                            }, data.timer);
-                        }
-                    }
-                }
-                // Result is not success
-                else {
-                    if ( data.tab ) $('#onglet-' + data.tab ).click();
-
-                    if ( data.field ) {
-                        if ( $('#field-' + data.field).find('input, textarea').length ) {
-                            $('#field-' + data.field).find('input, textarea').addClass('error').focus();
-                        }
-                    }
-
-                    if ( data.fields ) {
-                        $.each(data.fields, function( index, value ) {
-                            $('#field-' + value.field).addClass('error');
-                        });
-                    }
-                }
-                // Hide process icon
-                if ( $(base + ' .'+mod+'-form-process').length ) {
-                    $(base + ' .'+mod+'-form-process').hide();
-                }
-                // Send notification
-                Notify(data.msg, data.result);
+        if( $form.attr("submitting") === undefined ) {
+            var mod = $form.data('slug');
+            if ( $(base + ' .'+mod+'-form-process').length ) {
+                $(base + ' .'+mod+'-form-process').show();
             }
-        });
+            $(base + ' .ed_field').removeClass('error');
+            var serialize = new FormData($form.get(0));
 
-        which.prop("disabled",false);
+            e.preventDefault();
+            e.stopPropagation();
+
+            $form.find("[type='submit']").attr("disabled","disabled").addClass("disabled temp-disabled");
+            $form.attr("submitting", "1");
+
+            $(base + ' form.ajax').find('.error').removeClass('error');
+
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: serialize,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function(data) {
+                    // Result is success
+                    if( data.result ) {
+                        // Test to redirection
+                        if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
+                            if ( typeof data.timer !== "undefined" ) {
+                                redirect(data.url);
+                            }
+                            else {
+                                setTimeout(function(){
+                                    redirect(data.url);
+                                }, data.timer);
+                            }
+                        }
+                    }
+                    // Result is not success
+                    else {
+                        if ( data.tab ) $('#onglet-' + data.tab ).click();
+
+                        if ( data.field ) {
+                            if ( $('#field-' + data.field).find('input, textarea').length ) {
+                                $('#field-' + data.field).find('input, textarea').addClass('error').focus();
+                            }
+                        }
+
+                        if ( data.fields ) {
+                            $.each(data.fields, function( index, value ) {
+                                $('#field-' + value.field).addClass('error');
+                            });
+                        }
+                    }
+                    // Hide process icon
+                    if ( $(base + ' .'+mod+'-form-process').length ) {
+                        $(base + ' .'+mod+'-form-process').hide();
+                    }
+                    // Send notification
+                    Notify(data.msg, data.result);
+                },
+                complete: function() {
+                    $form.removeAttr("submitting");
+                }
+            });
+
+            which.prop("disabled",false);
+        }
 
         return false;
     }).addClass('submitReady');
