@@ -986,6 +986,8 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $form['field'] as $field )
             {
                 $fields[ $field['name'] ] = [
+                   'name' => $field['fieldname'],
+                   'value' => $field['value'],
                    'label' => $field['title'],
                    'error' => $field['error'],
                    'help' => $field['comment'],

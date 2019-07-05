@@ -1,5 +1,5 @@
 <div>
-    <img src="{{ hasValue ? image : siteUrl('assets/img/nophoto.jpg') }}" style="max-width: 100px;" />
+    <img src="{{ value != '' ? image : siteUrl('assets/img/nophoto.jpg') }}" style="max-width: 100px;" />
 </div>
 
 <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
