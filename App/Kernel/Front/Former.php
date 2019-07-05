@@ -81,6 +81,24 @@ class Former
         return $rst ;
     }
 
+    public function name( $field , $remove = false )
+    {
+        $rst = $this->get( $field , "name" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
+    }
+
+    public function value( $field , $remove = false )
+    {
+        $rst = $this->get( $field , "value" );
+
+        if ( $remove ) $this->remove( $field ) ;
+
+        return $rst ;
+    }
+
     public function get( $field , $key , $unset = false )
     {
         if ( array_key_exists( $field , $this->form['field'] ) )

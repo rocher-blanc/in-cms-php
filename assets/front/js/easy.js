@@ -23,7 +23,17 @@ init = function( base ) {
     checkboxSwitch( base );
     initDatePicker( base );
     initSelect( base );
+    initFieldImage( base );
     checkForm( base );
+};
+
+initFieldImage = function( base ) {
+    if ( $(base + ' a.showfieldupload').length ) {
+        $(base + ' a.showfieldupload').click(function() {
+            $('#' + $(this).data('field') ).removeClass('hide');
+            $(this).parent().hide();
+        });
+    }
 };
 
 checkBox = function( base ) {
@@ -33,6 +43,10 @@ checkBox = function( base ) {
             tickIcon: 'icon-line-check'
         });
     }
+};
+
+test = function() {
+    alert('ça marche');
 };
 
 checkboxSwitch = function( base ) {
@@ -51,7 +65,7 @@ checkForm = function(base) {
 
         var $form = $(this);
 
-        if( $form.attr("submitting") === undefined ) {
+        if( typeof $form.attr("submitting") === 'undefined' ) {
             var mod = $form.data('slug');
             if ( $(base + ' .'+mod+'-form-process').length ) {
                 $(base + ' .'+mod+'-form-process').show();
@@ -78,15 +92,20 @@ checkForm = function(base) {
                 success: function(data) {
                     // Result is success
                     if( data.result ) {
-                        // Test to redirection
-                        if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
-                            if ( typeof data.timer !== "undefined" ) {
-                                redirect(data.url);
-                            }
-                            else {
-                                setTimeout(function(){
+                        if ( $form.data('callback') !== 'undefined' ) {
+                            window[$form.data('callback')]();
+                        }
+                        else {
+                            // Test to redirection
+                            if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
+                                if ( typeof data.timer !== "undefined" ) {
+                                    setTimeout(function(){
+                                        redirect(data.url);
+                                    }, data.timer);
+                                }
+                                else {
                                     redirect(data.url);
-                                }, data.timer);
+                                }
                             }
                         }
                     }
