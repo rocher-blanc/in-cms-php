@@ -1070,7 +1070,6 @@ class Controller extends \App\Kernel\Common\Controller
                             {
                                 if ( $this->checkCustomField( $row ) == true )
                                 {
-                                    dump( $row->getName() );
                                     if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
                                     {
                                         $Media = new Media;
