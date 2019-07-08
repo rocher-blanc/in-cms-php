@@ -1076,7 +1076,7 @@ class Controller extends \App\Kernel\Common\Controller
                                         $Media->setModuleId( $this->getEntityId() ) ;
                                         $Media->setModuleName( $this->getEntityName() ) ;
                                         $Media->setFolder( $this->getEntity()->getFolder() ) ;
-                                        $rst = $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+                                        $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
 
                                         $content->set($row->getColumn(), $Media->getImageId() );
                                     }
@@ -1086,7 +1086,7 @@ class Controller extends \App\Kernel\Common\Controller
                                         $Doc->setModuleId( $this->getEntityId() ) ;
                                         $Doc->setModuleName( $this->getEntityName() ) ;
                                         $Doc->setFolder( $this->getEntity()->getFolder() ) ;
-                                        $rst = $Doc->upload( $row->getColumn() ) ;
+                                        $Doc->upload( $row->getColumn() ) ;
 
                                         $content->set($row->getColumn(), $Doc->getDocumentId() );
                                     }

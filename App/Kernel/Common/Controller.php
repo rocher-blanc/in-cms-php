@@ -691,11 +691,11 @@ class Controller
     {
         if ( $this->_post('moduleCustom') == 1 )
         {
-            if ( $field->getType() == 'hidden' )
+            /*if ( $field->getType() == 'hidden' )
             {
                 return false ;
             }
-            else if ( $field->getType() == 'document' )
+            else */if ( $field->getType() == 'document' )
             {
                 if ( array_key_exists( "doc_" . $field->getColumn() , $this->_post() ) )
                 {
