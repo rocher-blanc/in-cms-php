@@ -6,11 +6,11 @@
 {% endblock %}
 
 {% block title_page %}Langues{% endblock %}
-{% set this_page = 'Traduction' %}
+{% set this_page = _('admin_translate_traduction') %}
 
 {% block module %}
     <div class="fancy-title title-dotted-border">
-        <h3>Traduction du Back-Office</h3>
+        <h3>{{ _('admin_translate_title') }}</h3>
     </div>
 
     <div class="panel-body">
@@ -22,9 +22,9 @@
                         {% if user.admin == 1 %}
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
+                                    <input type="text" class="form-control" placeholder="key_name" style="height:40px; margin-top:-3px;">
                                 </div>
-                                <button class="button add-key">Ajouter une clé de traduction</button>
+                                <button class="button add-key">{{ _('admin_translate_add_key') }}</button>
                             </div>
                         {% else %}
                             &nbsp;
