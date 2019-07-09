@@ -1,13 +1,13 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Groupes d'utilisateurs{% endblock %}
+{% block title_page %}{{ _('ufg_index_title_page') }}{% endblock %}
 
 {% if id != -1 %}
-	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'un groupe' %}
+	{% set this_page =   _('ufg_edit_modif')  %}
+	{% set title_block_page =   _('ufg_edit_modif_title')  %}
 {% else %}
-	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'un nouveau groupe' %}
+	{% set this_page =  _('ufg_edit_add')  %}
+	{% set title_block_page =  _('ufg_edit_add_title')  %}
 {% endif %}
 
 {% block module %}
@@ -19,7 +19,7 @@
 	<div class="tab-content">
 		<div class="tab-pane active panel-body">
 			<div class="ed_field col_half">
-				<label>Nom</label>
+				<label>{{ _('nom') }}</label>
 				<input type="text" id="user_front_group_name" name="user_front_group_name" class="form-control" value="{{ post.user_front_group_name }}" />
 			</div>
 			<div class="clear"></div>
