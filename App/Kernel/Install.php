@@ -334,12 +334,12 @@ class Install
         $files = glob( LANGUAGE_PATH . '/BO*.php');
         if ( $files && count( $files ) > 0 )
         {
+
             foreach( $files as $file )
             {
-                if (is_file($file)) {
-                    $filename = end( explode( '/' , $file ) );
-                    copy( $file , PROJECT_PATH . "/Lang/" . $filename );
-                }
+                $array    = explode( '/' , $file ) ;
+                $filename = end( $array );
+                copy( $file , PROJECT_PATH . "/Lang/" . $filename );
             }
         }
     }
