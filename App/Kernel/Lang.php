@@ -24,7 +24,6 @@ class Lang
     public function __construct()
     {
         $this->loadActiveLang() ;
-        $this->setActive( $this->getDefault() ) ;
     }
 
     /* ************************************************** */
@@ -114,13 +113,21 @@ class Lang
 
     private function loadActiveLang( $front = false )
     {
-        $rows = \DB::for_table('lang')
-            ->where_gt('lang_status', '0')
-            ->order_by_desc('lang_status');
-
-        if ( $front == true ) $rows = $rows->where_equal('lang_front', 1);
-
-        $rows = $rows->find_many();
+        if ( $front == true )
+        {
+            $rows = \DB::for_table('lang')
+                ->where_gt('lang_status', '0')
+                ->where_equal('lang_front', 1)
+                ->order_by_desc('lang_status')
+                ->find_many();
+        }
+        else
+        {
+            $rows = \DB::for_table('lang')
+                ->order_by_desc('lang_status')
+                ->where_equal('lang_back', 1)
+                ->find_many();
+        }
 
         $i = 0;
         foreach( $rows as $r )
@@ -141,5 +148,28 @@ class Lang
         }
 
         $this->_count = count( $this->getAll() ) ;
+        $this->setActive( $this->getDefault() ) ;
+    }
+
+    public function getBack()
+    {
+        $rows = \DB::for_table('lang')
+                ->order_by_asc('lang_id')
+                ->find_many();
+
+        foreach( $rows as $r )
+        {
+            $langObj 		    = new \stdClass();
+            $langObj->id	    = $r->lang_id;
+            $langObj->url 	    = $r->lang_url;
+            $langObj->full_url  = array_key_exists( intval( $r->lang_id ) , $this->_url ) ? $this->_url[ intval( $r->lang_id ) ] : '' ;
+            $langObj->name 	    = $r->lang_display;
+            $langObj->locale 	= $r->lang_locale;
+            $langObj->flag 	    = $r->lang_flag;
+
+            $tab[] = $langObj ;
+        }
+
+        return $tab ;
     }
 }

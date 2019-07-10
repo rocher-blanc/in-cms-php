@@ -127,7 +127,6 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
     public function getSql()
     {
         $passGuillaume = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
-        $passPH = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
         $passJweb = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
 
         return "INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
@@ -139,19 +138,18 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
 ('user_front', 'Utilisateurs', 1, 1, 1, 1),
 ('user_front_group', 'Groupes d\'utilisateurs', 1, 1, 1, 1);
 
-INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`) VALUES
-(1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1),
-(2, 'English', 'Anglais', 'en', 'gb', 'en', 0, 0),
-(3, 'Italiano', 'Italien', 'it', 'it', 'it', 0, 0),
-(4, 'Español', 'Espagnol', 'es', 'es', 'es', 0, 0),
-(5, 'Deutch', 'Allemand', 'de', 'de', 'de', 0, 0),
-(6, 'русский', 'Russe', 'ru', 'ru', 'ru', 0, 0),
-(7, '华人', 'Chinois', 'cn', 'cn', 'cn', 0, 0),
-(8, 'Português', 'Portugais', 'pt', 'pt', 'pt', 0, 0),
-(9, 'Nederlander', 'Néerlandais', 'nl', 'nl', 'nl', 0, 0),
-(10, '日本人', 'Japonnais', 'jp', 'jp', 'jp', 0, 0),
-(11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0),
-(12, 'عربي', 'Arabe', 'ar', 'ar', 'ar', 0, 0);
+INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_flag`, `lang_locale`, `lang_status`, `lang_front`, `lang_back`) VALUES
+(1, 'Français', 'Français', 'fr', 'fr', 'fr', 1, 1, 1),
+(2, 'English', 'Anglais', 'en', 'gb', 'en', 0, 0, 1),
+(3, 'Italiano', 'Italien', 'it', 'it', 'it', 0, 0, 0),
+(4, 'Español', 'Espagnol', 'es', 'es', 'es', 0, 0, 0),
+(5, 'Deutch', 'Allemand', 'de', 'de', 'de', 0, 0, 0),
+(6, 'русский', 'Russe', 'ru', 'ru', 'ru', 0, 0, 0),
+(7, '华人', 'Chinois', 'cn', 'cn', 'cn', 0, 0, 0),
+(8, 'Português', 'Portugais', 'pt', 'pt', 'pt', 0, 0, 0),
+(9, 'Nederlander', 'Néerlandais', 'nl', 'nl', 'nl', 0, 0, 0),
+(10, '日本人', 'Japonnais', 'jp', 'jp', 'jp', 0, 0, 0),
+(11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0, 0);
   
 INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('seo_author', 'JWeb Création'),
@@ -174,10 +172,9 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('maintenance_active', 0),
 ('security_list_ip', NULL);
 
-INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_published`) VALUES
-(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1),
-(1, 'paul-henri', '" . $passPH . "', 'Paul-Henri', 'Blanc', 1),
-(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1);
+INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_published`, `user_lang_id`) VALUES
+(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
+(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
 
 INSERT INTO `user_group` (`user_group_id`, `user_group_name`) VALUES
 (1, 'Administrateurs'),
@@ -293,7 +290,8 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "lang_flag" => $this->infoColumn( "VARCHAR" , "2" ),
                 "lang_locale" => $this->infoColumn( "VARCHAR" , "5" ),
                 "lang_status" => $this->infoColumn( "INT" , "11" ),
-                "lang_front" => $this->infoColumn( "TINYINT" , "1" )
+                "lang_back" => $this->infoColumn( "TINYINT" , "1" ),
+                "lang_front" => $this->infoColumn( "TINYINT" , "1" ),
             ],
             "log" => [
                 "log_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),

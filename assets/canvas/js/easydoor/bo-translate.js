@@ -249,7 +249,7 @@ var addLangColumn = function( lang_locale, title ) {
     $tbody.find("tr").each( function(index, tr) {
         var key = $(tr).find("td").attr("data-key");
 
-        createCell( key, lang_locale, "text", "" )
+        createCell( key, lang_locale, "", "" )
             .appendTo( tr );
     });
 };

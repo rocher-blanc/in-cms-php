@@ -6,7 +6,7 @@ $app->group('/translate', function () use ($app) {
 
     $app->get('/', function () use ($app) {
 
-		$contentRows = \App\Kernel\Lang::getInstance()->getAll();
+		$contentRows = \App\Kernel\Lang::getInstance()->getBack();
 
 		$app->render('admin/translate/index.twig', [
 			"contentRows" => $contentRows
@@ -17,22 +17,28 @@ $app->group('/translate', function () use ($app) {
 
 	$app->post('/get-lang', function() use ($app) {
 		$lang_abbr = $this->getApp()->request->post('lang_locale');
-		$className = "\Project\Lang\\BO" . strtoupper( $lang_abbr ) ;
-		$class     = new $className ;
-		$arrayTrad = $class->getVar();
 
-		ksort( $arrayTrad );
-		$keys = [];
+        $keys = [];
+        $lang = strtoupper( $lang_abbr ) ;
+        if ( file_exists( LANG_PATH . '/BO' . $lang . '.php' ) )
+        {
+            $className = "\Project\Lang\\BO" . strtoupper( $lang_abbr ) ;
+            $class     = new $className ;
+            $arrayTrad = $class->getVar();
 
-		foreach( $arrayTrad as $key => $value ) {
-			if( !empty($key) )
-			{
-				$keys[$key] = [
-					'type'  => "text", //html
-					'value' => $value
-				];
-			}
-		}
+            ksort( $arrayTrad );
+
+            foreach( $arrayTrad as $key => $value )
+            {
+                if( !empty($key) )
+                {
+                    $keys[$key] = [
+                        'type'  => "text", //html
+                        'value' => $value
+                    ];
+                }
+            }
+        }
 
 		$req = \DB::for_table("lang")
 				  ->where_equal("lang_url", $lang_abbr)
@@ -45,11 +51,11 @@ $app->group('/translate', function () use ($app) {
 		];
 
 		echo json_encode([
-							 'result' => true,
-							 'msg'    => "",
-							 'lang'   => $lang,
-							 'keys'   => $keys,
-						 ]);
+             'result' => true,
+             'msg'    => "",
+             'lang'   => $lang,
+             'keys'   => $keys,
+         ]);
 	});
 
 
@@ -59,13 +65,19 @@ $app->group('/translate', function () use ($app) {
 		$type  = $app->request->post('type');
 		$value = $app->request->post('value');
 
-		$className = "\Project\Lang\\BO" . strtoupper( $lang ) ;
-		$class     = new $className ;
-		$arrayTrad = $class->getVar();
+        $arrayTrad = [];
+        $filename  = LANG_PATH . "/BO" . strtoupper( $lang ) . ".php" ;
 
-		ksort( $arrayTrad );
+        if ( file_exists( $filename ) )
+        {
+            $className = "\Project\Lang\\BO" . strtoupper( $lang ) ;
+            $class     = new $className ;
+            $arrayTrad = $class->getVar();
 
-		$arrayTrad[$key] = $value;
+            ksort( $arrayTrad );
+        }
+
+        $arrayTrad[$key] = $value;
 
 		$src = "<"."?php\n";
 		$src.= "namespace Project\Lang;\n";
@@ -95,7 +107,7 @@ $app->group('/translate', function () use ($app) {
 	$app->post('/add-key', function() use ($app) {
 		$new_key = $app->request->post('new_key');
 
-		$langs = \App\Kernel\Lang::getInstance()->getAll();
+		$langs = \App\Kernel\Lang::getInstance()->getBack();
 		foreach( $langs as $lang )
 		{
 			$filename = LANG_PATH . "/BO" . strtoupper( $lang->locale ) . ".php" ;
@@ -132,9 +144,9 @@ $app->group('/translate', function () use ($app) {
 		}
 
 		echo json_encode([
-							 'result' => true,
-							 'msg'    => "La clef a bien été ajouté",
-						 ]);
+             'result' => true,
+             'msg'    => "La clef a bien été ajouté",
+         ]);
 	});
 
 
@@ -148,31 +160,37 @@ $app->group('/translate', function () use ($app) {
 	$app->post('/remove-key-action', function() use ($app) {
 		$key_name = $app->request->post('key');
 
-		$langs = \App\Kernel\Lang::getInstance()->getAll();
+		$langs = \App\Kernel\Lang::getInstance()->getBack();
 		foreach( $langs as $lang )
 		{
-			$className = "\Project\Lang\\BO" . strtoupper( $lang->locale ) ;
-			$class     = new $className ;
-			$arrayTrad = $class->getVar();
+            $filename = LANG_PATH . "/BO" . strtoupper( $lang->locale ) . ".php" ;
 
-			unset( $arrayTrad[$key_name] );
+            if ( file_exists( $filename ) )
+            {
+                $className = "\Project\Lang\\BO" . strtoupper( $lang->locale ) ;
+                $class     = new $className ;
+                $arrayTrad = $class->getVar();
 
-			ksort( $arrayTrad );
+                unset( $arrayTrad[$key_name] );
 
-			$src = "<"."?php\n";
-			$src.= "namespace Project\Lang;\n";
-			$src.= "class BO" . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
-			$src.= "\tprotected $"."a = [\n";
-			foreach( $arrayTrad as $key => $value )
-			{
-				$value = trim( $value );
-				$value = str_replace( '"', '\"', $value );
-				if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
-			}
-			$src.= "\t];\n";
-			$src.= "}\n";
+                ksort( $arrayTrad );
 
-			if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/BO" . strtoupper( $lang->locale ) . ".php" , $src );
+                $src = "<"."?php\n";
+                $src.= "namespace Project\Lang;\n";
+                $src.= "class BO" . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+                $src.= "\tprotected $"."a = [\n";
+                foreach( $arrayTrad as $key => $value )
+                {
+                    $value = trim( $value );
+                    $value = str_replace( '"', '\"', $value );
+                    if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+                }
+                $src.= "\t];\n";
+                $src.= "}\n";
+
+                if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/BO" . strtoupper( $lang->locale ) . ".php" , $src );
+            }
+
 		}
 
 		echo json_encode([
