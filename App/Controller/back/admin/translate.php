@@ -6,7 +6,7 @@ $app->group('/translate', function () use ($app) {
 
     $app->get('/', function () use ($app) {
 
-		$contentRows = \App\Kernel\Lang::getInstance()->getAll();
+		$contentRows = \App\Kernel\Lang::getInstance()->getBack();
 
 		$app->render('admin/translate/index.twig', [
 			"contentRows" => $contentRows
@@ -17,22 +17,28 @@ $app->group('/translate', function () use ($app) {
 
 	$app->post('/get-lang', function() use ($app) {
 		$lang_abbr = $this->getApp()->request->post('lang_locale');
-		$className = "\Project\Lang\\BO" . strtoupper( $lang_abbr ) ;
-		$class     = new $className ;
-		$arrayTrad = $class->getVar();
 
-		ksort( $arrayTrad );
-		$keys = [];
+        $keys = [];
+        $lang = strtoupper( $lang_abbr ) ;
+        if ( file_exists( LANG_PATH . '/BO' . $lang . '.php' ) )
+        {
+            $className = "\Project\Lang\\BO" . strtoupper( $lang_abbr ) ;
+            $class     = new $className ;
+            $arrayTrad = $class->getVar();
 
-		foreach( $arrayTrad as $key => $value ) {
-			if( !empty($key) )
-			{
-				$keys[$key] = [
-					'type'  => "text", //html
-					'value' => $value
-				];
-			}
-		}
+            ksort( $arrayTrad );
+
+            foreach( $arrayTrad as $key => $value )
+            {
+                if( !empty($key) )
+                {
+                    $keys[$key] = [
+                        'type'  => "text", //html
+                        'value' => $value
+                    ];
+                }
+            }
+        }
 
 		$req = \DB::for_table("lang")
 				  ->where_equal("lang_url", $lang_abbr)
@@ -45,11 +51,11 @@ $app->group('/translate', function () use ($app) {
 		];
 
 		echo json_encode([
-							 'result' => true,
-							 'msg'    => "",
-							 'lang'   => $lang,
-							 'keys'   => $keys,
-						 ]);
+             'result' => true,
+             'msg'    => "",
+             'lang'   => $lang,
+             'keys'   => $keys,
+         ]);
 	});
 
 

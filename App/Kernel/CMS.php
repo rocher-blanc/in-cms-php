@@ -2,6 +2,8 @@
 
 namespace App\Kernel;
 
+use App\Kernel\Front\Translate;
+
 class CMS
 {
     /* ************************************************** */
@@ -59,6 +61,11 @@ class CMS
         return $this->getApp()->response ;
     }
 
+    public function config()
+    {
+        return $this->getApp()->config('config') ;
+    }
+
     public function getIp()
     {
         return $_SERVER['REMOTE_ADDR'] ;
@@ -70,7 +77,7 @@ class CMS
 
     public function text( $key )
     {
-        return \App\Kernel\Front\Translate::getInstance()->getText( $key );
+        return Translate::getInstance()->getText( $key );
     }
 
     /* ************************************************** */
