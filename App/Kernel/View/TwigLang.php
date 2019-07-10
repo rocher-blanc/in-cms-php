@@ -3,7 +3,6 @@
 namespace App\Kernel\View;
 
 use App\Kernel\Front\Translate;
-use Slim\Slim;
 
 class TwigLang extends \Twig_Extension
 {
