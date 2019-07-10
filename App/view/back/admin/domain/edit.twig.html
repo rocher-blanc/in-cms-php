@@ -1,13 +1,13 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Domaines{% endblock %}
+{% block title_page %}{{ _('domaines')}}{% endblock %}
 
 {% if id != -1 %}
 	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'un nom de domaine' %}
+	{% set title_block_page = _('domaine_edit_modif') %}
 {% else %}
 	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'une nouveau nom de domaine' %}
+	{% set title_block_page = _('domaine_edit_add') %}
 {% endif %}
 
 {% block module %}
@@ -17,7 +17,7 @@
 	</div>
 
     <div class="ed-menu">
-        <a href="{{ siteUrl('admin/domain') }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+        <a href="{{ siteUrl('admin/domain') }}" class="button button-mini"><i class="icon-th-list"></i>{{ _('button_manage')}}</a>
     </div>
     <br />
 

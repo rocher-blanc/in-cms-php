@@ -24,30 +24,30 @@
             <div class="text-center">
                 <div class="counter counter-large color"><span data-from="0" data-to="{{ res.Sent }}" data-refresh-interval="5" data-speed="500">0</span> / {{ res.ToSend }}</div>
                 {% if res.Sent > 1 %}
-                    <h3>emails envoyés</h3>
+                    <h3>{{ _('email-sent-plur')}}</h3>
                 {% else %}
-                    <h3>email envoyé</h3>
+                    <h3>{{ _('email-sent-sing')}}</h3>
                 {% endif %}
             </div>
         </div>
 
         <div class="fancy-title title-dotted-border title-center">
-            <h3><span>État</span></h3>
+            <h3><span>{{ _('state')}}</span></h3>
         </div>
         <h4 class="text-center"><span style="color:{% if res.State == 10 %}#3c763d{% else %}#31708f{% endif %};">{{ res.StateStr }}</span></h4>
 
         <div class="fancy-title title-dotted-border title-center">
-            <h3><span>Actions</span></h3>
+            <h3><span>{{ _('actions')}}</span></h3>
         </div>
         <div class="text-center" style="margin-bottom: 15px;">
-            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques globales (.PDF)</a>
-            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> Statistiques destinataires (.XLS)</a>
-            {% if pourcentRead < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoReadView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax" style="background-color: #00afaf;"><i class="icon-eye-close"></i> Renvoyer aux non-lus</a>{% endif %}
-            {% if pourcentClick < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoClickView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-line2-cursor"></i> Renvoyer aux non-cliqués</a>{% endif %}
+            <a class="button button-3d button-small button-amber button-rounded" href="{{ route( mod.name , 'downloadStatistic' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> {{ _('stat_globales')}} (.PDF)</a>
+            <a class="button button-3d button-small button-black button-rounded" href="{{ route( mod.name , 'downloadStatisticDest' , uri_id_parent , id , csrf_token ) }}"><i class="icon-download"></i> {{ _('stat_receivers')}} (.XLS)</a>
+            {% if pourcentRead < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoReadView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax" style="background-color: #00afaf;"><i class="icon-eye-close"></i> {{ _('renvoyer_nonlu')}}</a>{% endif %}
+            {% if pourcentClick < 100 %}<a class="button button-3d button-small button-rounded aAjax" href="{{ route( mod.name , 'resendNoClickView' , uri_id_parent , id , csrf_token ) }}" data-lightbox="ajax"><i class="icon-line2-cursor"></i> {{ _('renvoyer_nonclic')}}</a>{% endif %}
         </div>
 
         <div class="fancy-title title-dotted-border title-center">
-            <h3><span>Statistiques</span></h3>
+            <h3><span>{{ _('stat')}}</span></h3>
         </div>
 
 
@@ -56,14 +56,14 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Informations</th>
-                    <th class="center">Valeur</th>
+                    <th>{{ _('informations')}}</th>
+                    <th class="center">{{ _('valeur')}}</th>
                     <th class="center">%</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Nombre d'emails délivrés & Taux de délivrabilité</td>
+                    <td>{{ _('email_delivered_rate')}}</td>
                     {% set ndelivres = res.Sent - res.HardBounces %}
 
                     {% if res.Sent > 0 %}
@@ -75,12 +75,12 @@
                     <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Nombre d'emails ouverts & Taux d'ouverture</td>
+                    <td>{{ _('email_opened_rate')}}</td>
                     <td class="center">{{ res.RecipientsRead }}</td>
                     <td class="center">{{ pourcentRead|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Nombre de clics total</td>
+                    <td>{{ _('nbr_clic')}}</td>
                     {% set totalclics = 0 %}
                     {% for item in links %}
                         {% set totalclics = totalclics + item.clicCount %}
@@ -89,12 +89,12 @@
                     <td class="center">-</td>
                 </tr>
                 <tr>
-                    <td>Nombre de clics net & Taux de clic</td>
+                    <td>{{ _('nbr_clic_rate')}}</td>
                     <td class="center">{{ res.RecipientsClic }}</td>
                     <td class="center">{{ pourcentClick|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Taux de réactivité (nombre de cliqueurs / nombre d'ouvreurs)</td>
+                    <td>{{ _('taux_reactivite')}}</td>
                     {% if res.RecipientsRead != 0 %}
                         {% set pourcent = res.RecipientsClic/res.RecipientsRead*100 %}
                     {% else %}
@@ -104,7 +104,7 @@
                     <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Nombre d'emails softBounce</td>
+                    <td>{{ _('email_softbounce')}}</td>
 
                     {% if res.Sent > 0 %}
                         {% set pourcent = res.SoftBounces/res.Sent*100 %}
@@ -115,7 +115,7 @@
                     <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Nombre d'emails hardBounce</td>
+                    <td>{{ _('email_hardbounce')}}</td>
 
                     {% if res.Sent > 0 %}
                         {% set pourcent = res.HardBounces/res.Sent*100 %}
@@ -127,7 +127,7 @@
                     <td class="center">{{ pourcent|number_format(2, ',') }} %</td>
                 </tr>
                 <tr>
-                    <td>Nombre de désinscrits</td>
+                    <td>{{ _('unsubscribe_nbr')}}</td>
 
                     {% if res.Sent > 0 %}
                         {% set pourcent = res.Unsubscribe/res.Sent*100 %}
@@ -145,7 +145,7 @@
     {% endif %}
 
     <div class="fancy-title title-dotted-border title-center">
-        <h3><span>Liens</span></h3>
+        <h3><span>{{ _('link_plur')}}</span></h3>
     </div>
 
     <div class="table-responsive">
@@ -153,9 +153,9 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>URL</th>
-                <th class="center">Clics total</th>
-                <th class="center">Clics net</th>
+                <th>{{ _('url')}}</th>
+                <th class="center">{{ _('total_clic')}}</th>
+                <th class="center">{{ _('net_clic')}}</th>
             </tr>
             </thead>
             <tbody>
@@ -194,7 +194,7 @@
     {% endfor %}
 
     <div class="fancy-title title-dotted-border title-center">
-        <h3><span>Statuts de réception</span></h3>
+        <h3><span>{{ _('statut_reception')}}</span></h3>
     </div>
 
     <div class="table-responsive">
@@ -202,8 +202,8 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Statut</th>
-                <th class="center">Nombre d'emails</th>
+                <th>{{ _('statusn')}}</th>
+                <th class="center">{{ _('nbr_email')}}</th>
             </tr>
             </thead>
             <tbody>
@@ -219,7 +219,7 @@
     </div>
 
     <div class="fancy-title title-dotted-border title-center">
-        <h3><span>Liste d'envoi</span></h3>
+        <h3><span>{{ _('liste_envoi')}}</span></h3>
     </div>
 
     <div class="table-responsive">
@@ -227,12 +227,12 @@
         <table id="ed-table-gestion" class="table table-striped table-hover table-condensed dataTableSimple">
             <thead class="thead-inverse">
             <tr>
-                <th>Email</th>
-                <th>Statut</th>
-                <th class="center">Ouvert (UTC)</th>
-                <th>Message d'absence</th>
-                <th class="center">Nombre clics total</th>
-                <th class="center">Nombre clics unique</th>
+                <th>{{ _('email')}}</th>
+                <th>{{ _('status')}}</th>
+                <th class="center">{{ _('opened')}} (UTC)</th>
+                <th>{{ _('absence_msg')}}</th>
+                <th class="center">{{ _('total_clic_nbr')}}</th>
+                <th class="center">{{ _('nbr_clic_unique')}}</th>
             </tr>
             </thead>
             <tbody data-order="0" data-sens="asc">

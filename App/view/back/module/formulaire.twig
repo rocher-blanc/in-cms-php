@@ -19,7 +19,7 @@
     {% include 'module/header.twig' %}
     {% if mod.canCreate == false and action == 'add' %}
         <div class="style-msg alertmsg">
-            <div class="sb-msg"><i class="icon-warning-sign"></i><strong>Attention!</strong> Une limite d'élément a été fixé, il est impossible d'ajouter de nouveaux éléments.</div>
+            <div class="sb-msg"><i class="icon-warning-sign"></i><strong>{{ _('warning')}}</strong> {{ _('formulaire_warn_msg')}}</div>
         </div>
     {% else %}
         <div class="ed_element formulaire tabs tabs-bordered tabs-tb clearfix">
@@ -55,7 +55,7 @@
                 {% if seo == true and id != '' %}
                     <li>
                         <a href="#tabs-seo" id="onglet-seo">
-                            <i class="icon-unlink"></i> Référencement
+                            <i class="icon-unlink"></i> {{ _('referencement')}}
                         </a>
                     </li>
                 {% endif %}
@@ -71,7 +71,7 @@
                 {% if id != '' and depedency == false %}
                     <li>
                         <a href="#tabs-history" id="onglet-history">
-                            <i class="icon-time"></i> Historique
+                            <i class="icon-time"></i> {{ _('historique')}}
                         </a>
                     </li>
                 {% endif %}
@@ -91,10 +91,10 @@
                                     <div class="depedencyForm" id="form-content-{{ dependency.class }}" data-form="{{ dRoute(dependency.class , 'form' , ( id != NULL ? id : '-1' ) , mod.id ) }}"></div>
                                 {% else %}
                                     <div class="ed-menu bottommargin-sm">
-                                    {% if dependency.add == true %}<a data-modal="true" href="{{ dRoute(dependency.class , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>{% endif %}
+                                    {% if dependency.add == true %}<a data-modal="true" href="{{ dRoute(dependency.class , 'add' , ( id != NULL ? id : '-1' ) , mod.id ) }}" class="button button-mini"><i class="icon-plus"></i>{{ _('button_add')}}</a>{% endif %}
                                         <div class="btn-group">
                                             <button type="button" class="button button-mini dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="icon-magic"></i>Personnaliser<i class="icon-caret-down"></i>
+                                                <i class="icon-magic"></i>{{ _('personnaliser')}}<i class="icon-caret-down"></i>
                                             </button>
                                             <div class="dropdown-menu" data-action="{{ dRoute(dependency.class , 'customization' , ( id != NULL ? id : '-1' ) , mod.id ) }}" data-table="table-content-{{ dependency.class }}">
                                                 {% for name, field in dependency.fields if field.table == true %}

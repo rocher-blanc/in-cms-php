@@ -2,8 +2,8 @@
     <div class="{{ mod.name|lower }}seo-form-process form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="ed_field col_full">
-        <label>Title</label>
-        <div class="comment">55 caractères maximum, indique aux moteurs de recherche le titre de votre page</div>
+        <label>{{ _('title')}}</label>
+        <div class="comment">{{ _('tab_seo_title_comment')}}</div>
         {% for l in lang %}
             {% if lang|length == 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -22,8 +22,8 @@
         {% endfor %}
     </div>
     <div class="ed_field col_full">
-        <label>Description</label>
-        <div class="comment">115 caractères maximum, indique aux moteurs de recherche la description de votre page</div>
+        <label>{{ _('description')}}</label>
+        <div class="comment">{{ _('tab_seo_desc_comment')}}</div>
         {% for l in lang %}
             {% if lang|length == 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">

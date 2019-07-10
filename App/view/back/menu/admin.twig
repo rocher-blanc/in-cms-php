@@ -1,48 +1,48 @@
 <ul class="sidenav">
-    <li class="parent"><a href="#">{{ _('admin_dev_title') }}</a></li>
+    <li class="parent"><a href="#">{{ _('developpeur') }}</a></li>
     <li{% if menu == 'moduleadmin' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/moduleadmin') }}">
-            <i class="icon-dropbox"></i>{{ _('admin_dev_module') }}<i class="icon-chevron-right"></i>
+            <i class="icon-dropbox"></i>{{ _('modules') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'domain' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/domain') }}">
-            <i class="icon-external-link"></i>{{ _('admin_dev_domaine') }}<i class="icon-chevron-right"></i>
+            <i class="icon-external-link"></i>{{ _('domaines') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'pageadmin' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/pageadmin') }}">
-            <i class="icon-file-text"></i>{{ _('admin_dev_pages') }}<i class="icon-chevron-right"></i>
+            <i class="icon-file-text"></i>{{ _('pages') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'groupmodule' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/groupmodule') }}">
-            <i class="icon-line-menu"></i>{{ _('admin_dev_administration') }}<i class="icon-chevron-right"></i>
+            <i class="icon-line-menu"></i>{{ _('admin_menu') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'performance' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/performance') }}">
-            <i class="icon-pill"></i>{{ _('admin_dev_perf') }}<i class="icon-chevron-right"></i>
+            <i class="icon-pill"></i>{{ _('performances') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'log' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/log') }}">
-            <i class="icon-time"></i>{{ _('admin_dev_event') }}<i class="icon-chevron-right"></i>
+            <i class="icon-time"></i>{{ _('event_log') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'maintenance' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/maintenance') }}">
-            <i class="icon-wrench"></i>{{ _('admin_dev_maintenance') }}<i class="icon-chevron-right"></i>
+            <i class="icon-wrench"></i>{{ _('maintenance') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'security' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/security') }}">
-            <i class="icon-shield"></i>{{ _('admin_dev_security') }}<i class="icon-chevron-right"></i>
+            <i class="icon-shield"></i>{{ _('security') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
     <li{% if menu == 'translate' %} class="ui-tabs-active ui-state-active"{% endif %}>
         <a href="{{ siteUrl('/admin/translate') }}">
-            <i class="icon-font"></i>{{ _('admin_dev_trad') }}<i class="icon-chevron-right"></i>
+            <i class="icon-font"></i>{{ _('traductions') }}<i class="icon-chevron-right"></i>
         </a>
     </li>
 </ul>

@@ -5,12 +5,12 @@
     <meta name="isadmin" content="{{ user.admin ? 1 : 0}}" />
 {% endblock %}
 
-{% block title_page %}Langues{% endblock %}
+{% block title_page %}{{ _('langues')}}{% endblock %}
 {% set this_page = _('admin_translate_traduction') %}
 
 {% block module %}
     <div class="fancy-title title-dotted-border">
-        <h3>{{ _('admin_translate_title') }}</h3>
+        <h3>{{ _('traductions') }}</h3>
     </div>
 
     <div class="panel-body">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col_one_fourth col_last">
                         <select class="form-control translate-lang-select">
-                            <option value="">Afficher une langue</option>
+                            <option value="">{{ _('langue_traduction_show')}}</option>
                             {% for row in contentRows %}
                                 <option value="{{ row.locale }}">{{ row.name }}</option>
                             {% endfor %}
@@ -44,7 +44,7 @@
                     <thead>
                     <tr>
                         <th width="300px">
-                            <input type="text" id="search-key" class="form-control" placeholder="Rechercher" />
+                            <input type="text" id="search-key" class="form-control" placeholder="{{ _('rechercher')}}" />
                         </th>
                     </tr>
                     </thead>
@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
                             </div>
-                            <button class="button add-key">Ajouter une clé de traduction</button>
+                            <button class="button add-key">{{ _('langue_traduction_add')}}</button>
                         </div>
                     {% else %}
                         &nbsp;

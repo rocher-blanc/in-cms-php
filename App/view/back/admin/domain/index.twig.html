@@ -1,16 +1,16 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Domaines{% endblock %}
+{% block title_page %}{{ _('domaines')}}{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
 
 	<div class="fancy-title title-dotted-border">
-		<h3>Liste des noms de domaines</h3>
+		<h3>{{ _('domain_index_title')}}</h3>
 	</div>
 
     <div class="ed-menu">
-        <a href="{{ siteUrl('admin/domain/edit') }}" class="button button-mini"><i class="icon-plus"></i> Ajouter</a>
+        <a href="{{ siteUrl('admin/domain/edit') }}" class="button button-mini"><i class="icon-plus"></i> {{ _('button_add')}}</a>
     </div>
     <br /><br />
     <div class="clear"></div>
@@ -42,7 +42,7 @@
 		</div>
 
 	{% else %}
-        {% include 'form/generic/nocontent.twig' with {'msg':"Aucun nom de domaine n'est enregistré."} %}
+        {% include 'form/generic/nocontent.twig' with {'msg': 'domain_index_msg'} %}
 	{% endif %}
 
 {% endblock %}

@@ -1,15 +1,15 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Groupes de modules{% endblock %}
+{% block title_page %}{{ _('grp_modules')}}{% endblock %}
 {% set this_page = 'Modification' %}
-{% set title_block_page = 'Modification d\'un groupe de modules' %}
+{% set title_block_page =  _('grp_modules_modif') %}
 
 {% block module %}
 
 	<div class="fancy-title title-dotted-border">
 		<h3>{{ title_block_page }}</h3>
 	</div>
-	<p>Cette section est accéssible uniquement par les développeurs du site</p>
+	<p>{{ _('groupmodule_menu_info')}}</p>
 
 	<form name="form" method="post" action="{{ siteUrl('admin/groupmodule/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" role="form" class="form-horizontal group-border-dashed">
 		<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="ed_field col_half">
-			<label>Nom</label>
+			<label>{{ _('nom')}}</label>
 			<input type="text" name="module_group_name" class="form-control" value="{{ post.module_group_name }}" />
 		</div>
 

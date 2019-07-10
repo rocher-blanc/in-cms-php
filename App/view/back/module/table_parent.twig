@@ -34,9 +34,9 @@
                 <td class="text-center" style="vertical-align: middle;">
                     {% if right.edit == true %}
                         {% if content.default == 1 %}
-                            <span class="button button-rounded button-mini button-green">Par défaut</span>
+                            <span class="button button-rounded button-mini button-green">{{ _('by_default')}}</span>
                         {% else %}
-                            <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">Mettre par défaut</a>
+                            <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">{{ _('set_default')}}</a>
                         {% endif %}
                     {% endif %}
                 </td>
@@ -103,13 +103,13 @@
 
                         {% if hasDefault %}
                             <th style="width: 100px;">
-                                Défaut<br />
+                                {{ _('default')}}<br />
                             </th>
                         {% endif %}
 
                         {% if hasValidation %}
                             <th style="width: 100px;">
-                                En ligne<br />
+                                {{ _('online')}}<br />
                             </th>
                         {% endif %}
 
@@ -124,7 +124,7 @@
         </div>
     </form>
 {% else %}
-	<span>Pas de contenu enregistré.</span>
+	<span>{{ _('no_content')}}</span>
 {% endif %}
 
 

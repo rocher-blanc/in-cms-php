@@ -2,12 +2,12 @@
 
 {% set this_page = 'Consultation' %}
 
-{% block title_page %}Journal d'événements{% endblock %}
+{% block title_page %}{{ _('event_log')}}{% endblock %}
 
 {% block module %}
 
     <div class="fancy-title title-dotted-border">
-        <h3>Journal d'événements</h3>
+        <h3>{{ _('event_log')}}</h3>
     </div>
 
 <form method="post" action="{{ siteUrl('/admin/log') }}">
@@ -18,38 +18,38 @@
                     <div class="row" style="padding-top: 10px; padding-left: 20px;">
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="date">Date</label>
+                                <label class="col-md-3 control-label" for="date">{{ _('date')}}</label>
                                 <input type="text" class="form-control form-control-sm daterange" name="date" value="{{ date }}" />
                             </div>
                         </div>
                         <div class="col-md-5 check">
                             <div class="form-group">
-                                <label class="col-md-12 control-label">Type</label>
+                                <label class="col-md-12 control-label">{{ _('type')}}</label>
 
                                 <div class="col-md-12">
                                     <div class="form-check fleft">
                                         <input class="form-check-input" name="info" value="1" id="info" type="checkbox"{{ info == true ? " checked" : "" }}>
                                         <label class="text-info form-check-label" style="padding-left: 5px;" for="info">
-                                            <i class="icon-info-sign"></i> Information
+                                            <i class="icon-info-sign"></i> {{ _('information')}}
                                         </label>
                                     </div>
                                     <div class="form-check fleft" style="margin-left: 10px;">
                                         <input class="form-check-input" value="1" id="danger" name="danger" type="checkbox"{{ danger == true ? " checked" : "" }}>
                                         <label class="text-warning form-check-label" style="padding-left: 5px;" for="danger">
-                                            <i class="icon-warning-sign"></i> Danger
+                                            <i class="icon-warning-sign"></i> {{ _('danger')}}
                                         </label>
                                     </div>
                                     <div class="form-check fleft" style="margin-left: 10px;">
                                         <input class="form-check-input" value="1" id="alerte" name="alerte" type="checkbox"{{ alerte == true ? " checked" : "" }}>
                                         <label class="text-alert form-check-label" style="padding-left: 5px;" for="alerte">
-                                            <i class="icon-remove-sign"></i> Alerte
+                                            <i class="icon-remove-sign"></i> {{ _('alerte')}}
                                         </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button class="button button-3d button-rounded button-green" style="margin-top: 20px;" type="submit">Rechercher</button>
+                            <button class="button button-3d button-rounded button-green" style="margin-top: 20px;" type="submit">{{ _('rechercher')}}</button>
                         </div>
                     </div>
             </section>
@@ -65,10 +65,10 @@
 					<table class="table table-striped table-gestion table-search table-ext table-hover mb-none">
 						<thead>
 							<tr>
-								<th style="width: 170px;">Date</th>
-								<th style="width: 130px;">Type</th>
-								<th>Utilisateur</th>
-								<th>Message</th>
+								<th style="width: 170px;">{{ _('date')}}</th>
+								<th style="width: 130px;">{{ _('type')}}</th>
+								<th>{{ _('user')}}</th>
+								<th>{{ _('message')}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -77,11 +77,11 @@
 								<td>{{ row.date }}</td>
 								<td>
 									{% if row.type == 1 %}
-										<div class="text-info"><i class="icon-info-sign"></i> Information</div>
+										<div class="text-info"><i class="icon-info-sign"></i> {{ _('information')}}</div>
 									{% elseif row.type == 2 %}
-										<div class="text-warning"><i class="icon-warning-sign"></i> Danger</div>
+										<div class="text-warning"><i class="icon-warning-sign"></i> {{ _('danger')}}</div>
 									{% elseif row.type == 3 %}
-										<div class="text-alert"><i class="icon-remove-sign"></i> Alerte</div>
+										<div class="text-alert"><i class="icon-remove-sign"></i> {{ _('alerte')}}</div>
 									{% endif %}
 								</td>
 								<td>
@@ -97,7 +97,7 @@
 						</tbody>
 					</table>
 				{% else %}
-                    {% include 'form/generic/nocontent.twig' with {'msg':"Aucun événement n'est enregistré."} %}
+                    {% include 'form/generic/nocontent.twig' with {'msg': 'log_index_msg'} %}
 				{% endif %}
 				</div>
 			</div>

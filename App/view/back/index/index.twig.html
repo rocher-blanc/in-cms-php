@@ -33,12 +33,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">{{ _('index_easydoor_maintenance_title') }} :</div>
+            <div class="col-md-4">{{ _('maintenance') }} :</div>
             <div class="col-md-8">
                 {% if maintenance == 1 %}
-                    <span class="bg-danger"><i class="fa fa-exclamation-triangle"></i>{{ _('index_easydoor_maintenance_true') }}</span>
+                    <span class="bg-danger"><i class="fa fa-exclamation-triangle"></i>{{ _('activated_m') }}</span>
                 {% else %}
-                    <span class="bg-success">{{ _('index_easydoor_maintenance_false') }}</span>
+                    <span class="bg-success">{{ _('disable_m') }}</span>
                 {% endif %}
             </div>
         </div>
@@ -58,9 +58,9 @@
                 {% else %}
                     {{ cdn }}
                     {% if debug == true %}
-                        <span class="bg-danger">{{ _('index_easydoor_host_false') }}</span>
+                        <span class="bg-danger">{{ _('disable_m') }}</span>
                     {% else %}
-                        <span class="bg-success">{{ _('index_easydoor_host_true') }}</span>
+                        <span class="bg-success">{{ _('activated_m') }}</span>
                     {% endif %}
                 {% endif %}
             </div>
@@ -85,7 +85,7 @@
             {% if seo.page|length > 0 %}
                 <div class="col-md-4">
                     <div class="fancy-title title-border">
-                        <h3>{{ _('index_sea_pages') }}</h3>
+                        <h3>{{ _('pages') }}</h3>
                     </div>
                     <div class="tab-content">
                         <div class="table-responsive">
@@ -121,7 +121,7 @@
             {% if seo.module|length > 0 %}
                 <div class="col-md-4">
                     <div class="fancy-title title-border">
-                        <h3>{{ _('index_module_title') }}</h3>
+                        <h3>{{ _('modules') }}</h3>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover mb-none">
@@ -167,7 +167,7 @@
                                             <thead>
                                             <tr>
                                                 <th><strong>{{ module.title }}</strong></th>
-                                                <th><strong>{{ _('index_sea_default') }}</strong></th>
+                                                <th><strong>{{ _('default') }}</strong></th>
                                             </tr>
                                             </thead>
                                             <tbody>

@@ -1,51 +1,51 @@
 {% extends 'layout.twig.html' %}
 
 {% macro parametre(class) %}
-<a href="#" class="{{ class }}"><div>Paramètres</div></a>
+<a href="#" class="{{ class }}"><div>{{ _('parametres')}}</div></a>
 <ul>
     <li>
         <a href="{{ siteUrl('/ext/page') }}">
-            Pages
+            {{ _('pages')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/parammodule') }}">
-            Modules
+            {{ _('modules')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/user') }}">
-            Administrateurs
+            {{ _('administrateurs')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/group') }}">
-            Groupes d'administrateurs
+            {{ _('grp_admin')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/langue') }}">
-            Langues
+            {{ _('langues')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/langue/traduction') }}">
-            Traductions
+            {{ _('traductions')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/metadata') }}">
-            Métadonnées
+            {{ _('metadonnees')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/microdata') }}">
-            Microdata
+            {{ _('microdata')}}
         </a>
     </li>
     <li>
         <a href="{{ siteUrl('/ext/rgpd') }}">
-            RGPD
+            {{ _('rgpd')}}
         </a>
     </li>
 </ul>
@@ -70,10 +70,10 @@
                         <a href="#" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon-user"></i></a>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
                             <a class="dropdown-item tleft" href="{{ siteUrl('/secured/profile') }}">
-                                <i class="icon-user"></i> &nbsp; Profil
+                                <i class="icon-user"></i> &nbsp; {{ _('profil')}}
                             </a>
                             <a href="{{ siteUrl('/secured/logout') }}" class="dropdown-item tleft">
-                                <i class="icon-signout"></i> &nbsp; Déconnexion
+                                <i class="icon-signout"></i> &nbsp; {{ _('log_out')}}
                             </a>
                         </ul>
                     </div>
@@ -180,28 +180,28 @@
                                         <ul class="mega-menu-column col-lg-3">
                                             {% if active_user == true %}
                                                 <li class="mega-menu-title sub-menu">
-                                                    <a href="#" class="sf-with-ul"><div>Utilisateurs</div></a>
+                                                    <a href="#" class="sf-with-ul"><div>{{ _('users')}}</div></a>
                                                     <ul>
                                                         <li>
                                                             <a href="{{ siteUrl('/ext/user_front_group') }}">
-                                                                <div>Groupes d'utilisateurs</div>
+                                                                <div>{{ _('grp_users')}}</div>
                                                             </a>
                                                         </li>
                                                     </ul>
                                                 </li>
                                             {% endif %}
                                             <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>Bibliothèques</div></a>
+                                                <a href="#" class="sf-with-ul"><div>{{ _('bibliotheques')}}</div></a>
                                                 <ul>
                                                     <li>
                                                         <a href="{{ siteUrl('/module/GalleryCategory') }}">
-                                                            <div>Images</div>
+                                                            <div>{{ _('images')}}</div>
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <!--<a href="{{ siteUrl('/module/DocumentsCategory') }}">-->
                                                         <a href="#">
-                                                            <div>Documents</div>
+                                                            <div>{{ _('documents')}}</div>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -212,51 +212,51 @@
                                             <ul class="mega-menu-column col-lg-3">
 
                                                 <li class="mega-menu-title sub-menu">
-                                                    <a href="#" class="sf-with-ul"><div>Développeur</div></a>
+                                                    <a href="#" class="sf-with-ul"><div>{{ _('developpeur')}}</div></a>
                                                     <ul>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/moduleadmin') }}">
-                                                                <div>Modules</div>
+                                                                <div>{{ _('modules')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/domain') }}">
-                                                                <div>Domaines</div>
+                                                                <div>{{ _('domaines')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/pageadmin') }}">
-                                                                <div>Pages</div>
+                                                                <div>{{ _('pages')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/groupmodule') }}">
-                                                                <div>Menu d'administration</div>
+                                                                <div>{{ _('admin_menu')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/performance') }}">
-                                                                <div>Performances</div>
+                                                                <div>{{ _('performances')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/log') }}">
-                                                                <div>Journal d'événements</div>
+                                                                <div>{{ _('event_log')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/maintenance') }}">
-                                                                <div>Maintenance</div>
+                                                                <div>{{ _('maintenance')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/security') }}">
-                                                                <div>Sécurité</div>
+                                                                <div>{{ _('security')}}</div>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ siteUrl('/admin/translate') }}">
-                                                                <div>Traductions</div>
+                                                                <div>{{ _('traductions')}}</div>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -284,27 +284,27 @@
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
-                                                        <div>Groupes d'abonnés</div>
+                                                        <div>{{ _('grp_abo')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
-                                                        <div>Abonnés</div>
+                                                        <div>{{ _('abonnes')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                        <div>Expéditeurs</div>
+                                                        <div>{{ _('sender')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
-                                                        <div>Planification des campagnes</div>
+                                                        <div>{{ _('newsletter_planning')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
-                                                        <div>Gabarits</div>
+                                                        <div>{{ _('gabarits')}}</div>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -314,43 +314,43 @@
 
                                     <ul class="mega-menu-column col-lg-3">
                                         <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>Automation</div></a>
+                                            <a href="#" class="sf-with-ul"><div>{{ _('automation')}}</div></a>
                                             <ul>
                                                 {% if active_newsletter != true %}
                                                 <li>
                                                     <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                        <div>Expéditeurs</div>
+                                                        <div>{{ _('sender')}}</div>
                                                     </a>
                                                 </li>
                                                 {% endif %}
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationModelGroup' , 'index' ) }}">
-                                                        <div>Groupe d'emails</div>
+                                                        <div>{{ _('grp_email')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationModel' , 'index' ) }}">
-                                                        <div>Modèle d'emails</div>
+                                                        <div>{{ _('modele_email')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'EdAutomation' , 'index' ) }}">
-                                                        <div>Automation</div>
+                                                        <div>{{ _('automation')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationVarGroup' , 'index' ) }}">
-                                                        <div>Groupe de variables</div>
+                                                        <div>{{ _('grp_variables')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationVar' , 'index' ) }}">
-                                                        <div>Variables d'environnement</div>
+                                                        <div>{{ _('variables_environnement')}}</div>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="{{ route( 'EdAutomationHistory' , 'index' ) }}">
-                                                        <div>Historique</div>
+                                                        <div>{{ _('historique')}}</div>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -359,11 +359,11 @@
 
                                     <ul class="mega-menu-column col-lg-3">
                                         <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>Email</div></a>
+                                            <a href="#" class="sf-with-ul"><div>{{ _('email')}}</div></a>
                                             <ul>
                                                 <li>
                                                     <a href="{{ route( 'EdEmail' , 'index' ) }}">
-                                                        <div>Modèles</div>
+                                                        <div>{{ _('modeles')}}</div>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -372,7 +372,7 @@
 
                                     <ul class="mega-menu-column col-lg-3">
                                         <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>Vos crédits emails</div></a>
+                                            <a href="#" class="sf-with-ul"><div>{{ _('credit_email')}}</div></a>
                                             <div class="widget clearfix">
                                                 <div class="col_one_fourth"></div>
                                                 <div class="col_one_fourth text-center" style="padding-top: 10px;">
@@ -381,12 +381,16 @@
                                                 <div class="col_two_fourth col_last">
                                                     <div class="text-center text-uppercase" style="margin-bottom: 15px; font-size: 16px;">
                                                         <span style="font-weight: bold; font-size: 36px;">{{ el_credits|number_format(0, '', ' ') }}</span><br />
-                                                        crédit{{ el_credits > 1 ? 's' : '' }}*
+                                                        {% if el_credits > 1 %}
+                                                        {{ _('credit_plur')}}*
+                                                        {% else %}
+                                                        {{ _('credit_sing')}}*
+                                                        {% endif %}
                                                     </div>
                                                 </div>
 
                                                 <div class="col_full">
-                                                    *Crédit{{ el_credits > 1 ? 's' : '' }} : Unité permettant d'envoyer avec tracking tous types de campagnes de newsletters et d'e-mails.
+                                                    * {{ _('credit_def')}}
                                                 </div>
                                             </div>
                                         </li>

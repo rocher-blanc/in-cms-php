@@ -1,13 +1,13 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Pages{% endblock %}
+{% block title_page %}{{ _('pages')}}{% endblock %}
 
 {% if id != -1 %}
 	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'une page' %}
+	{% set title_block_page = _('page_edit_modif') %}
 {% else %}
 	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'une nouvelle page' %}
+	{% set title_block_page = _('page_edit_add') %}
 {% endif %}
 
 {% block module %}
@@ -17,19 +17,19 @@
         <h3>{{ title_block_page }}</h3>
     </div>
     <div class="ed_field col_half">
-        <label>Nom (interne)</label>
+        <label>{{ _('nom_interne')}}</label>
         <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
     </div>
     <div class="ed_field col_one_fourth">
-        <label>Activé</label>
+        <label>{{ _('activated')}}</label>
         {% include 'form/generic/switch.twig' with {'value':post.page_active, 'name':'page_active'} %}
     </div>
     <div class="ed_field col_one_fourth col_last">
-        <label>Indexé</label>
+        <label>{{ _('indexed')}}</label>
         {% include 'form/generic/switch.twig' with {'value':post.page_index, 'name':'page_index'} %}
     </div>
     <div class="ed_field col_one_third">
-        <label>URL</label>
+        <label>{{ _('url')}}</label>
         {% for l in lang %}
             {% if lang|length > 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -48,7 +48,7 @@
         {% endfor %}
     </div>
     <div class="ed_field col_one_third">
-        <label>Meta title</label>
+        <label>{{ _('meta_title')}}</label>
         {% for l in lang %}
             {% if lang|length > 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -65,7 +65,7 @@
         {% endfor %}
     </div>
     <div class="ed_field col_one_third">
-        <label>Méta description</label>
+        <label>{{ _('meta_desc')}}</label>
         {% for l in lang %}
             {% if lang|length > 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -82,7 +82,7 @@
         {% endfor %}
     </div>
     <div class="ed_field col_one_third col_last">
-        <label>Sitemap - Priority</label>
+        <label>{{ _('parammodule_edit_sitemap')}}</label>
         <input type="text" id="page_priority" name="page_priority" class="form-control" value="{{ priority }}" />
     </div>
     {% include 'form/generic/button.twig' %}
