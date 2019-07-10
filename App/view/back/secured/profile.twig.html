@@ -11,56 +11,56 @@
     <div class="form-process"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
 
     <div class="fancy-title title-dotted-border">
-        <h3>{{ title_block_page }}</h3>
+        <h3>{{ _('profil_title') }}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="col_one_third">
                 <div class="title-block">
-                    <h3><span>Informations personnelles</span></h3>
+                    <h3><span>{{ _('profil_ip_title') }}</span></h3>
                 </div>
 
                 <div class="ed_field col_full">
-                    <label>Login <span class="icon-asterisk"></span></label>
+                    <label>{{ _('login') }}<span class="icon-asterisk"></span></label>
                     <input type="text" id="user_name" name="user_name" class="form-control" value="{{ user.name }}" />
                 </div>
                 <div class="ed_field col_full">
-                    <label>Nom</label>
+                    <label>{{ _('nom') }}</label>
                     <input type="text" id="user_lname" name="user_lname" class="form-control" value="{{ user.lname }}" />
                 </div>
                 <div class="ed_field col_full">
-                    <label>Prénom</label>
+                    <label>{{ _('prenom') }}</label>
                     <input type="text" id="user_fname" name="user_fname" class="form-control" value="{{ user.fname }}" />
                 </div>
             </div>
             <div class="col_one_third">
                 <div class="title-block">
-                    <h3><span>Modification du mot de passe</span></h3>
+                    <h3><span>{{ _('profil_password_title') }}</span></h3>
                 </div>
 
                 <div class="ed_field col_full">
-                    <label>Ancien mot de passe</label>
+                    <label>{{ _('profil_password_old') }}</label>
                     <input type="password" id="last_password" name="last_password" class="form-control" value="" />
                 </div>
                 <div class="ed_field col_full">
-                    <label>Nouveau mot de passe</label>
+                    <label>{{ _('profil_password_new') }}</label>
                     <input type="password" id="password" name="password" class="form-control" value="" />
                 </div>
                 <div class="ed_field col_full">
-                    <label>Confirmer le nouveau mot de passe</label>
+                    <label>{{ _('profil_password_confirm') }}</label>
                     <input type="password" id="confirm_password" name="confirm_password" class="form-control" value="" />
                 </div>
             </div>
 
             <div class="col_one_third col_last">
                 <div class="title-block">
-                    <h3><span>Image de profil</span></h3>
+                    <h3><span>{{ _('profil_image_title') }}</span></h3>
                 </div>
 
                 <div class="col_two_third">
                     <div class="ed_field col_full avatar">
-                        <label>Uploader votre image de profil</label>
+                        <label>{{ _('profil_image_upload') }}</label>
                         <input value="{{ user.photo }}" name="photo" type="file" class="upload-photo file-loading" data-field="photo" data-uploadurl="{{ siteUrl( 'secured/upload' ) }}">
                         <input id="photo" value="{{ user.photo }}" name="uphoto" type="hidden">
                     </div>

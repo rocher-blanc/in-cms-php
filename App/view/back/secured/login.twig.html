@@ -19,7 +19,7 @@
 
     <!-- Document Title
     ============================================= -->
-    <title>easyDOOR - Espace d'administration</title>
+    <title>easyDOOR - {{ _('login_title') }}</title>
 
 </head>
 
@@ -51,17 +51,17 @@
                                 </div>
 
                                 <div class="col_full">
-                                    <label for="login-form-username">Identifiant :</label>
+                                    <label for="login-form-username">{{ _('login_identifiant') }} :</label>
                                     <input type="text" id="login-form-username" name="username" value="" class="form-control not-dark" />
                                 </div>
 
                                 <div class="col_full">
-                                    <label for="login-form-password">Mot de passe :</label>
+                                    <label for="login-form-password">{{ _('login_mdp') }} :</label>
                                     <input type="password" id="login-form-password" name="password" value="" class="form-control not-dark" />
                                 </div>
 
                                 <div class="col_full nobottommargin">
-                                    <button class="button button-3d button-black nomargin" id="login-form-submit" name="login-form-submit" value="login" style="background-color: #164757;">Connexion</button>
+                                    <button class="button button-3d button-black nomargin" id="login-form-submit" name="login-form-submit" value="login" style="background-color: #164757;">{{ _('login_connexion') }}</button>
                                 </div>
 
                             </form>
