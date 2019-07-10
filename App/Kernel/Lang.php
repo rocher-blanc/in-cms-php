@@ -154,7 +154,7 @@ class Lang
     public function getBack()
     {
         $rows = \DB::for_table('lang')
-                ->order_by_asc('lang_display')
+                ->order_by_asc('lang_id')
                 ->find_many();
 
         foreach( $rows as $r )

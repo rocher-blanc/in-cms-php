@@ -44,6 +44,7 @@ class Install
 
         defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
         defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
+        defined('LANGUAGE_PATH') || define('LANGUAGE_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Languages');
         defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
         defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
 
@@ -62,6 +63,7 @@ class Install
         self::checkHtaccess() ;
         self::checkConfig() ;
         self::checkIndex() ;
+        self::copyTranslationFiles() ;
         // self::minify() ;
         // self::patchVendor() ;
         self::patchDb() ;
@@ -325,6 +327,21 @@ class Install
         }
 
         self::copyr( VENDOR_PATH . '/JWebCreation/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
+    }
+
+    protected static function copyTranslationFiles()
+    {
+        $files = glob( LANGUAGE_PATH . '/BO*.php');
+        if ( $files && count( $files ) > 0 )
+        {
+            foreach( $files as $file )
+            {
+                if (is_file($file)) {
+                    $filename = end( explode( '/' , $file ) );
+                    copy( $file , PROJECT_PATH . "/Lang/" . $filename );
+                }
+            }
+        }
     }
 
     protected static function create( $nameFile , $content )
