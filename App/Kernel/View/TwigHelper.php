@@ -2,7 +2,7 @@
 
 namespace App\Kernel\View;
 
-use Slim\Slim;
+use App\Kernel\Front\Helper;
 
 class TwigHelper extends \Twig_Extension
 {
@@ -24,7 +24,7 @@ class TwigHelper extends \Twig_Extension
      */
     public function helperModule( $entity , $method , $arg = [] )
     {
-        $helper = new \App\Kernel\Front\Helper;
+        $helper = new Helper;
         $helper->setEntity( $entity ) ;
         return $helper->getModuleHelper( $method , $arg );
     }
@@ -34,7 +34,7 @@ class TwigHelper extends \Twig_Extension
      */
     public function helperPage( $page , $method , $arg = [] )
     {
-        $helper = new \App\Kernel\Front\Helper;
+        $helper = new Helper;
         $helper->setPage( $page ) ;
         return $helper->getPageHelper( $method , $arg );
     }

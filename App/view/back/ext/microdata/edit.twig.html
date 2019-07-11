@@ -1,61 +1,61 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Microdata{% endblock %}
+{% block title_page %}{{ _('microdata')}}{% endblock %}
 {% set this_page = 'Modification' %}
-{% set title_block_page = 'Modification' %}
+{% set title_block_page =  _('modification') %}
 
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('/ext/microdata') }}" role="form" class="form-horizontal group-border-dashed">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="fancy-title title-dotted-border">
-        <h3>Gestion des microdatas</h3>
+        <h3>{{ _('microdata_edit_subtitle')}}</h3>
     </div>
 
     <div class="fancy-title title-bottom-border">
-        <h3>Générale</h3>
+        <h3>{{ _('generale')}}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_full">
-                <label>URL de votre logo</label>
+                <label>{{ _('url_logo')}}</label>
                 <input type="text" name="md_logo" class="form-control" value="{{ post.md_logo }}" />
             </div>
         </div>
     </div>
 
     <div class="fancy-title title-bottom-border">
-        <h3>Corporation</h3>
+        <h3>{{ _('corporation')}}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_full">
-                <label>Description</label>
+                <label>{{ _('description')}}</label>
                 <input type="text" name="md_description" class="form-control" value="{{ post.md_description }}" />
             </div>
         </div>
     </div>
 
     <div class="fancy-title title-bottom-border">
-        <h3>Website</h3>
+        <h3>{{ _('website')}}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_half">
-                <label>Nom du site internet (court)</label>
+                <label>{{ _('website_name_small')}}</label>
                 <input type="text" name="md_name" class="form-control" value="{{ post.md_name }}" />
             </div>
             <div class="ed_field col_half col_last">
-                <label>Nom alternatif (court)</label>
+                <label>{{ _('alternative_name_small')}}</label>
                 <input type="text" name="md_alt_name" class="form-control" value="{{ post.md_alt_name }}" />
             </div>
         </div>
     </div>
 
     <div class="fancy-title title-bottom-border">
-        <h3>Réseaux sociaux</h3>
+        <h3>{{ _('social_media')}}</h3>
     </div>
 
     <div class="tab-content">
@@ -84,25 +84,25 @@
     </div>
 
     <div class="fancy-title title-bottom-border">
-        <h3>Adresse</h3>
+        <h3>{{ _('address')}}</h3>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_one_fourth">
-                <label>Téléphone</label>
+                <label>{{ _('phone')}}</label>
                 <input type="text" name="md_phone" class="form-control" value="{{ post.md_phone }}" />
             </div>
             <div class="ed_field col_one_fourth">
-                <label>Adresse</label>
+                <label>{{ _('address')}}</label>
                 <input type="text" name="md_address" class="form-control" value="{{ post.md_address }}" />
             </div>
             <div class="ed_field col_one_fourth">
-                <label>Code postal</label>
+                <label>{{ _('zip_code')}}</label>
                 <input type="text" name="md_zip" class="form-control" value="{{ post.md_zip }}" />
             </div>
             <div class="ed_field col_one_fourth col_last">
-                <label>Ville</label>
+                <label>{{ _('city')}}</label>
                 <input type="text" name="md_town" class="form-control" value="{{ post.md_town }}" />
             </div>
         </div>

@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class NewsletterCampaignGroup extends Builder
 {
@@ -17,6 +18,8 @@ class NewsletterCampaignGroup extends Builder
             ->column(1, 1)
             ->isVarchar()
             ->notEmpty("Veuillez renseigner un nom de newsletter")
-            ->name("Nom de la newsletter");
+            ->name(_('absence_msg'));
+
+        Translate::getInstance()->getText( _('absence_msg') );
     }
 }

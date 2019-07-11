@@ -1,9 +1,9 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Modules{% endblock %}
+{% block title_page %}{{ _('modules')}}{% endblock %}
 
 {% set this_page = 'Modification' %}
-{% set title_block_page = 'Modification d\'un module' %}
+{% set title_block_page = _('module_modif')%}
 
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('ext/parammodule/edit/' ~ id ) }}" role="form" class="form-horizontal group-border-dashed">
@@ -15,12 +15,12 @@
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_half">
-                <label>Nom</label>
+                <label>{{ _('nom') }}</label>
                 <input type="text" id="module_name" name="module_name" class="form-control" value="{{ post.module_name }}" readonly />
             </div>
             <div class="clear"></div>
             <div class="ed_field col_one_third">
-                <label>URL</label>
+                <label>{{ _('url') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
                         <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -37,7 +37,7 @@
                 {% endfor %}
             </div>
             <div class="ed_field col_one_third">
-                <label>Meta title</label>
+                <label>{{ _('meta_title') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
                         <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -54,7 +54,7 @@
                 {% endfor %}
             </div>
             <div class="ed_field col_one_third col_last">
-                <label>Méta description</label>
+                <label>{{ _('meta_desc') }}/label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
                         <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -71,15 +71,15 @@
                 {% endfor %}
             </div>
             <div class="ed_field col_one_third">
-                <label>Sitemap - Priority</label>
+                <label>{{ _('parammodule_edit_sitemap')}}</label>
                 <input type="number" id="module_priority" name="module_priority" step="0.1" class="form-control" value="{{ priority }}" />
             </div>
             <div class="ed_field col_one_third">
-                <label>Indexer le listing du module</label>
+                <label>{{ _('parammodule_edit_listing')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':index, 'name':'module_index'} %}
             </div>
             <div class="ed_field col_one_third col_last">
-                <label>Indexer les éléments du module</label>
+                <label>{{ _('parammodule_edit_elmt')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':index_elmt, 'name':'module_index_elmt'} %}
             </div>
 

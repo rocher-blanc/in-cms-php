@@ -11,8 +11,8 @@
                         <th>
                             <span>{{ thvalue.title }}</span><br/>
                             {% if thvalue.type != 'image' and thvalue.search == true %}
-                                <a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="icon-chevron-sign-down"></i></a>
-                                <a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="icon-chevron-sign-up"></i></a>
+                                <a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_desc')}}"><i class="icon-chevron-sign-down"></i></a>
+                                <a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_asc')}}"><i class="icon-chevron-sign-up"></i></a>
                             {% else %}
                                 <br/>
                             {% endif %}
@@ -26,18 +26,18 @@
                     {% if hasValidation %}
                         <th style="width: 100px;">
                             En ligne<br />
-                            <a data-filter data-by="desc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre décroissant"><i class="icon-chevron-sign-down"></i></a>
-                            <a data-filter data-by="asc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="Trier par ordre croissant"><i class="icon-chevron-sign-up"></i></a>
+                            <a data-filter data-by="desc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_desc')}}"><i class="icon-chevron-sign-down"></i></a>
+                            <a data-filter data-by="asc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_asc')}}"><i class="icon-chevron-sign-up"></i></a>
                         </th>
                     {% endif %}
                     <th class="text-right" style="width: 220px;">
-                        Afficher<select class="form-control form-control-sm inline" name="elmt_per_page" style="width: 75px; margin: 0 5px;">
+                        {{ _('afficher')}}<select class="form-control form-control-sm inline" name="elmt_per_page" style="width: 75px; margin: 0 5px;">
                             <option value="10" {{ elmt_per_page == '10' ? ' selected' : '' }}>10</option>
                             <option value="25"{{ elmt_per_page == '25' ? ' selected' : '' }}>25</option>
                             <option value="50"{{ elmt_per_page == '50' ? ' selected' : '' }}>50</option>
                             <option value="100"{{ elmt_per_page == '100' ? ' selected' : '' }}>100</option>
-                            <option value="all"{{ elmt_per_page == 'all' ? ' selected' : '' }}>Tous</option>
-                        </select>éléments
+                            <option value="all"{{ elmt_per_page == 'all' ? ' selected' : '' }}>{{ _('all')}}</option>
+                        </select>{{ _('elements')}}
                     </th>
 
                 <tr class="trSearch">
@@ -60,23 +60,23 @@
                                     <input type="text" class="form-control form-control-sm daterange" name="{{ thvalue.name }}" value="{{ thvalue.value }}" />
                                 {% elseif thvalue.type == 'number' %}
                                     <div class="input-group searchNumber">
-                                        <input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="De" />
+                                        <input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_start" value="{{ thvalue.value_start }}" placeholder="{{ _('from')}}" />
                                     </div>
                                     <div class="input-group" style="margin-top: 2px;">
-                                        <input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="À" />
+                                        <input type="number" class="form-control form-control-sm" style="border-radius: 3px;" name="{{ thvalue.name }}_end" value="{{ thvalue.value_end }}" placeholder="{{ _('to')}}" />
                                     </div>
                                 {% elseif thvalue.type == 'select' %}
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
-                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- Aucune sélection -----</option>
+                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- {{ _('no_select')}} -----</option>
                                         {% for key,value in thvalue.options %}
                                             <option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
                                 {% elseif thvalue.type == 'radio' and thvalue.boolean == true %}
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
-                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>Tous</option>
-                                        <option value="1"{{ thvalue.value == '1' ? ' selected' : '' }}>Oui</option>
-                                        <option value="-1"{{ thvalue.value == '-1' ? ' selected' : '' }}>Non</option>
+                                        <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>{{ _('all')}}</option>
+                                        <option value="1"{{ thvalue.value == '1' ? ' selected' : '' }}>{{ _('oui')}}</option>
+                                        <option value="-1"{{ thvalue.value == '-1' ? ' selected' : '' }}>{{ _('non')}}</option>
                                     </select>
                                 {% endif %}
                             {% endif %}
@@ -89,8 +89,8 @@
                         <td></td>
                     {% endif %}
                     <td class="text-right searchButton">
-                        <button class="button button-rounded button-reveal button-small button-3d" type="submit"><i class="icon-search2"></i><span>Rechercher</span></button>
-                        {% if search == 1 %}<a class="button button-rounded button-reveal button-light button-white button-small button-3d initsearch" href="javascript:;"><i class="icon-repeat"></i><span>Réinitialiser</span></a>{% endif %}
+                        <button class="button button-rounded button-reveal button-small button-3d" type="submit"><i class="icon-search2"></i><span>{{ _('rechercher')}}</span></button>
+                        {% if search == 1 %}<a class="button button-rounded button-reveal button-light button-white button-small button-3d initsearch" href="javascript:;"><i class="icon-repeat"></i><span>{{ _('reinitialiser')}}</span></a>{% endif %}
                     </td>
                 </tr>
                 </thead>
@@ -133,9 +133,9 @@
                             <td class="text-center" style="vertical-align: middle;">
                                 {% if right.edit == true %}
                                     {% if content.default == 1 %}
-                                        <span class="button button-rounded button-mini button-green">Par défaut</span>
+                                        <span class="button button-rounded button-mini button-green">{{ _('by_default')}}</span>
                                     {% else %}
-                                        <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">Mettre par défaut</a>
+                                        <a class="default button button-rounded button-mini button-blue" href="{{ route( mod.name , 'default' , uri_id_parent , content.id , csrf_token ) }}">{{ _('set_default')}}</a>
                                     {% endif %}
                                 {% endif %}
                             </td>
@@ -194,11 +194,11 @@
             {% endif %}
         </div>
         {% if td|length == 0 %}
-            <div class="sb-msg text-center" style="font-size: 16px; font-weight: bold;"><i class="icon-question-sign"></i>Aucun résultat</div>
+            <div class="sb-msg text-center" style="font-size: 16px; font-weight: bold;"><i class="icon-question-sign"></i>{{ _('no_result')}}</div>
         {% endif %}
     </form>
 {% else %}
     <div class="style-msg" style="background-color: #eee;">
-        <div class="sb-msg"><i class="icon-question-sign"></i>Il n'y a aucun contenu enregistré actuellement</div>
+        <div class="sb-msg"><i class="icon-question-sign"></i>{{ _('no_content')}}</div>
     </div>
 {% endif %}

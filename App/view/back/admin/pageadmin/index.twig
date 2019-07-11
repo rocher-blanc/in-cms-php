@@ -1,14 +1,14 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Pages{% endblock %}
+{% block title_page %}{{ _('pages')}}{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
     <div class="fancy-title title-dotted-border">
-        <h3>Liste des pages</h3>
+        <h3>{{ _('liste_pages')}}</h3>
     </div>
     <div class="ed-menu">
-        <a href="{{ siteUrl('admin/pageadmin/edit') }}" class="button button-mini"><i class="icon-plus"></i>Ajouter</a>
+        <a href="{{ siteUrl('admin/pageadmin/edit') }}" class="button button-mini"><i class="icon-plus"></i>{{ _('button_add')}}</a>
     </div>
     <br />
     <div class="table-responsive">
@@ -17,10 +17,10 @@
             <thead>
                 <tr>
                     <th>#ID</th>
-                    <th>Nom</th>
-                    <th>Défaut</th>
-                    <th>Indexée</th>
-                    <th>Statut</th>
+                    <th>{{ _('nom')}}</th>
+                    <th>{{ _('default')}}</th>
+                    <th>{{ _('indexed')}}</th>
+                    <th>{{ _('status')}}</th>
                     <th class="text-right" style="width: 120px"></th>
                 </tr>
             </thead>
@@ -40,21 +40,21 @@
                             </td>
                             <td>
                                 {% if row.page_default == 1 %}
-                                    <span class="button button-3d button-mini button-rounded button-green disabled">Page par défaut</span>
+                                    <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('default_page')}}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if row.page_index == 0 %}
-                                    <span class="button button-3d button-mini button-rounded button-amber disabled">Non</span>
+                                    <span class="button button-3d button-mini button-rounded button-amber disabled">{{ _('non')}}</span>
                                 {% else %}
-                                    <span class="button button-3d button-mini button-rounded button-green disabled">Oui</span>
+                                    <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('oui')}}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if row.page_active == 0 %}
-                                    <span class="button button-3d button-mini button-rounded button-amber disabled">Désactivée</span>
+                                    <span class="button button-3d button-mini button-rounded button-amber disabled">{{ _('disable')}}</span>
                                 {% else %}
-                                    <span class="button button-3d button-mini button-rounded button-green disabled">Activée</span>
+                                    <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('activated')}}</span>
                                 {% endif %}
                             </td>
                             <td class="text-right">
@@ -74,21 +74,21 @@
                         </td>
                         <td>
                             {% if row.page_default == 1 %}
-                                <span class="button button-3d button-mini button-rounded button-green disabled">Page par défaut</span>
+                                <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('default_page')}}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if row.page_index == 0 %}
-                                <span class="button button-3d button-mini button-rounded button-amber disabled">Non</span>
+                                <span class="button button-3d button-mini button-rounded button-amber disabled">{{ _('non')}}</span>
                             {% else %}
-                                <span class="button button-3d button-mini button-rounded button-green disabled">Oui</span>
+                                <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('oui')}}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if row.page_active == 0 %}
-                                <span class="button button-3d button-mini button-rounded button-amber disabled">Désactivée</span>
+                                <span class="button button-3d button-mini button-rounded button-amber disabled">{{ _('disable')}}</span>
                             {% else %}
-                                <span class="button button-3d button-mini button-rounded button-green disabled">Activée</span>
+                                <span class="button button-3d button-mini button-rounded button-green disabled">{{ _('activated')}}</span>
                             {% endif %}
                         </td>
                         <td class="text-right">
@@ -100,7 +100,7 @@
             </tbody>
         </table>
     {% else %}
-        {% include 'form/generic/nocontent.twig' with {'msg':"Aucune page n'est enregistrée."} %}
+        {% include 'form/generic/nocontent.twig' with {'msg': 'page_index_msg'} %}
     {% endif %}
     </div>
 

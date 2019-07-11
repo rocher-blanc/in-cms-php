@@ -1,13 +1,13 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Pages{% endblock %}
+{% block title_page %}{{ _('pages')}}{% endblock %}
 
 {% if id != -1 %}
 	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'une page' %}
+	{% set title_block_page = _('page_edit_modif') %}
 {% else %}
 	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'une nouvelle page' %}
+	{% set title_block_page = _('page_edit_add') %}
 {% endif %}
 
 {% block module %}
@@ -21,7 +21,7 @@
     </div>
 
     <div class="ed-menu">
-        <a href="{{ siteUrl('admin/pageadmin') }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+        <a href="{{ siteUrl('admin/pageadmin') }}" class="button button-mini"><i class="icon-th-list"></i>{{ _('button_manage')}}</a>
     </div>
     <br />
 
@@ -29,16 +29,16 @@
         <div class="tab-pane active panel-body">
 
             <div class="ed_field col_half">
-                <label>Activé</label>
+                <label>{{ _('activated_m')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':post.page_active, 'name':'page_active'} %}
             </div>
             <div class="ed_field col_half col_last">
-                <label>Nom (interne)</label>
+                <label>{{ _('nom_interne')}}</label>
                 <input type="text" id="page_name" name="page_name" class="form-control" value="{{ post.page_name }}" />
             </div>
             {% if domains | length > 0 %}
                 <div class="ed_field col_half">
-                    <label>Domaine</label>
+                    <label>{{ _('domaine')}}</label>
                     <select id="page_domain_id" name="page_domain_id" class="form-control">
                         {% for domain in domains %}
                             <option value="{{ domain.id }}"{% if domain.selected %} selected="selected"{% endif %}>{{ domain.name }}</option>
@@ -50,22 +50,22 @@
             {% if active_user == true %}
                 <div class="clear"></div>
                 <div class="fancy-title title-bottom-border">
-                    <h3>Sécurité utilisateur</h3>
+                    <h3>{{ _('user_security')}}</h3>
                 </div>
                 <div class="ed_field col_one_third">
-                    <label>Accès réservé aux utilisateurs</label>
+                    <label>{{ _('user_access')}}</label>
                     <select name="page_access_user" id="page_access_user" class="form-control">
-                        <option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>Non connectés & connectés</option>
-                        <option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>Non connectés</option>
-                        <option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>Connectés</option>
+                        <option value="0"{{ post.page_access_user == 0 ? ' selected' : '' }}>{{ _('connectes_&_non')}}</option>
+                        <option value="1"{{ post.page_access_user == 1 ? ' selected' : '' }}>{{ _('non_connectes')}}</option>
+                        <option value="2"{{ post.page_access_user == 2 ? ' selected' : '' }}>{{ _('connectes')}}</option>
                     </select>
                 </div>
                 {% if id != -1 %}
                 <div class="ed_field col_one_third">
-                    <label>Redirection vers la page</label>
-                    <div class="comment">Si la personne ne correspond pas aux critères d'accès, on redirige vers une page</div>
+                    <label>{{ _('page_redirect')}}</label>
+                    <div class="comment">{{ _('page_redirect_comment')}}</div>
                     <select name="page_access_user_redirect" id="page_access_user_redirect" class="form-control">
-                        <option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- Aucune redirection ---</option>
+                        <option value="0"{{ post.page_access_user_redirect == 0 ? ' selected' : '' }}>--- {{ _('no_redirect')}} ---</option>
                         {% for pageRedir in pageRedirect %}
                             <option value="{{ pageRedir.page_id }}"{{ post.page_access_user_redirect == pageRedir.page_id ? ' selected' : '' }}>{{ pageRedir.page_name }}</option>
                         {% endfor %}
@@ -73,8 +73,8 @@
                 </div>
                 {% endif %}
                 <div class="ed_field col_one_third col_last">
-                    <label for="id_page_access_user_group">Groupes d'utilisateurs autorisés</label>
-                    <select name="page_access_user_group[]" id="id_page_access_user_group" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options">
+                    <label for="id_page_access_user_group">{{ _('allowed_grp_user')}}</label>
+                    <select name="page_access_user_group[]" id="id_page_access_user_group" data-plugin-selectPicker data-size="10" multiple title="{{ _('option_select')}}">
                         {% for group in groups %}
                             <option value="{{ group.user_front_group_id }}"{% if group.user_front_group_id in post.page_access_user_group %} selected="selected"{% endif %}>{{ group.user_front_group_name }}</option>
                         {% endfor %}

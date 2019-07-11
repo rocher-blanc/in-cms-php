@@ -3,7 +3,6 @@
 
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="author" content="SemiColonWeb" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="token" content="{{csrf_token}}" />
@@ -22,7 +21,7 @@
         <link rel="stylesheet" href="{{ asset('canvas/css/src/style.css') }}" type="text/css" />
         {% include 'style.twig' %}
 
-        <title>{% block title %}Administration{% endblock %}</title>
+        <title>{% block title %}{{ _('administration')}}{% endblock %}</title>
         <script src="{{ asset('js/init.js') }}"></script>
         <script>
             var siteurl = site + '/{{ adminFolder }}/' ;

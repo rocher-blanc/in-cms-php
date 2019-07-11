@@ -1,20 +1,24 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Modules{% endblock %}
+{% block title_page %}{{ _('modules')}}{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
     <div class="fancy-title title-dotted-border">
-        <h3>Gestion technique des modules</h3>
+        <h3>{{ _('moduleadmin_index_title')}}</h3>
     </div>
 
 	{% if noInstall|length == 0 and contentRows|length == 0 %}
-		{% include 'form/generic/nocontent.twig' with {'msg':"Il n'a aucun module de disponible"} %}
+		{% include 'form/generic/nocontent.twig' with {'msg': 'moduleadmin_index_msg'}%}
 	{% endif %}
 
 	{% if contentRows|length > 0 %}
         <div class="fancy-title title-bottom-border">
-            <h3>Module{{ contentRows|length > 1 ? "s" : "" }} installé{{ contentRows|length > 1 ? "s" : "" }}</h3>
+            {% if contentRows|length > 1 %}
+            <h3>{{ _('module_installe_plur')}}</h3>
+            {% else %}
+            <h3>{{ _('module_installe_sing')}}</h3>
+            {% endif %}
         </div>
 	{% endif %}
 
@@ -25,23 +29,23 @@
                     <span><i class="{{ row.module_icon }}"></i> {{ row.module_name }} <em style="font-weight: normal; color: #bbb;">({{ row.module_class_name }})</em></span>
                 </div>
                 <div class="col_three_fifth col_last">
-                    <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">Désinstaller</a>
-                    <a href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}" class="button button-mini button-rounded">Editer</a>
+                    <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/delete/' ~ row.module_id) }}" class="button button-mini button-rounded button-red">{{ _('uninstall')}}</a>
+                    <a href="{{ siteUrl('admin/moduleadmin/edit/' ~ row.module_id) }}" class="button button-mini button-rounded">{{ _('edit')}}</a>
 
                     {% if row.module_default == 0 %}
-                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour ne plus afficher le module dans l'URL. Attention, il ne peut y avoir qu'un seul module principal." href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Classique</a>
+                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="{{ _('moduleadmin_edit_choice1')}}" href="{{ siteUrl('admin/moduleadmin/default/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> {{ _('classic')}}</a>
                     {% else %}
-                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour afficher le module dans l'URL." href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Principale</a>
+                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="{{ _('moduleadmin_edit_choice2')}}" href="{{ siteUrl('admin/moduleadmin/notdefault/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> {{ _('main')}}</a>
                     {% endif %}
 
                     {% if row.module_active == 0 %}
-                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="Cliquer pour désactiver le module." href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> Module désactivé</a>
+                        <a class="button button-mini button-amber" data-toggle="tooltip" data-placement="top" title="{{ _('moduleadmin_edit_choice3')}}" href="{{ siteUrl('admin/moduleadmin/active/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-circle-o"></i> {{ _('disable_module')}}</a>
                     {% else %}
-                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="Cliquer pour activer le module." href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> Module activé</a>
+                        <a class="button button-mini button-green" data-toggle="tooltip" data-placement="top" title="{{ _('moduleadmin_edit_choice4')}}" href="{{ siteUrl('admin/moduleadmin/disactive/' ~  row.module_id ~ '/' ~ csrf_token) }}"><i class="fa fa-check-circle-o"></i> {{ _('activated_module')}}</a>
                     {% endif %}
 
-                    <a href="{{ siteUrl('admin/moduleadmin/truncate/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-black">Vider les tables MySQL</a>
-                    {% if img[ row.module_id ] == true %}<a href="{{ siteUrl('admin/moduleadmin/image/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-blue">Regénérer les images</a>{% endif %}
+                    <a href="{{ siteUrl('admin/moduleadmin/truncate/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-black">{{ _('empty_sql')}}</a>
+                    {% if img[ row.module_id ] == true %}<a href="{{ siteUrl('admin/moduleadmin/image/' ~ row.module_id) }}" data-lightbox="ajax" class="button button-mini button-rounded button-blue">{{ _('regenerer_img')}}</a>{% endif %}
                 </div>
                 <div class="clear"></div>
             </div>
@@ -50,7 +54,11 @@
 
 	{% if noInstall|length > 0 %}
         <div class="fancy-title title-bottom-border" style="margin-top: 30px;">
-            <h3>Module{{ noInstall|length > 1 ? "s" : "" }} disponible{{ noInstall|length > 1 ? "s" : "" }}</h3>
+            {% if noInstall|length > 1 %}
+            <h3>{{ _('available_module')}}</h3>
+            {% else %}
+            <h3>{{ _('available_module_sing')}}</h3>
+            {% endif %}
         </div>
 	{% endif %}
 
@@ -61,7 +69,7 @@
                 <span>{{ rep }}</span>
             </div>
             <div class="col_three_fifth col_last">
-                <a href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}" class="button button-mini button-rounded button-green">Installer</a>
+                <a href="{{ siteUrl('admin/moduleadmin/install/' ~ rep) }}" class="button button-mini button-rounded button-green">{{ _('installer')}}</a>
             </div>
             <div class="clear"></div>
         </div>

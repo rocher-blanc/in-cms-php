@@ -1,8 +1,8 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Modules{% endblock %}
+{% block title_page %}{{ _('modules')}}{% endblock %}
 {% set this_page = 'Modification' %}
-{% set title_block_page = 'Modification d\'un module' %}
+{% set title_block_page = {{ _('module_modif')}} %}
 
 {% block module %}
 <form name="form" method="post" action="{{ siteUrl('admin/moduleadmin/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" class="form-vertical">
@@ -11,13 +11,13 @@
         <h3>{{ title_block_page }}</h3>
     </div>
     <div class="ed-menu">
-        <a href="{{ siteUrl('admin/moduleadmin') }}" class="button button-mini"><i class="icon-th-list"></i>Gérer</a>
+        <a href="{{ siteUrl('admin/moduleadmin') }}" class="button button-mini"><i class="icon-th-list"></i>{{ _('button_manage')}}</a>
     </div>
     <br />
     <div class="tab-content">
         <div class="tab-pane active panel-body">
             <div class="ed_field col_half">
-                <label>Activer</label>
+                <label>{{ _('button_activate')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':post.module_active, 'name':'module_active'} %}
             </div>
             <div class="ed_field col_half col_last" id="field-module_name">
@@ -25,14 +25,14 @@
                 <input type="text" id="module_name" name="module_name" class="form-control" value="{{ post.module_name }}" />
             </div>
             <div class="ed_field col_half" id="field-module_class_name">
-                <label>Nom de la class <span class="icon-asterisk"></span></label>
+                <label>{{ _('class_name')}} <span class="icon-asterisk"></span></label>
                 <input type="text" id="module_class_name" name="module_class_name" class="form-control" value="{{ post.module_class_name }}" />
             </div>
             <div class="ed_field col_half col_last" id="field-module_icon">
-                <label>Icône <span class="icon-asterisk"></span></label>
+                <label>{{ _('icon')}} <span class="icon-asterisk"></span></label>
                 <div class="clear"></div>
                 <div class="viewicon" style="padding-left: 43px; font-size: 40px;"><i id="icon-module_icon" class="{{ post.module_icon }}"></i></div>
-                <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/icon/module_icon') }}" class="button button-3d button-mini button-rounded">Sélectionner</a>
+                <a data-lightbox="ajax" href="{{ siteUrl('admin/moduleadmin/icon/module_icon') }}" class="button button-3d button-mini button-rounded">{{ _('select')}}</a>
                 <input type="hidden" id="module_icon" name="module_icon" value="{{ post.module_icon }}" />
             </div>
             {% include 'form/generic/button.twig' %}

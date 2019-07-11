@@ -1,14 +1,14 @@
 {% extends 'admin.twig.html' %}
 
-{% block title_page %}Erreur 403{% endblock %}
+{% block title_page %}{{ _('erreur_403')}}{% endblock %}
 
 {% block content %}
     <div class="container clearfix">
         <div class="col_full col_last">
-            <div class="error404 center">403</div>
+            <div class="error404 center">{{ _('403')}}</div>
             <div class="heading-block nobottomborder center">
-                <h4>Ooopps! Accès à cette page impossible.</h4>
-                <span>Vous n'avez pas la permission d'accèder à cette page du back-office.</span>
+                <h4>{{ _('erreur_403_title')}}</h4>
+                <span>{{ _('erreur_403_desc')}}</span>
             </div>
 
         </div>

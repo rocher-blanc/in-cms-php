@@ -1,12 +1,12 @@
 <div class="modal1" id="myModal1">
     <div class="block divcenter" style="background-color: #fff; max-width: 500px;">
         <div class="center" style="padding: 50px;">
-            <h3>Êtes vous sûr de vouloir supprimer tous les éléments de ce module ?</h3>
-            <p class="nobottommargin">Attention, la suppression est définitive et ne pourra en aucun cas être restaurée.</p>
+            <h3>{{ _('moduladmin_truncate_msg')}}</h3>
+            <p class="nobottommargin">{{ _('moduladmin_truncate_info')}}</p>
         </div>
         <div class="section center nomargin" style="padding: 30px;">
-            <a href="#" class="button" onClick="deleteElementExt('{{ url }}');"><i class="icon-ok"></i> Oui</a>
-            <a href="#" class="button button-red" onClick="$.magnificPopup.close();return false;"><i class="icon-remove"></i> Non</a>
+            <a href="#" class="button" onClick="deleteElementExt('{{ url }}');"><i class="icon-ok"></i> {{ _('oui')}}</a>
+            <a href="#" class="button button-red" onClick="$.magnificPopup.close();return false;"><i class="icon-remove"></i> {{ _('non')}}</a>
         </div>
     </div>
 </div>

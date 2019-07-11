@@ -1,14 +1,14 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Groupes d'administrateurs{% endblock %}
+{% block title_page %}{{ _('grp_admin')}}{% endblock %}
 
 
 {% if id != -1 %}
 	{% set this_page = 'Modification' %}
-	{% set title_block_page = 'Modification d\'un groupe' %}
+	{% set title_block_page =  _('group_edit_modif') %}
 {% else %}
 	{% set this_page = 'Ajout' %}
-	{% set title_block_page = 'Ajout d\'un nouveau groupe' %}
+	{% set title_block_page = _('group_edit_add') %}
 {% endif %}
 
 {% block module %}
@@ -18,11 +18,11 @@
         <h3>{{ title_block_page }}</h3>
     </div>
     <div class="ed-menu bottommargin-sm">
-        <a href="{{ siteUrl('ext/group') }}" class="button button-mini"><i class="icon-th-list"></i> Gérer</a>
-        <a href="{{ siteUrl('ext/group/edit') }}" class="button button-mini"><i class="icon-plus"></i> Ajouter</a>
+        <a href="{{ siteUrl('ext/group') }}" class="button button-mini"><i class="icon-th-list"></i> {{ _('button_manage')}}</a>
+        <a href="{{ siteUrl('ext/group/edit') }}" class="button button-mini"><i class="icon-plus"></i> {{ _('button_add')}}</a>
     </div>
     <div class="ed field col_full">
-        <label>Nom <span class="icon-asterisk"></span></label>
+        <label>{{ _('nom')}}<span class="icon-asterisk"></span></label>
         <input type="text" id="user_group_name" name="user_group_name" class="form-control" value="{{ post.user_group_name }}" />
     </div>
     {% include 'form/generic/button.twig' %}
@@ -31,8 +31,8 @@
 {% if id != -1 %}
     <div class="col_one_third">
         <div class="title-block">
-            <h3><span>Utilisateurs du groupe</span></h3>
-            <span>Il y a actuellement {{ users|length }} administrateur{{ users|length > 1 ? 's' : '' }} dans le groupe</span>
+            <h3><span>{{ _('group_users')}}</span></h3>
+            <span>{{ _('group_edit_1')}} {{ users|length }} {{ _('group_edit_2')}} {{ users|length > 1 ? 's' : '' }} {{ _('group_edit_3')}}</span>
         </div>
         <div class="list-users">
             {% if users|length > 0 %}
@@ -48,23 +48,23 @@
                 {% endfor %}
                 </ul>
             {% else %}
-              {% include 'form/generic/nocontent.twig' with {'msg':"Aucun administrateur n'est présent dans ce groupe"} %}
+              {% include 'form/generic/nocontent.twig' with {'msg': 'group_edit_msg'} %}
             {% endif %}
         </div>
     </div>
     <div class="col_two_third col_last">
         <div class="title-block">
-            <h3><span>Permissions du groupe</span></h3>
-            <span>Le tableau ci-dessous vous permettra de modifier les droits des administrateurs présent dans ce groupe.</span>
+            <h3><span>{{ _('group_edit_approval')}}</span></h3>
+            <span>{{ _('group_edit_info')}}</span>
         </div>
                 {% if id == 1 %}
-                    {% include 'form/generic/nocontent.twig' with {'msg':"Ce groupe a tous les droits par défaut."} %}
+                    {% include 'form/generic/nocontent.twig' with {'msg': 'group_edit_msg2' } %}
                 {% else %}
                 <div class="tabs tabs-responsive clearfix">
 
                     <ul class="tab-nav clearfix">
-                        <li><a href="#tab-responsive-1">Modules</a></li>
-                        <li><a href="#tab-responsive-2">Extension</a></li>
+                        <li><a href="#tab-responsive-1">{{ _('modules')}}</a></li>
+                        <li><a href="#tab-responsive-2">{{ _('extension')}}</a></li>
                     </ul>
 
                     <div class="tab-container">
@@ -73,11 +73,11 @@
                             <table class="table table-hover">
                                 <tr>
                                     <th style="width: 25%;"></th>
-                                    <th style="width: 15%;" class="text-center">Ajout</th>
-                                    <th style="width: 15%;" class="text-center">Modification</th>
-                                    <th style="width: 15%;" class="text-center">Suppression</th>
-                                    <th style="width: 15%;" class="text-center">Validation</th>
-                                    <th style="width: 15%;" class="text-center">Configuration</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('ajout')}}</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('modification')}}</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('supression')}}</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('validation')}}</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('configuration')}}</th>
                                 </tr>
                                 {% for mod in module %}
                                 <tr>
@@ -95,9 +95,9 @@
                             <table class="table table-hover">
                                 <tr>
                                     <th style="width: 25%;"></th>
-                                    <th style="width: 25%;" class="text-center">Ajout</th>
-                                    <th style="width: 25%;" class="text-center">Modification</th>
-                                    <th style="width: 25%;" class="text-center">Suppression</th>
+                                    <th style="width: 25%;" class="text-center">{{ _('ajout')}}</th>
+                                    <th style="width: 25%;" class="text-center">{{ _('modification')}}</th>
+                                    <th style="width: 25%;" class="text-center">{{ _('supression')}}</th>
                                 </tr>
                                 {% for ext in extension %}
                                 <tr>

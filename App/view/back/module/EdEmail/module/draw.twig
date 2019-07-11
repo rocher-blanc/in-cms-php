@@ -8,14 +8,14 @@
     <div class="duplicate">
         <div class="col_one_fourth">
             <select id="duplicate-model" name="model" class="form-control select2">
-                <option value="0" disabled selected>Créer un email à partir d'un gabarit existant</option>
+                <option value="0" disabled selected>{{ _('create_email_gabarit')}}</option>
                 {% for key, name in select %}
                     {% if id != key %}<option value="{{ key }}">{{ name }}</option>{% endif %}
                 {% endfor %}
             </select>
         </div>
         <div class="col_one_fourth">
-            <a href="javascript:;" id="loadDupication" class="ed-button button button-rounded button-reveal button-small button-3d notopmargin"><i class="icon-save"></i><span>Dupliquer</span></a>
+            <a href="javascript:;" id="loadDupication" class="ed-button button button-rounded button-reveal button-small button-3d notopmargin"><i class="icon-save"></i><span>{{ _('duplicate')}}</span></a>
         </div>
     </div>
     {% endif %}

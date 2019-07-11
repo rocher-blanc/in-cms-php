@@ -1,11 +1,11 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}Modules{% endblock %}
+{% block title_page %}{{ _('modules')}}{% endblock %}
 {% set this_page = 'Gestion' %}
 
 {% block module %}
     <div class="fancy-title title-dotted-border">
-        <h3>Liste des modules</h3>
+        <h3>{{ _('parammodule_index_title') }}</h3>
     </div>
 
     <div class="table-responsive">
@@ -14,9 +14,9 @@
             <thead>
                 <tr>
                     <th>#ID</th>
-                    <th>Nom</th>
-                    <th>Indexé (listing)</th>
-                    <th>Indexé (éléments)</th>
+                    <th>{{ _('nom') }}</th>
+                    <th>{{ _('parammodule_index_listing') }}</th>
+                    <th>{{ _('parammodule_index_elmt') }}</th>
                     <th class="text-right" style="width: 200px"></th>
                 </tr>
             </thead>
@@ -31,16 +31,16 @@
                     </td>
                     <td>
                         {% if row.module_index == 0 %}
-                            <a class="button button-mini button-amber" href="{{ siteUrl('ext/parammodule/index/' ~  row.module_id ~ '/' ~ csrf_token) }}">Non</a>
+                            <a class="button button-mini button-amber" href="{{ siteUrl('ext/parammodule/index/' ~  row.module_id ~ '/' ~ csrf_token) }}">{{ _('non') }}</a>
                         {% else %}
-                            <a class="button button-mini button-green" href="{{ siteUrl('ext/parammodule/noindex/' ~  row.module_id ~ '/' ~ csrf_token) }}">Oui</a>
+                            <a class="button button-mini button-green" href="{{ siteUrl('ext/parammodule/noindex/' ~  row.module_id ~ '/' ~ csrf_token) }}">{{ _('oui') }}</a>
                         {% endif %}
                     </td>
                     <td>
                         {% if row.module_index_elmt == 0 %}
-                            <a class="button button-mini button-amber" href="{{ siteUrl('ext/parammodule/indexelmt/' ~  row.module_id ~ '/' ~ csrf_token) }}">Non</a>
+                            <a class="button button-mini button-amber" href="{{ siteUrl('ext/parammodule/indexelmt/' ~  row.module_id ~ '/' ~ csrf_token) }}">{{ _('non') }}</a>
                         {% else %}
-                            <a class="button button-mini button-green" href="{{ siteUrl('ext/parammodule/noindexelmt/' ~  row.module_id ~ '/' ~ csrf_token) }}">Oui</a>
+                            <a class="button button-mini button-green" href="{{ siteUrl('ext/parammodule/noindexelmt/' ~  row.module_id ~ '/' ~ csrf_token) }}">{{ _('oui') }}</a>
                         {% endif %}
                     </td>
                     <td class="text-right">
@@ -51,7 +51,7 @@
             </tbody>
         </table>
     {% else %}
-        {% include 'form/generic/nocontent.twig' with {'msg':"Aucun module ne nécessite de configuration."} %}
+        {% include 'form/generic/nocontent.twig' with {'msg':'parammodule_index_msg'} %}
     {% endif %}
     </div>
 {% endblock %}

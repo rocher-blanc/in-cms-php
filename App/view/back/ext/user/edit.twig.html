@@ -1,12 +1,12 @@
 {% extends 'module.twig.html' %}
 
-{% block title_page %}{{ _('uf_edit_title_page') }}{% endblock %}
+{% block title_page %}{{ _('administrateurs') }}{% endblock %}
 
 {% if id != -1 %}
-	{% set this_page = _('ufg_edit_modif') %}
+	{% set this_page = 'Modification' %}
 	{% set title_block_page = _('user_edit_modif_title') %}
 {% else %}
-	{% set this_page = _('ufg_edit_add') %}
+	{% set this_page = 'Ajout' %}
 	{% set title_block_page = _('user_edit_add_title') %}
 {% endif %}
 
@@ -44,7 +44,7 @@
             {% endif %}
 
             <div class="ed_field col_half col_last">
-                <label>{{ _('user_edit_grp_admin') }}</label>
+                <label>{{ _('grp_admin') }}</label>
                 <select name="user_group_id" class="form-control">
                     {% for group in groupRows %}
                         <option value="{{ group.user_group_id }}" {{ group.user_group_id == post.user_group_id ? ' selected' : '' }}>{{ group.user_group_name }}</option>
