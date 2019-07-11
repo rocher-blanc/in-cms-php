@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class EdAutomationVarGroup extends Builder
 {
@@ -14,7 +15,7 @@ class EdAutomationVarGroup extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le nom")
-            ->name("Nom");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_name))
+            ->name(Translate::getInstance()->getText( nom));
     }
 }

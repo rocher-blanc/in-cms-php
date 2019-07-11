@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/group', function () use ($app)
 {
 	$app->get('/', function () use ($app) {
@@ -46,7 +48,7 @@ $app->group('/group', function () use ($app)
 			
 			if ( $app->request->post('user_group_name') == "" ) {
 				$error = true ;
-				$tabError['user_group_name'] = "Veuillez remplir ce champ" ;
+				$tabError['user_group_name'] = Translate::getInstance()->getText( mandatory_fillin) ;
 			}
 			else {
 				$exist = \DB::for_table('user_group')->where_equal('user_group_name' , $app->request->post('user_group_name'));
@@ -56,7 +58,7 @@ $app->group('/group', function () use ($app)
 			
 			if ( $app->request->post('user_group_name') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_name'] = "Ce nom de groupe est deja utilisé" ;
+				$tabError['user_name'] = Translate::getInstance()->getText( msg_grp_name_error) ;
 			}
 			
 			if ( $error == false ) {
@@ -72,7 +74,7 @@ $app->group('/group', function () use ($app)
 				
 				$id = $contentRow->user_group_id ;
 
-                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) , true , '/ext/group' );
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( msg_grp_name_part) . ( $add == true ? Translate::getInstance()->getText( added) : Translate::getInstance()->getText( modified) ) , true , '/ext/group' );
 			}
 			else
             {
@@ -234,7 +236,7 @@ $app->group('/group', function () use ($app)
 		}
 		else
 		{
-			$msg = "Le token de sécurité est invalide";
+			$msg = Translate::getInstance()->getText( msg_token_invalide);
 			$ret = false;
 		}
 		

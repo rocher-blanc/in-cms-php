@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class EdAutomationModel extends Builder
 {
@@ -15,25 +16,25 @@ class EdAutomationModel extends Builder
         $this->build('name')
             ->full()
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le nom du modèle")
-            ->name("Nom");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_model_name))
+            ->name(Translate::getInstance()->getText( nom));
 
         $this->build('subject')
             ->column(1, 3)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le sujet")
-            ->name("Sujet");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_subject_name))
+            ->name(Translate::getInstance()->getText( subject));
 
         $this->build('key')
             ->column(1, 3)
             ->isVarchar()
-            ->name("Clef");
+            ->name(Translate::getInstance()->getText( key));
 
         $this->build('vars')
             ->column(1, 3)
             ->isCheckbox()
             ->option( $this->getList_EdAutomationVar() )
-            ->name("Variables d'environnements");
+            ->name(Translate::getInstance()->getText( variables_environnement));
     }
 
 

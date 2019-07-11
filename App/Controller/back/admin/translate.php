@@ -1,6 +1,7 @@
 <?php
 
 use App\Kernel\Factory;
+use App\Kernel\Front\Translate;
 
 $app->group('/translate', function () use ($app) {
 
@@ -99,7 +100,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
 							 'result' => true,
-							 'msg'    => "Le texte a été mis à jour."
+							 'msg'    => Translate::getInstance()->getText( msg_text_maj)
 						 ]);
 	});
 
@@ -145,7 +146,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
              'result' => true,
-             'msg'    => "La clef a bien été ajouté",
+             'msg'    => Translate::getInstance()->getText( msg_key_add),
          ]);
 	});
 
@@ -195,7 +196,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
 							 'result' => true,
-							 'msg'    => "La clé a été supprimée",
+							 'msg'    => Translate::getInstance()->getText( msg_key_suppr),
 						 ]);
 	});
 

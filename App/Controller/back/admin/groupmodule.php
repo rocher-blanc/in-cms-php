@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/groupmodule', function () use ($app)
 {
     $app->get('/', function () use ($app)
@@ -135,13 +137,13 @@ $app->group('/groupmodule', function () use ($app)
 
             \App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name );
 
-            $msg = "Le groupe de modules a bien été supprimé";
+            $msg = Translate::getInstance()->getText( domain_supr_msg);
             $ret = true;
             $contentRow->delete();
         }
         else
         {
-            $msg = "Une erreur est survenue lors de la suppression" ;
+            $msg = Translate::getInstance()->getText( domain_supr_error);
         }
 
         $result['msg'] = $msg;
@@ -164,16 +166,16 @@ $app->group('/groupmodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 25 , $module->module_group_name ) ;
 
-                $msg = "Le groupe de modules a bien été activé";
+                $msg = Translate::getInstance()->getText( msg_grp_module_active);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, le groupe de modules est déja activé";
+                $msg = Translate::getInstance()->getText( msg_grp_module_active_error);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -194,16 +196,16 @@ $app->group('/groupmodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 26 , $module->module_group_name ) ;
 
-                $msg = "Le groupe de modules a bien été désactivé";
+                $msg = Translate::getInstance()->getText( msg_grp_module_desactive);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, le groupe de modules est déja désactivé";
+                $msg = Translate::getInstance()->getText( msg_grp_module_desactive_error);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -236,7 +238,7 @@ $app->group('/groupmodule', function () use ($app)
 
             if ( $app->request->post('module_group_name') == "" ) {
                 $error = true ;
-                $tabError['module_group_name'] = "Veuillez remplir ce champ" ;
+                $tabError['module_group_name'] = Translate::getInstance()->getText( mandatory_fillin) ;
             }
 
             if ( $error == false ) {
@@ -265,7 +267,7 @@ $app->group('/groupmodule', function () use ($app)
 
                 $id = $contentRow->module_group_id;
 
-                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le groupe de modules a bien été " . ( $add == true ? "ajouté" : "modifié" ) , true , '/admin/groupmodule' );
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( grp_name_part) . ( $add == true ? Translate::getInstance()->getText( added) : Translate::getInstance()->getText( modified) ) , true , '/admin/groupmodule' );
             }
         }
         else {
@@ -303,16 +305,16 @@ $app->group('/groupmodule', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 27 , $modgroup->module_group_name ) ;
 
-                    $msg = 'La position du groupe de modules a été modifiée';
+                    $msg = Translate::getInstance()->getText( msg_grp_module_position_modif);
                     $ret = true;
                 }
                 else {
-                    $msg = 'Impossible, le groupe de modules est déja au niveau le plus haut';
+                    $msg = Translate::getInstance()->getText( msg_grp_module_position_error);
                     $ret = false;
                 }
             }
             else {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -341,16 +343,16 @@ $app->group('/groupmodule', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 28 , $modgroup->module_group_name ) ;
 
-                    $msg = 'La position du groupe de modules a été modifiée';
+                    $msg = Translate::getInstance()->getText( msg_grp_module_position_modif);
                     $ret = true;
                 }
                 else {
-                    $msg = 'Impossible, le groupe de modules est déja au niveau le plus bas' . $modgroup->module_group_order;
+                    $msg = Translate::getInstance()->getText( msg_grp_module_position_error). $modgroup->module_group_order;
                     $ret = false;
                 }
             }
             else {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -560,7 +562,7 @@ $app->group('/groupmodule', function () use ($app)
 
         \App\Kernel\Factory::getInstance()->Response()->printJSON([
             'result'    => true,
-            'msg'       => "La colonne a bien été supprimée",
+            'msg'       => Translate::getInstance()->getText( column_suppr),
         ]) ;
     });
 
