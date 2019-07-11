@@ -3,9 +3,11 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class EdAutomation extends Builder
 {
+
     protected function load()
     {
         if ( TOPOL_USER_ID !== NULL && TOPOL_API_KEY !== NULL )
@@ -44,5 +46,7 @@ class EdAutomation extends Builder
             ->noBack()
             ->isText("LONG")
             ->name("JSON");
+
+        Translate::getInstance()->getText( oui );
     }
 }

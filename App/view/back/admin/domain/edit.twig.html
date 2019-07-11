@@ -25,7 +25,7 @@
 		<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
 		<div class="ed_field col_half" id="field-domain_name">
-			<label>Nom de domaine <span class="icon-asterisk"></span></label>
+			<label>{{ _('domain_name')}} <span class="icon-asterisk"></span></label>
 			<input type="text" name="domain_name" class="form-control" value="{{ post.domain_name }}" />
 		</div>
 		

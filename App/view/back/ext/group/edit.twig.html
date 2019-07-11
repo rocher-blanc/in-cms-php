@@ -22,7 +22,7 @@
         <a href="{{ siteUrl('ext/group/edit') }}" class="button button-mini"><i class="icon-plus"></i> {{ _('button_add')}}</a>
     </div>
     <div class="ed field col_full">
-        <label>Nom <span class="icon-asterisk"></span></label>
+        <label>{{ _('nom')}}<span class="icon-asterisk"></span></label>
         <input type="text" id="user_group_name" name="user_group_name" class="form-control" value="{{ post.user_group_name }}" />
     </div>
     {% include 'form/generic/button.twig' %}

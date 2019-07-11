@@ -202,7 +202,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>{{ _('statusn')}}</th>
+                <th>{{ _('status')}}</th>
                 <th class="center">{{ _('nbr_email')}}</th>
             </tr>
             </thead>
@@ -242,7 +242,7 @@
                     <td>{{ attribute(status, item.state) }}</td>
 
                     {% if item.read == 1 %}
-                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} à {{ item.readDateUTC|date("H:i") }}</td>
+                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} {{ _('to')}} {{ item.readDateUTC|date("H:i") }}</td>
                     {% else %}
                         <td class="center"><i class="icon-line-circle-cross danger"></i></td>
                     {% endif %}
