@@ -127,6 +127,24 @@ class Lang
                 ->order_by_desc('lang_status')
                 ->where_equal('lang_back', 1)
                 ->find_many();
+
+            if ( ! $rows )
+            {
+                $l = \DB::for_table('lang')
+                    ->where_equal('lang_id', 1)
+                    ->find_one();
+
+                if ( $l )
+                {
+                    $l->lang_back = 1 ;
+                    $l->save();
+
+                    $rows = \DB::for_table('lang')
+                        ->order_by_desc('lang_status')
+                        ->where_equal('lang_back', 1)
+                        ->find_many();
+                }
+            }
         }
 
         $i = 0;
