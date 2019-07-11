@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class NewsletterGroup extends Builder
 {
@@ -14,7 +15,7 @@ class NewsletterGroup extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le nom du groupe")
-            ->name("Nom du groupe");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_group_name))
+            ->name(Translate::getInstance()->getText( group_name));
     }
 }

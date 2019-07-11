@@ -14,12 +14,11 @@ class NewsletterCampaignGroup extends Builder
         $this->setModuleChild( 'NewsletterModel' );
         $this->setFieldReference( 'name' );
 
+
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner un nom de newsletter")
-            ->name(_('absence_msg'));
-
-        Translate::getInstance()->getText( _('absence_msg') );
+            ->notEmpty(Translate::getInstance()->getText( mandatory_newsletter_name ))
+            ->name(Translate::getInstance()->getText( newsletter_name ));
     }
 }

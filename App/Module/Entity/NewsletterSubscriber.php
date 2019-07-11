@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class NewsletterSubscriber extends Builder
 {
@@ -14,7 +15,7 @@ class NewsletterSubscriber extends Builder
         $this->build('email')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner l'adresse email")
-            ->name("E-mail");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_email_address))
+            ->name(Translate::getInstance()->getText( email));
     }
 }

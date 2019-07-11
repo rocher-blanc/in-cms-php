@@ -3,6 +3,7 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class GalleryCategory extends Builder
 {
@@ -16,12 +17,12 @@ class GalleryCategory extends Builder
         $this->build('name')
             ->full()
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner un titre")
-            ->name("Titre");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_title))
+            ->name(Translate::getInstance()->getText( title));
 
         $this->build('comment')
             ->full()
             ->isText()
-            ->name("Commentaire");
+            ->name(Translate::getInstance()->getText( comment));
     }
 }

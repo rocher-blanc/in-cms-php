@@ -1,6 +1,7 @@
 <?php
 
 use App\Kernel\Container;
+use App\Kernel\Front\Translate;
 
 $app->group('/moduleadmin', function () use ($app)
 	{
@@ -135,7 +136,7 @@ $app->group('/moduleadmin', function () use ($app)
 
                 Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
 				Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
-				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect("Le module a bien été installé" , true , '/admin/moduleadmin' );
+				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( msg_module_installed) , true , '/admin/moduleadmin' );
 			}
 			else
 			{
@@ -212,12 +213,12 @@ $app->group('/moduleadmin', function () use ($app)
 					\App\Kernel\Back\Log::getInstance()->warning( 47 , $contentRow->module_name ) ;
 
 					$ret = true ;
-					$msg = "Les images ont bien été regénéré" ;
+					$msg = Translate::getInstance()->getText( msg_img_regeneree) ;
 				}
 			}
 			else
 			{
-				$msg = "Problème technique lors de l'opération" ;
+				$msg = Translate::getInstance()->getText( msg_pb_technique) ;
 			}
 
 			$result['msg'] = $msg;
@@ -246,13 +247,13 @@ $app->group('/moduleadmin', function () use ($app)
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
 
-				$msg = "Le module a bien été désinstallé" ;
+				$msg = Translate::getInstance()->getText( msg_module_uninstalled) ;
 				$ret = true ;
 				$contentRow->delete();
 			}
 			else
 			{
-				$msg = "Une erreur est survenue lors de la désinstallation" ;
+				$msg = Translate::getInstance()->getText( msg_module_uninstalled_error) ;
 			}
 
 			$result['msg'] = $msg;
@@ -322,7 +323,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 			\App\Kernel\Back\Log::getInstance()->alert( 45 , $module->module_name ) ;
 
-			$result['msg'] = "Le module a bien été vidé";
+			$result['msg'] = Translate::getInstance()->getText( msg_module_emptied);
 			$result['result'] = true;
 			$result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 
@@ -350,16 +351,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 18 , $module->module_name ) ;
 
-					$msg = "Le module a bien été activé";
+					$msg = Translate::getInstance()->getText( msg_module_active);
 					$ret = true;
 				}
 				else {
-					$msg = "Impossible, le module est déja activé";
+					$msg = Translate::getInstance()->getText( msg_module_active_error);
 					$ret = false;
 				}
 			}
 			else {
-				$msg = "Le token de sécurité est invalide";
+				$msg = Translate::getInstance()->getText( msg_token_invalider);
 				$ret = false;
 			}
 
@@ -385,21 +386,21 @@ $app->group('/moduleadmin', function () use ($app)
 
 						\App\Kernel\Back\Log::getInstance()->warning( 38 , $module->module_name ) ;
 
-						$msg = "Le module est maintenant le principal";
+						$msg = Translate::getInstance()->getText( msg_main_module);
 						$ret = true;
 					}
 					else {
-						$msg = "Impossible, le module est déja le principal";
+						$msg = Translate::getInstance()->getText( msg_main_module_error);
 						$ret = false;
 					}
 				}
 				else {
-					$msg = "Impossible, un module est déja le principal";
+					$msg = Translate::getInstance()->getText( msg_main_module_error2);
 					$ret = false;
 				}
 			}
 			else {
-				$msg = "Le token de sécurité est invalide";
+				$msg = Translate::getInstance()->getText( msg_token_invalide);
 				$ret = false;
 			}
 
@@ -419,16 +420,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 39 , $module->module_name ) ;
 
-					$msg = "Le module n'est plus le principal";
+					$msg = Translate::getInstance()->getText( msg_secondary_module);
 					$ret = true;
 				}
 				else {
-					$msg = "Impossible, le module n'est pas le principal";
+					$msg = Translate::getInstance()->getText( msg_secondary_module_error);
 					$ret = false;
 				}
 			}
 			else {
-				$msg = "Le token de sécurité est invalide";
+				$msg = Translate::getInstance()->getText( msg_token_invalide);
 				$ret = false;
 			}
 
@@ -448,16 +449,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 19 , $module->module_name ) ;
 
-					$msg = "Le module a bien été désactivé";
+					$msg = Translate::getInstance()->getText( msg_module_desactive);
 					$ret = true;
 				}
 				else {
-					$msg = "Impossible, le module est déja désactivé";
+					$msg = Translate::getInstance()->getText( msg_module_desactive_error);
 					$ret = false;
 				}
 			}
 			else {
-				$msg = "Le token de sécurité est invalide";
+				$msg = Translate::getInstance()->getText( msg_token_invalide);
 				$ret = false;
 			}
 
@@ -494,7 +495,7 @@ $app->group('/moduleadmin', function () use ($app)
 			}
 
 			if ( $id != -1 && !$contentRow ) {
-				$result['msg'] = 'Ce module n\'éxiste pas!' ;
+				$result['msg'] = Translate::getInstance()->getText( msg_module_inexistant) ;
 			}
 
 			if ( !$contentRow ) {
@@ -503,15 +504,15 @@ $app->group('/moduleadmin', function () use ($app)
 			}
 
 			if ( $app->request->post('module_name') == "" ) {
-				$result['msg'] = "Veuillez indiquer le nom du module" ;
+				$result['msg'] = Translate::getInstance()->getText( mandatory_module_name) ;
 				$result['field'] = 'module_name' ;
 			}
 			else if ( $app->request->post('module_class_name') == "" ) {
-				$result['msg'] = "Veuillez indiquer le nom de la class" ;
+				$result['msg'] = Translate::getInstance()->getText( mandatory_class_name) ;
 				$result['field'] = 'module_class_name' ;
 			}
 			else if ( $app->request->post('module_icon') == "" ) {
-				$result['msg'] = "Veuillez choisir une icône" ;
+				$result['msg'] = Translate::getInstance()->getText( mandatory_icon) ;
 				$result['field'] = 'module_icon' ;
 			}
 			else

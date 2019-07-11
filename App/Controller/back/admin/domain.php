@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/domain', function () use ($app) {
     $app->get('/', function () use ($app) {
         $contentRows = \DB::for_table('domain')
@@ -22,7 +24,7 @@ $app->group('/domain', function () use ($app) {
         {
             \App\Kernel\Back\Log::getInstance()->warning(53, $contentRow->domain_name);
 
-            $result['msg'] = "Le nom de domaine a bien été supprimé";
+            $result['msg'] = Translate::getInstance()->getText( domain_supr_msg);
             $result['result'] = true;
             $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/domain') ;
 
@@ -30,7 +32,7 @@ $app->group('/domain', function () use ($app) {
         }
         else
         {
-            $result['msg'] = "Une erreur est survenue lors de la suppression";
+            $result['msg'] = Translate::getInstance()->getText( domain_supr_error);
         }
 
         \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
@@ -60,7 +62,7 @@ $app->group('/domain', function () use ($app) {
         if ( $app->request->post('domain_name') == "" )
         {
             $error = true;
-            $result['msg'] = "Veuillez indiquer le nom de domaine";
+            $result['msg'] = Translate::getInstance()->getText( mandatory_domain_name);
             $result['field'] = 'domain_name' ;
         }
         else
@@ -72,7 +74,7 @@ $app->group('/domain', function () use ($app) {
 
         if ( ! $error && $exist > 0) {
             $error = true;
-            $result['msg'] = "Ce nom de domaine est deja utilisé";
+            $result['msg'] = Translate::getInstance()->getText( mandatory_domain_name);
             $result['field'] = 'domain_name' ;
         }
 
@@ -91,7 +93,7 @@ $app->group('/domain', function () use ($app) {
 
             $id = $contentRow->domain_id;
 
-            $result['msg'] = "Le nom de domaine a bien été " . ($add == true ? "ajouté" : "modifié") ;
+            $result['msg'] = Translate::getInstance()->getText( domain_name_part) . ($add == true ? Translate::getInstance()->getText( added) : Translate::getInstance()->getText( modified)) ;
             $result['result'] = true ;
             $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/domain') ;
         }
