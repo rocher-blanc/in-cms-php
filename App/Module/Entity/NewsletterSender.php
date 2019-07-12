@@ -3,6 +3,8 @@
 namespace App\Module\Entity;
 
 use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
+
 class NewsletterSender extends Builder
 {
     protected function load()
@@ -13,19 +15,19 @@ class NewsletterSender extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner un nom d'expéditeur")
-            ->name("Nom de l'expéditeur");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_sender_sing_name))
+            ->name(Translate::getInstance()->getText( sender_name));
 
         $this->build('email')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner l'adresse email de l'expéditeur")
-            ->name("Email de l'expéditeur");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_sender_email))
+            ->name(Translate::getInstance()->getText( sender_email));
 
         $this->build('email_response')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner l'adresse email de réponse")
-            ->name("Email de réponse");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_response_email))
+            ->name(Translate::getInstance()->getText( response_email));
     }
 }

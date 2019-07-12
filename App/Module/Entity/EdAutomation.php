@@ -32,8 +32,8 @@ class EdAutomation extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le nom du template")
-            ->name("Nom");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_template_name ))
+            ->name(Translate::getInstance()->getText( nom ));
 
         $this->build('html')
             ->noFront()

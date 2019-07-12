@@ -5,6 +5,7 @@ namespace App\Module\Entity;
 use App\Kernel\Entity\Builder;
 use App\Api\Easyletter;
 use App\Kernel\Front\Data;
+use App\Kernel\Front\Translate;
 
 class EdAutomationHistory extends Builder
 {
@@ -27,12 +28,12 @@ class EdAutomationHistory extends Builder
         $this->build('email')
             ->column(1, 1)
             ->isVarchar("255", "email")
-            ->notEmpty("Veuillez renseigner un email")
-            ->name("Email");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_email ))
+            ->name(Translate::getInstance()->getText( email ));
 
         $this->build('date')
             ->isDate(true)
-            ->name("Date");
+            ->name(Translate::getInstance()->getText( date ));
 
         $this->build('information')
             ->noFront()
@@ -43,7 +44,7 @@ class EdAutomationHistory extends Builder
         $this->build('automation')
             ->isSelect()
             ->ManyToMany("EdAutomation")
-            ->name("Automation");
+            ->name(Translate::getInstance()->getText( automation ));
 
         $this->build('id_easyletter')
             ->isInteger()
@@ -55,7 +56,7 @@ class EdAutomationHistory extends Builder
             ->isVarchar("500")
             ->noFront()
             ->noBack()
-            ->name("Message d'erreur");
+            ->name(Translate::getInstance()->getText( error_message ));
 
         $this->build('statut')
             ->column(1, 1)
@@ -111,6 +112,6 @@ class EdAutomationHistory extends Builder
 
                 return $str ;
             })
-            ->name("Statut");
+            ->name(Translate::getInstance()->getText( status ));
     }
 }

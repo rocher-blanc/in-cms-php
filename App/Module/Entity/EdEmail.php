@@ -2,7 +2,8 @@
 
 namespace App\Module\Entity;
 
-use App\Kernel\Entity\Builder; 
+use App\Kernel\Entity\Builder;
+use App\Kernel\Front\Translate;
 
 class EdEmail extends Builder
 {
@@ -33,12 +34,12 @@ class EdEmail extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty("Veuillez renseigner le nom du template")
-            ->name("Nom");
+            ->notEmpty(Translate::getInstance()->getText( mandatory_template_name))
+            ->name(Translate::getInstance()->getText( nom));
 
         $this->build('blocked')
             ->isBoolean()
-            ->name("Modification bloquer" );
+            ->name(Translate::getInstance()->getText( disable_modif) );
 
         $this->build('html')
             ->noFront()
