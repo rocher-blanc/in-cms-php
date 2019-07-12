@@ -20,6 +20,10 @@ class EdAutomationHistory extends Builder
             return $c->id_easyletter !== NULL && $c->stats['sent'] == 1 ? true : false ;
         });
 
+        $this->addIcon( 'icon-reply' , 'resend' , function($c) {
+            return $c->stats === NULL ? true : false ;
+        });
+
         $this->build('email')
             ->column(1, 1)
             ->isVarchar("255", "email")
