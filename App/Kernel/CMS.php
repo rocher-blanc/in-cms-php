@@ -18,9 +18,9 @@ class CMS
 
     public function __construct()
     {
-        $this->view()->appendData([
+        /*$this->view()->appendData([
             'debug' => $this->isDev()
-        ]);
+        ]);*/
     }
 
     /* ************************************************** */
@@ -63,7 +63,17 @@ class CMS
 
     public function config()
     {
-        return $this->getApp()->config('config') ;
+        $rst = explode( "/" , $_SERVER['SCRIPT_FILENAME'] );
+        $ct = count( $rst );
+
+        if( $rst[ $ct - 2 ] == Install::getAdminFolder() )
+        {
+            return 'back' ;
+        }
+        else
+        {
+            return 'front' ;
+        }
     }
 
     public function getIp()

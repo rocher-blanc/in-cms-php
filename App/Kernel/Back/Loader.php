@@ -85,6 +85,7 @@ class Loader
 
     public function index( $run = true )
     {
+
         $this->preload();
         $this->kernel->run( $run );
     }
