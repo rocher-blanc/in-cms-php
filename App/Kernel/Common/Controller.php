@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Common;
 
+use App\Kernel\Front\Translate;
 use Slim\Slim;
 
 class Controller
@@ -1034,7 +1035,7 @@ class Controller
         if ( $this->getEntity()->canDelete() == false )
         {
             return [
-                'msg' => 'La suppression n\'est pas autorisé sur ce module',
+                'msg' => Translate::getInstance()->getText(unauthorized_delete),
                 'url' => '',
                 'result' => false
             ];

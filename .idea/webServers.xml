@@ -29,7 +29,7 @@
       <webServer id="03dd5020-78d1-40a7-8ded-0ac94a14a593" name="socialter" url="http://vps1.jweb-creation.fr">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
           </advancedOptions>
           <option name="port" value="21" />
         </fileTransfer>
@@ -42,7 +42,7 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
-      <webServer id="90bd2d3d-a01a-4959-aa20-2edad43e15e4" name="casino" url="http://vps1.jweb-creation.fr">
+      <webServer id="90bd2d3d-a01a-4959-aa20-2edad43e15e4" name="casino" url="http://vps1.jweb-creation.fr/">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />

@@ -254,11 +254,11 @@ $app->group('/group', function () use ($app)
 		$ret = false ;
 		if ( $id == $app->environment['user']['group_id'] )
 		{
-			$msg = "Vous ne pouvez pas supprimer le groupe dans lequel vous êtes actuellement présent!" ;
+		    $msg = Translate::getInstance()->getText( delete_groupe);
 		}
 		elseif ( $id == 1 )
 		{
-			$msg = "Impossible de supprimer ce groupe pour des raisons techniques!" ;
+            $msg = Translate::getInstance()->getText( delete_groupe_technical);
 		}
 		else 
 		{
@@ -271,13 +271,13 @@ $app->group('/group', function () use ($app)
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_group_name ) ;
 
-				$msg = "Le groupe a bien été supprimé" ;
+				$msg = Translate::getInstance()->getText( delete_groupe_success);
 				$ret = true ;
 				$contentRow->delete();
 			}
 			else
 			{
-				$msg = "Une erreur est survenue lors de la suppression" ;
+			    $msg = Translate::getInstance()->getText( delete_error);
 			}
 
 		}

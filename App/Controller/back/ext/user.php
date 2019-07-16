@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/user', function () use ($app)
 {
 	$app->get('/', function () use ($app) {
@@ -49,7 +51,7 @@ $app->group('/user', function () use ($app)
 			
 			if ( $app->request->post('user_name') == "" ) {
 				$error = true ;
-				$tabError['user_name'] = "Veuillez remplir ce champ" ;
+				$tabError['user_name'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			else {
 				$exist = \DB::for_table('user')->where_equal('user_name' , $app->request->post('user_name'));
@@ -59,32 +61,32 @@ $app->group('/user', function () use ($app)
 			
 			if ( $app->request->post('user_name') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_name'] = "Ce login est deja utilisé" ;
+				$tabError['user_name'] = Translate::getInstance()->getText( already_use_login);
 			}
 			
 			if ( $app->request->post('user_fname') == "" ) {
 				$error = true ;
-				$tabError['user_fname'] = "Veuillez remplir ce champ" ;
+				$tabError['user_fname'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $app->request->post('user_lname') == "" ) {
 				$error = true ;
-				$tabError['user_lname'] = "Veuillez remplir ce champ" ;
+				$tabError['user_lname'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $id == -1 && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
 				$error = true ;
-				$tabError['password'] = "Veuillez remplir ce champ" ;
+				$tabError['password'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $id == -1 && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
 				$error = true ;
-				$tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+				$tabError['confirm_password'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $id == -1 && $app->request->post('password') != $app->request->post('confirm_password') ) {
 				$error = true ;
-				$tabError['confirm_password'] = "Les 2 mots de passe sont différents" ;
+				$tabError['confirm_password'] = Translate::getInstance()->getText( msg_different_password);
 			}
 			
 			if ( $error == false ) {
@@ -157,7 +159,7 @@ $app->group('/user', function () use ($app)
 			{
 				if ( $contentRow->user_group_id == 1 )
 				{
-					$msg = "Impossible de supprimer ce compte, l'utilisateur est dans le groupe \"Administrateurs\"" ;
+					$msg = Translate::getInstance()->getText( delete_account_err);
 				}
 				else
 				{
@@ -167,14 +169,14 @@ $app->group('/user', function () use ($app)
 					
 					\App\Kernel\Back\Log::getInstance()->warning( 3 , $contentRow->user_name ) ;
 				
-					$msg = "L'utilisateur a bien été supprimé" ;
+					$msg = Translate::getInstance()->getText(user_deleted);
 					$ret = true ;
 					$contentRow->delete();
 				}
 			}
 			else
 			{
-				$msg = "Une erreur est survenue lors de la suppression" ;
+				$msg = Translate::getInstance()->getText(delete_error);
 			}
 
 		}

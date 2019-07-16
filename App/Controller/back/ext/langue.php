@@ -1,6 +1,7 @@
 <?php
 
 use App\Kernel\Factory;
+use App\Kernel\Front\Translate;
 
 $app->group('/langue', function () use ($app)
 {
@@ -113,7 +114,7 @@ $app->group('/langue', function () use ($app)
             if ( $app->request->isPost() ) {
                 if ( $app->request->post('lang_display') == "" ) {
                     $error = true ;
-                    $tabError['lang_display'] = "Veuillez remplir ce champ" ;
+                    $tabError['lang_display'] = Translate::getInstance()->getText( mandatory_fillin);
                 }
                 else {
                     $contentRows->lang_display = $app->request->post('lang_display') ;
@@ -170,21 +171,21 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 15 , $lang->lang_display ) ;
 
-                        $msg = 'La position de la langue a été modifiée';
+                        $msg = Translate::getInstance()->getText( pos_change_lang);
                         $ret = true;
                     }
                     else {
-                        $msg = 'Impossible, la langue est déja au niveau le plus haut';
+                        $msg = Translate::getInstance()->getText( pos_err_lang);
                         $ret = false;
                     }
                 }
                 else {
-                    $msg = "Impossible, la langue n'est pas activée";
+                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
                     $ret = false;
                 }
             }
             else {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -214,22 +215,22 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 16 , $lang->lang_display ) ;
 
-                        $msg = 'La position de la langue a été modifiée';
+                        $msg = Translate::getInstance()->getText( pos_change_lang);
                         $ret = true;
                     }
                     else {
-                        $msg = 'Impossible, la langue est déja au niveau le plus bas';
+                        $msg = Translate::getInstance()->getText( pos_err_bas_lang);
                         $ret = false;
                     }
                 }
                 else {
-                    $msg = "Impossible, la langue n'est pas activée";
+                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
                     $ret = false;
 
                 }
             }
             else {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -254,16 +255,16 @@ $app->group('/langue', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 42 , $lang->lang_display ) ;
 
-                    $msg = 'La langue est maintenant disponible sur le site';
+                    $msg = Translate::getInstance()->getText( langue_available_site);
                     $ret = true;
                 }
                 else {
-                    $msg = "Impossible, la langue est désactivée";
+                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
                     $ret = false;
                 }
             }
             else {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -291,24 +292,24 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 43 , $lang->lang_display ) ;
 
-                        $msg = 'La langue est maintenant indisponible sur le site';
+                        $msg = Translate::getInstance()->getText( langue_unavailable_site);
                         $ret = true;
                     }
                     else
                     {
-                        $msg = "Impossible, on ne peut pas désactiver la langue par défaut";
+                        $msg = Translate::getInstance()->getText( langue_default_disable_err);
                         $ret = false;
                     }
                 }
                 else
                 {
-                    $msg = "Impossible, la langue est désactivée";
+                    $msg = Translate::getInstance()->getText( langue_disable_err);
                     $ret = false;
                 }
             }
             else
             {
-                $msg = "Le token de sécurité est invalide";
+                $msg = Translate::getInstance()->getText( msg_token_invalide);
                 $ret = false;
             }
 
@@ -339,16 +340,16 @@ $app->group('/langue', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 12 , $lang->lang_display ) ;
 
-                $msg = 'La langue a bien été activée';
+                $msg = Translate::getInstance()->getText( langue_activated);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, la langue est déja activée";
+                $msg = Translate::getInstance()->getText( lang_already_activated_err);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -391,21 +392,21 @@ $app->group('/langue', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 13 , $lang->lang_display ) ;
 
-                    $msg = 'La langue a bien été désactivée';
+                    $msg = Translate::getInstance()->getText( langue_disabled_info);
                     $ret = true;
                 }
                 else {
-                    $msg = "Impossible, la langue n'est pas activée";
+                    $msg = Translate::getInstance()->getText( pos_change_lang);
                     $ret = false;
                 }
             }
             else {
-                $msg = "Impossible, il faut qu'une langue soit au moins activée";
+                $msg = Translate::getInstance()->getText( langue_requirement_err);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -494,7 +495,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => "Le texte a été mis à jour."
+            'msg'    => Translate::getInstance()->getText( msg_text_maj),
         ]);
     });
 
@@ -539,7 +540,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => "La clef a bien été ajouté",
+            'msg'    => Translate::getInstance()->getText( msg_key_add),
         ]);
     });
 
@@ -581,7 +582,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => "La clé a été supprimée",
+            'msg'    => Translate::getInstance()->getText( msg_key_suppr),
         ]);
     });
 });

@@ -6,6 +6,7 @@ use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
 use App\Kernel\Common\Controller as ControllerCommon;
 use App\Kernel\Container;
+use App\Kernel\Front\Translate;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -142,7 +143,7 @@ class Controller extends ControllerCommon
         }
         else
         {
-            $this->Factory()->Response()->error("Impopssible de charger l'entity '" . $this->getEntityName() . "'") ;
+            $this->Factory()->Response()->error("Impossible de charger l'entity '" . $this->getEntityName() . "'") ;
         }
     }
 
@@ -1407,7 +1408,7 @@ class Controller extends ControllerCommon
         {
             return [
                 'result' => false,
-                'msg' => "Le contenu n'est plus disponible",
+                'msg' => Translate::getInstance()->getText( contents_unavailable),
             ];
         }
         else
@@ -1450,7 +1451,7 @@ class Controller extends ControllerCommon
             return [
                 'result' => true,
                 'id'     => $data->get('id'),
-                'msg'    => "Le contenu a bien été dupliqué",
+                'msg'    => Translate::getInstance()->getText( contents_duplicate),
             ];
         }
     }

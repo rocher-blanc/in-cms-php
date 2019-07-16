@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/page', function () use ($app)
 {
 	$app->get('/', function () use ($app)
@@ -55,19 +57,19 @@ $app->group('/page', function () use ($app)
 			if ( $contentRow->page_default == 0 )
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 32 , $contentRow->page_name ) ;
-			
-				$msg = "La page a bien été supprimé" ;
+
+				$msg = Translate::getInstance()->getText( msg_page_suppr);
 				$ret = true ;
 				$contentRow->delete();
 			}
 			else
 			{
-				$msg = "Impossible de supprimer la page par défaut, il faut en définir une nouvelle avant." ;
+				$msg = Translate::getInstance()->getText( delete_page_err);
 			}
 		}
 		else
 		{
-			$msg = "Une erreur est survenue lors de la suppression" ;
+			$msg = Translate::getInstance()->getText( delete_error);
 		}
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->returnJSON( $msg , $ret ) ;
@@ -86,16 +88,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 30 , $page->page_name ) ;
 
-                $msg = "La page a bien été activé";
+                $msg = Translate::getInstance()->getText( page_activated);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, la page est déja activée";
+                $msg = Translate::getInstance()->getText( page_already_activated_err);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -116,16 +118,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 54 , $page->page_name ) ;
 
-                $msg = "La page est maintenant indexée";
+                $msg = Translate::getInstance()->getText( msg_page_indexed);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, la page est déja indexée";
+                $msg = Translate::getInstance()->getText( indexed_page_err);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -146,16 +148,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 55 , $page->page_name ) ;
 
-                $msg = "La page est maintenant désindexée";
+                $msg = Translate::getInstance()->getText( page_deindexed_err);
                 $ret = true;
             }
             else {
-                $msg = "Impossible, la page est déja désindexée";
+                $msg = Translate::getInstance()->getText( page_already_deindexed_err);
                 $ret = false;
             }
         }
         else {
-            $msg = "Le token de sécurité est invalide";
+            $msg = Translate::getInstance()->getText( msg_token_invalide);
             $ret = false;
         }
 
@@ -191,11 +193,11 @@ $app->group('/page', function () use ($app)
 			
 			\App\Kernel\Back\Log::getInstance()->warning( 34 , $page->page_name ) ;
 					
-			$msg = "La page par défaut a bien été modifié";
+			$msg = Translate::getInstance()->getText( default_page_modified);
 			$ret = true;
 		}
 		else {
-			$msg = "Le token de sécurité est invalide";
+			$msg = Translate::getInstance()->getText( msg_token_invalide);
 			$ret = false;
 		}
 		
@@ -224,23 +226,23 @@ $app->group('/page', function () use ($app)
 					
 					\App\Kernel\Back\Log::getInstance()->warning( 31 , $page->page_name ) ;
 						
-					$msg = "La page a bien été désactivé";
+					$msg = Translate::getInstance()->getText( page_desactivated);
 					$ret = true;
 				}
 				else
 				{
-					$msg = "Impossible, la page par défaut doit toujours être activée";
+					$msg = Translate::getInstance()->getText( default_page_err);
 					$ret = false;
 				}
 			}
 			else
 			{
-				$msg = "Impossible, la page est déja désactivée";
+				$msg = Translate::getInstance()->getText( page_already_desactivated_err);
 				$ret = false;
 			}
 		}
 		else {
-			$msg = "Le token de sécurité est invalide";
+			$msg =  Translate::getInstance()->getText( msg_token_invalide);
 			$ret = false;
 		}
 		
@@ -287,13 +289,13 @@ $app->group('/page', function () use ($app)
 			if ( $app->request->post('page_name') == "" )
 			{
 					$error = true ;
-					$tabError['page_name'] = "Veuillez remplir ce champ" ;
+					$tabError['page_name'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $app->request->post('page_priority') == "" )
 			{
 					$error = true ;
-					$tabError['page_priority'] = "Veuillez indiquer une priorité" ;
+					$tabError['page_priority'] = Translate::getInstance()->getText( mandatory_priority);
 			}
 			
 			if ( $error == false )

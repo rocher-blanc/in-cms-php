@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/user_front_group', function () use ($app)
 {
 	$app->get('/', function () use ($app) {
@@ -41,7 +43,7 @@ $app->group('/user_front_group', function () use ($app)
 			
 			if ( $app->request->post('user_front_group_name') == "" ) {
 				$error = true ;
-				$tabError['user_front_group_name'] = "Veuillez remplir ce champ" ;
+				$tabError['user_front_group_name'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			else {
 				$exist = \DB::for_table('user_front_group')->where_equal('user_front_group_name' , $app->request->post('user_front_group_name'));
@@ -51,7 +53,7 @@ $app->group('/user_front_group', function () use ($app)
 			
 			if ( $app->request->post('user_front_group_name') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_front_group_name'] = "Ce nom de groupe est deja utilisé" ;
+				$tabError['user_front_group_name'] = Translate::getInstance()->getText( msg_grp_name_error);
 			}
 			
 			if ( $error == false ) {
@@ -101,13 +103,13 @@ $app->group('/user_front_group', function () use ($app)
         {
             \App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_front_group_name ) ;
 
-            $msg = "Le groupe a bien été supprimé" ;
+            $msg = Translate::getInstance()->getText(delete_groupe_success);
             $ret = true ;
             $contentRow->delete();
         }
         else
         {
-            $msg = "Une erreur est survenue lors de la suppression" ;
+            $msg = Translate::getInstance()->getText(delete_error);
         }
 
         $app->flash('__msg', $msg );

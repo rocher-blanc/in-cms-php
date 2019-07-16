@@ -5,6 +5,7 @@ namespace App\Module\Controller\Back;
 use App\Kernel\Back\Controller;
 use App\Kernel\Back\Data;
 use App\Api\Easyletter;
+use App\Kernel\Front\Translate;
 
 class NewsletterCampaign extends Controller
 {
@@ -61,7 +62,7 @@ class NewsletterCampaign extends Controller
         if ( $datetime->format('U') < time() )
         {
             return [
-                'msg' => "La date de programmation ne doit pas être inférieur à aujourd'hui",
+                'msg' => Translate::getInstance()->getText(mandatory_date_programming),
                 "result" => false
             ] ;
         }

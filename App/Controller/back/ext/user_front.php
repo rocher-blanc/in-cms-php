@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/user_front', function () use ($app)
 {
 	$app->get('/', function () use ($app)
@@ -49,11 +51,11 @@ $app->group('/user_front', function () use ($app)
 			
 			if ( $app->request->post('user_front_login') == "" ) {
 				$error = true ;
-				$tabError['user_front_login'] = "Veuillez remplir ce champ" ;
+				$tabError['user_front_login'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
             elseif ( !filter_var( $app->request->post('user_front_login') , FILTER_VALIDATE_EMAIL ) ) {
                 $error = true ;
-                $tabError['user_front_login'] = "Veuillez saisir une adresse e-mail" ;
+                $tabError['user_front_login'] = Translate::getInstance()->getText( mandatory_email_address);
             }
 			else {
 				$exist = \DB::for_table('user_front')->where_equal('user_front_login' , $app->request->post('user_front_login'));
@@ -63,23 +65,23 @@ $app->group('/user_front', function () use ($app)
 			
 			if ( $app->request->post('user_front_login') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_front_login'] = "Ce login est deja utilisé" ;
+				$tabError['user_front_login'] = Translate::getInstance()->getText( already_use_login);
 			}
 
 			
 			if ( $id == -1 && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
 				$error = true ;
-				$tabError['password'] = "Veuillez remplir ce champ" ;
+				$tabError['password'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $id == -1 && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
 				$error = true ;
-				$tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+				$tabError['confirm_password'] = Translate::getInstance()->getText( mandatory_fillin);
 			}
 			
 			if ( $id == -1 && $app->request->post('password') != $app->request->post('confirm_password') ) {
 				$error = true ;
-				$tabError['confirm_password'] = "Les 2 mots de passe sont différents" ;
+				$tabError['confirm_password'] = Translate::getInstance()->getText( msg_different_password);
 			}
 			
 			if ( $error == false ) {
@@ -146,13 +148,13 @@ $app->group('/user_front', function () use ($app)
 
             \App\Kernel\Back\Log::getInstance()->warning( 48 , $contentRow->user_front_name ) ;
 
-            $msg = "L'utilisateur a bien été supprimé" ;
+            $msg = s ;
             $ret = true ;
             $contentRow->delete();
         }
         else
         {
-            $msg = "Une erreur est survenue lors de la suppression" ;
+            $msg = Translate::getInstance()->getText(delete_error);
         }
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;

@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 $app->group('/secured', function () use ($app) {
     // CONNEXION
     $app->map('/login', function () use ($app)
@@ -41,7 +43,7 @@ $app->group('/secured', function () use ($app) {
         if ( $app->request->isPost() ) {
             if ( $app->request->post('user_name') == "" ) {
                 $error = true ;
-                $tabError['user_name'] = "Veuillez remplir ce champ" ;
+                $tabError['user_name'] = Translate::getInstance()->getText( mandatory_fillin);
             }
             else {
                 $exist = \DB::for_table('user')
@@ -52,48 +54,48 @@ $app->group('/secured', function () use ($app) {
 
             if ( $app->request->post('user_name') != "" && $exist > 0 ) {
                 $error = true ;
-                $tabError['user_name'] = "Ce login est deja utilisé" ;
+                $tabError['user_name'] = Translate::getInstance()->getText( already_use_login);
             }
 
             if ( $app->request->post('user_fname') == "" ) {
                 $error = true ;
-                $tabError['user_fname'] = "Veuillez remplir ce champ" ;
+                $tabError['user_fname'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('user_lname') == "" ) {
                 $error = true ;
-                $tabError['user_lname'] = "Veuillez remplir ce champ" ;
+                $tabError['user_lname'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('last_password') != "" && password_verify( $app->request->post('last_password'), $user->user_password) === false ) {
                 $error = true ;
-                $tabError['last_password'] = "Votre ancien mot de passe est incorrect" ;
+                $tabError['last_password'] = Translate::getInstance()->getText( err_password_old);
             }
 
             if ( $app->request->post('last_password') == "" && $app->request->post('password') != "" && $app->request->post('confirm_password') != '' ) {
                 $error = true ;
-                $tabError['last_password'] = "Veuillez remplir ce champ" ;
+                $tabError['last_password'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('last_password') != "" && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
                 $error = true ;
-                $tabError['password'] = "Veuillez remplir ce champ" ;
+                $tabError['password'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') == '' ) {
                 $error = true ;
-                $tabError['password'] = "Veuillez remplir ce champ" ;
-                $tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+                $tabError['password'] = Translate::getInstance()->getText( mandatory_fillin);
+                $tabError['confirm_password'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
                 $error = true ;
-                $tabError['confirm_password'] = "Veuillez remplir ce champ" ;
+                $tabError['confirm_password'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $app->request->post('last_password') != "" && $app->request->post('password') != $app->request->post('confirm_password') ) {
                 $error = true ;
-                $tabError['confirm_password'] = "Les 2 mots de passe sont différents" ;
+                $tabError['confirm_password'] = Translate::getInstance()->getText( msg_different_password);
             }
 
             if ( $error == false ) {

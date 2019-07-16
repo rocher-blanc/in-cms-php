@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Front\Translate;
+
 function getTreeMenu($rows, $parent_id = -1)
 {
     $tree = [];
@@ -198,7 +200,7 @@ $app->group('/menu', function () use ($app)
             if ( $app->request->post('menu_name') == "" )
             {
                 $error = true ;
-                $tabError['menu_name'] = "Veuillez remplir ce champ" ;
+                $tabError['menu_name'] = Translate::getInstance()->getText( mandatory_fillin);
             }
 
             if ( $error == false )
@@ -241,13 +243,13 @@ $app->group('/menu', function () use ($app)
         {
             \App\Kernel\Back\Log::getInstance()->warning( 36 , $contentRow->menu_name ) ;
 
-            $msg = "Le menu a bien été supprimé" ;
+            $msg = Translate::getInstance()->getText( delete_menu );
             $ret = true ;
             $contentRow->delete();
         }
         else
         {
-            $msg = "Une erreur est survenue lors de la suppression" ;
+            $msg = Translate::getInstance()->getText( delete_error );
         }
 
         $Factory = \App\Kernel\Factory::getInstance() ;
@@ -354,12 +356,12 @@ $app->group('/menu', function () use ($app)
             deleteByParent( $id , $idmenu ) ;
 
             $contentRow->delete();
-            $msg = "L'élément a bien été supprimé" ;
+            $msg = Translate::getInstance()->getText( delete_element);
             $ret = true ;
         }
         else
         {
-            $msg = "Une erreur est survenue lors de la suppression" ;
+            $msg = Translate::getInstance()->getText( delete_error);
         }
 
         $Factory = \App\Kernel\Factory::getInstance() ;
@@ -382,14 +384,14 @@ $app->group('/menu', function () use ($app)
     $app->post('/element/add', function () use ($app)
     {
         $ret  = true ;
-        $msg  = 'L\'élément a bien été ajouté' ;
+        $msg  = Translate::getInstance()->getText( added_element);
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
 
         foreach( $lang as $l )
         {
             if ( $app->request->post('label_' . $l->url ) == "" ) {
                 $ret = false ;
-                $msg = "Merci de remplir tous les champs" ;
+                $msg = Translate::getInstance()->getText( fill_fields);
             }
         }
 
@@ -481,7 +483,7 @@ $app->group('/menu', function () use ($app)
                     if ( $app->request->post('link') == "" )
                     {
                         $ret = false ;
-                        $msg = "Merci de remplir tous les champs" ;
+                        $msg = Translate::getInstance()->getText( fill_fields);
                     }
                     else
                     {
@@ -523,14 +525,14 @@ $app->group('/menu', function () use ($app)
     $app->post('/element/update', function () use ($app)
     {
         $ret  = true ;
-        $msg  = 'L\'élément a bien été modifié' ;
+        $msg  = Translate::getInstance()->getText( modified_element);
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
 
         foreach( $lang as $l )
         {
             if ( $app->request->post('label_' . $l->url ) == "" ) {
                 $ret = false ;
-                $msg = "Merci de remplir tous les champs" ;
+                $msg = Translate::getInstance()->getText( fill_fields);
             }
         }
 
@@ -564,7 +566,7 @@ $app->group('/menu', function () use ($app)
                     if ( $app->request->post('link') == "" )
                     {
                         $ret = false ;
-                        $msg = "Merci de remplir tous les champs" ;
+                        $msg = Translate::getInstance()->getText( fill_fields);
                     }
                     else
                     {
