@@ -56,8 +56,8 @@ $app->group('/moduleadmin', function () use ($app)
 
 					if ( ! array_key_exists( $name , $tab ) )
 					{
-						$entity = Container::getInstance()->module( $name )->getEntity();
-						$entity->hasImage();
+						/*$entity = Container::getInstance()->module( $name )->getEntity();
+						$entity->hasImage();*/
 
 						$list[] = $name ;
 					}
