@@ -96,7 +96,7 @@ class CMS
 
     public function view()
     {
-        return new View;
+        return new View; 
     }
 
     public function fetch( $tpl , $arg = [] )

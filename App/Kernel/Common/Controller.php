@@ -2,6 +2,9 @@
 
 namespace App\Kernel\Common;
 
+use App\Kernel\Back\Alt;
+use App\Kernel\Back\Gallery;
+use App\Kernel\Back\Seo;
 use App\Kernel\Front\Translate;
 use Slim\Slim;
 
@@ -1067,7 +1070,7 @@ class Controller
                     {
                         if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
                         {
-                            $Alt = new \App\Kernel\Back\Alt;
+                            $Alt = new Alt;
                             $Alt->setElementId( $this->getId() );
                             $Alt->setModuleId( $this->getEntityId() );
                             $Alt->delete();
@@ -1080,7 +1083,7 @@ class Controller
                         }
                         else if ( $row->getType() == 'gallery' )
                         {
-                            $Gallery = new \App\Kernel\Back\Gallery;
+                            $Gallery = new Gallery;
                             $Gallery->setElementId( $this->getId() );
                             $Gallery->setField( $row->getName() );
                             $Gallery->setModuleId( $this->getEntityId() );
@@ -1099,7 +1102,7 @@ class Controller
 
                 if ( $this->getEntity()->hasUrl() )
                 {
-                    $seo = new \App\Kernel\Back\Seo;
+                    $seo = new Seo;
                     $seo->setElementId( $this->getId() );
                     $seo->setModuleId( $this->getEntityId() );
                     $seo->delete();

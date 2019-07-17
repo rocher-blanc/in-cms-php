@@ -10,12 +10,13 @@ class Media
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $module_id = NULL ;
-    protected $module_name = NULL ;
-    protected $folder_name = NULL ;
-    protected $field = NULL ;
-	protected $image_id = NULL ;
-	protected $image_name = NULL ;
+    protected $module_id    = NULL ;
+    protected $module_name  = NULL ;
+    protected $folder_name  = NULL ;
+    protected $field        = NULL ;
+	protected $image_id     = NULL ;
+	protected $image_name   = NULL ;
+    protected $gallery_id   = NULL ;
 
 	/* ************************************************** */
 	/* ****************   CONSTRUCT   ******************* */
@@ -27,10 +28,10 @@ class Media
 	/* ******************   SETTER   ******************** */
 	/* ************************************************** */
 
-	public function setImageId( $var )
-	{
-		$this->image_id = $var ;
-	}
+    public function setImageId( $var )
+    {
+        $this->image_id = $var ;
+    }
 
 	public function setImageName( $var )
 	{
@@ -57,9 +58,19 @@ class Media
         $this->field = $var ;
     }
 
+    public function setGalleryId( $var )
+    {
+        $this->gallery_id = $var ;
+    }
+
 	/* ************************************************** */
 	/* ******************   GETTER   ******************** */
 	/* ************************************************** */
+
+    public function getGalleryId()
+    {
+        return $this->gallery_id ;
+    }
 
 	public function getImageId()
 	{
@@ -108,11 +119,18 @@ class Media
     public function getNameById()
     {
         $rst = \DB::for_table('media')
+            ->select('media_module_id')
+            ->select('media_gallery')
             ->select('media_name')
             ->where_equal( 'media_id' , $this->getImageId() )
             ->find_one();
 
-        if ( $rst ) $this->setImageName( $rst->media_name ) ;
+        if ( $rst )
+        {
+            $this->setModuleId( $rst->media_module_id ) ;
+            $this->setGalleryId( $rst->media_gallery ) ;
+            $this->setImageName( $rst->media_name ) ;
+        }
 
         if ( $rst )	return true ;
         else		return false ;

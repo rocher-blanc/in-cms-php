@@ -7,6 +7,7 @@ use App\Kernel\Back\Seo;
 use App\Kernel\Common\Controller as ControllerCommon;
 use App\Kernel\Container;
 use App\Kernel\Front\Translate;
+use App\Kernel\Http;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -477,7 +478,15 @@ class Controller extends ControllerCommon
                                 $Media->setImageId( $row->get( $field->getColumn() ) );
                                 $Media->getNameById();
 
-                                $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . "/" . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                if ( $Media->getGalleryId() !== NULL )
+                                {
+                                    $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/_lib/' . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                }
+                                else
+                                {
+                                    $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . "/" . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                }
+
                                 $value = $this->Factory()->Url()->get( $img , true ) ;
                             }
                             else
@@ -1492,15 +1501,26 @@ class Controller extends ControllerCommon
         {
             if ( ! empty( $this->table['th'] ) )
             {
-                $col = 0;
+                $col    = 0;
+                $letter = 0;
                 foreach( $this->table['th'] as $th )
                 {
-                    $sheet->setCellValue($alphas[ $col ] . '1', $th['title'] );
-                    $col++;
-                }
+                    $prefix = '' ;
+                    $x = $col + 1;
+                    $sub = floor( $x / count( $alphas ) ) ;
+                    $modulo = $x % count( $alphas ) ;
+                    if ( $modulo == 0 ) $sub--;
+                    if ( $sub > 0 )
+                    {
+                        $prefix = $alphas[ $sub - 1 ];
+                    }
+                    $sheet->setCellValue($prefix . $alphas[ $letter ] . '1', $th['title'] );
 
-                $col--;
-                $spreadsheet->getActiveSheet()->setAutoFilter('A1:' . $alphas[ $col ] . "1");
+                    $col++;
+                    $letter++;
+
+                    if ( $col == count( $alphas ) ) $letter = 0;
+                }
             }
 
             if ( ! empty( $this->table['td'] ) )
@@ -1508,20 +1528,59 @@ class Controller extends ControllerCommon
                 $line = 2 ;
                 foreach( $this->table['td'] as $td )
                 {
-                    $letter = $alphas[ $col ] ;
                     $col    = 0;
+                    $letter = 0;
 
                     foreach( $td['td'] as $key => $row )
                     {
+                        $prefix = '' ;
+                        $x = $col + 1;
+                        $sub = floor( $x / count( $alphas ) ) ;
+                        $modulo = $x % count( $alphas ) ;
+                        if ( $modulo == 0 ) $sub--;
+                        if ( $sub > 0 )
+                        {
+                            $prefix = $alphas[ $sub - 1 ];
+                        }
+
                         if ( $row['type'] == "boolean" )
                         {
-                            $sheet->setCellValue($alphas[ $col ] . $line, ( $row['value'] == 0 ? "Non" : "Oui" ) );
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, ( $row['value'] == 0 ? "Non" : "Oui" ) );
+                        }
+                        else if ( $row['type'] == "document" )
+                        {
+                            $val = '' ;
+                            if ( $row['value'] != 0 )
+                            {
+                                $Doc = new Document;
+                                $Doc->setDocumentId( $row['value'] );
+                                $Doc->getNameById();
+
+                                $val = Http::getInstance()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName() ;
+                            }
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $val );
+                        }
+                        else if ( $row['type'] == "image" )
+                        {
+                            $val = '' ;
+                            if ( $row['value'] != 0 )
+                            {
+                                $Media = new Media;
+                                $Media->setImageId( $row['value'] );
+                                $Media->getNameById();
+
+                                $val = Http::getInstance()->getUrl() . $this->getEntity()->getPathImage(false) . '/' . $Media->getImageName();
+                            }
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $val );
                         }
                         else
                         {
-                            $sheet->setCellValue($alphas[ $col ] . $line, $row['value'] );
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $row['value'] );
                         }
                         $col++;
+                        $letter++;
+
+                        if ( $col == count( $alphas ) ) $letter = 0;
                     }
 
                     $line++;

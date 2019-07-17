@@ -2,6 +2,10 @@
 
 namespace App\Kernel\Form;
 
+use App\Kernel\Back\Media;
+use App\Kernel\Http;
+use App\Kernel\Lang;
+
 class Image extends \App\Kernel\Back\Form
 {
 	public $min_height = 1 ;
@@ -9,7 +13,7 @@ class Image extends \App\Kernel\Back\Form
 	
 	public function __construct()
 	{
-		$this->_media = new \App\Kernel\Back\Media;
+		$this->_media = new Media;
 	}
 	
 	private function hasValue()
@@ -21,12 +25,12 @@ class Image extends \App\Kernel\Back\Form
 	private function validValue( $mini )
 	{
         if ( $this->hasValue() && file_exists( WEB_PATH . $mini ) ) 	return true ;
-		else															return false ;
+		else															        return false ;
 	}
 	
 	public function html( $field, $name, $value = NULL )
 	{
-		$this->value 	= $value ;
+		$this->value = $value ;
 		
 		if ( $this->hasValue() ) 
 		{
@@ -34,7 +38,14 @@ class Image extends \App\Kernel\Back\Form
 			$this->_media->getNameById();
 		}
 
-		$mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 't' , 100 , 100 ) ;
+		if ( $this->_media->getGalleryId() !== NULL )
+        {
+            $mini = "/images/_lib/" . $this->_media->getMini( $this->_media->getImageName() , 't' , 100 , 100 ) ;
+        }
+        else
+        {
+            $mini = $field->getData('folder') . '/' . $this->_media->getMini( $this->_media->getImageName() , 't' , 100 , 100 ) ;
+        }
 
         $alt_img = [];
         if ( $field->getData('hasAltText') == true )
@@ -50,11 +61,11 @@ class Image extends \App\Kernel\Back\Form
             'name' => $name,
             'has_alt_img' => $field->getData('hasAltText'),
             'alt_img' => $alt_img,
-            'lang' => \App\Kernel\Lang::getInstance()->getAll(),
+            'lang' => Lang::getInstance()->getAll(),
             'hasValue' => $this->hasValue(),
             'minWidth' => $this->min_width,
             'minHeight' => $this->min_height,
-            'image' => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : \App\Kernel\Http::getInstance()->assetAdmin('img/image-not-found.jpg') ),
+            'image' => ( file_exists( WEB_PATH . $mini ) ? $this->Factory()->Url()->get( $mini , true ) : Http::getInstance()->assetAdmin('img/image-not-found.jpg') ),
             'value' => ( $this->validValue( $mini ) == true ? $value : '' ),
             'field_name' => $field->getName()
         ]);

@@ -18,7 +18,9 @@
                             <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
 
                                 {% if gallery.comment | length > 0 %}
-                                    <em>{{ gallery.comment }}</em>
+                                    <div style="margin-bottom: 10px;">
+                                        <em>{{ gallery.comment }}</em>
+                                    </div>
                                 {% endif %}
 
                                 {% if loop.first %}
