@@ -20,7 +20,7 @@ class Translate
 
 	public function __construct()
     {
-        $type = CMS::getInstance()->getApp()->config('config') ;
+        $type = CMS::getInstance()->config() ;
 
         if ( $type == 'front' )
         {
@@ -33,7 +33,7 @@ class Translate
         }
         else
         {
-            $userId = $_SESSION[ CMS::getInstance()->getApp()->config('session') ]['id'] ;
+            $userId = $_SESSION['auth_user']['id'] ;
             $user = \DB::for_table('user')
                 ->where_equal('user_id', $userId)
                 ->find_one();

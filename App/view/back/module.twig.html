@@ -18,6 +18,7 @@
 {% block content %}
 
     <div class="row">
+        {#
         <div class="col-md-2">
             <a class="help-online" href="mailto:content@easydoor.pr">
                 <span class="top">
@@ -28,7 +29,7 @@
                     {{ _('help_info')}}
                 </span>
             </a>
-            {#
+
             <a class="help-online" href="{{ siteUrl('modal/help') }}" data-lightbox="ajax">
                 <span class="top">
                     <i class="icon-info-sign"></i>
@@ -38,10 +39,10 @@
                     {{ _('help_desc')}}
                 </span>
             </a>
-            #}
             {% include 'menu/' ~ cat ~ '.twig' %}
         </div>
-        <div class="col-md-10 clearfix" id="module-content">
+        #}
+        <div class="col-md-12 clearfix" id="module-content">
             {{ block('module') }}
         </div>
     </div>

@@ -92,7 +92,7 @@ checkForm = function(base) {
                 success: function(data) {
                     // Result is success
                     if( data.result ) {
-                        if ( $form.data('callback') !== 'undefined' ) {
+                        if ( typeof $form.data('callback') !== 'undefined' ) {
                             window[$form.data('callback')]();
                         }
                         else {

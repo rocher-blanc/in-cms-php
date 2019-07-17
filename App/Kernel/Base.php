@@ -16,6 +16,7 @@ class Base
 
 	public function insertBase( $content = true )
     {
+        dump('insert');
         $this->checkDatabase() ;
 
         if ( $content )
@@ -29,6 +30,7 @@ class Base
 
     public function getModule()
     {
+        dump("getModule");
         return [
             'NewsletterSender' => [
                 'name' => "Expéditeurs",

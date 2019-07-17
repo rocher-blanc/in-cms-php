@@ -50,6 +50,22 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="105da20a-8751-445d-a1f9-a0bc44b54c13" name="MyAutoV2" url="http://vps1.jweb-creation.fr">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www/vendor/JWebCreation/cms">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="aeedc46a-d9e6-4e9a-909f-81f4829d40af" name="VPS - EASYLETTER" url="http://vps.easyletter.fr">
+        <fileTransfer host="vps.easyletter.fr" port="21" rootFolder="/www">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

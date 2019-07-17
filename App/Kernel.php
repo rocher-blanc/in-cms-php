@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Kernel\Base;
 use App\Kernel\Database;
 use App\Kernel\Lang;
 use App\Kernel\Slim;
@@ -248,7 +249,7 @@ class Kernel
 
     protected function generateTable( $content = true )
     {
-        $Base = new \App\Kernel\Base;
+        $Base = new Base;
         $Base->insertBase( $content );
     }
 
