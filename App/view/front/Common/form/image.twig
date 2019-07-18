@@ -4,7 +4,7 @@
 
 <input type="hidden" name="{{ name }}" id="id_{{ name }}" value="{{ value }}" />
 <div class="{{ value != '' ? '' : 'hide' }}" id="field_show_{{ name }}">
-    <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}">Modifier</a>
+    <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}">{{ _('update_image') }}</a>
 </div>
 <div class="{{ value != '' ? 'hide' : '' }}" id="field_upload_{{ name }}">
     <input id="upload_{{ name }}" name="upload_{{ name }}" type="file">
