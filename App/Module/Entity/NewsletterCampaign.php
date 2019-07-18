@@ -45,7 +45,7 @@ class NewsletterCampaign extends Builder
         $this->build('subject')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_subject))
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_subject'))
             ->name(Translate::getInstance()->getText( subject));
 
         $this->build('date')
@@ -140,15 +140,15 @@ class NewsletterCampaign extends Builder
                     $date = (new \DateTime($c->date_created))->format('U') + 120;
                     if ( time() > $date )
                     {
-                        return '<span class="badge badge-danger" style="font-size: 14px;">Translate::getInstance()->getText( error)</span>';
+                        return '<span class="badge badge-danger" style="font-size: 14px;">' . Translate::getInstance()->getText( 'error') . '</span>';
                     }
                     else
                     {
-                        return '<span class="badge badge-info" style="font-size: 14px;">Translate::getInstance()->getText( attente)</span>';
+                        return '<span class="badge badge-info" style="font-size: 14px;">' . Translate::getInstance()->getText('attente') . '</span>';
                     }
                 }
             })
-            ->name(Translate::getInstance()->getText( status));
+            ->name( Translate::getInstance()->getText('status') );
 
         $this->build('id_easyletter')
             ->isInteger()
