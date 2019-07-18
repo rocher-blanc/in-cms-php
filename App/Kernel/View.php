@@ -16,7 +16,7 @@ class View
 
     public function __construct()
     {
-        $viewArray[] = VIEW_PROJECT_PATH ;
+        /*$viewArray[] = VIEW_PROJECT_PATH ;
         $viewArray[] = VIEW_PROJECT_COMMON_PATH ;
 
         if ( ! empty( $this->templateFolder ) )
@@ -42,7 +42,7 @@ class View
             'debug' => $this->_slim->config('twig.debug'),
             'cache' => $this->_slim->config('cache'),
             'autoescape' => false
-        ]);
+        ]);*/
     }
 
     /* ************************************************** */
