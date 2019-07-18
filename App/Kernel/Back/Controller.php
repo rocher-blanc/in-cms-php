@@ -493,10 +493,39 @@ class Controller extends ControllerCommon
                                 }
 
                                 $value = [
-                                    "link" => $val,
-                                    "color" => $color,
+                                    "link"   => $val,
+                                    "color"  => $color,
                                     "source" => $source,
                                 ];
+                            }
+                            else if ( $field->getType() == "checkbox" )
+                            {
+                                $arrayCheckbox = [];
+                                if ( $field->isAssociated() )
+                                {
+                                    $opt = $this->getValueAssociated( $field , "array" , true );
+                                }
+                                else
+                                {
+                                    $opt = $field->getOptions() ;
+                                }
+
+                                $value = '' ;
+                                $array = $this->getAssocValueForm( $field->getName() , $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+
+                                if ( ! empty( $array ) )
+                                {
+                                    foreach( $array as $rep )
+                                    {
+                                        $arrayCheckbox[] = [
+                                            'value' => $opt[ $rep ],
+                                            'id' => $rep,
+                                            'module' => $field->getData('object'),
+                                        ];
+                                    }
+
+                                    $value = $arrayCheckbox;
+                                }
                             }
                             else if ( $field->getType() == "image" )
                             {

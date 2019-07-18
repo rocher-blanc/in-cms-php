@@ -1175,11 +1175,11 @@ class Controller
 
         return $result ;
     }
-    protected function getAssocValueForm( $nameField )
+    protected function getAssocValueForm( $nameField , $id = NULL )
     {
         $content = \DB::for_module_assoc( $this->getEntityName() , $nameField )
             ->select( \DB::getTableNameAssocValue( $this->getEntityName() , $nameField ) )
-            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+            ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $nameField ) . '_' . \DB::getIdName( $this->getEntityName() ) , ( $id === NULL ? $this->getId() : $id ) )
             ->find_many();
 
         $result  = array() ;
