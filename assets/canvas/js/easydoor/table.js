@@ -305,6 +305,20 @@ listenFormTable = function( base ) {
         if (typeof modalDepedency === "function") {
             modalDepedency('#' + $form.data('container'));
         }
+
+        if( $form.find('a[data-modal="true"]').length > 0 ) {
+            $form.find('a[data-modal="true"]').magnificPopup({
+                type: 'ajax',
+                closeBtnInside: false,
+                callbacks: {
+                    ajaxContentAdded: function(mfpResponse) {
+                        SEMICOLON.widget.loadFlexSlider();
+                        SEMICOLON.initialize.resizeVideos();
+                        SEMICOLON.widget.masonryThumbs();
+                    }
+                }
+            });
+        }
     });
 };
 

@@ -948,6 +948,7 @@ class Builder extends Model
             'class'    => $class,
             'blank'    => ( $type == 'blank' ? true : false ),
             'ajax'     => ( $type == 'ajax' ? true : false ),
+            'modal'    => ( $type == 'modal' ? true : false ),
             'showIF'   => $showIF
         ];
     }
