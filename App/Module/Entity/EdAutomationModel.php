@@ -16,25 +16,25 @@ class EdAutomationModel extends Builder
         $this->build('name')
             ->full()
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_model_name))
-            ->name(Translate::getInstance()->getText( nom));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_model_name'))
+            ->name(Translate::getInstance()->getText( 'nom'));
 
         $this->build('subject')
             ->column(1, 3)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_subject_name))
-            ->name(Translate::getInstance()->getText( subject));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_subject_name'))
+            ->name(Translate::getInstance()->getText( 'subject'));
 
         $this->build('key')
             ->column(1, 3)
             ->isVarchar()
-            ->name(Translate::getInstance()->getText( key));
+            ->name(Translate::getInstance()->getText( 'key'));
 
         $this->build('vars')
             ->column(1, 3)
             ->isCheckbox()
             ->option( $this->getList_EdAutomationVar() )
-            ->name(Translate::getInstance()->getText( variables_environnement));
+            ->name(Translate::getInstance()->getText( 'variables_environnement'));
     }
 
 

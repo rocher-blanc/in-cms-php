@@ -15,7 +15,7 @@ class EdAutomationModelGroup extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_template_name))
-            ->name(Translate::getInstance()->getText( nom));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_template_name'))
+            ->name(Translate::getInstance()->getText( 'nom'));
     }
 }

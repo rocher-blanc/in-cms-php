@@ -1444,7 +1444,7 @@ class Controller extends ControllerCommon
         {
             return [
                 'result' => false,
-                'msg' => Translate::getInstance()->getText( contents_unavailable),
+                'msg' => Translate::getInstance()->getText( 'contents_unavailable'),
             ];
         }
         else
@@ -1487,7 +1487,7 @@ class Controller extends ControllerCommon
             return [
                 'result' => true,
                 'id'     => $data->get('id'),
-                'msg'    => Translate::getInstance()->getText( contents_duplicate),
+                'msg'    => Translate::getInstance()->getText( 'contents_duplicate'),
             ];
         }
     }

@@ -15,19 +15,19 @@ class NewsletterSender extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_sender_sing_name))
-            ->name(Translate::getInstance()->getText( sender_name));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_sender_sing_name') )
+            ->name(Translate::getInstance()->getText( 'sender_name') );
 
         $this->build('email')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_sender_email))
-            ->name(Translate::getInstance()->getText( sender_email));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_sender_email') )
+            ->name(Translate::getInstance()->getText( 'sender_email') );
 
         $this->build('email_response')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_response_email))
-            ->name(Translate::getInstance()->getText( response_email));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_response_email') )
+            ->name(Translate::getInstance()->getText( 'response_email') );
     }
 }

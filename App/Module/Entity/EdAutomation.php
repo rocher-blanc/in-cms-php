@@ -32,8 +32,8 @@ class EdAutomation extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_template_name ))
-            ->name(Translate::getInstance()->getText( nom ));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_template_name' ))
+            ->name(Translate::getInstance()->getText( 'nom' ));
 
         $this->build('html')
             ->noFront()
@@ -47,6 +47,6 @@ class EdAutomation extends Builder
             ->isText("LONG")
             ->name("JSON");
 
-        Translate::getInstance()->getText( oui );
+        Translate::getInstance()->getText( 'oui' );
     }
 }

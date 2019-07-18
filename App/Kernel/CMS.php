@@ -87,7 +87,7 @@ class CMS
 
     public function text( $key )
     {
-        return Translate::getInstance()->getText( $key );
+        return Translate::getInstance()->getText( 'key' );
     }
 
     /* ************************************************** */

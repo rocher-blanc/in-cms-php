@@ -45,50 +45,50 @@ class NewsletterCampaign extends Builder
         $this->build('subject')
             ->column(1, 2)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( 'mandatory_subject'))
-            ->name(Translate::getInstance()->getText( subject));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_subject') )
+            ->name(Translate::getInstance()->getText( 'subject') );
 
         $this->build('date')
             ->column(1, 2)
             ->isDate(true)
-            ->notEmpty(Translate::getInstance()->getText( mandatory_dispatch_date))
-            ->name(Translate::getInstance()->getText( dispatch_date));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_dispatch_date') )
+            ->name(Translate::getInstance()->getText( 'dispatch_date') );
 
         $this->build('sender')
             ->column(1, 3)
             ->isSelect()
             ->ManyToMany( 'NewsletterSender', "name" )
-            ->notEmpty(Translate::getInstance()->getText( mandatory_sender_sing))
-            ->name(Translate::getInstance()->getText( sender_sing));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_sender_sing') )
+            ->name(Translate::getInstance()->getText( 'sender_sing') );
 
         $this->build('recipient')
             ->column(1, 3)
             ->isCheckbox()
             ->ManyToMany( 'NewsletterGroup', "name" )
-            ->notEmpty(Translate::getInstance()->getText( mandatory_grp_destinataire))
-            ->name(Translate::getInstance()->getText( grp_destinataire));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_grp_destinataire') )
+            ->name(Translate::getInstance()->getText( 'grp_destinataire') );
 
         $this->build('template')
             ->column(1, 3)
             ->isSelect()
             ->ManyToMany( 'NewsletterModel', "name" )
-            ->notEmpty(Translate::getInstance()->getText( mandatory_gabarit))
-            ->name(Translate::getInstance()->getText( email_gabarit));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_gabarit') )
+            ->name(Translate::getInstance()->getText( 'email_gabarit') );
 
         $this->build('type')
             ->column(1, 2)
             ->isSelect( true )
             ->defaut(1)
             ->option([
-                1 => Translate::getInstance()->getText( normal),
-                2 => Translate::getInstance()->getText( renvoi_email_nonlu),
-                3 => Translate::getInstance()->getText( renvoi_nonclic),
+                1 => Translate::getInstance()->getText( 'normal'),
+                2 => Translate::getInstance()->getText( 'renvoi_email_nonlu'),
+                3 => Translate::getInstance()->getText( 'renvoi_nonclic'),
             ])
             ->showIf(function($c) {
                 return false ;
             })
-            ->notEmpty(Translate::getInstance()->getText( mandatory_newsletter_type))
-            ->name(Translate::getInstance()->getText( type));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_newsletter_type') )
+            ->name(Translate::getInstance()->getText( 'type') );
 
         $this->build('newsletter_parent')
             ->column(1, 2)
@@ -97,8 +97,8 @@ class NewsletterCampaign extends Builder
             ->showIf(function($c) {
                 return false ;
             })
-            ->notEmpty(Translate::getInstance()->getText( mandatory_parent_newsletter))
-            ->name(Translate::getInstance()->getText( parent_newsletter));
+            ->notEmpty(Translate::getInstance()->getText( 'mandatory_parent_newsletter') )
+            ->name(Translate::getInstance()->getText( 'parent_newsletter') );
 
         $this->build('statut')
             ->isHidden('INT',11)

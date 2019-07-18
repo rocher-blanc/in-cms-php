@@ -114,7 +114,7 @@ $app->group('/langue', function () use ($app)
             if ( $app->request->isPost() ) {
                 if ( $app->request->post('lang_display') == "" ) {
                     $error = true ;
-                    $tabError['lang_display'] = Translate::getInstance()->getText( mandatory_fillin);
+                    $tabError['lang_display'] = Translate::getInstance()->getText( 'mandatory_fillin');
                 }
                 else {
                     $contentRows->lang_display = $app->request->post('lang_display') ;
@@ -171,21 +171,21 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 15 , $lang->lang_display ) ;
 
-                        $msg = Translate::getInstance()->getText( pos_change_lang);
+                        $msg = Translate::getInstance()->getText( 'pos_change_lang');
                         $ret = true;
                     }
                     else {
-                        $msg = Translate::getInstance()->getText( pos_err_lang);
+                        $msg = Translate::getInstance()->getText( 'pos_err_lang');
                         $ret = false;
                     }
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
+                    $msg = Translate::getInstance()->getText( 'pos_inactive_lang');
                     $ret = false;
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide');
                 $ret = false;
             }
 
@@ -215,22 +215,22 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 16 , $lang->lang_display ) ;
 
-                        $msg = Translate::getInstance()->getText( pos_change_lang);
+                        $msg = Translate::getInstance()->getText( 'pos_change_lang');
                         $ret = true;
                     }
                     else {
-                        $msg = Translate::getInstance()->getText( pos_err_bas_lang);
+                        $msg = Translate::getInstance()->getText( 'pos_err_bas_lang');
                         $ret = false;
                     }
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
+                    $msg = Translate::getInstance()->getText( 'pos_inactive_lang');
                     $ret = false;
 
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide');
                 $ret = false;
             }
 
@@ -255,16 +255,16 @@ $app->group('/langue', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 42 , $lang->lang_display ) ;
 
-                    $msg = Translate::getInstance()->getText( langue_available_site);
+                    $msg = Translate::getInstance()->getText( 'langue_available_site');
                     $ret = true;
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( pos_inactive_lang);
+                    $msg = Translate::getInstance()->getText( 'pos_inactive_lang');
                     $ret = false;
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide');
                 $ret = false;
             }
 
@@ -292,24 +292,24 @@ $app->group('/langue', function () use ($app)
 
                         \App\Kernel\Back\Log::getInstance()->warning( 43 , $lang->lang_display ) ;
 
-                        $msg = Translate::getInstance()->getText( langue_unavailable_site);
+                        $msg = Translate::getInstance()->getText( 'langue_unavailable_site');
                         $ret = true;
                     }
                     else
                     {
-                        $msg = Translate::getInstance()->getText( langue_default_disable_err);
+                        $msg = Translate::getInstance()->getText( 'langue_default_disable_err');
                         $ret = false;
                     }
                 }
                 else
                 {
-                    $msg = Translate::getInstance()->getText( langue_disable_err);
+                    $msg = Translate::getInstance()->getText( 'langue_disable_err');
                     $ret = false;
                 }
             }
             else
             {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide');
                 $ret = false;
             }
 
@@ -340,16 +340,16 @@ $app->group('/langue', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 12 , $lang->lang_display ) ;
 
-                $msg = Translate::getInstance()->getText( langue_activated);
+                $msg = Translate::getInstance()->getText( 'langue_activated');
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( lang_already_activated_err);
+                $msg = Translate::getInstance()->getText( 'lang_already_activated_err');
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide');
             $ret = false;
         }
 
@@ -392,21 +392,21 @@ $app->group('/langue', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 13 , $lang->lang_display ) ;
 
-                    $msg = Translate::getInstance()->getText( langue_disabled_info);
+                    $msg = Translate::getInstance()->getText( 'langue_disabled_info');
                     $ret = true;
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( pos_change_lang);
+                    $msg = Translate::getInstance()->getText( 'pos_change_lang');
                     $ret = false;
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( langue_requirement_err);
+                $msg = Translate::getInstance()->getText( 'langue_requirement_err');
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide');
             $ret = false;
         }
 
@@ -495,7 +495,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => Translate::getInstance()->getText( msg_text_maj),
+            'msg'    => Translate::getInstance()->getText( 'msg_text_maj'),
         ]);
     });
 
@@ -540,7 +540,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => Translate::getInstance()->getText( msg_key_add),
+            'msg'    => Translate::getInstance()->getText( 'msg_key_add'),
         ]);
     });
 
@@ -582,7 +582,7 @@ $app->group('/langue', function () use ($app)
 
         echo json_encode([
             'result' => true,
-            'msg'    => Translate::getInstance()->getText( msg_key_suppr),
+            'msg'    => Translate::getInstance()->getText( 'msg_key_suppr'),
         ]);
     });
 });
