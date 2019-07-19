@@ -108,7 +108,7 @@ $app->group('/pageadmin', function () use ($app)
 			if ($app->request->post('page_name') == "")
 			{
 				$error = true;
-				$tabError['page_name'] = Translate::getInstance()->getText( mandatory_fillin);
+				$tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin');
 			}
 
 			if ($error == false)
@@ -178,7 +178,7 @@ $app->group('/pageadmin', function () use ($app)
 				if ( ! file_exists( PROJECT_PATH . "/view/front/base.twig.html" ) ) \App\Kernel\Factory::getInstance()->File()->create( PROJECT_PATH . "/view/front/base.twig.html" , $tpl );
 
 				$Factory = \App\Kernel\Factory::getInstance();
-				$Factory->Response()->flashAndRedirect(Translate::getInstance()->getText( msg_special_page_add), true, $url);
+				$Factory->Response()->flashAndRedirect(Translate::getInstance()->getText( 'msg_special_page_add'), true, $url);
 			}
 		}
 
@@ -274,7 +274,7 @@ $app->group('/pageadmin', function () use ($app)
 
             if ($app->request->post('page_name') == "") {
                 $error = true;
-                $tabError['page_name'] = Translate::getInstance()->getText( mandatory_fillin);
+                $tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin');
             }
 
             if ($error == false) {
@@ -298,7 +298,7 @@ $app->group('/pageadmin', function () use ($app)
                 if ($app->request->post('buttonaction') == "stay")  $url = '/admin/pageadmin/edit/' . $id;
                 else                                                $url = '/admin/pageadmin';
 
-                $result['msg'] = Translate::getInstance()->getText( msg_special_page_modified);
+                $result['msg'] = Translate::getInstance()->getText( 'msg_special_page_modified');
                 $result['result'] = true;
                 $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get( $url ) ;
 

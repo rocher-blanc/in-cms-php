@@ -213,12 +213,12 @@ $app->group('/moduleadmin', function () use ($app)
 					\App\Kernel\Back\Log::getInstance()->warning( 47 , $contentRow->module_name ) ;
 
 					$ret = true ;
-					$msg = Translate::getInstance()->getText( msg_img_regeneree) ;
+					$msg = Translate::getInstance()->getText( 'msg_img_regeneree') ;
 				}
 			}
 			else
 			{
-				$msg = Translate::getInstance()->getText( msg_pb_technique) ;
+				$msg = Translate::getInstance()->getText( 'msg_pb_technique') ;
 			}
 
 			$result['msg'] = $msg;
@@ -247,13 +247,13 @@ $app->group('/moduleadmin', function () use ($app)
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 20 , $contentRow->module_name ) ;
 
-				$msg = Translate::getInstance()->getText( msg_module_uninstalled) ;
+				$msg = Translate::getInstance()->getText( 'msg_module_uninstalled') ;
 				$ret = true ;
 				$contentRow->delete();
 			}
 			else
 			{
-				$msg = Translate::getInstance()->getText( msg_module_uninstalled_error) ;
+				$msg = Translate::getInstance()->getText( 'msg_module_uninstalled_error') ;
 			}
 
 			$result['msg'] = $msg;
@@ -351,16 +351,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 18 , $module->module_name ) ;
 
-					$msg = Translate::getInstance()->getText( msg_module_active);
+					$msg = Translate::getInstance()->getText( 'msg_module_active');
 					$ret = true;
 				}
 				else {
-					$msg = Translate::getInstance()->getText( msg_module_active_error);
+					$msg = Translate::getInstance()->getText( 'msg_module_active_error');
 					$ret = false;
 				}
 			}
 			else {
-				$msg = Translate::getInstance()->getText( msg_token_invalider);
+				$msg = Translate::getInstance()->getText( 'msg_token_invalider');
 				$ret = false;
 			}
 
@@ -386,21 +386,21 @@ $app->group('/moduleadmin', function () use ($app)
 
 						\App\Kernel\Back\Log::getInstance()->warning( 38 , $module->module_name ) ;
 
-						$msg = Translate::getInstance()->getText( msg_main_module);
+						$msg = Translate::getInstance()->getText( 'msg_main_module');
 						$ret = true;
 					}
 					else {
-						$msg = Translate::getInstance()->getText( msg_main_module_error);
+						$msg = Translate::getInstance()->getText( 'msg_main_module_error');
 						$ret = false;
 					}
 				}
 				else {
-					$msg = Translate::getInstance()->getText( msg_main_module_error2);
+					$msg = Translate::getInstance()->getText( 'msg_main_module_error2');
 					$ret = false;
 				}
 			}
 			else {
-				$msg = Translate::getInstance()->getText( msg_token_invalide);
+				$msg = Translate::getInstance()->getText( 'msg_token_invalide');
 				$ret = false;
 			}
 
@@ -420,16 +420,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 39 , $module->module_name ) ;
 
-					$msg = Translate::getInstance()->getText( msg_secondary_module);
+					$msg = Translate::getInstance()->getText( 'msg_secondary_module');
 					$ret = true;
 				}
 				else {
-					$msg = Translate::getInstance()->getText( msg_secondary_module_error);
+					$msg = Translate::getInstance()->getText( 'msg_secondary_module_error');
 					$ret = false;
 				}
 			}
 			else {
-				$msg = Translate::getInstance()->getText( msg_token_invalide);
+				$msg = Translate::getInstance()->getText( 'msg_token_invalide');
 				$ret = false;
 			}
 
@@ -449,16 +449,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 					\App\Kernel\Back\Log::getInstance()->warning( 19 , $module->module_name ) ;
 
-					$msg = Translate::getInstance()->getText( msg_module_desactive);
+					$msg = Translate::getInstance()->getText( 'msg_module_desactive');
 					$ret = true;
 				}
 				else {
-					$msg = Translate::getInstance()->getText( msg_module_desactive_error);
+					$msg = Translate::getInstance()->getText( 'msg_module_desactive_error');
 					$ret = false;
 				}
 			}
 			else {
-				$msg = Translate::getInstance()->getText( msg_token_invalide);
+				$msg = Translate::getInstance()->getText( 'msg_token_invalide');
 				$ret = false;
 			}
 
@@ -495,7 +495,7 @@ $app->group('/moduleadmin', function () use ($app)
 			}
 
 			if ( $id != -1 && !$contentRow ) {
-				$result['msg'] = Translate::getInstance()->getText( msg_module_inexistant) ;
+				$result['msg'] = Translate::getInstance()->getText( 'msg_module_inexistant') ;
 			}
 
 			if ( !$contentRow ) {
@@ -504,15 +504,15 @@ $app->group('/moduleadmin', function () use ($app)
 			}
 
 			if ( $app->request->post('module_name') == "" ) {
-				$result['msg'] = Translate::getInstance()->getText( mandatory_module_name) ;
+				$result['msg'] = Translate::getInstance()->getText( 'mandatory_module_name') ;
 				$result['field'] = 'module_name' ;
 			}
 			else if ( $app->request->post('module_class_name') == "" ) {
-				$result['msg'] = Translate::getInstance()->getText( mandatory_class_name) ;
+				$result['msg'] = Translate::getInstance()->getText( 'mandatory_class_name') ;
 				$result['field'] = 'module_class_name' ;
 			}
 			else if ( $app->request->post('module_icon') == "" ) {
-				$result['msg'] = Translate::getInstance()->getText( mandatory_icon) ;
+				$result['msg'] = Translate::getInstance()->getText( 'mandatory_icon') ;
 				$result['field'] = 'module_icon' ;
 			}
 			else

@@ -40,7 +40,7 @@ class User
 
     protected function text( $key )
     {
-        return \App\Kernel\Front\Translate::getInstance()->getText( $key ) ;
+        return \App\Kernel\Front\Translate::getInstance()->getText( 'key' ) ;
     }
 
     protected function Factory()

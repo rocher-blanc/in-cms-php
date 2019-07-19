@@ -43,7 +43,7 @@ $app->group('/user_front_group', function () use ($app)
 			
 			if ( $app->request->post('user_front_group_name') == "" ) {
 				$error = true ;
-				$tabError['user_front_group_name'] = Translate::getInstance()->getText( mandatory_fillin);
+				$tabError['user_front_group_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			else {
 				$exist = \DB::for_table('user_front_group')->where_equal('user_front_group_name' , $app->request->post('user_front_group_name'));
@@ -53,7 +53,7 @@ $app->group('/user_front_group', function () use ($app)
 			
 			if ( $app->request->post('user_front_group_name') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_front_group_name'] = Translate::getInstance()->getText( msg_grp_name_error);
+				$tabError['user_front_group_name'] = Translate::getInstance()->getText( 'msg_grp_name_error' );
 			}
 			
 			if ( $error == false ) {
@@ -103,13 +103,13 @@ $app->group('/user_front_group', function () use ($app)
         {
             \App\Kernel\Back\Log::getInstance()->warning( 6 , $contentRow->user_front_group_name ) ;
 
-            $msg = Translate::getInstance()->getText(delete_groupe_success);
+            $msg = Translate::getInstance()->getText('delete_groupe_success' );
             $ret = true ;
             $contentRow->delete();
         }
         else
         {
-            $msg = Translate::getInstance()->getText(delete_error);
+            $msg = Translate::getInstance()->getText('delete_error' );
         }
 
         $app->flash('__msg', $msg );

@@ -58,18 +58,18 @@ $app->group('/page', function () use ($app)
 			{
 				\App\Kernel\Back\Log::getInstance()->warning( 32 , $contentRow->page_name ) ;
 
-				$msg = Translate::getInstance()->getText( msg_page_suppr);
+				$msg = Translate::getInstance()->getText( 'msg_page_suppr' );
 				$ret = true ;
 				$contentRow->delete();
 			}
 			else
 			{
-				$msg = Translate::getInstance()->getText( delete_page_err);
+				$msg = Translate::getInstance()->getText( 'delete_page_err' );
 			}
 		}
 		else
 		{
-			$msg = Translate::getInstance()->getText( delete_error);
+			$msg = Translate::getInstance()->getText( 'delete_error' );
 		}
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->returnJSON( $msg , $ret ) ;
@@ -88,16 +88,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 30 , $page->page_name ) ;
 
-                $msg = Translate::getInstance()->getText( page_activated);
+                $msg = Translate::getInstance()->getText( 'page_activated' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( page_already_activated_err);
+                $msg = Translate::getInstance()->getText( 'page_already_activated_err') ;
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -118,16 +118,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 54 , $page->page_name ) ;
 
-                $msg = Translate::getInstance()->getText( msg_page_indexed);
+                $msg = Translate::getInstance()->getText( 'msg_page_indexed' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( indexed_page_err);
+                $msg = Translate::getInstance()->getText( 'indexed_page_err' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -148,16 +148,16 @@ $app->group('/page', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 55 , $page->page_name ) ;
 
-                $msg = Translate::getInstance()->getText( page_deindexed_err);
+                $msg = Translate::getInstance()->getText( 'page_deindexed_err' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( page_already_deindexed_err);
+                $msg = Translate::getInstance()->getText( 'page_already_deindexed_err' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -193,11 +193,11 @@ $app->group('/page', function () use ($app)
 			
 			\App\Kernel\Back\Log::getInstance()->warning( 34 , $page->page_name ) ;
 					
-			$msg = Translate::getInstance()->getText( default_page_modified);
+			$msg = Translate::getInstance()->getText( 'default_page_modified' );
 			$ret = true;
 		}
 		else {
-			$msg = Translate::getInstance()->getText( msg_token_invalide);
+			$msg = Translate::getInstance()->getText( 'msg_token_invalide' );
 			$ret = false;
 		}
 		
@@ -226,23 +226,23 @@ $app->group('/page', function () use ($app)
 					
 					\App\Kernel\Back\Log::getInstance()->warning( 31 , $page->page_name ) ;
 						
-					$msg = Translate::getInstance()->getText( page_desactivated);
+					$msg = Translate::getInstance()->getText( 'page_desactivated' );
 					$ret = true;
 				}
 				else
 				{
-					$msg = Translate::getInstance()->getText( default_page_err);
+					$msg = Translate::getInstance()->getText( 'default_page_err' );
 					$ret = false;
 				}
 			}
 			else
 			{
-				$msg = Translate::getInstance()->getText( page_already_desactivated_err);
+				$msg = Translate::getInstance()->getText( 'page_already_desactivated_err' );
 				$ret = false;
 			}
 		}
 		else {
-			$msg =  Translate::getInstance()->getText( msg_token_invalide);
+			$msg =  Translate::getInstance()->getText( 'msg_token_invalide' );
 			$ret = false;
 		}
 		
@@ -289,13 +289,13 @@ $app->group('/page', function () use ($app)
 			if ( $app->request->post('page_name') == "" )
 			{
 					$error = true ;
-					$tabError['page_name'] = Translate::getInstance()->getText( mandatory_fillin);
+					$tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
 			if ( $app->request->post('page_priority') == "" )
 			{
 					$error = true ;
-					$tabError['page_priority'] = Translate::getInstance()->getText( mandatory_priority);
+					$tabError['page_priority'] = Translate::getInstance()->getText( 'mandatory_priority' );
 			}
 			
 			if ( $error == false )

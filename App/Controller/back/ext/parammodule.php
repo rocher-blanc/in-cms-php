@@ -48,16 +48,16 @@ $app->group('/parammodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 56 , $module->module_name ) ;
 
-                $msg = Translate::getInstance()->getText( msg_module_indexed);
+                $msg = Translate::getInstance()->getText( 'msg_module_indexed' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( module_already_indexed_err);
+                $msg = Translate::getInstance()->getText( 'module_already_indexed_err' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide );
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -78,16 +78,16 @@ $app->group('/parammodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 57 , $module->module_name ) ;
 
-                $msg = Translate::getInstance()->getText( msg_module_indexed);
+                $msg = Translate::getInstance()->getText( 'msg_module_indexed' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( module_already_indexed_err);
+                $msg = Translate::getInstance()->getText( 'module_already_indexed_err' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -108,16 +108,16 @@ $app->group('/parammodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 58 , $module->module_name ) ;
 
-                $msg = Translate::getInstance()->getText(msg_module_indexed);
+                $msg = Translate::getInstance()->getText('msg_module_indexed' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText(module_already_indexed_err);
+                $msg = Translate::getInstance()->getText('module_already_indexed_err' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -139,16 +139,16 @@ $app->group('/parammodule', function () use ($app)
                 \App\Kernel\Back\Log::getInstance()->warning( 59 , $module->module_name ) ;
 
 
-                $msg = Translate::getInstance()->getText(module_element_deindexed);
+                $msg = Translate::getInstance()->getText('module_element_deindexed' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText(module_element_deindexed);
+                $msg = Translate::getInstance()->getText('module_element_deindexed' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
