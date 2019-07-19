@@ -137,13 +137,13 @@ $app->group('/groupmodule', function () use ($app)
 
             \App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name );
 
-            $msg = Translate::getInstance()->getText( domain_supr_msg);
+            $msg = Translate::getInstance()->getText( 'domain_supr_msg' );
             $ret = true;
             $contentRow->delete();
         }
         else
         {
-            $msg = Translate::getInstance()->getText( domain_supr_error);
+            $msg = Translate::getInstance()->getText( 'domain_supr_error' );
         }
 
         $result['msg'] = $msg;
@@ -166,16 +166,16 @@ $app->group('/groupmodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 25 , $module->module_group_name ) ;
 
-                $msg = Translate::getInstance()->getText( msg_grp_module_active);
+                $msg = Translate::getInstance()->getText( 'msg_grp_module_active' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_grp_module_active_error);
+                $msg = Translate::getInstance()->getText( 'msg_grp_module_active_error' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -196,16 +196,16 @@ $app->group('/groupmodule', function () use ($app)
 
                 \App\Kernel\Back\Log::getInstance()->warning( 26 , $module->module_group_name ) ;
 
-                $msg = Translate::getInstance()->getText( msg_grp_module_desactive);
+                $msg = Translate::getInstance()->getText( 'msg_grp_module_desactive' );
                 $ret = true;
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_grp_module_desactive_error);
+                $msg = Translate::getInstance()->getText( 'msg_grp_module_desactive_error' );
                 $ret = false;
             }
         }
         else {
-            $msg = Translate::getInstance()->getText( msg_token_invalide);
+            $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
             $ret = false;
         }
 
@@ -238,7 +238,7 @@ $app->group('/groupmodule', function () use ($app)
 
             if ( $app->request->post('module_group_name') == "" ) {
                 $error = true ;
-                $tabError['module_group_name'] = Translate::getInstance()->getText( mandatory_fillin) ;
+                $tabError['module_group_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
             }
 
             if ( $error == false ) {
@@ -267,7 +267,7 @@ $app->group('/groupmodule', function () use ($app)
 
                 $id = $contentRow->module_group_id;
 
-                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( grp_name_part) . ( $add == true ? Translate::getInstance()->getText( added) : Translate::getInstance()->getText( modified) ) , true , '/admin/groupmodule' );
+                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( 'grp_name_part' ) . ( $add == true ? Translate::getInstance()->getText( 'added' ) : Translate::getInstance()->getText( 'modified' ) ) , true , '/admin/groupmodule' );
             }
         }
         else {
@@ -305,16 +305,16 @@ $app->group('/groupmodule', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 27 , $modgroup->module_group_name ) ;
 
-                    $msg = Translate::getInstance()->getText( msg_grp_module_position_modif);
+                    $msg = Translate::getInstance()->getText( 'msg_grp_module_position_modif' );
                     $ret = true;
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( msg_grp_module_position_error);
+                    $msg = Translate::getInstance()->getText( 'msg_grp_module_position_error' );
                     $ret = false;
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
                 $ret = false;
             }
 
@@ -343,16 +343,16 @@ $app->group('/groupmodule', function () use ($app)
 
                     \App\Kernel\Back\Log::getInstance()->warning( 28 , $modgroup->module_group_name ) ;
 
-                    $msg = Translate::getInstance()->getText( msg_grp_module_position_modif);
+                    $msg = Translate::getInstance()->getText( 'msg_grp_module_position_modif' );
                     $ret = true;
                 }
                 else {
-                    $msg = Translate::getInstance()->getText( msg_grp_module_position_error). $modgroup->module_group_order;
+                    $msg = Translate::getInstance()->getText( 'msg_grp_module_position_error' ) . $modgroup->module_group_order;
                     $ret = false;
                 }
             }
             else {
-                $msg = Translate::getInstance()->getText( msg_token_invalide);
+                $msg = Translate::getInstance()->getText( 'msg_token_invalide' );
                 $ret = false;
             }
 
@@ -562,7 +562,7 @@ $app->group('/groupmodule', function () use ($app)
 
         \App\Kernel\Factory::getInstance()->Response()->printJSON([
             'result'    => true,
-            'msg'       => Translate::getInstance()->getText( column_suppr),
+            'msg'       => Translate::getInstance()->getText( 'column_suppr' ),
         ]) ;
     });
 
@@ -685,7 +685,4 @@ $app->group('/groupmodule', function () use ($app)
             'msg'       => "",
         ]);
     });
-
-
-
 });
