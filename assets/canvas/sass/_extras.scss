@@ -1203,7 +1203,11 @@ a.list-group-item:hover, button.list-group-item:hover, a.list-group-item:focus, 
 .filter{
 	color:#ccc;
 
-	&.active, &:hover{
+	&.active{
 		color:$theme-color;
+	}
+
+	&:hover{
+		color:$jweb-blue;
 	}
 }

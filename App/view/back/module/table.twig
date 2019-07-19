@@ -111,7 +111,7 @@
                                 </td>
                             {% elseif row.type == 'image' %}
                                 <td style="vertical-align: middle;" class="text-center">
-                                    <img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />
+                                    {% if row.value != '' %}<img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />{% endif %}
                                 </td>
                             {% else %}
                                 {% if row.module != '' and row.type != 'checkbox' %}
