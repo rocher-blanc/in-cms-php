@@ -1473,7 +1473,7 @@ class Controller extends ControllerCommon
         {
             return [
                 'result' => false,
-                'msg' => Translate::getInstance()->getText('contents_unavailable' ),
+                'msg' => Translate::getInstance()->getText( 'contents_unavailable' ),
             ];
         }
         else
