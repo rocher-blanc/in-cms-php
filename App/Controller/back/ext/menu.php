@@ -200,7 +200,7 @@ $app->group('/menu', function () use ($app)
             if ( $app->request->post('menu_name') == "" )
             {
                 $error = true ;
-                $tabError['menu_name'] = Translate::getInstance()->getText( 'mandatory_fillin');
+                $tabError['menu_name'] = Translate::getInstance()->getText('mandatory_fillin');
             }
 
             if ( $error == false )
@@ -243,13 +243,13 @@ $app->group('/menu', function () use ($app)
         {
             \App\Kernel\Back\Log::getInstance()->warning( 36 , $contentRow->menu_name ) ;
 
-            $msg = Translate::getInstance()->getText( 'delete_menu' );
+            $msg = Translate::getInstance()->getText('delete_menu' );
             $ret = true ;
             $contentRow->delete();
         }
         else
         {
-            $msg = Translate::getInstance()->getText( 'delete_error' );
+            $msg = Translate::getInstance()->getText('delete_error' );
         }
 
         $Factory = \App\Kernel\Factory::getInstance() ;
@@ -356,12 +356,12 @@ $app->group('/menu', function () use ($app)
             deleteByParent( $id , $idmenu ) ;
 
             $contentRow->delete();
-            $msg = Translate::getInstance()->getText( 'delete_element');
+            $msg = Translate::getInstance()->getText('delete_element');
             $ret = true ;
         }
         else
         {
-            $msg = Translate::getInstance()->getText( 'delete_error');
+            $msg = Translate::getInstance()->getText('delete_error');
         }
 
         $Factory = \App\Kernel\Factory::getInstance() ;
@@ -384,14 +384,14 @@ $app->group('/menu', function () use ($app)
     $app->post('/element/add', function () use ($app)
     {
         $ret  = true ;
-        $msg  = Translate::getInstance()->getText( 'added_element');
+        $msg  = Translate::getInstance()->getText('added_element');
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
 
         foreach( $lang as $l )
         {
             if ( $app->request->post('label_' . $l->url ) == "" ) {
                 $ret = false ;
-                $msg = Translate::getInstance()->getText( 'fill_fields');
+                $msg = Translate::getInstance()->getText('fill_fields');
             }
         }
 
@@ -483,7 +483,7 @@ $app->group('/menu', function () use ($app)
                     if ( $app->request->post('link') == "" )
                     {
                         $ret = false ;
-                        $msg = Translate::getInstance()->getText( 'fill_fields');
+                        $msg = Translate::getInstance()->getText('fill_fields');
                     }
                     else
                     {
@@ -525,14 +525,14 @@ $app->group('/menu', function () use ($app)
     $app->post('/element/update', function () use ($app)
     {
         $ret  = true ;
-        $msg  = Translate::getInstance()->getText( 'modified_element');
+        $msg  = Translate::getInstance()->getText('modified_element');
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
 
         foreach( $lang as $l )
         {
             if ( $app->request->post('label_' . $l->url ) == "" ) {
                 $ret = false ;
-                $msg = Translate::getInstance()->getText( 'fill_fields');
+                $msg = Translate::getInstance()->getText('fill_fields');
             }
         }
 
@@ -566,7 +566,7 @@ $app->group('/menu', function () use ($app)
                     if ( $app->request->post('link') == "" )
                     {
                         $ret = false ;
-                        $msg = Translate::getInstance()->getText( 'fill_fields');
+                        $msg = Translate::getInstance()->getText('fill_fields');
                     }
                     else
                     {

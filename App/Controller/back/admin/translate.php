@@ -100,7 +100,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
 							 'result' => true,
-							 'msg'    => Translate::getInstance()->getText( 'msg_text_maj')
+							 'msg'    => Translate::getInstance()->getText('msg_text_maj')
 						 ]);
 	});
 
@@ -146,7 +146,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
              'result' => true,
-             'msg'    => Translate::getInstance()->getText( 'msg_key_add'),
+             'msg'    => Translate::getInstance()->getText('msg_key_add'),
          ]);
 	});
 
@@ -196,7 +196,7 @@ $app->group('/translate', function () use ($app) {
 
 		echo json_encode([
 							 'result' => true,
-							 'msg'    => Translate::getInstance()->getText( 'msg_key_suppr'),
+							 'msg'    => Translate::getInstance()->getText('msg_key_suppr'),
 						 ]);
 	});
 
