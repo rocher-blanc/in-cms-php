@@ -534,16 +534,23 @@ class Controller extends ControllerCommon
                                 $Media->setImageId( $row->get( $field->getColumn() ) );
                                 $Media->getNameById();
 
-                                if ( $Media->getGalleryId() !== NULL )
+                                if ( ! empty( $row->get( $field->getColumn() ) ) )
                                 {
-                                    $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/_lib/' . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                    if ( $Media->getGalleryId() !== NULL )
+                                    {
+                                        $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/_lib/' . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                    }
+                                    else
+                                    {
+                                        $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . "/" . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                    }
+
+                                    $value = $this->Factory()->Url()->get( $img , true ) ;
                                 }
                                 else
                                 {
-                                    $img = str_replace( WEB_PATH , '' , IMAGE_PATH ) . '/' . $this->getEntity()->getFolder() . "/" . $Media->getMini( $Media->getImageName() , 't' , 100 , 100 ) ;
+                                    $value = '' ;
                                 }
-
-                                $value = $this->Factory()->Url()->get( $img , true ) ;
                             }
                             else
                             {
