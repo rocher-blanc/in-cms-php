@@ -1099,7 +1099,7 @@ class Builder extends Model
                 ->defaut( $this->getUserAction() , true  );
 
             $this->build('user_login' , true )
-                ->isVarchar()
+                ->isVarchar("150", "email")
                 ->group('connexion')
                 ->notEmpty('user_register_login_empty' , true )
                 ->noSave()
