@@ -471,6 +471,62 @@ class Controller extends ControllerCommon
                                     else                                    $value = $date->format('d/m/Y') ;
                                 }
                             }
+                            else if ( $field->getType() == "video" )
+                            {
+                                $color  = '' ;
+                                $source = '' ;
+                                $val    = $row->get( $field->getColumn() );
+
+                                if ( strpos( $val , 'youtube') !== false or strpos( $val , 'youtu.be') !== false )
+                                {
+                                    $source = 'youtube-play' ;
+                                    $color  = 'c4302b' ;
+                                }
+                                else if ( strpos( $val , 'vimeo') !== false )
+                                {
+                                    $source = 'vimeo' ;
+                                    $color  = '86c9ef' ;
+                                }
+                                else
+                                {
+                                    $source = 'facetime-video' ;
+                                }
+
+                                $value = [
+                                    "link"   => $val,
+                                    "color"  => $color,
+                                    "source" => $source,
+                                ];
+                            }
+                            else if ( $field->getType() == "checkbox" )
+                            {
+                                $arrayCheckbox = [];
+                                if ( $field->isAssociated() )
+                                {
+                                    $opt = $this->getValueAssociated( $field , "array" , true );
+                                }
+                                else
+                                {
+                                    $opt = $field->getOptions() ;
+                                }
+
+                                $value = '' ;
+                                $array = $this->getAssocValueForm( $field->getName() , $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
+
+                                if ( ! empty( $array ) )
+                                {
+                                    foreach( $array as $rep )
+                                    {
+                                        $arrayCheckbox[] = [
+                                            'value' => $opt[ $rep ],
+                                            'id' => $rep,
+                                            'module' => $field->getData('object'),
+                                        ];
+                                    }
+
+                                    $value = $arrayCheckbox;
+                                }
+                            }
                             else if ( $field->getType() == "image" )
                             {
                                 $Media = new \App\Kernel\Back\Media;
@@ -1417,7 +1473,7 @@ class Controller extends ControllerCommon
         {
             return [
                 'result' => false,
-                'msg' => Translate::getInstance()->getText( contents_unavailable),
+                'msg' => Translate::getInstance()->getText('contents_unavailable'),
             ];
         }
         else
@@ -1460,7 +1516,7 @@ class Controller extends ControllerCommon
             return [
                 'result' => true,
                 'id'     => $data->get('id'),
-                'msg'    => Translate::getInstance()->getText( contents_duplicate),
+                'msg'    => Translate::getInstance()->getText('contents_duplicate'),
             ];
         }
     }

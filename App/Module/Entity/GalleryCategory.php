@@ -17,12 +17,12 @@ class GalleryCategory extends Builder
         $this->build('name')
             ->full()
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_title))
-            ->name(Translate::getInstance()->getText( title));
+            ->notEmpty(Translate::getInstance()->getText('mandatory_title'))
+            ->name(Translate::getInstance()->getText('title'));
 
         $this->build('comment')
             ->full()
             ->isText()
-            ->name(Translate::getInstance()->getText( comment));
+            ->name(Translate::getInstance()->getText('comment'));
     }
 }

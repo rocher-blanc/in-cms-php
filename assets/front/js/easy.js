@@ -61,7 +61,9 @@ checkForm = function(base) {
     });
 
     $(base + ' form.ajax').not('.submitReady').bind('submit', function(e) {
-        which.prop("disabled",true);
+        if ( typeof which !== 'undefined' ) {
+            which.prop("disabled",true);
+        }
 
         var $form = $(this);
 
@@ -137,7 +139,9 @@ checkForm = function(base) {
                 }
             });
 
-            which.prop("disabled",false);
+            if ( typeof which !== 'undefined' ) {
+                which.prop("disabled",false);
+            }
         }
 
         return false;

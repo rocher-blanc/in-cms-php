@@ -1,7 +1,20 @@
+{% set hasDoc = false %}
+{% for doc in docs %}
+    {% if doc.id != 0 and doc.id != '' %}
+        {% set hasDoc = true %}
+    {% endif %}
+{% endfor %}
+
 <input type="hidden" name="doc_{{ name }}" value="1">
 <div class="text-right">
-    {% for doc in docs %}
-        <input type="hidden" name="{{ name }}[{{ doc.id }}]" value="{{ doc.id }}">
-    {% endfor %}
-    <input id="upload_{{ name }}" value="{{ image }}" type="file" class="file-loading" name="{{ name }}">
+    <div class="{{ hasDoc ? '' : 'hide' }}" id="field_show_{{ name }}">
+        {% for doc in docs %}
+            <input type="hidden" name="{{ name }}[{{ doc.id }}]" value="{{ doc.id }}">
+            <a target="_blank" href="{{ doc.url }}">{{ doc.name }}</a><br />
+        {% endfor %}
+        <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}">{{ _('update_document') }}</a>
+    </div>
+    <div class="{{ hasDoc ? 'hide' : '' }}" id="field_upload_{{ name }}">
+        <input id="upload_{{ name }}" value="{{ image }}" type="file" class="file-loading" name="{{ name }}">
+    </div>
 </div>

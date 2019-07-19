@@ -114,14 +114,22 @@
                                     <img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />
                                 </td>
                             {% else %}
-                                {% if row.module != '' %}
+                                {% if row.module != '' and row.type != 'checkbox' %}
                                     <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value }}</a></td>
+                                {% elseif row.type == 'checkbox' %}
+                                    <td style="vertical-align: middle;">
+                                        {% if row.value|length > 0 %}
+                                            {% for rep in row.value %}{% if not loop.first %}, {% endif %}{% if rep.module != '' %}<a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( rep.module , 'edit' , '' , rep.id ) }}">{{ rep.value }}</a>{% else %}{{ rep.value }}{% endif %}{% endfor %}
+                                        {% endif %}
+                                    </td>
                                 {% elseif row.subtype == 'email' %}
                                     <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="mailto:{{ row.value }}">{{ row.value }}</a></td>
                                 {% elseif row.type == 'date' %}
                                     <td style="vertical-align: middle;">{{ row.value != '30/11/-0001' ? row.value : '-' }}</td>
                                 {% elseif row.type == 'link' %}
                                     <td style="vertical-align: middle;">{% if row.value != '' %}<a style="" href="{{ row.value }}" target="_blank"><i class="icon-link"></i></a>{% endif %}</td>
+                                {% elseif row.type == 'video' %}
+                                    <td style="vertical-align: middle; text-align: center;">{% if row.value.link != '' %}<a style="" href="{{ row.value.link }}" target="_blank"><i class="icon-{{ row.value.source }}" style="color:#{{ row.value.color }};"></i></a>{% endif %}</td>
                                 {% elseif row.style != '' %}
                                     <td style="vertical-align: middle;" class="text-center"><span class="{{ row.style }}">{{ row.value }}</span></td>
                                 {% else %}

@@ -34,12 +34,12 @@ class EdEmail extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_template_name))
-            ->name(Translate::getInstance()->getText( nom));
+            ->notEmpty(Translate::getInstance()->getText('mandatory_template_name'))
+            ->name(Translate::getInstance()->getText('nom'));
 
         $this->build('blocked')
             ->isBoolean()
-            ->name(Translate::getInstance()->getText( disable_modif) );
+            ->name(Translate::getInstance()->getText('disable_modif') );
 
         $this->build('html')
             ->noFront()

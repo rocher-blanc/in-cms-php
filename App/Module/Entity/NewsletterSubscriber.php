@@ -15,7 +15,7 @@ class NewsletterSubscriber extends Builder
         $this->build('email')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_email_address))
-            ->name(Translate::getInstance()->getText( email));
+            ->notEmpty(Translate::getInstance()->getText('mandatory_email_address' ))
+            ->name(Translate::getInstance()->getText('email') );
     }
 }

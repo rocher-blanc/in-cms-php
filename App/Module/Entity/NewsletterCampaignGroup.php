@@ -18,7 +18,7 @@ class NewsletterCampaignGroup extends Builder
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
-            ->notEmpty(Translate::getInstance()->getText( mandatory_newsletter_name ))
-            ->name(Translate::getInstance()->getText( newsletter_name ));
+            ->notEmpty(Translate::getInstance()->getText('mandatory_newsletter_name' ))
+            ->name(Translate::getInstance()->getText('newsletter_name' ));
     }
 }

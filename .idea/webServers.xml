@@ -45,7 +45,7 @@
       <webServer id="90bd2d3d-a01a-4959-aa20-2edad43e15e4" name="casino" url="http://vps1.jweb-creation.fr/">
         <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" />
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
           </advancedOptions>
           <option name="port" value="21" />
         </fileTransfer>

@@ -62,7 +62,7 @@ class NewsletterCampaign extends Controller
         if ( $datetime->format('U') < time() )
         {
             return [
-                'msg' => Translate::getInstance()->getText(mandatory_date_programming),
+                'msg' => Translate::getInstance()->getText('mandatory_date_programming'),
                 "result" => false
             ] ;
         }

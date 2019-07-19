@@ -28,12 +28,12 @@ class EdAutomationHistory extends Builder
         $this->build('email')
             ->column(1, 1)
             ->isVarchar("255", "email")
-            ->notEmpty(Translate::getInstance()->getText( mandatory_email ))
-            ->name(Translate::getInstance()->getText( email ));
+            ->notEmpty(Translate::getInstance()->getText('mandatory_email' ))
+            ->name(Translate::getInstance()->getText('email' ));
 
         $this->build('date')
             ->isDate(true)
-            ->name(Translate::getInstance()->getText( date ));
+            ->name(Translate::getInstance()->getText('date' ));
 
         $this->build('information')
             ->noFront()
@@ -44,7 +44,7 @@ class EdAutomationHistory extends Builder
         $this->build('automation')
             ->isSelect()
             ->ManyToMany("EdAutomation")
-            ->name(Translate::getInstance()->getText( automation ));
+            ->name(Translate::getInstance()->getText('automation' ));
 
         $this->build('id_easyletter')
             ->isInteger()
@@ -56,7 +56,7 @@ class EdAutomationHistory extends Builder
             ->isVarchar("500")
             ->noFront()
             ->noBack()
-            ->name(Translate::getInstance()->getText( error_message ));
+            ->name(Translate::getInstance()->getText('error_message' ));
 
         $this->build('statut')
             ->column(1, 1)
@@ -112,6 +112,6 @@ class EdAutomationHistory extends Builder
 
                 return $str ;
             })
-            ->name(Translate::getInstance()->getText( status ));
+            ->name(Translate::getInstance()->getText('status' ));
     }
 }
