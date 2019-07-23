@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Container;
+
 class Repository extends \App\Kernel\Common\Repository
 {
 
@@ -11,7 +13,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     protected function Container()
     {
-        return \App\Kernel\Container::getInstance();
+        return Container::getInstance();
     }
 
     /* ************************************************** */
@@ -103,7 +105,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function checkDatabase()
     {
-        \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
+        \DB::checkModuleTable( $this->getName() , Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
     public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id , $offset , $limit , $DepedencyModule = NULL , $DepedencyElement = NULL )
