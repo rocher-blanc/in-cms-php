@@ -63,6 +63,11 @@ class User
         return $_SERVER['REMOTE_ADDR'] ;
     }
 
+    protected function getSessionName()
+    {
+        return 'easydoor_user' ;
+    }
+
     /* ************************************************** */
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */

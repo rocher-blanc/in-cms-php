@@ -3,6 +3,7 @@
 namespace App\Kernel\Back;
 
 use App\Kernel;
+use App\Kernel\CMS;
 use App\Kernel\Install;
 use App\Kernel\Middleware\Back\Auth;
 use App\Kernel\Middleware\Back\Guard;
@@ -39,7 +40,7 @@ class Loader
 
         $admin = $this->getAdminFolder() ;
 
-        $this->kernel->config([
+        CMS::getInstance()->setConfig([
             'admin.url' 	=> $admin,
             'token' 		=> 'csrf_token',
             'config' 		=> 'back',
@@ -51,6 +52,8 @@ class Loader
             'logout.url' 	=> $admin . '/secured/logout',
             'forbidden.url' => $admin . '/secured/forbidden'
         ]);
+
+        $this->kernel->config(CMS::getInstance()->getConfig());
         $this->kernel->load();
 
         #########################################################

@@ -2,7 +2,9 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Back\User;
 use App\Kernel\CMS;
+use App\Kernel\Exception;
 use App\Kernel\Lang;
 
 class Translate
@@ -20,7 +22,7 @@ class Translate
 
 	public function __construct()
     {
-        $type = CMS::getInstance()->config() ;
+        $type = CMS::getInstance()->config('config') ;
 
         if ( $type == 'front' )
         {
@@ -33,21 +35,59 @@ class Translate
         }
         else
         {
-            $userId = $_SESSION['auth_user']['id'] ;
-            $user = \DB::for_table('user')
-                ->where_equal('user_id', $userId)
-                ->find_one();
-
-            if ( $user )
+            if ( User::getInstance()->isLogged() )
             {
-                if ( $user->user_lang_id == '' )
+                $userId = $_SESSION[ CMS::getInstance()->config('session_name') ]['id'] ;
+                $user = \DB::for_table('user')
+                    ->where_equal('user_id', $userId)
+                    ->find_one();
+
+                if ( $user )
                 {
-                    $user->user_lang_id = 1 ;
-                    $user->save();
+                    if ( $user->user_lang_id == '' )
+                    {
+                        $user->user_lang_id = 1 ;
+                        $user->save();
+                    }
+                    else
+                    {
+                        $lang = \DB::for_table('lang')
+                            ->where_equal('lang_id', $user->user_lang_id)
+                            ->find_one();
+
+                        if ( $lang )
+                        {
+                            if ( $lang->lang_back == 0 )
+                            {
+                                $user->user_lang_id = 1 ;
+                                $user->save();
+                            }
+                        }
+                        else
+                        {
+                            $user->user_lang_id = 1 ;
+                            $user->save();
+                        }
+                    }
                 }
+                else
+                {
+                    throw new Exception("No user found" ) ;
+                }
+
+                $lang_id = $user->user_lang_id ;
+            }
+            else
+            {
+                $lang_id = 2 ;
             }
 
-            $lang = strtoupper( $this->Lang()->get( $user->user_lang_id )->url ) ;
+            $lang = \DB::for_table('lang')
+                ->where_equal('lang_id', $lang_id )
+                ->find_one();
+
+            $lang = strtoupper( $lang->lang_url ) ;
+
             if ( file_exists( LANG_PATH . '/BO' . $lang . '.php' ) )
             {
                 $class = "\Project\Lang\BO" . $lang  ;

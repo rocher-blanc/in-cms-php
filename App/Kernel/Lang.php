@@ -113,6 +113,12 @@ class Lang
 
     private function loadActiveLang( $front = false )
     {
+        $rows = \DB::for_table('lang')
+            ->where_gt('lang_status', '0')
+            ->where_equal('lang_front', 1)
+            ->order_by_desc('lang_status')
+            ->find_many();
+        /*
         if ( $front == true )
         {
             $rows = \DB::for_table('lang')
@@ -146,6 +152,7 @@ class Lang
                 }
             }
         }
+        */
 
         $i = 0;
         foreach( $rows as $r )
