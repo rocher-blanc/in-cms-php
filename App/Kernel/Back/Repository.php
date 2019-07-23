@@ -3,6 +3,7 @@
 namespace App\Kernel\Back;
 
 use App\Kernel\Container;
+use App\Kernel\Debug;
 
 class Repository extends \App\Kernel\Common\Repository
 {
@@ -117,7 +118,7 @@ class Repository extends \App\Kernel\Common\Repository
             $content = $content->limit( $limit )->offset( $offset );
         }
 
-        return $content->find_many();
+        return$content->find_many();
     }
 
     public function countTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
@@ -157,7 +158,7 @@ class Repository extends \App\Kernel\Common\Repository
                 $content = $content->where_date_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_start'] )
                     ->where_date_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_end'] );
             }
-            else if ( $field['type'] == 'select' && !empty( $field['value'] ) )
+            else if ( $field['type'] == 'select' && ( $field['value'] !== '' && $field['value'] !== NULL ) )
             {
                 $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );
             }

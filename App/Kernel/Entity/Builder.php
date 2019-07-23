@@ -251,6 +251,9 @@ class Builder extends Model
      */
     protected $_max_element = 0;
 
+    protected $_default_order = NULL ;
+    protected $_default_order_by = NULL ;
+
     protected $forbidden_field = [
         /* Gestion utilisateurs */
         'user_login',
@@ -402,6 +405,22 @@ class Builder extends Model
     public function setModuleUser()
     {
         $this->_module_user = true ;
+    }
+
+    /**
+     * @param null $default_order_by
+     */
+    public function setDefaultOrderBy($default_order_by)
+    {
+        $this->_default_order_by = $default_order_by;
+    }
+
+    /**
+     * @param null $default_order
+     */
+    public function setDefaultOrder($default_order)
+    {
+        $this->_default_order = $default_order;
     }
 
     protected function setMultilang()
@@ -602,6 +621,22 @@ class Builder extends Model
     public function itsDepedency()
     {
         return $this->_isDependency;
+    }
+
+    /**
+     * @return null
+     */
+    public function getDefaultOrderBy()
+    {
+        return strtolower($this->_default_order_by);
+    }
+
+    /**
+     * @return null
+     */
+    public function getDefaultOrder()
+    {
+        return $this->_default_order;
     }
 
     /**
@@ -1718,6 +1753,12 @@ class Builder extends Model
     {
         $this->field()->setData( "defaut" , $t ) ;
         $this->field()->setData( "force" , $force ) ;
+        return $this ;
+    }
+
+    protected function defautSearch( $t )
+    {
+        $this->field()->setData( "defautSearch" , $t ) ;
         return $this ;
     }
 

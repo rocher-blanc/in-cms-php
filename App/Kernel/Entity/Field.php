@@ -441,6 +441,11 @@ class Field
 		return $rst ;
 	}
 
+	public function getDefaultSearch()
+	{
+		return $this->getData('defautSearch'); ;
+	}
+
 	public function getUnit()
 	{
 		return ( ! empty( $this->getData('unit') ) )

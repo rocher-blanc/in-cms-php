@@ -35,9 +35,10 @@ class Translate
         }
         else
         {
-            if ( User::getInstance()->isLogged() )
+            $userId = $_SESSION[ CMS::getInstance()->config('session') ]['id'] ;
+
+            if ( !empty( $userId ) )
             {
-                $userId = $_SESSION[ CMS::getInstance()->config('session_name') ]['id'] ;
                 $user = \DB::for_table('user')
                     ->where_equal('user_id', $userId)
                     ->find_one();
