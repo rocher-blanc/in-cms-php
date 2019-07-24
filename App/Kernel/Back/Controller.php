@@ -1505,11 +1505,6 @@ class Controller extends ControllerCommon
                 $data->set( $this->getEntity()->getValidationName() , 0 );
             }
 
-            if ( $this->getEntity()->hasValidation() )
-            {
-                $data->set( $this->getEntity()->getValidationName() , 0 );
-            }
-
             if ( ! empty( $this->getEntity()->getFieldReference() ) )
             {
                 if ( count( $this->getEntity()->getFieldReference() ) == 1 )
@@ -1524,6 +1519,22 @@ class Controller extends ControllerCommon
             }
 
             $data->save();
+
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->getType() == "checkbox" )
+                {
+                    $this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
+                }
+                else if ( $row->getType() == "gallery" )
+                {
+                    $Gallery = new Gallery;
+                    $Gallery->setElementId( $this->getId() );
+                    $Gallery->setModuleId( $this->getEntityId() );
+                    $Gallery->setField( $row->getName() );
+                    $Gallery->duplicate( $data->get('id' ) );
+                }
+            }
 
             return [
                 'result' => true,

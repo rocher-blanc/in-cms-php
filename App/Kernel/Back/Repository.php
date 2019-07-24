@@ -271,4 +271,24 @@ class Repository extends \App\Kernel\Common\Repository
 			->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $element )
 			->count();
 	}
+
+	public function duplicateCheckbox( $nameField , $id , $newId )
+    {
+        $rst = \DB::for_module_assoc( $this->getName() , $nameField )
+            ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) , 'value' )
+            ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $check = \DB::for_module_assoc( $this->getName() , $nameField )->create();
+                $check->set( \DB::getTableNameAssocValue( $this->getName() , $nameField ) , $row->value );
+                $check->set( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $newId );
+                $check->save();
+            }
+        }
+
+    }
 }
