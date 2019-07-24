@@ -10,7 +10,7 @@
                     {% for thvalue in th %}
                         <th>
                             <span>{{ thvalue.title }}</span><br/>
-                            {% if thvalue.type != 'image' and thvalue.search == true %}
+                            {% if thvalue.type != 'image' and thvalue.type != 'checkbox' and thvalue.search == true %}
                                 <a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_desc')}}"><i class="icon-chevron-sign-down"></i></a>
                                 <a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_asc')}}"><i class="icon-chevron-sign-up"></i></a>
                             {% else %}
