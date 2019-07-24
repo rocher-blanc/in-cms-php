@@ -24,6 +24,7 @@ init = function( base ) {
     initDatePicker( base );
     initSelect( base );
     initFieldImage( base );
+    checkVideo( base );
     checkForm( base );
 };
 
@@ -32,6 +33,14 @@ initFieldImage = function( base ) {
         $(base + ' a.showfieldupload').click(function() {
             $('#' + $(this).data('field') ).removeClass('hide');
             $(this).parent().hide();
+        });
+    }
+
+    if ( $(base + ' button.parcourir').length ) {
+        $(base + ' button.parcourir').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).parent().find('#' + $(this).data('input') ).click();
         });
     }
 };
@@ -227,3 +236,61 @@ initDatePicker = function(base) {
         });
     }
 };
+
+/*
+#####################################################################################################################################
+#####################################################        VIDEO         ##########################################################
+#####################################################################################################################################
+*/
+
+getVideoID = function(url) {
+    if(url.indexOf('?') != -1 ) {
+        var query = decodeURI(url).split('?')[1];
+        var params = query.split('&');
+        for(var i=0,l = params.length;i<l;i++)
+            if(params[i].indexOf('v=') === 0)
+                return params[i].replace('v=','');
+    }
+    else if (url.indexOf('youtu.be') != -1) {
+        return decodeURI(url).split('youtu.be/')[1];
+    }
+    else if (url.indexOf('vimeo.com/') != -1) {
+        return decodeURI(url).split('vimeo.com/')[1];
+    }
+    else if (url.indexOf('dai.ly/') != -1) {
+        return decodeURI(url).split('dai.ly/')[1];
+    }
+    return null;
+};
+
+checkVideo = function( base ) {
+    if ( $( base ).find("input[data-video]").length ) {
+        $( base ).find('input[data-video]').each(function() {
+            $(this).change(function() {
+                var url = $(this).val();
+                var video_id = getVideoID(url);
+                var video_div = "#video_" + $(this).attr("id");
+
+                if (video_id != null) {
+                    if (url.indexOf('vimeo.com/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + video_id + '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+                    }
+                    else if (url.indexOf('dai.ly/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.dailymotion.com/embed/video/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    else {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.youtube.com/embed/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    $(video_div).show();
+                }
+                else {
+                    $(video_div).html("Aucune vidÃ©o");
+                }
+            });
+            if ($(this).val() != "")
+            {
+                $(this).trigger("change");
+            }
+        });
+    }
+}
