@@ -24,6 +24,7 @@ class Lang
     public function __construct()
     {
         $this->loadActiveLang() ;
+//        dump( $this );
     }
 
     /* ************************************************** */
@@ -173,7 +174,11 @@ class Lang
         }
 
         $this->_count = count( $this->getAll() ) ;
-        $this->setActive( $this->getDefault() ) ;
+
+        if ( $this->getActive() === NULL )
+        {
+            $this->setActive( $this->getDefault() ) ;
+        }
     }
 
     public function getBack()
