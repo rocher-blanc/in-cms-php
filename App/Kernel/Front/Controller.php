@@ -641,7 +641,7 @@ class Controller extends \App\Kernel\Common\Controller
 				}
 				else if ( $row->getType() == 'checkbox' or ( $row->isAssociated() && $row->getType() == 'select' ) )
 				{
-					$arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row , $this->getEntityName() ) ;
+					$arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row , $row->getObject() ) ;
 				}
 				else if ( ! $row->isAssociated() && $row->getType() == 'select' )
                 {
