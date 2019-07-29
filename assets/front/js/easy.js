@@ -284,7 +284,7 @@ checkVideo = function( base ) {
                     $(video_div).show();
                 }
                 else {
-                    $(video_div).html("Aucune vidÃ©o");
+                    $(video_div).html("Aucune vidéo");
                 }
             });
             if ($(this).val() != "")
@@ -293,4 +293,4 @@ checkVideo = function( base ) {
             }
         });
     }
-}
+};
