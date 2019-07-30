@@ -30,7 +30,9 @@ init = function( base ) {
 
 initFieldImage = function( base ) {
     if ( $(base + ' a.showfieldupload').length ) {
-        $(base + ' a.showfieldupload').click(function() {
+        $(base + ' a.showfieldupload').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             $('#' + $(this).data('field') ).removeClass('hide');
             $(this).parent().hide();
         });
