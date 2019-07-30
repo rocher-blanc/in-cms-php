@@ -16,7 +16,7 @@
         <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}_{{ rand }}">{{ _('update_document') }}</a>
     </div>
     <div class="{{ hasDoc ? 'hide' : '' }}" id="field_upload_{{ name }}_{{ rand }}">
-        <input id="upload_{{ name }}" value="{{ image }}" type="file" class="file-loading hide" name="{{ name }}">
+        <input id="upload_{{ name }}_{{ rand }}" value="{{ image }}" type="file" class="file-loading hide" name="{{ name }}">
         <button class="parcourir" data-input="upload_{{ name }}_{{ rand }}">{{ _('parcourir') }}</button>
     </div>
 </div>
