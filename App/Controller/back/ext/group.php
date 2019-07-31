@@ -245,11 +245,11 @@ $app->group('/group', function () use ($app)
 
     $app->get('/delete/:id', function ($id) use ($app) {
         $app->render('common/delete.twig', [
-            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/admin/group/delete/' . $id)
+            "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/group/delete/' . $id)
         ]);
     });
 
-	$app->delete('/delete/:id', function ($id) use ($app)
+	$app->post('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
 		if ( $id == $app->environment['user']['group_id'] )
@@ -282,6 +282,6 @@ $app->group('/group', function () use ($app)
 
 		}
 		
-		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
+		echo json_encode( array( "msg" => $msg , "result" => $ret , "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/group') ) ) ;
 	})->name('group_delete');
 });
