@@ -1654,7 +1654,13 @@ class Controller extends ControllerCommon
                         }
                         else
                         {
-                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $row['value'] );
+                            $value = $row['value'] ;
+                            if ( $row['type'] == 'video' )
+                            {
+                                $value = $row['value']['link'] ;
+                            }
+
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $value );
                         }
                         $col++;
                         $letter++;
