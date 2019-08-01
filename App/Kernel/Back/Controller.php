@@ -1576,12 +1576,14 @@ class Controller extends ControllerCommon
 
         $writer = new Xlsx($spreadsheet);
 
+        $tab = [];
         if ( ! $this->getEntity()->hasParent() )
         {
             if ( ! empty( $this->table['th'] ) )
             {
                 $col    = 0;
                 $letter = 0;
+                $i = 0;
                 foreach( $this->table['th'] as $th )
                 {
                     $prefix = '' ;
@@ -1593,12 +1595,14 @@ class Controller extends ControllerCommon
                     {
                         $prefix = $alphas[ $sub - 1 ];
                     }
+
                     $sheet->setCellValue($prefix . $alphas[ $letter ] . '1', $th['title'] );
 
                     $col++;
                     $letter++;
+                    $i++;
 
-                    if ( $col == count( $alphas ) ) $letter = 0;
+                    if ( $col % count( $alphas ) == 0 ) $letter = 0;
                 }
             }
 
@@ -1665,7 +1669,7 @@ class Controller extends ControllerCommon
                         $col++;
                         $letter++;
 
-                        if ( $col == count( $alphas ) ) $letter = 0;
+                        if ( $col % count( $alphas ) == 0 ) $letter = 0;
                     }
 
                     $line++;
