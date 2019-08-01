@@ -144,6 +144,11 @@ checkForm = function(base) {
                     }
                     // Send notification
                     Notify(data.msg, data.result);
+
+                    // Callback json
+                    if ( typeof $form.data('callbackjson') !== 'undefined' ) {
+                        window[ $form.data('callbackjson') ]( data );
+                    }
                 },
                 complete: function() {
                     $form.removeAttr("submitting");
