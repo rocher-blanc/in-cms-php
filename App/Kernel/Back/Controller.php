@@ -310,12 +310,17 @@ class Controller extends ControllerCommon
                 $order = $this->getEntity()->getOrderName() ;
                 $by    = 'asc' ;
             }
+            else if ( $this->getEntity()->getDefaultOrder() !== NULL && $this->getEntity()->getDefaultOrderBy() !== NULL )
+            {
+                $order = $this->getEntity()->getDefaultOrder() ;
+                $by    = $this->getEntity()->getDefaultOrderBy() ;
+            }
             else
             {
                 $order = $this->getEntity()->getIdName() ;
                 $by    = 'desc' ;
             }
-        } 
+        }
 
         $Guard = new \App\Kernel\Back\Acl;
         $Guard->setModule( $this->getEntityName() );
@@ -370,7 +375,7 @@ class Controller extends ControllerCommon
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
                         'search' => ( is_callable( $field->getData('updateValue') ) ? false : true ),
-                        'value' => $this->getApp()->request->get( $field->getName() ),
+                        'value' => ( $this->getApp()->request->get( $field->getName() ) !== NULL ? $this->getApp()->request->get( $field->getName() ) : $field->getDefaultSearch() ),
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
                         'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
                         'type' => $field->getType(),
@@ -1500,11 +1505,6 @@ class Controller extends ControllerCommon
                 $data->set( $this->getEntity()->getValidationName() , 0 );
             }
 
-            if ( $this->getEntity()->hasValidation() )
-            {
-                $data->set( $this->getEntity()->getValidationName() , 0 );
-            }
-
             if ( ! empty( $this->getEntity()->getFieldReference() ) )
             {
                 if ( count( $this->getEntity()->getFieldReference() ) == 1 )
@@ -1519,6 +1519,22 @@ class Controller extends ControllerCommon
             }
 
             $data->save();
+
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->getType() == "checkbox" )
+                {
+                    $this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
+                }
+                else if ( $row->getType() == "gallery" )
+                {
+                    $Gallery = new Gallery;
+                    $Gallery->setElementId( $this->getId() );
+                    $Gallery->setModuleId( $this->getEntityId() );
+                    $Gallery->setField( $row->getName() );
+                    $Gallery->duplicate( $data->get('id' ) );
+                }
+            }
 
             return [
                 'result' => true,
@@ -1560,12 +1576,14 @@ class Controller extends ControllerCommon
 
         $writer = new Xlsx($spreadsheet);
 
+        $tab = [];
         if ( ! $this->getEntity()->hasParent() )
         {
             if ( ! empty( $this->table['th'] ) )
             {
                 $col    = 0;
                 $letter = 0;
+                $i = 0;
                 foreach( $this->table['th'] as $th )
                 {
                     $prefix = '' ;
@@ -1577,12 +1595,14 @@ class Controller extends ControllerCommon
                     {
                         $prefix = $alphas[ $sub - 1 ];
                     }
+
                     $sheet->setCellValue($prefix . $alphas[ $letter ] . '1', $th['title'] );
 
                     $col++;
                     $letter++;
+                    $i++;
 
-                    if ( $col == count( $alphas ) ) $letter = 0;
+                    if ( $col % count( $alphas ) == 0 ) $letter = 0;
                 }
             }
 
@@ -1638,12 +1658,18 @@ class Controller extends ControllerCommon
                         }
                         else
                         {
-                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $row['value'] );
+                            $value = $row['value'] ;
+                            if ( $row['type'] == 'video' )
+                            {
+                                $value = $row['value']['link'] ;
+                            }
+
+                            $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $value );
                         }
                         $col++;
                         $letter++;
 
-                        if ( $col == count( $alphas ) ) $letter = 0;
+                        if ( $col % count( $alphas ) == 0 ) $letter = 0;
                     }
 
                     $line++;

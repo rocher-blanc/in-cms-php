@@ -313,7 +313,13 @@ class Repository extends \App\Kernel\Common\Repository
                     break;
                     case "parent" :
                         $rst->where_equal( $this->field( $this->getEntity()->getModuleParentIdName() ) , $rqt );
-                    break;
+                        break;
+                    case "module" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getModuleIdName() ) , $rqt );
+                        break;
+                    case "element" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getElementIdName() ) , $rqt );
+                        break;
                     case "limit" :
                         $rst->limit( $rqt );
                     break;

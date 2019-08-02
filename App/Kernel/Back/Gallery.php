@@ -138,6 +138,31 @@ class Gallery extends \App\Kernel\Common\Gallery
         return $tab ;
     }
 
+    public function duplicate( $id )
+    {
+        $rst = \DB::for_table('gallery')
+            ->where_equal( 'gallery_module_id' , $this->getModuleId() )
+            ->where_equal( 'gallery_element_id' , $this->getElementId() )
+            ->where_equal( 'gallery_field' , $this->getField() )
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $gallery = \DB::for_table('gallery')->create();
+                $gallery->gallery_name = $row->gallery_name;
+                $gallery->gallery_type = $row->gallery_type;
+                $gallery->gallery_size = $row->gallery_size;
+                $gallery->gallery_module_id = $row->gallery_module_id;
+                $gallery->gallery_element_id = $id;
+                $gallery->gallery_field = $row->gallery_field;
+                $gallery->gallery_position = $row->gallery_position;
+                $gallery->save();
+            }
+        }
+    }
+
     public function deleteElement()
     {
         $rst = \DB::for_table('gallery')
@@ -154,19 +179,27 @@ class Gallery extends \App\Kernel\Common\Gallery
         {
             foreach( $rst as $row )
             {
-                if ( ! empty( $this->getThumb() ) )
+                $ct = \DB::for_table('gallery')
+                    ->where_equal( 'gallery_name' , $row->gallery_name )
+                    ->where_equal( 'gallery_module_id' , $row->gallery_module_id )
+                    ->count();
+
+                if ( $ct == 1 )
                 {
-                    foreach( $this->getThumb() as $thb )
+                    if ( ! empty( $this->getThumb() ) )
                     {
-                        if ( file_exists( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) ) )
+                        foreach( $this->getThumb() as $thb )
                         {
-                            unlink( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) );
+                            if ( file_exists( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) ) )
+                            {
+                                unlink( $path . $this->getMini( $row->gallery_name , $thb['w'] , $thb['h'] ) );
+                            }
                         }
                     }
-                }
 
-                if ( file_exists( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ) unlink( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ;
-                if ( file_exists( $path . $row->gallery_name ) ) unlink( $path . $row->gallery_name ) ;
+                    if ( file_exists( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ) unlink( $path . $this->getMini( $row->gallery_name , 100 , 100 ) ) ;
+                    if ( file_exists( $path . $row->gallery_name ) ) unlink( $path . $row->gallery_name ) ;
+                }
 
                 $row->delete();
             }
@@ -175,19 +208,27 @@ class Gallery extends \App\Kernel\Common\Gallery
 
     public function delete()
     {
-        $img = $this->getById();
-
-        foreach( $img as $key => $row )
-        {
-            if ( file_exists( $row ) )
-            {
-                unlink( $row );
-            }
-        }
-
         $rst = \DB::for_table('gallery')
             ->where_equal( 'gallery_id' , $this->getImageId() )
             ->find_one();
+
+        $ct = \DB::for_table('gallery')
+            ->where_equal( 'gallery_name' , $rst->gallery_name )
+            ->where_equal( 'gallery_module_id' , $rst->gallery_module_id )
+            ->count();
+
+        if ( $ct == 1 )
+        {
+            $img = $this->getById();
+
+            foreach( $img as $key => $row )
+            {
+                if ( file_exists( $row ) )
+                {
+                    unlink( $row );
+                }
+            }
+        }
 
         $rst->delete();
     }

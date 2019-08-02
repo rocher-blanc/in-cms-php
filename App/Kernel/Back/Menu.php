@@ -52,10 +52,9 @@ class Menu
 			->find_many();
 
         // For each groups
-        $groups  = [];
-        $columns = [];
-        $blocks  = [];
-
+        $groups     = [];
+        $columns    = [];
+        $blocks     = [];
         $groups_id  = [];
         $columns_id = [];
         $blocks_id  = [];
@@ -81,6 +80,7 @@ class Menu
             $req_column = \DB::for_table( "module_column" )
                              ->where_in( "module_column_module_group_id" , $groups_id )
                              ->find_many();
+
             foreach ( $req_column as $column )
             {
 
@@ -98,17 +98,25 @@ class Menu
                              ->where_in( "module_column_block_module_column_id" , $columns_id )
                              ->order_by_asc( "module_column_block_order" )
                              ->find_many();
+
             foreach ( $req_blocks as $block )
             {
+                $file = false ;
+                $path = VIEW_PROJECT_PATH . '/' ;
+                $tpl  = 'menu/block_' . $block->module_column_block_id . '.twig' ;
+                if ( file_exists( $path . $tpl ) )
+                {
+                    $file = $tpl ;
+                }
 
                 $blocks_id[] = $block->module_column_block_id;
                 $blocks[ $block->module_column_block_id ] = [
-                    'id' => $block->module_column_block_id ,
-                    'column' => $block->module_column_block_module_column_id ,
-                    'title' => $block->module_column_block_title ,
-                    'modules' => [] ,
+                    'id'        => $block->module_column_block_id ,
+                    'column'    => $block->module_column_block_module_column_id ,
+                    'title'     => $block->module_column_block_title ,
+                    'file'      => $file ,
+                    'modules'   => [] ,
                 ];
-
             }
 
             // MODULES
@@ -116,12 +124,13 @@ class Menu
                               ->where_in( "module_module_column_block_id" , $blocks_id )
                               ->order_by_asc( "module_order" )
                               ->find_many();
+
             foreach ( $req_modules as $module )
             {
 
                 $blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
                     'title' => $module->module_name ,
-                    'url' => $module->module_class_name
+                    'url'   => $module->module_class_name
                 ];
 
             }

@@ -2,13 +2,16 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel;
+use App\Kernel\CMS;
+
 class Loader
 {
     protected $kernel = NULL ;
 
     public function __construct()
     {
-        $this->kernel = new \App\Kernel();
+        $this->kernel = new Kernel();
     }
 
     protected function preload()
@@ -17,10 +20,13 @@ class Loader
         /* ************* General Configuration *************** */
         #########################################################
 
-        $this->kernel->config([
+        CMS::getInstance()->setConfig([
             'session' 		=> 'auth_user',
+            'config' 		=> 'front',
             'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
         ]);
+
+        $this->kernel->config(CMS::getInstance()->getConfig());
         $this->kernel->load();
         $this->kernel->activeDbCaching() ;
 

@@ -24,14 +24,25 @@ init = function( base ) {
     initDatePicker( base );
     initSelect( base );
     initFieldImage( base );
+    checkVideo( base );
     checkForm( base );
 };
 
 initFieldImage = function( base ) {
     if ( $(base + ' a.showfieldupload').length ) {
-        $(base + ' a.showfieldupload').click(function() {
+        $(base + ' a.showfieldupload').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             $('#' + $(this).data('field') ).removeClass('hide');
             $(this).parent().hide();
+        });
+    }
+
+    if ( $(base + ' button.parcourir').length ) {
+        $(base + ' button.parcourir').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).parent().find('#' + $(this).data('input') ).click();
         });
     }
 };
@@ -92,47 +103,56 @@ checkForm = function(base) {
                 contentType: false,
                 dataType: "json",
                 success: function(data) {
-                    // Result is success
-                    if( data.result ) {
-                        if ( typeof $form.data('callback') !== 'undefined' ) {
-                            window[ $form.data('callback') ]();
-                        }
-                        else {
-                            // Test to redirection
-                            if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
-                                if ( typeof data.timer !== "undefined" ) {
-                                    setTimeout(function(){
+                    var next = true;
+
+                    // Callback json
+                    if ( typeof $form.data('callbackjson') !== 'undefined' ) {
+                        next = window[ $form.data('callbackjson') ]( data );
+                    }
+
+                    if ( next == true ) {
+                        // Result is success
+                        if( data.result ) {
+                            if ( typeof $form.data('callback') !== 'undefined' ) {
+                                window[ $form.data('callback') ]();
+                            }
+                            else {
+                                // Test to redirection
+                                if( typeof data.url !== "undefined" && data.url.trim().length > 0 ) {
+                                    if ( typeof data.timer !== "undefined" ) {
+                                        setTimeout(function(){
+                                            redirect(data.url);
+                                        }, data.timer);
+                                    }
+                                    else {
                                         redirect(data.url);
-                                    }, data.timer);
-                                }
-                                else {
-                                    redirect(data.url);
+                                    }
                                 }
                             }
                         }
-                    }
-                    // Result is not success
-                    else {
-                        if ( data.tab ) $('#onglet-' + data.tab ).click();
+                        // Result is not success
+                        else {
+                            if ( data.tab ) $('#onglet-' + data.tab ).click();
 
-                        if ( data.field ) {
-                            if ( $('#field-' + data.field).find('input, textarea').length ) {
-                                $('#field-' + data.field).find('input, textarea').addClass('error').focus();
+                            if ( data.field ) {
+                                if ( $('#field-' + data.field).find('input, textarea').length ) {
+                                    $('#field-' + data.field).find('input, textarea').addClass('error').focus();
+                                }
+                            }
+
+                            if ( data.fields ) {
+                                $.each(data.fields, function( index, value ) {
+                                    $('#field-' + value.field).addClass('error');
+                                });
                             }
                         }
-
-                        if ( data.fields ) {
-                            $.each(data.fields, function( index, value ) {
-                                $('#field-' + value.field).addClass('error');
-                            });
+                        // Hide process icon
+                        if ( $(base + ' .'+mod+'-form-process').length ) {
+                            $(base + ' .'+mod+'-form-process').hide();
                         }
+                        // Send notification
+                        Notify(data.msg, data.result);
                     }
-                    // Hide process icon
-                    if ( $(base + ' .'+mod+'-form-process').length ) {
-                        $(base + ' .'+mod+'-form-process').hide();
-                    }
-                    // Send notification
-                    Notify(data.msg, data.result);
                 },
                 complete: function() {
                     $form.removeAttr("submitting");
@@ -224,6 +244,64 @@ initDatePicker = function(base) {
             autoclose: true,
             todayHighlight: true,
             inputs: $(".date-range input")
+        });
+    }
+};
+
+/*
+#####################################################################################################################################
+#####################################################        VIDEO         ##########################################################
+#####################################################################################################################################
+*/
+
+getVideoID = function(url) {
+    if(url.indexOf('?') != -1 ) {
+        var query = decodeURI(url).split('?')[1];
+        var params = query.split('&');
+        for(var i=0,l = params.length;i<l;i++)
+            if(params[i].indexOf('v=') === 0)
+                return params[i].replace('v=','');
+    }
+    else if (url.indexOf('youtu.be') != -1) {
+        return decodeURI(url).split('youtu.be/')[1];
+    }
+    else if (url.indexOf('vimeo.com/') != -1) {
+        return decodeURI(url).split('vimeo.com/')[1];
+    }
+    else if (url.indexOf('dai.ly/') != -1) {
+        return decodeURI(url).split('dai.ly/')[1];
+    }
+    return null;
+};
+
+checkVideo = function( base ) {
+    if ( $( base ).find("input[data-video]").length ) {
+        $( base ).find('input[data-video]').each(function() {
+            $(this).change(function() {
+                var url = $(this).val();
+                var video_id = getVideoID(url);
+                var video_div = "#video_" + $(this).attr("id");
+
+                if (video_id != null) {
+                    if (url.indexOf('vimeo.com/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + video_id + '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+                    }
+                    else if (url.indexOf('dai.ly/') != -1) {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.dailymotion.com/embed/video/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    else {
+                        $(video_div).html('<iframe class="embed-responsive-item" src="//www.youtube.com/embed/' + video_id + '" allowfullscreen></iframe>');
+                    }
+                    $(video_div).show();
+                }
+                else {
+                    $(video_div).html("Aucune vidéo");
+                }
+            });
+            if ($(this).val() != "")
+            {
+                $(this).trigger("change");
+            }
         });
     }
 };
