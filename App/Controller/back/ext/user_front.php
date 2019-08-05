@@ -51,11 +51,11 @@ $app->group('/user_front', function () use ($app)
 			
 			if ( $app->request->post('user_front_login') == "" ) {
 				$error = true ;
-				$tabError['user_front_login'] = Translate::getInstance()->getText( mandatory_fillin);
+				$tabError['user_front_login'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
             elseif ( !filter_var( $app->request->post('user_front_login') , FILTER_VALIDATE_EMAIL ) ) {
                 $error = true ;
-                $tabError['user_front_login'] = Translate::getInstance()->getText( mandatory_email_address);
+                $tabError['user_front_login'] = Translate::getInstance()->getText( 'mandatory_email_address' );
             }
 			else {
 				$exist = \DB::for_table('user_front')->where_equal('user_front_login' , $app->request->post('user_front_login'));
@@ -65,23 +65,23 @@ $app->group('/user_front', function () use ($app)
 			
 			if ( $app->request->post('user_front_login') != "" && $exist > 0 ) {
 				$error = true ;
-				$tabError['user_front_login'] = Translate::getInstance()->getText( already_use_login);
+				$tabError['user_front_login'] = Translate::getInstance()->getText( 'already_use_login' );
 			}
 
 			
 			if ( $id == -1 && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
 				$error = true ;
-				$tabError['password'] = Translate::getInstance()->getText( mandatory_fillin);
+				$tabError['password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
 			if ( $id == -1 && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
 				$error = true ;
-				$tabError['confirm_password'] = Translate::getInstance()->getText( mandatory_fillin);
+				$tabError['confirm_password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
 			if ( $id == -1 && $app->request->post('password') != $app->request->post('confirm_password') ) {
 				$error = true ;
-				$tabError['confirm_password'] = Translate::getInstance()->getText( msg_different_password);
+				$tabError['confirm_password'] = Translate::getInstance()->getText( 'msg_different_password' );
 			}
 			
 			if ( $error == false ) {
@@ -154,7 +154,7 @@ $app->group('/user_front', function () use ($app)
         }
         else
         {
-            $msg = Translate::getInstance()->getText(delete_error);
+            $msg = Translate::getInstance()->getText( 'delete_error' );
         }
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;

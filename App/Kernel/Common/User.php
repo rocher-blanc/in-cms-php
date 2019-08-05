@@ -40,7 +40,7 @@ class User
 
     protected function text( $key )
     {
-        return \App\Kernel\Front\Translate::getInstance()->getText( $key ) ;
+        return \App\Kernel\Front\Translate::getInstance()->getText( 'key' ) ;
     }
 
     protected function Factory()
@@ -61,6 +61,11 @@ class User
     protected function getIp()
     {
         return $_SERVER['REMOTE_ADDR'] ;
+    }
+
+    protected function getSessionName()
+    {
+        return 'easydoor_user' ;
     }
 
     /* ************************************************** */

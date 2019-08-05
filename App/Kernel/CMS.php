@@ -11,6 +11,7 @@ class CMS
     /* ************************************************** */
 
     private static $instance = NULL ;
+    private $config = [];
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -33,6 +34,15 @@ class CMS
     }
 
     /* ************************************************** */
+    /* ****************     SETTER    ******************* */
+    /* ************************************************** */
+
+    public function setConfig( array $config )
+    {
+        $this->config = $config ;
+    }
+
+    /* ************************************************** */
     /* ****************     GETTER    ******************* */
     /* ************************************************** */
 
@@ -40,6 +50,11 @@ class CMS
     {
         if ( self::$instance === NULL ) self::$instance = new CMS;
         return self::$instance ;
+    }
+
+    public function getConfig()
+    {
+        return $this->config ;
     }
 
     public function getApp()
@@ -61,18 +76,15 @@ class CMS
         return $this->getApp()->response ;
     }
 
-    public function config()
+    public function config( $key )
     {
-        $rst = explode( "/" , $_SERVER['SCRIPT_FILENAME'] );
-        $ct = count( $rst );
-
-        if( $rst[ $ct - 2 ] == Install::getAdminFolder() )
+        if ( array_key_exists( $key , $this->getConfig() ) )
         {
-            return 'back' ;
+            return $this->config[ $key ] ;
         }
         else
         {
-            return 'front' ;
+            return NULL ;
         }
     }
 
@@ -87,7 +99,7 @@ class CMS
 
     public function text( $key )
     {
-        return Translate::getInstance()->getText('key' );
+        return Translate::getInstance()->getText( 'key' );
     }
 
     /* ************************************************** */

@@ -10,7 +10,7 @@
                     {% for thvalue in th %}
                         <th>
                             <span>{{ thvalue.title }}</span><br/>
-                            {% if thvalue.type != 'image' and thvalue.search == true %}
+                            {% if thvalue.type != 'image' and thvalue.type != 'checkbox' and thvalue.search == true %}
                                 <a data-filter data-by="desc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_desc')}}"><i class="icon-chevron-sign-down"></i></a>
                                 <a data-filter data-by="asc" data-order="{{ thvalue.name }}" href="javascript:;" class="filter{% if order == thvalue.name and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_asc')}}"><i class="icon-chevron-sign-up"></i></a>
                             {% else %}
@@ -69,7 +69,7 @@
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
                                         <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- {{ _('no_select')}} -----</option>
                                         {% for key,value in thvalue.options %}
-                                            <option value="{{ key }}"{{ key == thvalue.value ? ' selected' : '' }}>{{ value }}</option>
+                                            <option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
                                 {% elseif thvalue.type == 'radio' and thvalue.boolean == true %}
@@ -111,7 +111,7 @@
                                 </td>
                             {% elseif row.type == 'image' %}
                                 <td style="vertical-align: middle;" class="text-center">
-                                    <img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />
+                                    {% if row.value != '' %}<img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />{% endif %}
                                 </td>
                             {% else %}
                                 {% if row.module != '' and row.type != 'checkbox' %}

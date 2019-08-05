@@ -1,9 +1,10 @@
+{% set rand = random(1,999999) %}
 <div class="clear"></div>
 <ul class="nomargin ui-sortable" id="list_{{ name }}_checkable_tiles">
     {% for id,row in option %}
-        <label class="mini-img checkable-tile" id="checkabletile{{ id }}">
+        <label class="mini-img checkable-tile" id="checkabletile{{ id }}" for="{{ rand }}_checkbox_{{ name }}{{ id }}">
             <img src="{{ row.img }}" />
-            <input type="checkbox" name="{{ name }}[]" value="{{ id }}" {% if id in value %}checked="checked"{% endif %}/>
+            <input type="checkbox" name="{{ name }}[]" value="{{ id }}" id="{{ rand }}_checkbox_{{ name }}{{ id }}" {% if id in value %}checked="checked"{% endif %}/>
             <i class="icon-line-check"></i>
         </label>
     {% endfor %}

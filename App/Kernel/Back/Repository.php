@@ -2,6 +2,9 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Container;
+use App\Kernel\Debug;
+
 class Repository extends \App\Kernel\Common\Repository
 {
 
@@ -11,7 +14,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     protected function Container()
     {
-        return \App\Kernel\Container::getInstance();
+        return Container::getInstance();
     }
 
     /* ************************************************** */
@@ -103,7 +106,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function checkDatabase()
     {
-        \DB::checkModuleTable( $this->getName() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , \App\Kernel\Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
+        \DB::checkModuleTable( $this->getName() , Container::getInstance()->module( $this->getName() )->getEntity()->hasMultiLang() , Container::getInstance()->module( $this->getName() )->getEntity()->getField() ) ;
     }
 
     public function getAllTableIndex( $order , $by , $fields , $module_element_parent_id , $offset , $limit , $DepedencyModule = NULL , $DepedencyElement = NULL )
@@ -115,7 +118,7 @@ class Repository extends \App\Kernel\Common\Repository
             $content = $content->limit( $limit )->offset( $offset );
         }
 
-        return $content->find_many();
+        return$content->find_many();
     }
 
     public function countTableIndex( $order , $by , $fields , $module_element_parent_id , $DepedencyModule = NULL , $DepedencyElement = NULL )
@@ -155,7 +158,7 @@ class Repository extends \App\Kernel\Common\Repository
                 $content = $content->where_date_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_start'] )
                     ->where_date_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_end'] );
             }
-            else if ( $field['type'] == 'select' && !empty( $field['value'] ) )
+            else if ( $field['type'] == 'select' && ( $field['value'] !== '' && $field['value'] !== NULL ) )
             {
                 $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );
             }
@@ -268,4 +271,24 @@ class Repository extends \App\Kernel\Common\Repository
 			->where_equal( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->fieldSql() , $element )
 			->count();
 	}
+
+	public function duplicateCheckbox( $nameField , $id , $newId )
+    {
+        $rst = \DB::for_module_assoc( $this->getName() , $nameField )
+            ->select( \DB::getTableNameAssocValue( $this->getName() , $nameField ) , 'value' )
+            ->where_equal( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $id )
+            ->find_many();
+
+        if ( $rst )
+        {
+            foreach( $rst as $row )
+            {
+                $check = \DB::for_module_assoc( $this->getName() , $nameField )->create();
+                $check->set( \DB::getTableNameAssocValue( $this->getName() , $nameField ) , $row->value );
+                $check->set( \DB::getTableNameAssoc( $this->getName() , $nameField ) . '_' . \DB::getIdName( $this->getName() ) , $newId );
+                $check->save();
+            }
+        }
+
+    }
 }

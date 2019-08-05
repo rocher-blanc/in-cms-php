@@ -107,6 +107,9 @@
                                                                 {% for module in block.modules %}
                                                                     <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
                                                                 {% endfor %}
+                                                                {% if block.file != false %}
+                                                                    {% include block.file %}
+                                                                {% endif %}
                                                             </ul>
                                                         </li>
                                                     {% endfor %}

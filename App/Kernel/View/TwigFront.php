@@ -54,6 +54,7 @@ class TwigFront extends \Twig_Extension
         $this->tab = [];
 
         return array(
+            new \Twig_SimpleFunction('remove', array($this, 'remove')),
             new \Twig_SimpleFunction('addslashes', array($this, 'slashes')),
             new \Twig_SimpleFunction('env', array($this, 'env')),
             new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
@@ -61,6 +62,18 @@ class TwigFront extends \Twig_Extension
             new \Twig_SimpleFunction('css', array($this, 'getCssVar')),
             new \Twig_SimpleFunction('javascript', array($this, 'getJsVar'))
         );
+    }
+
+    public function remove( $str , $array )
+    {
+        if ( is_array( $array ) && ! empty( $array ) )
+        {
+            foreach( $array as $row )
+            {
+                $str = str_replace( $row , '' , $str );
+            }
+        }
+        return $str ;
     }
 
     public function slashes( $str )

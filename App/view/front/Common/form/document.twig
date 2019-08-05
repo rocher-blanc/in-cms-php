@@ -4,17 +4,19 @@
         {% set hasDoc = true %}
     {% endif %}
 {% endfor %}
+{% set rand = random(1, 999999) %}
 
 <input type="hidden" name="doc_{{ name }}" value="1">
 <div class="text-right">
-    <div class="{{ hasDoc ? '' : 'hide' }}" id="field_show_{{ name }}">
+    <div class="{{ hasDoc ? '' : 'hide' }}" id="field_show_{{ name }}_{{ rand }}">
         {% for doc in docs %}
             <input type="hidden" name="{{ name }}[{{ doc.id }}]" value="{{ doc.id }}">
             <a target="_blank" href="{{ doc.url }}">{{ doc.name }}</a><br />
         {% endfor %}
-        <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}">{{ _('update_document') }}</a>
+        <a href="javascript:;" class="showfieldupload" data-field="field_upload_{{ name }}_{{ rand }}">{{ _('update_document') }}</a>
     </div>
-    <div class="{{ hasDoc ? 'hide' : '' }}" id="field_upload_{{ name }}">
-        <input id="upload_{{ name }}" value="{{ image }}" type="file" class="file-loading" name="{{ name }}">
+    <div class="{{ hasDoc ? 'hide' : '' }}" id="field_upload_{{ name }}_{{ rand }}">
+        <input id="upload_{{ name }}_{{ rand }}" value="{{ image }}" type="file" class="file-loading hide" name="{{ name }}">
+        <button class="parcourir" data-input="upload_{{ name }}_{{ rand }}">{{ _('parcourir') }}</button>
     </div>
 </div>

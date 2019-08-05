@@ -131,6 +131,8 @@
     <!-- File upload -->
     <link rel="stylesheet" href="{{ asset('canvas/css/src/components/datepicker.css') }}" />
     <link rel="stylesheet" href="{{ asset('canvas/css/src/components/bs-filestyle.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/wysiwyg/summernote.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
@@ -145,6 +147,11 @@
     <script src="{{ asset('canvas/js/components/datepicker.js') }}"></script>
     <script src="{{ asset('canvas/js/components/datepicker.fr.js') }}"></script>
     <script src="{{ asset('canvas/js/components/datetimepicker.js') }}"></script>
+
+    <script src="{{ asset('canvas/js/wysiwyg/summernote.min.js') }}"></script>
+    <script src="{{ asset('canvas/js/wysiwyg/summernote-image-attributes.js') }}"></script>
+    <script src="{{ asset('canvas/js/wysiwyg/lang/summernote-fr-FR.js') }}"></script>
+
     {% if depedencies|length > 0 %}
         <script src="{{ asset('libs/jquery.tablednd.js') }}"></script>
         <script src="{{ asset('canvas/js/components/moment.js') }}"></script>

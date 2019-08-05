@@ -216,6 +216,15 @@ form {
   tr {
     &.trSearch {
       background-color: #efefef;
+
+      input.form-control {
+        height: 38px;
+        live-height: 38px;
+
+        &:active, &:focus {
+          border-color: $jweb-blue;
+        }
+      }
     }
   }
 
@@ -449,7 +458,7 @@ form {
 
 .turbolinks-progress-bar {
   height: 2px;
-  background-image: linear-gradient(to left, #00afaf 0%, #164757 58%);
+  background-image: linear-gradient(to left, $jweb-blue 0%, #164757 58%);
 }
 
 #toast-container {
@@ -473,7 +482,7 @@ form {
   padding: 4px 0;
 }
 .toast-success {
-  background-color: #00afaf;
+  background-color: $jweb-blue;
 }
 
 #primary-menu {
@@ -616,7 +625,7 @@ form {
 
   p { margin-bottom: 15px !important; }
   ul { padding-left: 40px !important; }
-  a { color: #00AFAF !important; }
+  a { color: $jweb-blue !important; }
 }
 
 /* ************************************************ */
