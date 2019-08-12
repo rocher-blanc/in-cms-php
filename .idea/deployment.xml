@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Icona">
+  <component name="PublishConfigData" autoUpload="Always" serverName="VPS1 - Myautov2">
     <serverData>
+      <paths name="EASYLETTER">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="EASYLETTER - ADMIN">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="FNH">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="JWEB - VPS1 - ADWORDS">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Mutu - Boutique">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -16,14 +44,21 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="OVH - FNH">
+      <paths name="PROD - FNH">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="PROD - Wizishop">
+      <paths name="PROD - IFEC">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="PROD - Wizi (1)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -37,6 +72,20 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="VM37 - ANDRH-DEV">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS - DOCv2">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="VPS - EASYLETTER">
         <serverdata>
           <mappings>
@@ -44,35 +93,78 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS - Plombier">
+      <paths name="VPS - MPG">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS - easyLETTER">
+      <paths name="VPS - PNP">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - FNH">
+      <paths name="VPS - Pollen">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Icona">
+      <paths name="VPS - Rupteur">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS - Socialter">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - Boutique">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - Casino">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - ICONA">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - Myautov2">
         <serverdata>
           <mappings>
             <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/web/assets/vendor/cmsmedias" local="$PROJECT_DIR$/assets" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="VPS1 - Rupteur">
+      <paths name="VPS1 - RIDUP4">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="VPS1 - Victorine">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
