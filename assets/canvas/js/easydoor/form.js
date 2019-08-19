@@ -25,35 +25,6 @@ init = function( base ) {
     checkVideo( base );
 };
 
-modalConfig = function( onglet ) {
-    return {
-        type: 'ajax',
-        closeBtnInside: false,
-        callbacks: {
-            ajaxContentAdded: function(mfpResponse) {
-                SEMICOLON.widget.loadFlexSlider();
-                SEMICOLON.initialize.resizeVideos();
-                SEMICOLON.widget.masonryThumbs();
-                checkboxSwitch('#myModal1');
-                init('#myModal1');
-                if( $("#myModal1 .tabs").length ) {
-                    $("#myModal1 .tabs").tabs();
-                }
-
-                if ( typeof onglet !== 'undefined' ) {
-                    $('#myModal1 #' + onglet ).trigger('click');
-                }
-            },
-            open: function() {
-                $('body').addClass('ohidden');
-            },
-            close: function() {
-                $('body').removeClass('ohidden');
-            }
-        }
-    };
-};
-
 modalDepedency = function ( base ) {
     if( $(base).find('a[data-modal="true"]').length > 0 ) {
         $(base).find('a[data-modal="true"]').magnificPopup( modalConfig() );
