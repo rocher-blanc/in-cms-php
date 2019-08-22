@@ -1069,6 +1069,12 @@ class Controller extends ControllerCommon
 						}
 					}
 
+                    if ( $this->getEntity()->itsDepedency() )
+                    {
+                        $this->setDepedencyElement( $content->get( $this->getEntity()->get( $this->getEntity()->getElementIdName() )->getColumn() ) );
+                        $this->setDepedencyModule( $content->get( $this->getEntity()->get( $this->getEntity()->getModuleIdName() )->getColumn() ) );
+                    }
+
                     if ( $this->getApp()->request->post('buttonaction') == "stay" )
                     {
                         if ( $this->getEntity()->itsDepedency() )   $result['url'] = $this->Factory()->Url()->depedencyRoute( $this->getEntityName() , 'edit' , $this->getDepedencyElement() , $this->getDepedencyModule() , $this->getId() ) ;
