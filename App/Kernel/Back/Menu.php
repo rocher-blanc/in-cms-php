@@ -158,6 +158,7 @@ class Menu
             'menuTree'          => $groups,
             'active_user'       => ACTIVE_USER,
             'active_newsletter' => NEWSLETTER_ACTIVE,
+            'active_easlyetter' => defined('EL_TOKEN'),
             'el_credits'        => $this->Container()->param()->get('el_credits'),
             'color'             => COLOR,
             'techno'            => TECHNO
