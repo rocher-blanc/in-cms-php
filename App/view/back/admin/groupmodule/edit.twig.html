@@ -15,7 +15,7 @@
 		<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
 		<div class="ed_field col_half">
-			<label>Activer</label>
+			<label>{{ _('button_activate')}}</label>
 			<input type="hidden" name="module_group_active" value="0" />
 			<div class="switch">
 				<input class="bt-switch" data-on-text="<i class='icon-line-check'></i>" data-off-text="<i class='icon-line-cross'></i>" data-on-color="themecolor" name="seo_robots" value="1" type="checkbox" {{ post.module_group_active == 1 ? ' checked="checked"' : '' }}>
