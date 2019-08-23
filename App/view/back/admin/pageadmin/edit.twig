@@ -3,10 +3,10 @@
 {% block title_page %}{{ _('pages')}}{% endblock %}
 
 {% if id != -1 %}
-	{% set this_page = 'Modification' %}
+	{% set this_page = _('modification') %}
 	{% set title_block_page = _('page_edit_modif') %}
 {% else %}
-	{% set this_page = 'Ajout' %}
+	{% set this_page = _('ajout') %}
 	{% set title_block_page = _('page_edit_add') %}
 {% endif %}
 

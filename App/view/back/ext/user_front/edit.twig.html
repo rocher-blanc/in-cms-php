@@ -3,10 +3,10 @@
 {% block title_page %}{{ _('administrateurs') }}{% endblock %}
 
 {% if id != -1 %}
-	{% set this_page =  'Modification'  %}
+	{% set this_page =  _('modification')  %}
 	{% set title_block_page =  _('uf_edit_modif_title')  %}
 {% else %}
-	{% set this_page =  'Ajout'  %}
+	{% set this_page =  _('ajout')  %}
 	{% set title_block_page =  _('uf_edit_add_title')  %}
 {% endif %}
 

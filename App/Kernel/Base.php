@@ -2,6 +2,8 @@
 
 namespace App\Kernel;
 
+use App\Kernel\Front\Translate;
+
 class Base
 {
 	/* ************************************************** */
@@ -31,63 +33,63 @@ class Base
     {
         return [
             'NewsletterSender' => [
-                'name' => "Expéditeurs",
+                'name' => Translate::getInstance()->getText('sender'),
                 'icon' => "icon-line2-users",
             ],
             'NewsletterGroup' => [
-                'name' => "Groupe d'abonnés",
+                'name' => Translate::getInstance()->getText('grp_abo' ),
                 'icon' => "icon-users",
             ],
             'NewsletterSubscriber' => [
-                'name' => "Abonnés",
+                'name' => Translate::getInstance()->getText('abonnes' ),
                 'icon' => "icon-user",
             ],
             'NewsletterCampaignGroup' => [
-                'name' => "Newsletters",
+                'name' => Translate::getInstance()->getText('newsletter_plur' ),
                 'icon' => "icon-folder",
             ],
             'NewsletterCampaign' => [
-                'name' => "Planification des campagnes",
+                'name' => Translate::getInstance()->getText('newsletter_planning' ),
                 'icon' => "icon-time",
             ],
             'NewsletterModel' => [
-                'name' => "Gabarit",
+                'name' => Translate::getInstance()->getText('gabarit' ),
                 'icon' => "icon-picture",
             ],
             'EdAutomation' => [
-                'name' => "Email automation",
+                'name' => Translate::getInstance()->getText('email_automation' ),
                 'icon' => "icon-picture",
             ],
             'EdAutomationVarGroup' => [
-                'name' => "Groupe de variables",
+                'name' => Translate::getInstance()->getText('grp_variables' ),
                 'icon' => "icon-stack2",
             ],
             'EdAutomationVar' => [
-                'name' => "Variables d'environnement",
+                'name' => Translate::getInstance()->getText('variables_environnement' ),
                 'icon' => "icon-atom",
             ],
             'EdAutomationModelGroup' => [
-                'name' => "Groupe de gabarits",
+                'name' => Translate::getInstance()->getText('grp_gabarits' ),
                 'icon' => "icon-stack",
             ],
             'EdAutomationModel' => [
-                'name' => "Modèle de gabarits",
+                'name' => Translate::getInstance()->getText('model_gabarits' ),
                 'icon' => "icon-vcard",
             ],
             'EdEmail' => [
-                'name' => "Modèles d'email",
+                'name' => Translate::getInstance()->getText('modeles_email' ),
                 'icon' => "icon-news",
             ],
             'EdAutomationHistory' => [
-                'name' => "Historique Emails automation",
+                'name' => Translate::getInstance()->getText('historique_email_automation' ),
                 'icon' => "icon-line-clock",
             ],
             'NewsletterCampaignGroupUnsubscribe' => [
-                'name' => "Désinscription",
+                'name' => Translate::getInstance()->getText('desinscription' ),
                 'icon' => "icon-enter",
             ],
             'GalleryCategory' => [
-                'name' => "Catégories",
+                'name' => Translate::getInstance()->getText('categories' ),
                 'icon' => "icon-line-grid",
             ]
         ];
