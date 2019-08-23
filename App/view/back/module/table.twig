@@ -20,12 +20,12 @@
                     {% endfor %}
                     {% if hasDefault %}
                         <th style="width: 100px;">
-                            Défaut<br />
+                            {{ _('default') }}<br />
                         </th>
                     {% endif %}
                     {% if hasValidation %}
                         <th style="width: 100px;">
-                            En ligne<br />
+                            {{ _('online') }}<br />
                             <a data-filter data-by="desc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'desc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_desc')}}"><i class="icon-chevron-sign-down"></i></a>
                             <a data-filter data-by="asc" data-order="{{ validationName }}" href="javascript:;" class="filter{% if order == validationName and by == 'asc' %} active{% endif %}" data-toggle="tooltip" data-placement="top" title="{{ _('order_asc')}}"><i class="icon-chevron-sign-up"></i></a>
                         </th>
