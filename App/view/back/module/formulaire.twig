@@ -10,9 +10,9 @@
 {% block title_page %}{{ mod.title }}{% endblock %}
 
 {% if id != '' %}
-    {% set this_page = 'Edition' %}
+    {% set this_page = _('edition') %}
 {% else %}
-    {% set this_page = 'Ajout' %}
+    {% set this_page = _('ajout') %}
 {% endif %}
 
 {% block module %}

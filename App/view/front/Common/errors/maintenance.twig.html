@@ -9,7 +9,7 @@
 <html lang="fr">
     <head>
         <meta charset="utf-8">
-        <title>Site en cours de maintenance</title>
+        <title>{{ _('site_maintenance') }}</title>
         <meta name="language" content="fr" />
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
         {{ css( false ) }}
@@ -20,13 +20,13 @@
     <header>
         <div class="intro">
             <div id="rotate">
-                <h2 class="rotate">Site en<br><span>Maintenance</span></h2>
-                <h2 class="rotate">Nous <span>améliorons</span> votre<br>expérience de <span>navigation</span></h2>
+                <h2 class="rotate">{{ _('site_en') }}<br><span>{{ _('maintenance') }}</span></h2>
+                <h2 class="rotate">{{ _('nous') }}<span>{{ _('ameliorons') }}</span> {{ _('votre') }}<br>{{ _('exp_de') }} <span>{{ _('navigation') }}</span></h2>
             </div>
 
-            <p>Site prochainement</p>
+            <p>{{ _('site_prochainement') }}</p>
             <p><span></span><i class="ionicons ion-alert-circled"></i><span></span></p>
-            <p>en ligne</p>
+            <p>{{ _('online') }}</p>
         </div>
     </header>
 
