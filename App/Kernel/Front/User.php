@@ -907,7 +907,8 @@ class User extends \App\Kernel\Common\User
                     $el = new Easyletter;
                     $rstMail = $el->automotion("lost_password" , $login , array_merge([
                         'password' => $pass,
-                        'Email' => $login
+						'Email' => $login,
+                        'email' => $login,
                     ], $this->getEmailVariablePassword() ));
 
                     if ( $rstMail === false )
