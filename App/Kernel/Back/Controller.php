@@ -3,6 +3,7 @@
 namespace App\Kernel\Back;
 
 use App\Kernel\Back\Gallery;
+use App\Kernel\Back\Media;
 use App\Kernel\Back\Seo;
 use App\Kernel\Common\Controller as ControllerCommon;
 use App\Kernel\Container;
@@ -364,7 +365,7 @@ class Controller extends ControllerCommon
                     $option = NULL;
                     if ( $field->isAssociated() )
                     {
-                        $option = $this->getValueAssociated( $field , "array" , true );
+                        $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) );
                     }
                     else if ( $field->hasOption() )
                     {
@@ -506,14 +507,7 @@ class Controller extends ControllerCommon
                             else if ( $field->getType() == "checkbox" )
                             {
                                 $arrayCheckbox = [];
-                                if ( $field->isAssociated() )
-                                {
-                                    $opt = $this->getValueAssociated( $field , "array" , true );
-                                }
-                                else
-                                {
-                                    $opt = $field->getOptions() ;
-                                }
+                                $opt = $thArray[ $field->getName() ]['options'];
 
                                 $value = '' ;
                                 $array = $this->getAssocValueForm( $field->getName() , $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
@@ -534,7 +528,7 @@ class Controller extends ControllerCommon
                             }
                             else if ( $field->getType() == "image" )
                             {
-                                $Media = new \App\Kernel\Back\Media;
+                                $Media = new Media;
                                 $Media->setModuleId( $this->getEntityId() ) ;
                                 $Media->setImageId( $row->get( $field->getColumn() ) );
                                 $Media->getNameById();
@@ -1573,6 +1567,9 @@ class Controller extends ControllerCommon
 
     protected function exportAction()
     {
+        // On prend les dispositions pour les gros exports
+        set_time_limit(0);
+
         $this->getGlobalVar() ;
         $this->generateTable() ;
 
@@ -1668,6 +1665,24 @@ class Controller extends ControllerCommon
                             if ( $row['type'] == 'video' )
                             {
                                 $value = $row['value']['link'] ;
+                            }
+                            else if ( $row['type'] == 'checkbox' )
+                            {
+                                $value = '' ;
+                                if ( ! empty( $row['value'] ) )
+                                {
+                                    $i = 0;
+                                    foreach( $row['value'] as $rep )
+                                    {
+                                        if ( $i > 0 )
+                                        {
+                                            $value .= ', ' ;
+                                        }
+
+                                        $value .= $rep['value'] ;
+                                        $i++;
+                                    }
+                                }
                             }
 
                             $sheet->setCellValue($prefix . $alphas[ $letter ] . $line, $value );
