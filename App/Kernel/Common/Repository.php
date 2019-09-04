@@ -62,7 +62,7 @@ class Repository
         return \DB::for_module( $this->getName() )->where( $tab )->count();
     }
 
-    public function findAllForSelect2( $alias = NULL )
+    public function findAllForSelect2( $alias = NULL , $arrayContent = [] )
     {
         if ( $alias === NULL ) $alias = 'titre' ;
 
@@ -79,6 +79,11 @@ class Repository
             }
 
             $content = $content->select_expr( $this->getEntity()->get( $field )->fieldSql() , $alias );
+
+            if ( ! empty( $arrayContent ) )
+            {
+                $content = $content->whereIn( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , $arrayContent );
+            }
 
             if ( $lang )
             {
@@ -209,6 +214,28 @@ class Repository
             foreach( $content as $row )
             {
                 $result[] = $row->get( \DB::getTableNameAssocValue( $this->getName() , $nameField ) ) ;
+            }
+        }
+
+        return $result ;
+    }
+
+    // Pour les checkbox dans le même module (systeme de table d'association)
+    public function getAssocSimpleValueIndex( $nameField )
+    {
+        $field = \DB::getTableNameAssocValue( $this->getName() , $nameField ) ;
+        $content = \DB::for_module_assoc( $this->getName() , $nameField )
+            ->select( $field )
+            ->group_by( $field )
+            ->find_many();
+
+        $result  = array() ;
+
+        if ( $content )
+        {
+            foreach( $content as $row )
+            {
+                $result[] = $row->get( $field ) ;
             }
         }
 

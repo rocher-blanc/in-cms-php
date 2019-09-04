@@ -5,6 +5,7 @@ namespace App\Kernel\Common;
 use App\Kernel\Back\Alt;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
+use App\Kernel\Container;
 use App\Kernel\Front\Translate;
 use Slim\Slim;
 
@@ -268,7 +269,7 @@ class Controller
 
     protected function Container()
     {
-        return \App\Kernel\Container::getInstance() ;
+        return Container::getInstance() ;
     }
 
     public function getEntity(): \App\Kernel\Entity\Builder
@@ -377,9 +378,9 @@ class Controller
     /* ************************************************** */
 
     // Systeme de many / one TO many / one
-    public function getValueAssociated( $row , $returnType = NULL , $form = false )
+    public function getValueAssociated( $row , $returnType = NULL , $form = false , $fieldCheckbox = false )
     {
-        $Controller = \App\Kernel\Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
+        $Controller = Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
         if ( $row->getData('var') !== NULL && $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
         {
@@ -396,14 +397,20 @@ class Controller
         }
         else
         {
-            $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType ) ;
+            $checkboxValue = [];
+            if ( $fieldCheckbox !== false )
+            {
+                $checkboxValue = $this->getRepository()->getAssocSimpleValueIndex( $fieldCheckbox );
+            }
+
+            $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType , $checkboxValue ) ;
 
             unset( $Controller );
             return $tab ;
         }
     }
 
-    public function getElementForAssociation( $name = NULL , $returnType = NULL )
+    public function getElementForAssociation( $name = NULL , $returnType = NULL , $checkbox = false )
     {
         $alias = 'titre' ;
 
@@ -414,7 +421,7 @@ class Controller
         }
         else
         {
-            $content = $this->getRepository()->findAllForSelect2( $alias ) ;
+            $content = $this->getRepository()->findAllForSelect2( $alias , $checkbox ) ;
         }
 
         switch( $returnType )

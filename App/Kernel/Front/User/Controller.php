@@ -2,11 +2,13 @@
 
 namespace App\Kernel\Front\User;
 
+use App\Kernel\Front\User;
+
 class Controller extends \App\Kernel\Front\Controller
 {
     protected function User()
     {
-        return \App\Kernel\Front\User::getInstance();
+        return User::getInstance();
     }
 
     /*  **** ADD **** */
@@ -64,7 +66,8 @@ class Controller extends \App\Kernel\Front\Controller
     }
 
     /*  **** VALIDATION **** */
-    protected function hookEnableAfter() {
+    protected function hookEnableAfter()
+    {
         $content = $this->getRepository()->findOne( $this->getId() );
 
         if ( $content )
@@ -105,7 +108,8 @@ class Controller extends \App\Kernel\Front\Controller
 
         if ( $rst['result'] == true )
         {
-            $rst['msg'] = $this->User()->getError()['msg'] ;
+            if ( $this->_post('moduleCustom') != 1 ) $rst['msg'] = $this->User()->getError()['msg'] ;
+            else                                          return $rst ;
         }
         else
         {

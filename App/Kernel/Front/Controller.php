@@ -967,8 +967,13 @@ class Controller extends \App\Kernel\Common\Controller
             $this->setId( $id );
         }
 
-        $form  = parent::generateForm( $id === NULL ? false : true , $data );
-        $View  = $this->Container()->newClass('App\Kernel\View');
+        if ( $this->getEntityName() == MODULE_USER )
+        {
+            $this->field('user_action')->setData( "front" , false ) ;
+        }
+
+        $form = parent::generateForm( $id === NULL ? false : true , $data );
+        $View = $this->Container()->newClass('App\Kernel\View');
 
         $start = $View->fetch( 'module/widget/form/start.twig' , [
             'field'      => $form['field'],
@@ -1191,18 +1196,18 @@ class Controller extends \App\Kernel\Common\Controller
             {
                 $tab   = [];
                 $first = true;
-                if (!empty($this->getEntity()->getField()))
+                if ( ! empty( $this->getEntity()->getField() ) )
                 {
-                    foreach ($this->getEntity()->getField() as $row)
+                    foreach ( $this->getEntity()->getField() as $row )
                     {
-                        if ($row->getError() != '')
+                        if ( $row->getError() != '' )
                         {
                             $tab[] = [
                                 'field' => $row->getName(),
                                 'error' => $row->getError()
                             ];
 
-                            if ($first)
+                            if ( $first )
                             {
                                 $result['msg']   = $row->getError();
                                 $result['tab']   = $row->getTab();

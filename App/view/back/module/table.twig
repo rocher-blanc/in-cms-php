@@ -72,6 +72,12 @@
                                             <option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
+                                {% elseif thvalue.type == 'checkbox' %}
+                                    <select name="{{ thvalue.name }}[]" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2">
+                                        {% for key,value in thvalue.options %}
+                                            <option value="{{ key }}">{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
                                 {% elseif thvalue.type == 'radio' and thvalue.boolean == true %}
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
                                         <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>{{ _('all')}}</option>

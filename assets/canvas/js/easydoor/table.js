@@ -175,6 +175,19 @@ listenFormTable = function( base ) {
                 }
             });
 
+            $form.find('select[data-plugin-selectPicker]').selectpicker({
+                iconBase: '',
+                tickIcon: 'icon-line-check',
+                countSelectedText: function(num) {
+                    if (num === 0) {
+                        return 'Aucune sélection';
+                    }
+                    else if (num > 1) {
+                        return '{0} options sélectionnées';
+                    }
+                }
+            });
+
             $form.find('.daterange').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
             });
