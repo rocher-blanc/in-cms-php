@@ -4,6 +4,7 @@ namespace App\Kernel\Entity;
 
 use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
+use App\Kernel\Front\Translate;
 
 class Builder extends Model
 {
@@ -1170,7 +1171,7 @@ class Builder extends Model
                         ->notEmpty('user_register_password_empty' , true )
                         ->noRename()
                         ->noBack()
-                        ->name('Mot de passe');
+                        ->name( Translate::getInstance()->getText('password') );
 
                     $this->build('user_password_confirm' , true )
                         ->isPassword()
@@ -1178,7 +1179,7 @@ class Builder extends Model
                         ->notEmpty('user_register_confirm_password_empty' , true )
                         ->noRename()
                         ->noBack()
-                        ->name('Confirmer votre mot de passe');
+                        ->name( Translate::getInstance()->getText('mdp_confirm') );
                 }
             }
             else
@@ -1187,7 +1188,7 @@ class Builder extends Model
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    //->notEmpty("Veuillez indiquer le mot de passe" )
+                    //->notEmpty( Translate::getInstance()->getText('mandatory_password') )
                     ->noRename()
                     ->noFront()
                     ->noindex()/*
@@ -1213,14 +1214,13 @@ class Builder extends Model
                                 return true ;
                             }
                         }
-                    }, "Veuillez indiquer les mot de passe" )
-
-                    ->name('Mot de passe');
+                    }, Translate::getInstance()->getText('mandatory_password') )
+                    ->name( Translate::getInstance()->getText('password') );
 
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    //->notEmpty("Veuillez confirmer le mot de passe" )
+                    //->notEmpty( Translate::getInstance()->getText('mandatory_confirm_password') )
                     ->noRename()
                     ->noFront()
                     ->noindex()/*
@@ -1253,7 +1253,7 @@ class Builder extends Model
                             }
                         }
                     }, "Les deux mots de passe sont différents" )
-                    ->name('Confirmer votre mot de passe');
+                    ->name( Translate::getInstance()->getText('mandatory_password') );
             }
         }
     }
