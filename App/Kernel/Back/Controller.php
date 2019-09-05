@@ -373,6 +373,7 @@ class Controller extends ControllerCommon
                     }
 
                     $thArray[ $field->getName() ] = array_merge([
+                        'group' => $this->getEntity()->getGroup( $field->getGroup() )['name'],
                         'name' => $field->getName(),
                         'title' => $field->getTitle(),
                         'search' => ( is_callable( $field->getData('updateValue') ) ? false : true ),
@@ -1579,7 +1580,8 @@ class Controller extends ControllerCommon
 
         $writer = new Xlsx($spreadsheet);
 
-        $tab = [];
+        $tab   = [];
+        $group = '' ;
         if ( ! $this->getEntity()->hasParent() )
         {
             if ( ! empty( $this->table['th'] ) )
@@ -1599,7 +1601,12 @@ class Controller extends ControllerCommon
                         $prefix = $alphas[ $sub - 1 ];
                     }
 
-                    $sheet->setCellValue($prefix . $alphas[ $letter ] . '1', $th['title'] );
+                    if ( $group != $th['group'] )
+                    {
+                        $sheet->setCellValue($prefix . $alphas[ $letter ] . '1', $th['group'] );
+                        $group = $th['group'] ;
+                    }
+                    $sheet->setCellValue($prefix . $alphas[ $letter ] . '2', $th['title'] );
 
                     $col++;
                     $letter++;
@@ -1611,7 +1618,7 @@ class Controller extends ControllerCommon
 
             if ( ! empty( $this->table['td'] ) )
             {
-                $line = 2 ;
+                $line = 3 ;
                 foreach( $this->table['td'] as $td )
                 {
                     $col    = 0;
