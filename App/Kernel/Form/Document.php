@@ -38,16 +38,19 @@ class Document extends \App\Kernel\Back\Form
 				foreach( $exp as $row )
 				{
 					$this->_doc->setDocumentId( $row );
-					$this->_doc->getNameById();
+					$rst = $this->_doc->getNameById();
 					$ico = $this->_doc->getIcon( $this->_doc->getDocumentName() );
 
-					$tab[ $row ] = [
-						'url'   => Http::getInstance()->getUrl() . str_replace( WEB_PATH , '' , DOCUMENT_PATH ) . "/" . $this->getFolder() . "/" . $this->_doc->getDocumentName(),
-						'name'  => $this->_doc->getDocumentName(),
-						'title' => $this->_doc->getAltText(),
-						'id'    => $row,
-						'ico'   => $ico
-					];
+					if ( $rst )
+                    {
+                        $tab[ $row ] = [
+                            'url'   => Http::getInstance()->getUrl() . str_replace( WEB_PATH , '' , DOCUMENT_PATH ) . "/" . $this->getFolder() . "/" . $this->_doc->getDocumentName(),
+                            'name'  => $this->_doc->getDocumentName(),
+                            'title' => $this->_doc->getAltText(),
+                            'id'    => $row,
+                            'ico'   => $ico
+                        ];
+                    }
 				}
 			}
 

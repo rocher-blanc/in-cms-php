@@ -622,16 +622,19 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             $Doc = new \App\Kernel\Front\Document;
                             $Doc->setDocumentId( $rep );
-                            $Doc->getNameById();
+                            $rstDoc = $Doc->getNameById();
 
-                            $tab = [];
+                            if ( $rstDoc )
+                            {
+                                $tab = [];
 
-                            $tab['url']   = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
-                            $tab['icon']  = $Doc->getIcon( $Doc->getDocumentName() );
-                            $tab['name']  = $Doc->getDocumentName();
-                            $tab['title'] = $Doc->getAltText();
+                                $tab['url']   = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
+                                $tab['icon']  = $Doc->getIcon( $Doc->getDocumentName() );
+                                $tab['name']  = $Doc->getDocumentName();
+                                $tab['title'] = $Doc->getAltText();
 
-                            $arrayElement[ $row->getName() ][] = $tab;
+                                $arrayElement[ $row->getName() ][] = $tab;
+                            }
                         }
                     }
                 }
