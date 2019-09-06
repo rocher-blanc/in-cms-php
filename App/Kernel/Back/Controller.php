@@ -415,11 +415,20 @@ class Controller extends ControllerCommon
 
                 $this->setRender( 'paginator' , $paginator->getPages() ) ;
 
+                $loadContent = false ;
+                foreach( $this->getEntity()->getField() as $f )
+                {
+                    if ( is_callable( $f->getData('updateValue') ) or is_callable( $f->getData('javascript') ) or is_callable( $f->getData('style') ) )
+                    {
+                        $loadContent = true ;
+                    }
+                }
+
                 // TD
                 $i = 0;
                 foreach( $content as $row )
                 {
-                    if ( ! empty( $this->getEntity()->getIcon() ) or is_callable( $field->getData('updateValue') ) or is_callable( $field->getData('javascript') ) or is_callable( $field->getData('style') ) or is_callable( $this->getEntity()->getShowDelete() ) or is_callable( $this->getEntity()->getShowEdit() ) )
+                    if ( ! empty( $this->getEntity()->getIcon() ) or $loadContent == true or is_callable( $this->getEntity()->getShowDelete() ) or is_callable( $this->getEntity()->getShowEdit() ) )
                     {
                         $contentShow = new \stdClass;
                         foreach( $this->getEntity()->getField() as $f )
@@ -430,6 +439,7 @@ class Controller extends ControllerCommon
                                 $contentShow->$name = $row->get( $f->getColumn() );
                             }
                         }
+                        $contentShow->id = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
                         $contentShow->date_created = $row->get( $this->getEntity()->get('date_created')->getColumn() );
 
                         $contentShow = $this->filterContent( $contentShow );
