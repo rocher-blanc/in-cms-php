@@ -789,6 +789,7 @@ class Controller extends ControllerCommon
             ->select('module_name')
             ->select('module_icon')
             ->select('module_id')
+            ->select('module_kernel')
             ->where(array('module_class_name' => $this->getEntityName() , 'module_active' => 1))
             ->find_one();
 
@@ -798,7 +799,7 @@ class Controller extends ControllerCommon
                 'mod' => [
                     'id'    	    => $this->getEntityId(),
                     'name'  	    => $this->getEntityName(),
-                    'title' 	    => $rst->module_name,
+                    'title' 	    => $rst->module_kernel ? Translate::getInstance()->getText($rst->module_name) : $rst->module_name,
                     'icon'  	    => $rst->module_icon,
 					'canCreate'     => $this->canCreate(),
 					'canImport'     => $this->getEntity()->canImport(),

@@ -2,7 +2,7 @@
 
 namespace App\Kernel;
 
-use App\Kernel\Front\Translate;
+use App\Kernel\Back\Translate;
 
 class Base
 {
