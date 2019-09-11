@@ -10,6 +10,10 @@ if (typeof Notify !== "function") {
     };
 }
 
+if (typeof processOnSubmit !== "function") {
+    processOnSubmit = function() {};
+}
+
 if (typeof redirect !== "function") {
     redirect = function( url ) {
         if(typeof url !== "undefined") {
@@ -93,6 +97,7 @@ checkForm = function(base) {
             $form.attr("submitting", "1");
 
             $(base + ' form.ajax').find('.error').removeClass('error');
+            processOnSubmit();
 
             $.ajax({
                 type: $form.attr('method'),
