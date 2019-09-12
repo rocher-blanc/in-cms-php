@@ -4,6 +4,8 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
     protected $a = [
         "abonnes" => "Abonnés",
         "absence_msg" => "Message d'absence",
+        "sellsy_subject_invoice" => "Cde site \"{order_id}\"",
+        "generer_facture" => "Générer la facture",
         "action" => "Action",
         "action_irreversible" => "Cette action est irréversible.",
         "actions" => "Actions",
