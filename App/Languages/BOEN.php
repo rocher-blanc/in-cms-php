@@ -24,6 +24,7 @@ class BOEN extends \App\Kernel\Front\LanguageModel {
         "afficher" => "Display",
         "ajout" => "Adding",
         "alerte" => "Alert",
+        "see_website" => "See the website",
         "all" => "All",
         "allowed_grp_user" => "Authorized user groups",
         "already_use_domain_name" => "This domain name is already in use",

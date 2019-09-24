@@ -334,7 +334,7 @@ class Media extends \App\Kernel\Common\Media
 				$tmpImg = new \abeautifulsite\SimpleImage( $img );
                 $tmpImg->best_fit( $width , $height );
 
-                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
+                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
                 $destImg->overlay($tmpImg)->save($file);
 			}
 			

@@ -1094,6 +1094,7 @@ class Controller
                             $Gallery->setElementId( $this->getId() );
                             $Gallery->setField( $row->getName() );
                             $Gallery->setModuleId( $this->getEntityId() );
+                            $Gallery->setFolder( $this->getEntity()->getFolder() );
                             if ( $row->hasThumb() )
                             {
                                 foreach( $row->getThumb() as $thumb )
