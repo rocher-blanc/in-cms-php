@@ -197,6 +197,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
         "filtres" => "Filtres",
         "forced_https" => "Forcer HTTPS",
         "forced_www" => "Forcer WWW",
+        "see_website" => "Voir le site",
         "formulaire_warn_msg" => "Une limite d'élément a été fixé, il est impossible d'ajouter de nouveaux éléments.",
         "frais_port" => "Frais de port",
         "from" => "De",

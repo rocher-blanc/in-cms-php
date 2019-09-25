@@ -84,6 +84,39 @@ class Gallery extends \App\Kernel\Common\Gallery
         }
     }
 
+    public function createByUrl( array $images )
+    {
+        foreach( $images as $img )
+        {
+            if ( ! empty( $img ) )
+            {
+                $filename = end( explode( '/' , $img ) );
+                $this->setImageName( $this->getNewFilename( $filename ) );
+
+                if ( $this->copyFromUrl( $img ) )
+                {
+                    $this->genThumb( 100 , 100 );
+
+                    if ( ! empty( $this->getThumb() ) )
+                    {
+                        foreach( $this->getThumb() as $thb )
+                        {
+                            $this->genThumb( $thb['w'] , $thb['h'] );
+                        }
+                    }
+
+                    $gallery = \DB::for_table('gallery')->create();
+                    $gallery->gallery_name = $this->getImageName();
+                    $gallery->gallery_module_id = $this->getModuleId();
+                    $gallery->gallery_element_id = $this->getElementId();
+                    $gallery->gallery_field = $this->getField();
+                    $gallery->gallery_position = 9999;
+                    $gallery->save();
+                }
+            }
+        }
+    }
+
     public function add()
     {
         $path = IMAGE_PATH . '/' . $this->getFolder() ;
@@ -254,6 +287,18 @@ class Gallery extends \App\Kernel\Common\Gallery
         return move_uploaded_file( $tmp_name , IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() );
     }
 
+    protected function copyFromUrl( $url )
+    {
+        $fgc = file_get_contents( $url ) ;
+
+        if ( $fgc !== false )
+        {
+            return file_put_contents( IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getImageName() , $fgc );
+        }
+
+        return $fgc ;
+    }
+
     protected function genDefaultCrop( $width , $height )
     {
         return $this->genThumb( $width , $height , true ) ;
@@ -271,7 +316,7 @@ class Gallery extends \App\Kernel\Common\Gallery
             $tmpImg = new \abeautifulsite\SimpleImage( $img );
             $tmpImg->best_fit( $width , $height );
 
-            $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
+            $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
             $destImg->overlay($tmpImg)->save($file);
 
             return $miniName ;

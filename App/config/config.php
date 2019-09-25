@@ -72,6 +72,9 @@ defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 defined('TECHNO') || define('TECHNO','easyDOOR');
 
+// THUMB
+defined('BACKGROUND_COLOR_THB') || define('BACKGROUND_COLOR_THB', "#FFF" );
+
 // DEBUG
 defined('DEBUG_BAR') || define('DEBUG_BAR', false );
 defined('PRODUCTION') || define('PRODUCTION', false );
