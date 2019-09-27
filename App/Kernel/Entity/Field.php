@@ -188,7 +188,7 @@ class Field
 
 	public function isEmpty( $lang = NULL )
 	{
-        if ( is_string( $this->getValue( $lang ) ) )
+	    if ( is_string( $this->getValue( $lang ) ) )
         {
             if ( trim( $this->getValue( $lang ) ) === '' or $this->getValue( $lang ) === '' )   return true ;
             else                                                                                return false ;

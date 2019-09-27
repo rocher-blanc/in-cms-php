@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use abeautifulsite\SimpleImage;
+
 class Gallery
 {
     /* ************************************************** */
@@ -162,5 +164,44 @@ class Gallery
         if ( empty( $name ) ) return false ;
 
         return $type . '/' . $name . "-" . $width . "x" . $height . "." . $ext ;
+    }
+
+    public function genThumb( $width , $height , $crop = false , $name = '' )
+    {
+        if ( empty( $name ) )
+        {
+            $name = $this->getImageName() ;
+        }
+
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $img  = $path . $name ;
+
+        try {
+            $miniName = $this->updateName( $name , $width . "x" . $height ) ;
+            $file = $path . ( $crop == true ? 'c' : 't' ) . "/" . $miniName ;
+
+            $tmpImg = new SimpleImage( $img );
+            $tmpImg->best_fit( $width , $height );
+
+            $destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+            $destImg->overlay($tmpImg)->save($file);
+
+            return $miniName ;
+        } catch(Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    private function updateName( $name , $addStr = "" )
+    {
+        $exp 	= explode( "." , $name ) ;
+        $ext 	= end( $exp ) ;
+        $extlen = ( strlen( $ext ) + 1 ) * -1 ;
+        if ( $addStr != "" ) $addStr = "-" . $addStr ;
+
+        $name = substr( $name , 0 , $extlen ) ;
+        $name = $this->Factory()->Url()->encode( $name . $addStr ) . "." . $ext ;
+
+        return $name ;
     }
 }

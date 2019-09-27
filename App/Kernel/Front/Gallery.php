@@ -50,6 +50,12 @@ class Gallery extends \App\Kernel\Common\Gallery
                 {
                     foreach( $field->getThumb() as $thumb )
                     {
+                        $fileMini = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , $thumb[0] , $thumb[1] );
+                        if ( ! file_exists( $fileMini ) )
+                        {
+                            $this->genThumb( $thumb[0] , $thumb[1] , false , $row->gallery_name );
+                        }
+
                         $tab[ $row->gallery_id ][$thumb[0] . 'x' . $thumb[1]] = $path . $this->getMini( $row->gallery_name , $thumb[0] , $thumb[1] ) ;
                     }
                 }

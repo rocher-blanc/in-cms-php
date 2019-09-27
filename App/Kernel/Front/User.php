@@ -289,7 +289,9 @@ class User extends \App\Kernel\Common\User
         if ( $this->getProfileModule() !== NULL )
         {
             $Module = $this->Container()->module( $this->getProfileModule() )->getController();
-            if ( ! $Module->checkForm() )
+            $checkForm = $Module->checkForm() ;
+
+            if ( ! $checkForm )
             {
                 $Entity = $this->Container()->module( $this->getProfileModule() )->getEntity();
                 foreach( $Entity->getField() as $field )

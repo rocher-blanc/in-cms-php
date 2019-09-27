@@ -304,40 +304,6 @@ class Gallery extends \App\Kernel\Common\Gallery
         return $this->genThumb( $width , $height , true ) ;
     }
 
-    public function genThumb( $width , $height , $crop = false )
-    {
-        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-        $img  = $path . $this->getImageName() ;
-
-        try {
-            $miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
-            $file = $path . ( $crop == true ? 'c' : 't' ) . "/" . $miniName ;
-
-            $tmpImg = new \abeautifulsite\SimpleImage( $img );
-            $tmpImg->best_fit( $width , $height );
-
-            $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-            $destImg->overlay($tmpImg)->save($file);
-
-            return $miniName ;
-        } catch(Exception $e) {
-            echo 'Error: ' . $e->getMessage();
-        }
-    }
-
-    private function updateName( $name , $addStr = "" )
-    {
-        $exp 	= explode( "." , $name ) ;
-        $ext 	= end( $exp ) ;
-        $extlen = ( strlen( $ext ) + 1 ) * -1 ;
-        if ( $addStr != "" ) $addStr = "-" . $addStr ;
-
-        $name = substr( $name , 0 , $extlen ) ;
-        $name = $this->Factory()->Url()->encode( $name . $addStr ) . "." . $ext ;
-
-        return $name ;
-    }
-
     protected function getNewFilename( $name )
     {
         $filename = $this->updateName( $name ) ;

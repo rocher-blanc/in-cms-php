@@ -4,6 +4,7 @@ namespace App\Kernel\Front;
 
 use App\Kernel\Back\Seo;
 use App\Kernel\Exception;
+use App\Kernel\Front\Gallery;
 use App\Kernel\Http;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
@@ -598,7 +599,7 @@ class Controller extends \App\Kernel\Common\Controller
                 }
                 else if ( $row->getType() == 'gallery' )
                 {
-                    $Gal = new \App\Kernel\Front\Gallery;
+                    $Gal = new Gallery;
                     $Gal->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
                     $Gal->setModuleId( $this->getEntityId() );
                     $Gal->setModuleName( $this->getEntityName() );
