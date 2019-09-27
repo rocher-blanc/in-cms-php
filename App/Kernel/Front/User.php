@@ -294,6 +294,7 @@ class User extends \App\Kernel\Common\User
             if ( ! $checkForm )
             {
                 $Entity = $this->Container()->module( $this->getProfileModule() )->getEntity();
+
                 foreach( $Entity->getField() as $field )
                 {
                     if ( $field->getError() !== NULL ) return $this->returnError( $field->getFrontError() , false ) ;

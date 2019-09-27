@@ -188,12 +188,17 @@ class Field
 
 	public function isEmpty( $lang = NULL )
 	{
-	    if ( is_string( $this->getValue( $lang ) ) )
+        if ( $this->getData('isBoolean') == true )
+        {
+            if ( trim( $this->getValue( $lang ) ) === '0' or $this->getValue( $lang ) === '' )   return true ;
+            else                                                                                 return false ;
+        }
+        else if ( is_string( $this->getValue( $lang ) ) )
         {
             if ( trim( $this->getValue( $lang ) ) === '' or $this->getValue( $lang ) === '' )   return true ;
             else                                                                                return false ;
         }
-        elseif ( is_array( $this->getValue( $lang ) ) && $this->getType() == "document" )
+        else if ( is_array( $this->getValue( $lang ) ) && $this->getType() == "document" )
         {
             if ( empty( $this->getValue( $lang ) ) ) return true ;
             else                                     return false ;

@@ -686,7 +686,7 @@ class Controller
         }
 
         return [
-            'condition'  => $condition, 
+            'condition'  => $condition,
             'field'      => $arrayField,
             'tabs'       => $shows['tabs'],
             'route_type' => ( $valueF == false ? 'add' : 'edit' ),
