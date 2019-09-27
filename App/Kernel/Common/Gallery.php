@@ -192,7 +192,7 @@ class Gallery
         }
     }
 
-    private function updateName( $name , $addStr = "" )
+    protected function updateName( $name , $addStr = "" )
     {
         $exp 	= explode( "." , $name ) ;
         $ext 	= end( $exp ) ;
