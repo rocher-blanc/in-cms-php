@@ -1472,7 +1472,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function isDate( $hour = false , $old = false )
+    protected function isDate( $hour = false , $old = true )
     {
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;

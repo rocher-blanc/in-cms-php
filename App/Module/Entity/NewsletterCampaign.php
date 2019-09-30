@@ -50,7 +50,7 @@ class NewsletterCampaign extends Builder
 
         $this->build('date')
             ->column(1, 2)
-            ->isDate(true)
+            ->isDate(true , false)
             ->notEmpty(Translate::getInstance()->getText('mandatory_dispatch_date') )
             ->name(Translate::getInstance()->getText('dispatch_date') );
 
