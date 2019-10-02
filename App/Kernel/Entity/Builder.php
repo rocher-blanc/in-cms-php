@@ -1743,6 +1743,11 @@ class Builder extends Model
     /* OPTIONS DES CHAMPS */
     protected function isLang()
     {
+        if ( $this->field()->getData("type") == "select" )
+        {
+            throw new Exception('isLang is not available on select');
+        }
+
         $this->field()->setLang() ;
         if ( $this->field()->getData("isURL") == true ) $this->setUrlName( $this->field()->getName() ) ;
         $this->setMultilang() ;
