@@ -1792,6 +1792,7 @@ class Controller extends ControllerCommon
 			$std->id 		= 1;
 			$std->key 		= 1;
 
+			die;
 			$this->Factory()->Response()->printJSON($std);
         }
         else

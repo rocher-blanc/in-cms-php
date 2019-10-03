@@ -602,10 +602,18 @@ class Field
 		switch( $this->getType() )
 		{
 			case "date" :
+				$hour = NULL ;
 				if ( strpos( $value , ' ' ) !== false )
 				{
 					$exp = explode( ' ' , $value );
-					$date = $exp[1];
+					$date = $exp[0];
+                    if ( $this->getData('hour') == true )
+                    {
+                        if ( preg_match("/^(\d{2}):(\d{2}):(\d{2})$/", $exp[1], $matches) )
+                        {
+                            $hour = $exp[1];
+                        }
+                    }
 				}
 				else
 				{
@@ -614,27 +622,27 @@ class Field
 
 				if ( preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $date, $matches) )
 				{
-					$this->setValue( $date ) ;
+					$this->setValue( $date . ( $hour !== NULL ? " $hour" : "" ) ) ;
 				}
 				else if( preg_match("/^(\d{2})\/(\d{2})\/(\d{4})$/", $date, $matches) )
 				{
 					list( $d, $m, $y ) = explode( '/' , $date );
-					$this->setValue("$y-$m-$d") ;
+					$this->setValue("$y-$m-$d" . ( $hour !== NULL ? " $hour" : "" ) ) ;
 				}
 				else if( preg_match("/^(\d{1})\/(\d{2})\/(\d{4})$/", $date, $matches) )
 				{
 					list( $d, $m, $y ) = explode( '/' , $date );
-					$this->setValue("$y-$m-0$d") ;
+					$this->setValue("$y-$m-0$d" . ( $hour !== NULL ? " $hour" : "" ) ) ;
 				}
 				else if( preg_match("/^(\d{2})\/(\d{1})\/(\d{4})$/", $date, $matches) )
 				{
 					list( $d, $m, $y ) = explode( '/' , $date );
-					$this->setValue("$y-0$m-$d") ;
+					$this->setValue("$y-0$m-$d" . ( $hour !== NULL ? " $hour" : "" ) ) ;
 				}
 				else if( preg_match("/^(\d{1})\/(\d{1})\/(\d{4})$/", $date, $matches) )
 				{
 					list( $d, $m, $y ) = explode( '/' , $date );
-					$this->setValue("$y-0$m-0$d") ;
+					$this->setValue("$y-0$m-0$d" . ( $hour !== NULL ? " $hour" : "" ) ) ;
 				}
 				break;
 			case "image" :
