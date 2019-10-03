@@ -1754,7 +1754,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function defaut( $t = 0  , $force = false )
+    public function defaut( $t = 0  , $force = false )
     {
         $this->field()->setData( "defaut" , $t ) ;
         $this->field()->setData( "force" , $force ) ;

@@ -89,6 +89,11 @@ class Repository extends \App\Kernel\Common\Repository
             ->where_in( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , $array )->min( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
     }
 
+    public function maxPosition()
+    {
+        return \DB::for_module( $this->getName() )->max( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
+    }
+
     public function findOneLang( $id , $idlang )
     {
         return \DB::for_module_lang( $this->getName() , $id , $idlang )->find_one() ;

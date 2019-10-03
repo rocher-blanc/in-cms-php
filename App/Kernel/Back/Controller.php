@@ -1757,6 +1757,7 @@ class Controller extends ControllerCommon
 
 				if ( $error === false )
 				{
+				    $order = $this->getRepository()->maxPosition() + 1;
 				    foreach( $rst as $lineNumber => $arrayValue )
 					{
                         foreach( $this->getEntity()->getField() as $field )
@@ -1764,10 +1765,15 @@ class Controller extends ControllerCommon
                             $this->getEntity()->get( $field->getName() )->parseWithImport( $arrayValue[ $field->getName() ] , $this->getEntityId() , $this->getEntityName() );
                         }
 
-						if ( $this->getEntity()->isChild() )
-						{
+                        if ( $this->getEntity()->isChild() )
+                        {
                             $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->parseWithImport( end( $this->getIdParent() ) , $this->getEntityId() , $this->getEntityName() );
-						}
+                        }
+
+                        if ( $this->getEntity()->hasOrder() )
+                        {
+                            $this->getEntity()->get( $this->getEntity()->getOrderName() )->setData( 'defaut' , $order );
+                        }
 
 						$a = [];
                         foreach( $this->getEntity()->getField() as $field )
@@ -1775,13 +1781,15 @@ class Controller extends ControllerCommon
                             $a[ $field->getName() ] = $field->getValue();
                         }
 
-                        $return = $this->pushData(true , true );
+                        $this->pushData(true , true );
                         $this->setId(NULL);
 
 						foreach( $this->getEntity()->getField() as $field )
 						{
 							$this->getEntity()->get( $field->getName() )->clearValue();
 						}
+
+						$order++;
 					}
 				}
 			}
@@ -1791,8 +1799,8 @@ class Controller extends ControllerCommon
             $std->message 	= nl2br( $errorMsg );
 			$std->id 		= 1;
 			$std->key 		= 1;
+			$std->max 		= $order;
 
-			die;
 			$this->Factory()->Response()->printJSON($std);
         }
         else
