@@ -62,6 +62,11 @@ class Slack
         $this->emoji = $var;
     }
 
+    public function setAuthorName($author_name)
+    {
+        $this->author_name = $author_name;
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -101,6 +106,11 @@ class Slack
         return $this->emoji ;
     }
 
+    public function getAuthorName()
+    {
+        return $this->author_name;
+    }
+
     /* ************************************************** */
     /* ****************   FUNCTIONS   ******************* */
     /* ************************************************** */
@@ -125,11 +135,20 @@ class Slack
         $Slack->notification();
     }
 
+    public function notifyMe( $title, $link , $channel , $text )
+    {
+        $this->setText( $text );
+        $this->setTitle( $title );
+        $this->setTitleLink( $link );
+        $this->setChannel( $channel );
+        $this->notification();
+    }
+
     public function notification()
     {
         $msg = new \stdClass;
         $msg->color = $this->getColor() ;
-        $msg->author_name = $this->author_name ;
+        $msg->author_name = $this->getAuthorName() ;
         $msg->title = $this->getTitle() ;
         $msg->title_link = $this->getTitleLink() ;
         $msg->text = $this->getText() ;
