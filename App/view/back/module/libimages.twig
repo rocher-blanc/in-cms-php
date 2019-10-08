@@ -26,7 +26,7 @@
                                 {% if loop.first %}
                                     {% for img in images %}
                                         <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
-                                            <img src="{{ img.media_mini_name }}" class="" />
+                                            <img src="{{ img.media_mini_name }}" data-full="{{ img.media_mini_name | split("/t") | first }}/{{ img.media_name }}"  class="" />
                                         </a>
                                     {% endfor %}
                                 {% endif %}
