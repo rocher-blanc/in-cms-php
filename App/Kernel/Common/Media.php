@@ -145,7 +145,13 @@ class Media
 
 		if ( empty( $name ) ) return false ;
 
-		return $type  . '/' . $name . "-".$width."x".$height."." . $ext ;
+		if ( ! empty( $this->getFolder() ) )
+        {
+            $this->setImageName( $name );
+            $this->genThumb( $width , $height );
+        }
+
+		return $type . '/' . $name . "-".$width."x".$height."." . $ext ;
 	}
 
     public function rename()
@@ -243,7 +249,7 @@ class Media
                 $tmpImg = new \abeautifulsite\SimpleImage( $img );
                 $tmpImg->best_fit( $width , $height );
 
-                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, "#FFF");
+                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
                 $destImg->overlay($tmpImg)->save($file);
             }
 
