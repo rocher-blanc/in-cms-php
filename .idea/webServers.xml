@@ -66,6 +66,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="2dd2ad7a-40f9-4af2-872e-4de02d61b236" name="pnp - prod" url="http://ftp.cluster002.ovh.net">
+        <fileTransfer host="ftp.cluster002.ovh.net" port="21" rootFolder="/www.pnp-firenze.com/vendor/JWebCreation/cms">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

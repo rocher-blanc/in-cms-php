@@ -33,63 +33,63 @@ class Base
     {
         return [
             'NewsletterSender' => [
-                'name' => Translate::getInstance()->getText('sender'),
+                'name' => 'sender',
                 'icon' => "icon-line2-users",
             ],
             'NewsletterGroup' => [
-                'name' => Translate::getInstance()->getText('grp_abo' ),
+                'name' => 'grp_abo',
                 'icon' => "icon-users",
             ],
             'NewsletterSubscriber' => [
-                'name' => Translate::getInstance()->getText('abonnes' ),
+                'name' => 'abonnes',
                 'icon' => "icon-user",
             ],
             'NewsletterCampaignGroup' => [
-                'name' => Translate::getInstance()->getText('newsletter_plur' ),
+                'name' => 'newsletter_plur',
                 'icon' => "icon-folder",
             ],
             'NewsletterCampaign' => [
-                'name' => Translate::getInstance()->getText('newsletter_planning' ),
+                'name' => 'newsletter_planning',
                 'icon' => "icon-time",
             ],
             'NewsletterModel' => [
-                'name' => Translate::getInstance()->getText('gabarit' ),
+                'name' => 'gabarit',
                 'icon' => "icon-picture",
             ],
             'EdAutomation' => [
-                'name' => Translate::getInstance()->getText('email_automation' ),
+                'name' => 'email_automation',
                 'icon' => "icon-picture",
             ],
             'EdAutomationVarGroup' => [
-                'name' => Translate::getInstance()->getText('grp_variables' ),
+                'name' => 'grp_variables',
                 'icon' => "icon-stack2",
             ],
             'EdAutomationVar' => [
-                'name' => Translate::getInstance()->getText('variables_environnement' ),
+                'name' => 'variables_environnement',
                 'icon' => "icon-atom",
             ],
             'EdAutomationModelGroup' => [
-                'name' => Translate::getInstance()->getText('grp_gabarits' ),
+                'name' => 'grp_gabarits',
                 'icon' => "icon-stack",
             ],
             'EdAutomationModel' => [
-                'name' => Translate::getInstance()->getText('model_gabarits' ),
+                'name' => 'model_gabarits',
                 'icon' => "icon-vcard",
             ],
             'EdEmail' => [
-                'name' => Translate::getInstance()->getText('modeles_email' ),
+                'name' => 'modeles_email',
                 'icon' => "icon-news",
             ],
             'EdAutomationHistory' => [
-                'name' => Translate::getInstance()->getText('historique_email_automation' ),
+                'name' => 'historique_email_automation',
                 'icon' => "icon-line-clock",
             ],
             'NewsletterCampaignGroupUnsubscribe' => [
-                'name' => Translate::getInstance()->getText('desinscription' ),
+                'name' => 'desinscription',
                 'icon' => "icon-enter",
             ],
             'GalleryCategory' => [
-                'name' => Translate::getInstance()->getText('categories' ),
+                'name' => 'categories',
                 'icon' => "icon-line-grid",
             ]
         ];
