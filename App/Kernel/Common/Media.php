@@ -145,9 +145,8 @@ class Media
 
 		if ( empty( $name ) ) return false ;
 
-		if ( ! empty( $this->getFolder() ) )
+		if ( ! empty( $this->getFolder() ) && ! empty( $this->getImageName() ) )
         {
-//            $this->setImageName( $name );
             $this->genThumb( $width , $height );
         }
 
