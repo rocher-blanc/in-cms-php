@@ -147,7 +147,7 @@ class Media
 
 		if ( ! empty( $this->getFolder() ) )
         {
-            $this->setImageName( $name );
+//            $this->setImageName( $name );
             $this->genThumb( $width , $height );
         }
 
@@ -234,7 +234,7 @@ class Media
 
     public function genThumb( $width , $height , $crop = false )
     {
-        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $path = IMAGE_PATH . '/' . ( $this->getGalleryId() !== NULL ? '_lib' : $this->getFolder() ) . '/' ;
         $img  = $path . $this->getImageName() ;
 
         if ( $crop == true ) 	$subfolder = 'c' ;

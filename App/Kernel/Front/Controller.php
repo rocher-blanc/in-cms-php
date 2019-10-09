@@ -546,6 +546,7 @@ class Controller extends \App\Kernel\Common\Controller
                     {
                         $media = new \App\Kernel\Front\Media;
                         $media->setImageId( $result->get( $row->getColumn() ) );
+                        $media->setFolder( $this->getEntity()->getFolder() );
                         $media->getNameById();
 
                         $tab = [];
@@ -571,7 +572,14 @@ class Controller extends \App\Kernel\Common\Controller
                                 $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
                                 if ( $mini !== false )
                                 {
-                                    $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
+                                    $path = $this->getEntity()->getPathImage(false);
+
+                                    if ( $media->getGalleryId() !== NULL )
+                                    {
+                                        $path = str_replace( WEB_PATH , '' , IMAGE_PATH . '/_lib' );
+                                    }
+
+                                    $img  = $path . '/' . $mini ;
                                     $mini = $this->getApp()->request()->getUrl() . $img ;
                                 }
 
