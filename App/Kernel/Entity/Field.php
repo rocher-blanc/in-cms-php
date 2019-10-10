@@ -23,6 +23,7 @@ class Field
 		$this->setData( "tab" , "contenu" ) ;
 		$this->setData( "front" , true ) ;
 		$this->setData( "back" , true ) ;
+
 	}
 
 	/* ************************************************** */

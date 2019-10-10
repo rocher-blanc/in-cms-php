@@ -301,7 +301,8 @@ class Builder extends Model
     public function __construct()
     {
         // Tab par défaut pour les formulaires
-        $this->addTab( 'contenu' , "Contenu" , 'icon-home2' ) ;
+
+        $this->addTab( 'contenu' , Translate::getInstance()->getText('content' ) , 'icon-home2' ) ;
 
         $this->setCustomFolder( $this->getClassName() );
         $this->initDefaultField() ;
