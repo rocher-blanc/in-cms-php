@@ -2,11 +2,13 @@
 
 namespace App\Kernel\Back\User;
 
+use App\Kernel\Front\User;
+
 class Controller extends \App\Kernel\Back\Controller
 {
     protected function User()
     {
-        return \App\Kernel\Front\User::getInstance();
+        return User::getInstance();
     }
 
     /*  **** ADD **** */
