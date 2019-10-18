@@ -127,34 +127,42 @@ class Media extends \App\Kernel\Common\Media
 
 	public function createByUrl( $uri , $fieldName )
 	{
-		$content  = file_get_contents( $uri );
-		$size     = getimagesize( $uri );
-		$fileName = end( explode( '/' , $uri ) );
-		$this->create( UPLOAD_PATH . "/" . $fileName , $content ) ;
-
-		$media = \DB::for_table('media')->create() ;
-		$media->media_name 		= $fileName;
-		$media->media_size 		= 0;
-		$media->media_type 		= $size['mime'];
-		$media->media_module_id = $this->getModuleId();
-		$media->save() ;
-
-		$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
-		$field = $entity->build( $fieldName )->field();
-		$this->setImageId( $media->media_id ) ;
-		$this->getNameById() ;
-		$source = $this->rename();
-
-		if ( $field->hasThumb() )
+		if ( @file_get_contents( $uri ) !== false )
 		{
-			foreach( $field->getThumb() as $thumb )
+			$content  = file_get_contents( $uri );
+			$size     = getimagesize( $uri );
+			$fileName = end( explode( '/' , $uri ) );
+			$this->create( UPLOAD_PATH . "/" . $fileName , $content ) ;
+
+			$media = \DB::for_table('media')->create() ;
+			$media->media_name 		= $fileName;
+			$media->media_size 		= 0;
+			$media->media_type 		= $size['mime'];
+			$media->media_module_id = $this->getModuleId();
+			$media->save() ;
+
+			$entity = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity();
+			$field = $entity->build( $fieldName )->field();
+			$this->setImageId( $media->media_id ) ;
+			$this->getNameById() ;
+			$source = $this->rename();
+
+			if ( $field->hasThumb() )
 			{
-				// width, height
-				$this->genThumb( $thumb[0] , $thumb[1] ) ;
+				foreach( $field->getThumb() as $thumb )
+				{
+					// width, height
+					$this->genThumb( $thumb[0] , $thumb[1] ) ;
+				}
 			}
+
+			return $media->media_id;
+		}
+		else
+		{
+			return NULL;
 		}
 
-		return $media->media_id;
 	}
 
 	public function uploadLib( $path )
