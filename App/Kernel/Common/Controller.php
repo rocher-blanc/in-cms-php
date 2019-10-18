@@ -395,9 +395,9 @@ class Controller
 		{
 			$this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
 			$this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
-			$this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
+//			$this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
 
-			if ( $form ) $returnType = NULL ;
+			if ( $form ) $returnType = "array" ;
 		}
 
         if ( $Controller === false )
@@ -411,7 +411,6 @@ class Controller
             {
                 $checkboxValue = $this->getRepository()->getAssocSimpleValueIndex( $fieldCheckbox );
             }
-
             $tab = $Controller->getElementForAssociation( $row->getData('var') , $returnType , $checkboxValue ) ;
 
             unset( $Controller );
