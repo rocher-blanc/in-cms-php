@@ -382,6 +382,7 @@ class Controller
     {
         $Controller = Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
+
         if ( $row->getData('var') !== NULL && $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
         {
             $this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
@@ -390,6 +391,14 @@ class Controller
 
             if ( $form ) $returnType = NULL ;
         }
+        else if ( $Controller->getEntity()->getParentTargetName() )
+		{
+			$this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
+			$this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
+			$this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
+
+			if ( $form ) $returnType = NULL ;
+		}
 
         if ( $Controller === false )
         {
