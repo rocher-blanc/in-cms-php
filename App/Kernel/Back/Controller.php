@@ -402,7 +402,14 @@ class Controller extends ControllerCommon
                 $offset = 0;
             }
 
-            $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
+			if ( $this->getEntity()->hasParent() )
+			{
+				$content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , 0 , $count , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
+			}
+			else
+			{
+				$content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
+			}
 
             if ( $content )
             {
