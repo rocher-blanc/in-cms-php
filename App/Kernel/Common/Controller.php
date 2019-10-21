@@ -378,7 +378,7 @@ class Controller
     /* ************************************************** */
 
     // Systeme de many / one TO many / one
-    public function getValueAssociated( $row , $returnType = NULL , $form = false , $fieldCheckbox = false )
+    public function getValueAssociated( $row , $returnType = NULL , $form = false , $fieldCheckbox = false , $index = false )
     {
         $Controller = Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
@@ -397,7 +397,8 @@ class Controller
 			$this->getEntity()->build( $row->getName() )->field()->setData( "target" , 'titre' ) ;
 //			$this->getEntity()->build( $row->getName() )->field()->setData( "noEmptyValue" , true ) ;
 
-			if ( $form ) $returnType = "array" ;
+			if ( $index ) $returnType = "array" ;
+			else if ( $form ) $returnType = NULL ;
 		}
 
         if ( $Controller === false )

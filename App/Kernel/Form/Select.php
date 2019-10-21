@@ -14,7 +14,7 @@ class Select extends \App\Kernel\Back\Form
 	{
         $this->_lib_js  = 'cmsmedias/canvas/js/components/select-boxes.js';
 		$this->_lib_css = 'cmsmedias/canvas/css/src/components/select-boxes.css';
-
+		
 		$select = '' ;
 		if ( ! $field->isRequired() )
 		{

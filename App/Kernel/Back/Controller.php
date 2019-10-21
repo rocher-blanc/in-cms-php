@@ -365,7 +365,7 @@ class Controller extends ControllerCommon
                     $option = NULL;
                     if ( $field->isAssociated() )
                     {
-                        $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) );
+                        $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) , true );
                     }
                     else if ( $field->hasOption() )
                     {
