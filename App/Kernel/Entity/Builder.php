@@ -1064,7 +1064,7 @@ class Builder extends Model
             ->noFront()
             ->full()
             ->defaut(1)
-            ->name('En ligne');
+            ->name(\App\Kernel\Front\Translate::getInstance()->getText('on_line'));
 
         $this->addAction("enable") ;
         $this->addAction("disable") ;
