@@ -1764,7 +1764,12 @@ class Controller extends ControllerCommon
 
 				if ( $error === false )
 				{
-				    $order = $this->getRepository()->maxPosition() + 1;
+                    $order = 1;
+                    if ( $this->getEntity()->hasOrder() )
+                    {
+                        $order = $this->getRepository()->maxPosition() + 1;
+                    }
+
 				    foreach( $rst as $lineNumber => $arrayValue )
 					{
                         foreach( $this->getEntity()->getField() as $field )
