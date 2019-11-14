@@ -845,7 +845,7 @@ class Controller
         {
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->getData( $this->getDataView() ) == true && ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true ) && $row->getType() !== NULL && $row->getType() !== 'hidden' )
+                if ( $row->getData( $this->getDataView() ) == true /*&& ( ( $row->isParent() == true && $row->hasOption() == true ) or $row->isParent() != true )*/ && $row->getType() !== NULL && $row->getType() !== 'hidden' )
                 {
                     $show = $row->show( $contentShow ) ;
 
