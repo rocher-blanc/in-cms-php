@@ -1724,14 +1724,15 @@ class Controller extends ControllerCommon
             }
         }
 
-        header('Content-Disposition: attachment; filename=' . $this->getEntityName() . '-' . date('Y-m-d-H_i_s') . '.xlsx;' );
+        header('Content-Disposition: attachment; filename="' . $this->getEntityName() . '-' . date('Y-m-d-H_i_s') . '.xlsx"' );
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
         header('Content-Transfer-Encoding: binary;');
         header('Cache-Control: must-revalidate;');
         header('Pragma: public');
 
         $writer = new Xlsx( $spreadsheet );
-        $writer->save('php://output');    }
+        $writer->save('php://output');
+    }
 
     protected function importAction()
     {
