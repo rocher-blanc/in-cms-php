@@ -1597,8 +1597,6 @@ class Controller extends ControllerCommon
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $writer = new Xlsx($spreadsheet);
-
         $tab   = [];
         $group = '' ;
         if ( ! $this->getEntity()->hasParent() )
