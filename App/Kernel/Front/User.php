@@ -600,7 +600,6 @@ class User extends \App\Kernel\Common\User
 
                 $this->save( $user ) ;
             }
-
             return $this->returnError( "user_register_successful" , true ) ;
         }
     }
