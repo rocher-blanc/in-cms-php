@@ -191,7 +191,7 @@ refreshShowIf = function( base , route , $this ) {
     $.ajax({
         url: route,
         type: 'POST',
-        data: serialize + "&show=1",
+        data: serialize + "&show=1&user_action=0",
         dataType: 'json',
         success: function(data) {
             if ( data.tabs.length ) {

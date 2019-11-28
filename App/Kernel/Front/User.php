@@ -553,7 +553,7 @@ class User extends \App\Kernel\Common\User
         }
     }
 
-    protected function registerInBase( $login , $password , $fb_id = NULL )
+    public function registerInBase( $login , $password , $fb_id = NULL )
     {
         $date = new \DateTime();
 
@@ -600,7 +600,6 @@ class User extends \App\Kernel\Common\User
 
                 $this->save( $user ) ;
             }
-
             return $this->returnError( "user_register_successful" , true ) ;
         }
     }
@@ -936,7 +935,7 @@ class User extends \App\Kernel\Common\User
         return [];
     }
 
-    protected function generatePassword( $length = 10 )
+    public function generatePassword( $length = 10 )
     {
         $alpha          = "abcdefghijklmnopqrstuvwxyz";
         $alpha_upper    = strtoupper($alpha);
@@ -1016,7 +1015,7 @@ class User extends \App\Kernel\Common\User
         return true ;
     }
 
-    protected function uniqLogin( $login )
+    public function uniqLogin( $login )
     {
         $ct = \DB::for_table('user_front');
 
