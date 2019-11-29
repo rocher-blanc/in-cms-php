@@ -160,7 +160,7 @@ checkForm = function(base) {
                     }
                 },
                 complete: function() {
-                    $form.removeAttr("submitting");
+                    $form.removeAttr("submitting").removeClass("disabled temp-disabled");
                 }
             });
 
