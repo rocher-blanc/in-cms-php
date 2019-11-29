@@ -161,7 +161,7 @@ checkForm = function(base) {
                 },
                 complete: function() {
                     $form.removeAttr("submitting");
-                    $form.find("[type='submit']").removeAttr("disabled").addClass("disabled temp-disabled");
+                    $form.find("[type='submit']").removeAttr("disabled").removeClass("disabled temp-disabled");
                 }
             });
 
