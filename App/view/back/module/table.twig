@@ -69,7 +69,10 @@
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
                                         <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- {{ _('no_select')}} -----</option>
                                         {% for key,value in thvalue.options %}
-                                            {#<option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>#}
+                                            {% if value is iterable %}
+                                            {% else %}
+                                                <option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 {% elseif thvalue.type == 'checkbox' %}
