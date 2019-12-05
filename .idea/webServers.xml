@@ -82,6 +82,14 @@
           <option name="port" value="21" />
         </fileTransfer>
       </webServer>
+      <webServer id="77cd8f9d-6504-4e2f-acc4-cf6a754305a2" name="ir deco - dev" url="http://vps1.jweb-creation.fr/">
+        <fileTransfer host="vps1.jweb-creation.fr" port="21" rootFolder="/www">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
