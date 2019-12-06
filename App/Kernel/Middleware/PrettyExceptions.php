@@ -87,6 +87,10 @@ class PrettyExceptions extends Middleware
         $text.= "File: " . $e->getFile() . "\n";
         $text.= "Line: " . $e->getLine() ;
 
+        ob_start();
+        print_r( $_SERVER );
+        $text.= ob_get_clean();
+
         $Slack = new \App\Kernel\Utils\Slack;
         $Slack->setText( $text );
         $Slack->setTitle( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] );
