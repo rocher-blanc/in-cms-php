@@ -508,7 +508,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-            public function subParse( $object )
+    public function subParse( $object )
     {
         switch( $object['type'] )
         {
@@ -521,6 +521,7 @@ class Controller extends \App\Kernel\Common\Controller
             break;
         }
     }
+
 
     public function parseValue( $result )
     {
