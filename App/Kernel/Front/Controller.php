@@ -4,7 +4,9 @@ namespace App\Kernel\Front;
 
 use App\Kernel\Back\Seo;
 use App\Kernel\Exception;
+use App\Kernel\Front\Alt;
 use App\Kernel\Front\Gallery;
+use App\Kernel\Front\Media;
 use App\Kernel\Http;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
@@ -545,7 +547,7 @@ class Controller extends \App\Kernel\Common\Controller
                     }
                     else
                     {
-                        $media = new \App\Kernel\Front\Media;
+                        $media = new Media;
                         $media->setImageId( $result->get( $row->getColumn() ) );
                         $media->setFolder( $this->getEntity()->getFolder() );
                         $media->getNameById();
@@ -554,7 +556,7 @@ class Controller extends \App\Kernel\Common\Controller
 
                         if ( $row->getData('hasAltText') == true )
                         {
-                            $Alt = new \App\Kernel\Front\Alt;
+                            $Alt = new Alt;
                             $Alt->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
                             $Alt->setModuleId( $this->getEntityId() );
                             $Alt->setFieldName( $row->getName() );
@@ -564,7 +566,14 @@ class Controller extends \App\Kernel\Common\Controller
                             $tab['alt'] = $Alt->getValue();
                         }
 
-                        $tab['source'] = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathImage(false) . '/' . $media->getImageName();
+                        $path = $this->getEntity()->getPathImage(false);
+
+                        if ( $media->getGalleryId() !== NULL )
+                        {
+                            $path = str_replace( WEB_PATH , '' , IMAGE_PATH . '/_lib' );
+                        }
+
+                        $tab['source'] = $this->getApp()->request()->getUrl() . $path . '/' . $media->getImageName();
 
                         if ( $row->hasThumb() )
                         {
@@ -573,13 +582,6 @@ class Controller extends \App\Kernel\Common\Controller
                                 $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
                                 if ( $mini !== false )
                                 {
-                                    $path = $this->getEntity()->getPathImage(false);
-
-                                    if ( $media->getGalleryId() !== NULL )
-                                    {
-                                        $path = str_replace( WEB_PATH , '' , IMAGE_PATH . '/_lib' );
-                                    }
-
                                     $img  = $path . '/' . $mini ;
                                     $mini = $this->getApp()->request()->getUrl() . $img ;
                                 }

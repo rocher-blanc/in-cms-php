@@ -1337,7 +1337,7 @@ class Controller extends ControllerCommon
                     'id' => ( array_key_exists( $j , $idParent ) ? $idParent[ $j ] : NULL ),
                     'current' => false,
                     'url' => "",
-                    'human_name' => $module->module_kernel ? Translate::getInstance()->getText($module->module_name) : $module->module_name,
+                    'human_name' => $module->module_kernel ? $module->module_name : $module->module_name,
                     'icon' => $module->module_icon
                 ];
 

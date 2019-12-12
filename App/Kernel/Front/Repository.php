@@ -307,7 +307,10 @@ class Repository extends \App\Kernel\Common\Repository
                 {
                     case "id" :
                         $rst->where_id_is( $rqt );
-                    break;
+                        break;
+                    case "default" :
+                        $rst->where_equal( $this->field( $this->getEntity()->getDefaultName() ) , $rqt );
+                        break;
                     case "user" :
                         $rst->where_equal( $this->field( $this->getEntity()->getUserIdName() ) , $rqt );
                     break;
