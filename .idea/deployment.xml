@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="boucherie">
+  <component name="PublishConfigData" autoUpload="Always" serverName="ir deco - dev">
     <serverData>
       <paths name="FNH">
         <serverdata>
@@ -45,6 +45,13 @@
         </serverdata>
       </paths>
       <paths name="casino">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="ir deco - dev">
         <serverdata>
           <mappings>
             <mapping deploy="/vendor/JWebCreation/cms" local="$PROJECT_DIR$" web="/" />
