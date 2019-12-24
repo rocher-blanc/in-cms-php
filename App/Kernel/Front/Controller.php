@@ -777,8 +777,6 @@ class Controller extends \App\Kernel\Common\Controller
                 }
 
                 $result = $this->getRepository()->requestAll( $request , $currentPage );
-
-                dump( $result );
                 break;
         }
 
