@@ -396,7 +396,9 @@ class DB extends ORM
 
         $entity = \App\Kernel\Container::getInstance()->module( $entity )->getEntity();
 
-        if ( $entity->hasOrder() )  $content = $content->order_by_asc( $table . "." . $entity->get( $entity->getOrderName() )->getColumn() )->order_by_asc( $table . "." . $entity->get( $entity->getIdName() )->getColumn() );
+        dump('here');
+
+        if ( $entity->hasOrder() )  $content = $content->order_by_asc( $table . "." . $entity->get( $entity->getOrderName() )->getColumn() );
         else                        $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
 
         if ( is_callable( $filter ) )

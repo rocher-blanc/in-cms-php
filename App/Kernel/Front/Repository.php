@@ -229,7 +229,9 @@ class Repository extends \App\Kernel\Common\Repository
 				->offset( ( $pagination * $currentPage ) - $pagination );
 		}
 
-        return $rst->find_many();
+        $rqt = $rst->find_many();
+
+		return $rqt ;
     }
 
 	public function requestOne( array $request )

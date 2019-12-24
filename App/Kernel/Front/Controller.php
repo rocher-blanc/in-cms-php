@@ -777,6 +777,8 @@ class Controller extends \App\Kernel\Common\Controller
                 }
 
                 $result = $this->getRepository()->requestAll( $request , $currentPage );
+
+                dump( $result );
                 break;
         }
 
@@ -800,6 +802,8 @@ class Controller extends \App\Kernel\Common\Controller
                         $elmts[ $i ] = $this->parseValue( $row );
                         $i++;
                     }
+
+                    ksort($elmts);
 
                     $ct = count( $elmts );
                 break;

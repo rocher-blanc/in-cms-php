@@ -382,7 +382,6 @@ class Controller
     {
         $Controller = Container::getInstance()->module( $row->getObject() )->getController(true, [ 'noAppend' => true ]);
 
-
         if ( $row->getData('var') !== NULL && $row->getData('var') == $Controller->getEntity()->getParentTargetName() )
         {
             $this->getEntity()->build( $row->getName() )->field()->setData( "parent" , true ) ;
