@@ -4,5 +4,6 @@
         <input type="hidden" name="moduleName" value="{{ module }}" />
         <input type="hidden" name="keyControl" value="{{ keyControl }}" />
         {% if redirect != '' %}<input type="hidden" name="redirect" value="{{ redirect }}" />{% endif %}
+        {% if timer != '' %}<input type="hidden" name="timer" value="{{ timer }}" />{% endif %}
         <button class="{{ button_class }}">{{ button_text }}</button>
     </form>
