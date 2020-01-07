@@ -882,7 +882,6 @@ class Controller extends \App\Kernel\Common\Controller
 
                     if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
                 break;
-
                 case "all" :
                     $i = 0;
                     foreach( $result as $row )
