@@ -294,6 +294,5 @@ class Repository extends \App\Kernel\Common\Repository
                 $check->save();
             }
         }
-
     }
 }

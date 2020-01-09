@@ -103,4 +103,15 @@ class Repository extends \App\Kernel\Back\Repository
             throw new \App\Kernel\Exception("No Field Reference exist - Entity : " . $this->getName() ) ;
         }
     }
+
+    public function getProfileIdWithUser( $id )
+    {
+        $rst = \DB::for_module( $this->getName() )
+            ->select( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() )
+            ->where_equal( $this->getEntity()->get( $this->getEntity()->getUserIdName() )->fieldSql() , $id )
+            ->find_one();
+
+        if ( $rst ) return $rst->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
+        else        return false ;
+    }
 }
