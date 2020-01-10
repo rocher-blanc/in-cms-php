@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Back\Alt;
+use App\Kernel\Back\Document;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Media;
 use App\Kernel\Back\Seo;
@@ -624,6 +626,15 @@ class Controller extends ControllerCommon
                             /* *************************************************** */
                             /* *************************************************** */
 
+                            if ( $this->getEntity()->getUserIdName() == $field->getName() )
+                            {
+                                $idTd = Container::getInstance()->module( MODULE_USER )->getRepository( true )->getProfileIdWithUser( $row->get( $field->getColumn() ) ) ;
+                            }
+                            else
+                            {
+                                $idTd = $row->get( $field->getColumn() ) ;
+                            }
+
                             $typeArray[ $field->getName() ] = $field->getType() ;
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
                                 'style' => $style,
@@ -631,7 +642,7 @@ class Controller extends ControllerCommon
                                 'value' => $value,
                                 'module' => $field->getData('object'),
                                 'subtype' => $field->getData('subtype'),
-                                'id' => $row->get( $field->getColumn() ),
+                                'id' => $idTd,
                                 'type' => $typeField
                             ];
                         }
@@ -874,6 +885,8 @@ class Controller extends ControllerCommon
 
         $result = $this->$hookBeforeCheck();
 
+        $contentLang = [];
+
         if ( $result === true )
         {
             $result = [
@@ -1005,7 +1018,7 @@ class Controller extends ControllerCommon
                             {
                                 foreach( $this->Lang()->getAll() as $lang )
                                 {
-                                    $Alt = new \App\Kernel\Back\Alt;
+                                    $Alt = new Alt;
                                     $Alt->setElementId( $this->getId() );
                                     $Alt->setModuleId( $this->getEntityId() );
                                     $Alt->setFieldName( $field->getName() );
@@ -1035,7 +1048,7 @@ class Controller extends ControllerCommon
                                 {
                                     foreach( $post as $id_document => $text )
                                     {
-                                        $Doc = new \App\Kernel\Back\Document;
+                                        $Doc = new Document;
                                         $Doc->setDocumentId( $id_document );
                                         $Doc->setAltText( ( empty( $text ) ? NULL : $text ) );
                                         $Doc->updateAlt();
