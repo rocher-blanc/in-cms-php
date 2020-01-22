@@ -862,7 +862,7 @@ class User extends \App\Kernel\Common\User
                 }
                 else
                 {
-                    return $this->returnError( "user_validation_failed" , true ) ;
+                    return $this->returnError( "user_validation_failed" , false ) ;
                 }
             }
         }

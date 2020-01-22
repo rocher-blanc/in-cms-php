@@ -433,7 +433,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "user_front_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "user_front_login" => $this->infoColumn( "VARCHAR" , "100" ),
                 "user_front_password" => $this->infoColumn( "VARCHAR" , "60" ),
-                "user_front_token" => $this->infoColumn( "VARCHAR" , "34" ),
+                "user_front_token" => $this->infoColumn( "VARCHAR" , "64" ),
                 "user_front_active" => $this->infoColumn( "TINYINT" , "1" ),
                 "user_front_user_front_group_id" => $this->infoColumn( "INT" , "11" ),
                 "user_front_date_created" => $this->infoColumn( "DATETIME" ),
