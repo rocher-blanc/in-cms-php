@@ -425,7 +425,7 @@ class Controller extends \App\Kernel\Common\Controller
         if ( ! $result ) $this->getApp()->pass();
 
         /* Date de dernière modification */
-        if ( ! DEBUG )
+        if ( ! DEBUG_CMS )
         {
             $date = new \DateTime( $result->get( $this->getEntity()->get('date_updated')->getColumn() ) ) ;
             $this->getApp()->lastModified( intval( $date->format('U') ) );

@@ -19,7 +19,7 @@ abstract class LanguageModel
         $key = strtolower( $key );
 
         if ( array_key_exists( $key , $this->getVar() ) )   return html_entity_decode( $this->a[ $key ] );
-        else if ( DEBUG === true )                          return '##' . $key . '##' ;
+        else if ( DEBUG_CMS === true )                      return '##' . $key . '##' ;
         else                                                return '' ;
     }
 

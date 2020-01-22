@@ -30,7 +30,7 @@ class CMS
 
     public function isDev()
     {
-        return DEBUG ;
+        return DEBUG_CMS ;
     }
 
     /* ************************************************** */

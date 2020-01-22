@@ -20,7 +20,7 @@ class TwigDebug extends \Twig_Extension
 
     public function twig_var_dump()
     {
-        if ( ! DEBUG ) return;
+        if ( ! DEBUG_CMS ) return;
 
         ob_start();
         if ( func_num_args() > 0 )

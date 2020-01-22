@@ -24,7 +24,7 @@ class Mail
         }
         else if ( MAIL_SMTP )
         {
-            if ( DEBUG && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
+            if ( DEBUG_CMS && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
 
             $this->obj->isSMTP();                            // Set mailer to use SMTP
             $this->obj->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
@@ -138,7 +138,7 @@ class Mail
     public function send()
     {
         $ret = $this->obj->send();
-        if ( ! $ret && SMTP_DEBUG && DEBUG ) \App\Kernel\Debug::dump( $this->getError() );
+        if ( ! $ret && SMTP_DEBUG && DEBUG_CMS ) \App\Kernel\Debug::dump( $this->getError() );
         return $ret ;
     }
 }

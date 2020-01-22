@@ -7,7 +7,7 @@ ini_set('magic_quotes_runtime', 0);
 ini_set('magic_quotes_sybase', 0);
 ini_set("session.dd", SESSION_LIFETIME );
 
-if ( DEBUG )
+if ( DEBUG_CMS )
 {
     // ini_set('error_reporting', error_reporting());
     ini_set('error_reporting', error_reporting() & ~E_NOTICE & ~E_DEPRECATED);

@@ -121,7 +121,7 @@ class Response
 
     public function error( $message , $type = '404' )
 	{
-        if ( DEBUG ) throw new \App\Kernel\Exception( $message ) ;
+        if ( DEBUG_CMS ) throw new \App\Kernel\Exception( $message ) ;
         else         die("Une erreur est survenue lors du chargement de la page") ;
     }
 }

@@ -25,7 +25,7 @@ class Database
 			\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 		]);
 		
-		if ( DEBUG OR DEBUG_BAR )
+		if ( DEBUG_CMS OR DEBUG_BAR )
         {
             \DB::configure('logging', true);
             \DB::configure('logger', function($bound_query, $query_time) {
@@ -38,12 +38,12 @@ class Database
 
     public function caching()
     {
-        if ( ! DEBUG ) \DB::configure('caching', true);
+        if ( ! DEBUG_CMS ) \DB::configure('caching', true);
     }
 
     public function testTable()
     {
-        if ( DEBUG )
+        if ( DEBUG_CMS )
         {
             \DB::for_table('param')->limit(1)->find_one();
         }

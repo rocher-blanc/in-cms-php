@@ -112,7 +112,7 @@ class Debug
     public static function dump($variable, $caption = null, $stop = true, $viewcall = true)
     {
         // don't dump anything in non-development environments
-        if (DEBUG !== true) {
+        if (DEBUG_CMS !== true) {
             return;
         }
 

@@ -17,7 +17,7 @@ class APCCache extends \Slim\Middleware
         }
         else
         {
-            if ( ! DEBUG )
+            if ( ! DEBUG_CMS )
             {
                 return \App\Kernel\Factory::getInstance()->Response()->error('APC not available');
             }
@@ -26,7 +26,7 @@ class APCCache extends \Slim\Middleware
 
     public function call()
     {
-        if ( DEBUG )
+        if ( DEBUG_CMS )
         {
             $this->next->call();
             return;

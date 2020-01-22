@@ -125,12 +125,12 @@ class TwigFront extends \Twig_Extension
         switch( $type )
         {
             case "js" :
-                if ( DEBUG == false && $minify == true && $directMin == true ) $url = $this->min( $url , $type ) ;
+                if ( DEBUG_CMS == false && $minify == true && $directMin == true ) $url = $this->min( $url , $type ) ;
                 $this->js[ $url ] = $minify ;
                 break;
 
             case "css" :
-                if ( DEBUG == false && $minify == true && $directMin == true ) $url = $this->min( $url , $type ) ;
+                if ( DEBUG_CMS == false && $minify == true && $directMin == true ) $url = $this->min( $url , $type ) ;
                 $this->css[ $url ] = $minify ;
                 break;
 
@@ -188,7 +188,7 @@ class TwigFront extends \Twig_Extension
             foreach( $this->js as $name => $minify )
             {
                 if ( $i != 0 ) $content.= "\n" ;
-                $content.= ( DEBUG ? "\t\t" : "" ) . '<script src="' . \App\Kernel\Http::getInstance()->getCdn() . $name . '"></script>' ;
+                $content.= ( DEBUG_CMS ? "\t\t" : "" ) . '<script src="' . \App\Kernel\Http::getInstance()->getCdn() . $name . '"></script>' ;
                 $i++;
             }
         }
@@ -200,7 +200,7 @@ class TwigFront extends \Twig_Extension
     {
         $newName = '/assets/js/dist/script.min.js' ;
 
-        if ( ( DEBUG == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
+        if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
         {
             $js = glob(WEB_PATH . '/assets/js/src/*.js');
             if ( $js && count( $js ) > 0 )
@@ -210,18 +210,18 @@ class TwigFront extends \Twig_Extension
                 {
                     $url = str_replace( WEB_PATH , '' , $file );
 
-                    if ( DEBUG == true )	$this->js[ $url ] = $url ;
+                    if ( DEBUG_CMS == true )	$this->js[ $url ] = $url ;
                     else					$min.= \JSMin::minify( $this->Factory()->File()->read( $file ) ) ;
                 }
 
-                if ( DEBUG == false )
+                if ( DEBUG_CMS == false )
                 {
                     $this->Factory()->File()->create( WEB_PATH . $newName , $min ) ;
                     $this->js[ $newName ] = true ;
                 }
             }
         }
-        else if ( DEBUG == false )
+        else if ( DEBUG_CMS == false )
         {
             $this->js[ $newName ] = true ;
         }
@@ -250,7 +250,7 @@ class TwigFront extends \Twig_Extension
             foreach( $this->css as $name => $minify )
             {
                 if ( $i != 0 ) $content.= "\n" ;
-                $content.= ( DEBUG ? "\t\t" : "" ) . '<link rel="stylesheet" href="' . \App\Kernel\Http::getInstance()->getCdn() . $name . '" />' ;
+                $content.= ( DEBUG_CMS ? "\t\t" : "" ) . '<link rel="stylesheet" href="' . \App\Kernel\Http::getInstance()->getCdn() . $name . '" />' ;
                 $i++;
             }
         }
@@ -262,7 +262,7 @@ class TwigFront extends \Twig_Extension
     {
         $newName = '/assets/css/dist/std.min.css' ;
 		
-		if ( ( DEBUG == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
+		if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
 		{
             $css = glob(WEB_PATH . '/assets/css/src/*');
 			if ( $css && count( $css ) > 0 )
@@ -272,18 +272,18 @@ class TwigFront extends \Twig_Extension
 				{
 					$url = str_replace( WEB_PATH , '' , $file );
 
-					if ( DEBUG == true ) 	$this->css[ $url ] = $url ;
+					if ( DEBUG_CMS == true ) 	$this->css[ $url ] = $url ;
 					else 					$min.= \Minify_CSS::minify( $this->Factory()->File()->read( $file ) ) ;
 				}
 
-				if ( DEBUG == false )
+				if ( DEBUG_CMS == false )
 				{
 					$this->Factory()->File()->create( WEB_PATH . $newName , $min ) ;
 					$this->css[ $newName ] = true ;
 				}
 			}
 		}
-		else if ( DEBUG == false )
+		else if ( DEBUG_CMS == false )
 		{
 			$this->css[ $newName ] = true ;
 		}

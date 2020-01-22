@@ -32,7 +32,7 @@ class Easyletter
             $this->phpmailer = new \PHPMailer;
             if ( MAIL_SMTP )
             {
-                if ( DEBUG && SMTP_DEBUG ) $this->phpmailer->SMTPDebug = 3;          // Enable verbose debug output
+                if ( DEBUG_CMS && SMTP_DEBUG ) $this->phpmailer->SMTPDebug = 3;          // Enable verbose debug output
 
                 $this->phpmailer->isSMTP();                            // Set mailer to use SMTP
                 $this->phpmailer->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers

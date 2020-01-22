@@ -414,14 +414,14 @@ class User extends \App\Kernel\Common\User
                 $accessToken = $helper->getAccessToken();
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                 // When Graph returns an error
-                if ( DEBUG )
+                if ( DEBUG_CMS )
                 {
                     echo 'Graph returned an error: ' . $e->getMessage();
                     exit;
                 }
             } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                 // When validation fails or other local issues
-                if ( DEBUG )
+                if ( DEBUG_CMS )
                 {
                     echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
                     exit;
@@ -436,14 +436,14 @@ class User extends \App\Kernel\Common\User
                     $userNode = $response->getGraphUser();
                 } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-                    if ( DEBUG )
+                    if ( DEBUG_CMS )
                     {
                         echo 'Graph returned an error: ' . $e->getMessage();
                         exit;
                     }
                 } catch(\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
-                    if ( DEBUG )
+                    if ( DEBUG_CMS )
                     {
                         echo 'Facebook 1 SDK returned an error: ' . $e->getMessage();
                         exit;
