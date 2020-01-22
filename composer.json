@@ -1,7 +1,7 @@
 {
   "name": "JWebCreation/cms",
-  "description": "JContent has CMS of JWeb Creation",
-  "homepage": "https://www.jweb-creation.fr",
+  "description": "JContent has CMS of 29Ter",
+  "homepage": "https://www.29ter.fr",
   "type": "library",
   "version": "1.2.1.0",
   "minimum-stability": "dev",
@@ -26,7 +26,7 @@
   "authors": [
     {
       "name": "Guillaume DEVELTER",
-      "email": "guillaume@jweb-creation.fr"
+      "email": "guillaume@29ter.fr"
     }
   ],
   "autoload": {

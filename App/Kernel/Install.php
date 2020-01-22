@@ -56,17 +56,26 @@ class Install
 
     public static function postInstall()
     {
+        echo "Installation du CMS\n" ;
         $install = self::isInstallation() ;
 
+        echo "- Dossier\n" ;
         self::checkFolder() ;
+        echo "- Configuration SASS\n" ;
         self::checkConfigSass() ;
+        echo "- HTACCESS\n" ;
         self::checkHtaccess() ;
+        echo "- Configuration\n" ;
         self::checkConfig() ;
+        echo "- Index\n" ;
         self::checkIndex() ;
+        echo "- Translations\n" ;
         self::copyTranslationFiles() ;
+        echo "- DB\n" ;
         // self::minify() ;
         // self::patchVendor() ;
         self::patchDb() ;
+        echo "- Notification Slack\n" ;
 
         \App\Kernel\Utils\Slack::notificationInstall( "easyDOOR" , "" , "dev" , ( $install ? "Installation" : "Mise à jour" ) . " du CMS avec succés\nProjet : " . self::getFolderProject() );
     }
