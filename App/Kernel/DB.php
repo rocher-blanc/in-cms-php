@@ -4,6 +4,8 @@
     On ne met pas de namepspace pour eviter de l'appeler par le namespace
 */
 
+use App\Kernel\Container;
+
 class DB extends ORM
 {
     protected static $prefix           = "mod_" ;
@@ -66,8 +68,8 @@ class DB extends ORM
 
     public static function patchModuleTable( $name )
     {
-        $haveLang = \App\Kernel\Container::getInstance()->module( $name )->getEntity()->hasMultilang();
-        $fields   = \App\Kernel\Container::getInstance()->module( $name )->getEntity()->getField();
+        $haveLang = Container::getInstance()->module( $name )->getEntity()->hasMultilang();
+        $fields   = Container::getInstance()->module( $name )->getEntity()->getField();
 
         self::checkModuleTable( $name , $haveLang , $fields ) ;
 
@@ -394,7 +396,7 @@ class DB extends ORM
             $content = $content->select( $table . "." . self::getColumnName( $parent , $entity ) , $parent );
         }
 
-        $entity = \App\Kernel\Container::getInstance()->module( $entity )->getEntity();
+        $entity = Container::getInstance()->module( $entity )->getEntity();
 
         if ( $entity->hasOrder() )  $content = $content->order_by_asc( $table . "." . $entity->get( $entity->getOrderName() )->getColumn() );
         else                        $content = $content->order_by_asc( ( $target->hasLang() ? $tableLang : $table ) . "." . $target->getColumn() );
