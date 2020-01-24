@@ -200,7 +200,7 @@ class TwigFront extends \Twig_Extension
     {
         $newName = '/assets/js/dist/script.min.js' ;
 
-        if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
+        if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG_CMS == true )
         {
             $js = glob(WEB_PATH . '/assets/js/src/*.js');
             if ( $js && count( $js ) > 0 )
@@ -262,7 +262,7 @@ class TwigFront extends \Twig_Extension
     {
         $newName = '/assets/css/dist/std.min.css' ;
 		
-		if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG == true )
+		if ( ( DEBUG_CMS == false && ( ! file_exists( WEB_PATH . $newName ) or ( file_exists( WEB_PATH . $newName ) && $this->dateConfigFile() >= filemtime( WEB_PATH . $newName ) ) ) ) or DEBUG_CMS == true )
 		{
             $css = glob(WEB_PATH . '/assets/css/src/*');
 			if ( $css && count( $css ) > 0 )
