@@ -58,6 +58,8 @@ class Kernel
 
     public function __construct( $config = [] )
     {
+        session_start() ;
+
         $this->config( $config ) ;
     }
 

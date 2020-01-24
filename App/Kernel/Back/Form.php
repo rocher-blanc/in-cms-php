@@ -8,10 +8,10 @@ class Form
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-    protected $_lib_js    = '' ;
-    protected $_lib_css   = '' ;
-    protected $_cdn_js    = '' ;
-    protected $_cdn_css   = '' ;
+    protected $_lib_js    ;
+    protected $_lib_css   ;
+    protected $_cdn_js    ;
+    protected $_cdn_css   ;
     protected $_id        = NULL ;
     protected $view       = NULL ;
     protected $module_id  = NULL ;

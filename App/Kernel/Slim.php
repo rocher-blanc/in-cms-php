@@ -83,14 +83,6 @@ class Slim
 	public function initMiddleware()
 	{
         $this->_slim->add(new \App\Kernel\Middleware\PrettyExceptions);
-        $this->_slim->add(new \App\Kernel\Middleware\SessionCrypt([
-            'expires' => '60 minutes',
-            'path' => '/',
-            'domain' => null,
-            'secure' => false,
-            'httponly' => false,
-            'name' => $this->_slim->config('session_name'),
-        ]));
 
         if ( DEBUG_BAR )
         {

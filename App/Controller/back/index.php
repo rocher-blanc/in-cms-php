@@ -74,7 +74,7 @@ $app->get('/', function () use ( $app ) {
 
     $app->render('index/index.twig.html' , [
         "version" => $json->version,
-        "debug" => DEBUG,
+        "debug" => DEBUG_CMS,
         "maintenance" => \App\Kernel\Container::getInstance()->param()->get('maintenance_active'),
         "seo" => [
             "page" => $seo_page,
