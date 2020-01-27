@@ -983,7 +983,7 @@ class Controller extends \App\Kernel\Common\Controller
             $this->setId( $id );
         }
 
-        if ( $this->getEntityName() == MODULE_USER )
+        if ( $this->getEntityName() == MODULE_CMS_USER )
         {
             $this->field('user_action')->setData( "front" , false ) ;
         }

@@ -628,7 +628,7 @@ class Controller extends ControllerCommon
 
                             if ( $this->getEntity()->getUserIdName() == $field->getName() )
                             {
-                                $idTd = Container::getInstance()->module( MODULE_USER )->getRepository( true )->getProfileIdWithUser( $row->get( $field->getColumn() ) ) ;
+                                $idTd = Container::getInstance()->module( MODULE_CMS_USER )->getRepository( true )->getProfileIdWithUser( $row->get( $field->getColumn() ) ) ;
                             }
                             else
                             {

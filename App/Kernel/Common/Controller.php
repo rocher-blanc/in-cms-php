@@ -437,9 +437,9 @@ class Controller
             case "array" :
                 $tab = [];
 
-                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->isUser() && defined('MODULE_USER') )
+                if ( $this->getEntity()->get( $this->getEntity()->getFieldReference()[0] )->isUser() && defined('MODULE_CMS_USER') )
                 {
-                    $secondTab = $this->Container()->module( MODULE_USER )->getRepository(true)->findAllForSelect2();
+                    $secondTab = $this->Container()->module( MODULE_CMS_USER )->getRepository(true)->findAllForSelect2();
 
                     if ( !empty( $secondTab ) && !empty( $content ) )
                     {

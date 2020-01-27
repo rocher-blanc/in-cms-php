@@ -1079,12 +1079,12 @@ class Builder extends Model
         {
             if ( $this->getApp()->config('config') == 'back' )
             {
-                if ( defined('MODULE_USER') )
+                if ( defined('MODULE_CMS_USER') )
                 {
                     $this->build('user_front_id' , true )
                         ->isSelect()
                         ->user()
-						->ManyToMany( MODULE_USER )
+						->ManyToMany( MODULE_CMS_USER )
                         ->name('Utilisateur');
                 }
                 else

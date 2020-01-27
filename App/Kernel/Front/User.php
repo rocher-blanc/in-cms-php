@@ -280,8 +280,8 @@ class User extends \App\Kernel\Common\User
 
     protected function getProfileModule()
     {
-        if ( defined('MODULE_USER') )   return MODULE_USER ;
-        else								  return NULL ;
+        if ( defined('MODULE_CMS_USER') )     return MODULE_CMS_USER ;
+        else								        return NULL ;
     }
 
     protected function checkModule()
