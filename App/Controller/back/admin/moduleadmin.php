@@ -1,6 +1,7 @@
 <?php
 
 use App\Kernel\Container;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/moduleadmin', function () use ($app)
@@ -95,7 +96,7 @@ $app->group('/moduleadmin', function () use ($app)
 				$php.= "{\n" ;
 				$php.= "\t\n" ;
 				$php.= "}" ;
-				if ( ! file_exists( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" , $php );
+				if ( ! file_exists( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" , $php );
 
 
 				$tab = ["Back","Front"];
@@ -110,7 +111,7 @@ $app->group('/moduleadmin', function () use ($app)
 					$php.= "{\n" ;
 					$php.= "\t\n" ;
 					$php.= "}" ;
-					if ( ! file_exists( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
+					if ( ! file_exists( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
 				}
 
 				// On génére le controller
@@ -131,12 +132,13 @@ $app->group('/moduleadmin', function () use ($app)
 					$php.= "{\n" ;
 					$php.= "\t\n" ;
 					$php.= "}" ;
-					if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) \App\Kernel\Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
+					if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
 				}
 
                 Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
 				Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
-				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( 'msg_module_installed' , true , '/admin/moduleadmin' );
+				Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( 'msg_module_installed' ) , true , '/admin/moduleadmin' );
+
 			}
 			else
 			{
@@ -150,7 +152,7 @@ $app->group('/moduleadmin', function () use ($app)
 		{
 			$app->render('admin/moduleadmin/generateImage.twig',[
 				'id' => $id,
-				'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin/image/' . $id )
+				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/image/' . $id )
 			]);
 		});
 
@@ -223,16 +225,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 			$result['msg'] = $msg;
 			$result['result'] = $ret;
-			$result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
+			$result['url'] = Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 
-			\App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+			Factory::getInstance()->Response()->printJSON($result) ;
 		});
 
 		$app->get('/delete/:id', function ($id) use ($app)
 		{
 			$app->render('admin/moduleadmin/delete.twig',[
 				'id' => $id,
-				'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin/delete/' . $id )
+				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/delete/' . $id )
 			]);
 		});
 
@@ -258,9 +260,9 @@ $app->group('/moduleadmin', function () use ($app)
 
 			$result['msg'] = $msg;
 			$result['result'] = $ret;
-			$result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
+			$result['url'] = Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 
-			\App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+			Factory::getInstance()->Response()->printJSON($result) ;
 
 		})->name('moduleadmin_delete');
 
@@ -325,16 +327,16 @@ $app->group('/moduleadmin', function () use ($app)
 
 			$result['msg'] = Translate::getInstance()->getText( msg_module_emptied);
 			$result['result'] = true;
-			$result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
+			$result['url'] = Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 
-			\App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+			Factory::getInstance()->Response()->printJSON($result) ;
 		})->name('moduleadmin_truncate');
 
 		$app->get('/truncate/:id', function ($id) use ($app)
 		{
 			$app->render('admin/moduleadmin/truncate.twig',[
 				'id' => $id,
-				'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/moduleadmin/truncate/' . $id )
+				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/truncate/' . $id )
 			]);
 		})->name('moduleadmin_truncate');
 
@@ -367,7 +369,7 @@ $app->group('/moduleadmin', function () use ($app)
 			$app->flash('__msg',addslashes( json_encode( $msg )));
 			$app->flash('__result',$ret);
 			$app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
-			\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
+			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 		})->name('moduleadmin_active');
 
 		$app->get('/default/:id/:token', function ($id,$token) use ($app)
@@ -404,7 +406,7 @@ $app->group('/moduleadmin', function () use ($app)
 				$ret = false;
 			}
 
-			\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
+			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 		})->name('moduleadmin_default');
 
 		$app->get('/notdefault/:id/:token', function ($id,$token) use ($app)
@@ -433,7 +435,7 @@ $app->group('/moduleadmin', function () use ($app)
 				$ret = false;
 			}
 
-			\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
+			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 		})->name('moduleadmin_notdefault');
 
 		$app->get('/disactive/:id/:token', function ($id,$token) use ($app)
@@ -463,7 +465,7 @@ $app->group('/moduleadmin', function () use ($app)
 			}
 
 
-			\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
+			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 		})->name('moduleadmin_disactive');
 
 		$app->get('/edit(/:id)', function ($id = -1) use ($app)
@@ -527,10 +529,10 @@ $app->group('/moduleadmin', function () use ($app)
 
 				$id = $contentRow->module_id;
 				$result['result'] = true ;
-				$result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
+				$result['url'] = Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 				$result['msg'] = "Le module a bien été " . ( $add == true ? "ajouté" : "modifié" ) ;
 			}
 
-			\App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
+			Factory::getInstance()->Response()->printJSON($result) ;
 		});
 	});
