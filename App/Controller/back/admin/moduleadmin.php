@@ -136,7 +136,7 @@ $app->group('/moduleadmin', function () use ($app)
 
                 Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
 				Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
-				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( msg_module_installed) , true , '/admin/moduleadmin' );
+				\App\Kernel\Factory::getInstance()->Response()->flashAndRedirect(Translate::getInstance()->getText( 'msg_module_installed' , true , '/admin/moduleadmin' );
 			}
 			else
 			{
