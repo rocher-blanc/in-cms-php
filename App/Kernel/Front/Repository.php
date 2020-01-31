@@ -401,7 +401,15 @@ class Repository extends \App\Kernel\Common\Repository
                             else
                             {
                                 list( $key , $value ) = explode( ":" , $row );
-                                $rst = $rst->where_equal( $this->field( $key ) , $value );
+                                switch ( $value )
+                                {
+                                    case "null" :
+                                        $rst = $rst->where_null( $this->field( $key ) );
+                                        break;
+                                    default:
+                                        $rst = $rst->where_equal( $this->field( $key ) , $value );
+                                        break;
+                                }
                             }
                         }
                     break;
