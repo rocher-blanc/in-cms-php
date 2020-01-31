@@ -17,7 +17,7 @@
                                 <i class="icon-move"></i>
                             </a>
                         {% endif %}
-                        <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ index+1 }}.</span>&nbsp;{{ row.value }}
+                        <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ loop.index }}.</span>&nbsp;{{ row.value }}
                     </td>
                 {% else %}
                     <td>
