@@ -17,7 +17,15 @@ class Repository extends \App\Kernel\Common\Repository
     {
         /* Requete pour aller chercher les données */
         $result = \DB::for_module( $this->getName() )->where_id_is( $id );
-        if ( $this->getEntity()->hasValidation() ) $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
+
+        if ( $this->getEntity()->hasValidation() )
+        {
+            if ( ! ( ! empty( $_GET['id'] ) && ! empty( $_GET['preview'] ) && md5( $_GET['id'] ) == $_GET['preview'] ) )
+            {
+                $result = $result->where_equal( $this->getEntity()->get( $this->getEntity()->getValidationName() )->fieldSql() , 1 );
+            }
+        }
+
         if ( $this->getEntity()->hasMultiLang() )
         {
             $idName			= \DB::getIdName( $this->getName() ) ;

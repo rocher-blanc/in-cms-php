@@ -179,7 +179,7 @@
                                     {% endif %}
                                 {%  endfor %}
                             {% endif %}
-                            {% if hasURL == true %}<a target="_blank" href="{{ content.url }}"><i class="icon-line-link"></i></a>{% endif %}
+                            {% if hasURL == true %}<a target="_blank" href="{{ content.url }}?preview={{ content.id|md5 }}&id={{ content.id }}"><i class="icon-line-link"></i></a>{% endif %}
                             {% if mod.canDuplicate == true %}
                                 {% if depedency %}
                                     <a href="{{ dRoute( mod.name , 'duplicate' , dElement , dModule , content.id ) }}" class="duplicate"><i class="icon-files"></i></a>

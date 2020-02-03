@@ -649,6 +649,7 @@ class Controller extends ControllerCommon
                     }
 
                     $tdArray[ $i ]['id'] = $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ;
+                    $tdArray[ $i ]['md5'] = md5( $row->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
 
                     /* *************************************************** */
                     /* *************************************************** */
