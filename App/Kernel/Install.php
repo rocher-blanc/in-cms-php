@@ -228,7 +228,7 @@ class Install
                 $php.= "define('DB_PASSWORD','" . getenv('MYSQL_ADDON_PASSWORD') . "');\n" ;
                 $php.= "define('DB_DATABASE','" . getenv('MYSQL_ADDON_DB') . "');\n" ;
                 $php.= "define('DB_PORT','" . getenv('MYSQL_ADDON_PORT') . "');\n" ;
-                $php.= "define('DEBUG',true);" ;
+                $php.= "define('DEBUG_CMS',true);" ;
 
                 self::create( $configFileProject , $php ) ;
             }
@@ -245,7 +245,7 @@ class Install
                 $php.= "define('DB_USER','');\n" ;
                 $php.= "define('DB_PASSWORD','');\n" ;
                 $php.= "define('DB_DATABASE','');\n" ;
-                $php.= "define('DEBUG',true);" ;
+                $php.= "define('DEBUG_CMS',true);" ;
 
                 self::create( $configFileProject , $php ) ;
             }
