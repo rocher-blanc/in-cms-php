@@ -373,32 +373,32 @@
                                         </li>
                                     </ul>
 
-                                    {% if active_easyletter %}
-                                    <ul class="mega-menu-column col-lg-3">
-                                        <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>{{ _('credit_email')}}</div></a>
-                                            <div class="widget clearfix">
-                                                <div class="col_one_fourth"></div>
-                                                <div class="col_one_fourth text-center" style="padding-top: 10px;">
-                                                    <i class="{{ el_credits <= 1000 ? 'icon-warning-sign' : 'icon-line2-check' }}" style="font-size: 50px; color: {{ el_credits <= 1000 ? '#8a6d3b;' : 'green' }};"></i>
-                                                </div>
-                                                <div class="col_two_fourth col_last">
-                                                    <div class="text-center text-uppercase" style="margin-bottom: 15px; font-size: 16px;">
-                                                        <span style="font-weight: bold; font-size: 36px;">{{ el_credits|number_format(0, '', ' ') }}</span><br />
-                                                        {% if el_credits > 1 %}
-                                                        {{ _('credit_plur')}}*
-                                                        {% else %}
-                                                        {{ _('credit_sing')}}*
-                                                        {% endif %}
+                                    {% if active_newsletter %}
+                                        <ul class="mega-menu-column col-lg-3">
+                                            <li class="mega-menu-title sub-menu">
+                                                <a href="#" class="sf-with-ul"><div>{{ _('credit_email')}}</div></a>
+                                                <div class="widget clearfix">
+                                                    <div class="col_one_fourth"></div>
+                                                    <div class="col_one_fourth text-center" style="padding-top: 10px;">
+                                                        <i class="{{ el_credits <= 1000 ? 'icon-warning-sign' : 'icon-line2-check' }}" style="font-size: 50px; color: {{ el_credits <= 1000 ? '#8a6d3b;' : 'green' }};"></i>
+                                                    </div>
+                                                    <div class="col_two_fourth col_last">
+                                                        <div class="text-center text-uppercase" style="margin-bottom: 15px; font-size: 16px;">
+                                                            <span style="font-weight: bold; font-size: 36px;">{{ el_credits|number_format(0, '', ' ') }}</span><br />
+                                                            {% if el_credits > 1 %}
+                                                            {{ _('credit_plur')}}*
+                                                            {% else %}
+                                                            {{ _('credit_sing')}}*
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col_full">
+                                                        * {{ _('credit_def')}}
                                                     </div>
                                                 </div>
-
-                                                <div class="col_full">
-                                                    * {{ _('credit_def')}}
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                            </li>
+                                        </ul>
                                     {% endif %}
                                 </div>
                             </li>
