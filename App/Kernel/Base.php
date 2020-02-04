@@ -128,8 +128,7 @@ CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH R
 
     public function getSql()
     {
-        $passGuillaume = '$2y$09$RizAnNLsExTvYdridNHjSe3KaY8YT5/2ErA6UMHCoezhEV3vYzpIG' ;
-        $passJweb = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
+        $pass29ter = '$2y$09$Qlpl8n.Mzv8yv46kqBrWSuIxb7suyS8iZ1uaZUk3cCfutlRwKQeve' ;
 
         return "INSERT INTO `extension` (`extension_technical_name`, `extension_name`, `extension_perm_add`, `extension_perm_update`, `extension_perm_delete`, `extension_user`) VALUES
 ('user', 'Administrateurs', 1, 1, 1, 0),
@@ -175,8 +174,7 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('security_list_ip', NULL);
 
 INSERT INTO `user` (`user_group_id`, `user_name`, `user_password`, `user_fname`, `user_lname`, `user_published`, `user_lang_id`) VALUES
-(1, 'Jammye', '" . $passGuillaume . "', 'Guillaume', 'DEVELTER', 1, 1),
-(1, 'jweb', '" . $passJweb . "', 'JWeb', 'JWeb', 1, 1);
+(1, '29ter', '" . $pass29ter . "', '29Ter', '29Ter', 1, 1);
 
 INSERT INTO `user_group` (`user_group_id`, `user_group_name`) VALUES
 (1, 'Administrateurs'),
