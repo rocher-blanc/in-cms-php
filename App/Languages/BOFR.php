@@ -725,5 +725,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"zone_geo" => "Zone géographique",
 		"€" => "€",
 		"403" => "403",
+        "content" => "Contenu",
+        "on_line" => "En ligne",
 	];
 }
