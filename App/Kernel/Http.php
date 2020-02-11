@@ -31,7 +31,13 @@ class Http
 
 	public function getUrl()
 	{
-		return $this->CMS()->getApp()->request()->getUrl() ;
+        return $this->CMS()->getApp()->request()->getUrl() ;
+//        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) $_SERVER['HTTPS']='on';
+//        if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) ) $_SERVER['HTTP_HOST']=$_SERVER['HTTP_X_FORWARDED_HOST'];
+//
+//        $protocol = 'http' ;
+//        if ( $_SERVER['HTTPS'] == 'on' ) $protocol = 'https' ;
+//        return $protocol . '://' . $_SERVER['HTTP_HOST'] ;
 	}
 
     public function getCdn()

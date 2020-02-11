@@ -47,6 +47,7 @@ class Response
     /* Retour des messages d'erreurs par FLASH (Slim) pour les formulaires classiques ou RQT en GET */
     public function redirect( $url = '' , $status = 302 )
     {
+        
         $this->getApp()->redirect( ( $url == '' ? '/' : $url ) , $status );
         die;
     }

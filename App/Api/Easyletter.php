@@ -20,10 +20,10 @@ class Easyletter
 
     public function __construct()
     {
-    	if( defined('EL_TOKEN') )
-		{
-			$this->token = EL_TOKEN;
-		}
+        if( defined('EL_TOKEN') )
+        {
+            $this->token = EL_TOKEN;
+        }
 
         if ( $this->token === NULL )
         {
@@ -35,29 +35,42 @@ class Easyletter
                 if ( DEBUG_CMS && SMTP_DEBUG ) $this->phpmailer->SMTPDebug = 3;          // Enable verbose debug output
 
                 $this->phpmailer->isSMTP();                            // Set mailer to use SMTP
-                $this->phpmailer->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
-                $this->phpmailer->SMTPAuth     = true;                 // Enable SMTP authentication
-                $this->phpmailer->Username     = MAIL_SMTP_USER ;      // SMTP username
-                $this->phpmailer->Password     = MAIL_SMTP_PASSWORD ;  // SMTP password
-                $this->phpmailer->SMTPSecure   = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
-                $this->phpmailer->Port         = MAIL_SMTP_PORT ;      // TCP port to connect to
+                $this->phpmailer->Host = MAIL_SMTP_HOST ;              // Specify main and backup SMTP servers
+                $this->phpmailer->Port = MAIL_SMTP_PORT ;              // TCP port to connect to
+                $this->phpmailer->SMTPAuth = false;                    // Enable SMTP authentication
+                $this->phpmailer->SMTPAutoTLS = false;
+
+                if ( defined('MAIL_SMTP_USER') && defined('MAIL_SMTP_PASSWORD') )
+                {
+                    if ( ! empty( MAIL_SMTP_USER ) && ! empty( MAIL_SMTP_PASSWORD ) )
+                    {
+                        $this->phpmailer->SMTPAuth = true;                 // Enable SMTP authentication
+                        $this->phpmailer->Username = MAIL_SMTP_USER ;      // SMTP username
+                        $this->phpmailer->Password = MAIL_SMTP_PASSWORD ;  // SMTP password
+                    }
+                }
+
+                if ( defined('MAIL_SMTP_SECURE') )
+                {
+                    if ( ! empty( MAIL_SMTP_SECURE ) )
+                    {
+                        $this->phpmailer->SMTPSecure = MAIL_SMTP_SECURE ;
+                    }
+                }
             }
             else
             {
                 $this->phpmailer->isSendmail();
             }
 
+            if ( defined('MAIL_FROM_ADDRESS') && defined('MAIL_FROM_NAME') ) $this->phpmailer->setFrom( MAIL_FROM_ADDRESS , MAIL_FROM_NAME );
+            if ( defined('MAIL_REPLY_ADDRESS') && defined('MAIL_REPLY_NAME') ) $this->phpmailer->addReplyTo( MAIL_REPLY_ADDRESS , MAIL_REPLY_NAME );
+
             $this->phpmailer->isHTML(true);                            // Set email format to HTML
             $this->phpmailer->CharSet = 'UTF-8';
         }
         else
         {
-            /*
-             * $_SERVER['SERVER_NAME']
-             * $jwt = JWT::encode($token, $key);
-             */
-
-
             $this->client = new Client([
                 'base_uri' => $this->urlApi,
                 'http_errors' => false,

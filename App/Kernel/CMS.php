@@ -90,7 +90,18 @@ class CMS
 
     public function getIp()
     {
-        return $_SERVER['REMOTE_ADDR'] ;
+        if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
+        {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        else if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) )
+        {
+            return $_SERVER['HTTP_X_REAL_IP'];
+        }
+        else
+        {
+            return $_SERVER['REMOTE_ADDR'] ;
+        }
     }
 
     /* ************************************************** */
@@ -108,7 +119,7 @@ class CMS
 
     public function view()
     {
-        return new View; 
+        return new View;
     }
 
     public function fetch( $tpl , $arg = [] )

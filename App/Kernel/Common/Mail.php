@@ -13,7 +13,7 @@ class Mail
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
-    
+
     public function __construct()
     {
         $this->obj = new \PHPMailer;
@@ -27,20 +27,30 @@ class Mail
             if ( DEBUG_CMS && SMTP_DEBUG ) $this->obj->SMTPDebug = 3;          // Enable verbose debug output
 
             $this->obj->isSMTP();                            // Set mailer to use SMTP
-            $this->obj->Host         = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
-            $this->obj->SMTPAuth     = true;                 // Enable SMTP authentication
-            $this->obj->Username     = MAIL_SMTP_USER ;      // SMTP username
-            $this->obj->Password     = MAIL_SMTP_PASSWORD ;  // SMTP password
-            $this->obj->SMTPSecure   = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
-            $this->obj->Port         = MAIL_SMTP_PORT ;      // TCP port to connect to
+            $this->obj->Host = MAIL_SMTP_HOST ;      // Specify main and backup SMTP servers
+
+            if ( defined('MAIL_SMTP_USER') && defined('MAIL_SMTP_PASSWORD') )
+            {
+                $this->obj->SMTPAuth = true;                 // Enable SMTP authentication
+                $this->obj->Username = MAIL_SMTP_USER ;      // SMTP username
+                $this->obj->Password = MAIL_SMTP_PASSWORD ;  // SMTP password
+            }
+            else
+            {
+                $this->obj->SMTPAuth = false;                 // Enable SMTP authentication
+            }
+
+            $this->obj->Port = MAIL_SMTP_PORT ;      // TCP port to connect to
+
+            if ( defined('MAIL_SMTP_SECURE') ) $this->obj->SMTPSecure = MAIL_SMTP_SECURE ;    // Enable TLS encryption, `ssl` also accepted
         }
         else
         {
             $this->obj->isSendmail();
         }
 
-       if ( defined('MAIL_FROM_ADDRESS') && defined('MAIL_FROM_NAME') ) $this->obj->setFrom( MAIL_FROM_ADDRESS , MAIL_FROM_NAME );
-       if ( defined('MAIL_REPLY_ADDRESS') && defined('MAIL_REPLY_NAME') ) $this->obj->addReplyTo( MAIL_REPLY_ADDRESS , MAIL_REPLY_NAME );
+        if ( defined('MAIL_FROM_ADDRESS') && defined('MAIL_FROM_NAME') ) $this->obj->setFrom( MAIL_FROM_ADDRESS , MAIL_FROM_NAME );
+        if ( defined('MAIL_REPLY_ADDRESS') && defined('MAIL_REPLY_NAME') ) $this->obj->addReplyTo( MAIL_REPLY_ADDRESS , MAIL_REPLY_NAME );
 
         $this->obj->isHTML(true);                            // Set email format to HTML
         $this->obj->CharSet = 'UTF-8';
