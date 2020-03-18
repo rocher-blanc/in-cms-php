@@ -21,8 +21,3 @@ defined('ADMIN') || define('ADMIN',true);
 /* Thème du back office pour JContent */
 defined('COLOR') || define('COLOR','#008fc1');
 
-
-// TOPOL
-defined('TOPOL_USER_ID') || define('TOPOL_USER_ID',NULL);
-defined('TOPOL_API_KEY') || define('TOPOL_API_KEY',NULL);
-

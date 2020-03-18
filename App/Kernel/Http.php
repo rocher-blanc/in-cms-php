@@ -16,7 +16,7 @@ class Http
 	
 	public function __construct()
 	{
-		if ( FILE_CONFIG !== false && DB_CONNECT === true ) $this->load() ;
+		if ( FILE_CONFIG !== false ) $this->load() ;
 	}
 	
 	/* ************************************************** */

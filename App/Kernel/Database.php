@@ -47,7 +47,5 @@ class Database
         {
             \DB::for_table('param')->limit(1)->find_one();
         }
-
-        defined('DB_CONNECT') || define('DB_CONNECT', true );
     }
 }

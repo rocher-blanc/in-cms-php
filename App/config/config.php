@@ -117,6 +117,10 @@ defined('MAIL_SMTP_PASSWORD') || define('MAIL_SMTP_PASSWORD', "" );
 defined('MAIL_SMTP_PORT') || define('MAIL_SMTP_PORT', 587 );
 defined('MAIL_SMTP_SECURE') || define('MAIL_SMTP_SECURE', 'tls' );
 
+// TOPOL
+defined('TOPOL_USER_ID') || define('TOPOL_USER_ID',NULL);
+defined('TOPOL_API_KEY') || define('TOPOL_API_KEY',NULL);
+
 // DATABASE
 if ( defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_DATABASE') )
 {
