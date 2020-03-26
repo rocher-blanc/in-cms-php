@@ -708,7 +708,10 @@ class Field
             }
             else if ( isset( $_FILES[ "upload_" . $key ] ) && !empty( $_FILES[ "upload_" . $key ]['tmp_name'] ) && $this->getType() == 'image' )
             {
-                $this->setValue( $_FILES[ "upload_" . $key ] ) ;
+                if ( $this->isFormatImage( $_FILES[ "upload_" . $key ] ) )
+                {
+                    $this->setValue( $_FILES[ "upload_" . $key ] ) ;
+                }
             }
 
             if ( $this->isEmpty() == true && $this->isRequired() == true && $this->getType() == 'gallery' )
@@ -811,4 +814,19 @@ class Field
 			unset( $this->data[ $field ][ $key ] ) ;
 		}
 	}
+
+	private function isFormatImage( $file )
+    {
+        $allowedMimes = ["image/gif","image/jpeg","image/jpg","image/png"];
+        $allowedExts = array("gif", "jpeg", "jpg", "png");
+
+        $extension = end(explode(".", $file["name"] ) );
+
+        if ( in_array( $file["type"] , $allowedMimes ) && in_array( $extension , $allowedExts ) )
+        {
+            return true ;
+        }
+
+        return false ;
+    }
 }
