@@ -115,7 +115,6 @@ defined('MAIL_SMTP_HOST') || define('MAIL_SMTP_HOST', "" );
 defined('MAIL_SMTP_USER') || define('MAIL_SMTP_USER', "" );
 defined('MAIL_SMTP_PASSWORD') || define('MAIL_SMTP_PASSWORD', "" );
 defined('MAIL_SMTP_PORT') || define('MAIL_SMTP_PORT', 587 );
-defined('MAIL_SMTP_SECURE') || define('MAIL_SMTP_SECURE', 'tls' );
 
 // TOPOL
 defined('TOPOL_USER_ID') || define('TOPOL_USER_ID',NULL);
