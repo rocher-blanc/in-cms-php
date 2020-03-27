@@ -43,7 +43,7 @@
 
                     <div class="card divcenter noradius noborder" style="max-width: 400px; background-color: rgba(255,255,255,0.93);">
                         <div class="card-body" style="padding: 40px;">
-                            <form class="nobottommargin" action="{{ siteUrl('secured/login') }}" method="post">
+                            <form class="nobottommargin" action="{{ siteUrl('/secured/login') }}" method="post">
                                 <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
                                 <div class="center" style="padding: 0 40px;">
