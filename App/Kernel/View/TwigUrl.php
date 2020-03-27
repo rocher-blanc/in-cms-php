@@ -2,6 +2,7 @@
 
 namespace App\Kernel\View;
 
+use App\Kernel\CMS;
 use App\Kernel\Factory;
 use App\Kernel\Http;
 use Slim\Slim;
@@ -29,7 +30,14 @@ class TwigUrl extends \Twig_Extension
 
     public function site($url, $withUri = true, $appName = 'default')
     {
-        return Http::getInstance()->getUrl() . '/' . ltrim($url, '/');
+        $uri = '' ;
+
+        if ( CMS::getInstance()->config('admin.url') !== NULL )
+        {
+            $uri = CMS::getInstance()->config('admin.url') . '/' ;
+        }
+        
+        return Http::getInstance()->getUrl() . '/' . $uri . ltrim($url, '/');
     }
 
     public function urlpage( $id )
