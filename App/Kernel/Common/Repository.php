@@ -90,9 +90,14 @@ class Repository
                 $tableLang  	= \DB::getTableNameLang( $this->getName() ) ;
                 $idNameInLang	= \DB::getIdNameInLang( $this->getName() ) ;
                 $langIdLangName	= \DB::getLangIdLangName( $this->getName() ) ;
+                $langId         = \App\Kernel\Lang::getInstance()->getDefault()->id;
+
+                if( \App\Kernel\Lang::getInstance()->getActive() ) {
+                    $langId = \App\Kernel\Lang::getInstance()->getActive()->id;
+                }
 
                 $content = $content->left_outer_join( $tableLang , array( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() , '=', $tableLang . '.' . $idNameInLang ))
-                    ->where_equal( $tableLang . '.' . $langIdLangName , \App\Kernel\Lang::getInstance()->getDefault()->id ) ;
+                    ->where_equal( $tableLang . '.' . $langIdLangName , $langId ) ;
             }
 
             if ( $this->getEntity()->getParentName() !== NULL )
