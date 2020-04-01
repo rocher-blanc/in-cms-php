@@ -916,6 +916,48 @@ class Controller extends \App\Kernel\Common\Controller
 		return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge( $this->getElementComponent( $type , $request ) , $vars ));
 	}
 
+    /* ***************************************************** */
+    /* **************   CUSTOM PAGINATION   **************** */
+    /* ***************************************************** */
+
+    public function getCustomPagination( $page = 1 , $perPage = 10 , $callablePreparedRequest )
+    {
+        $count   = $callablePreparedRequest()->count();
+        $pageMin = 1;
+        $pageMax = ceil( $count / $perPage );
+        if( $page > $pageMax )
+        {
+            $page = $pageMax;
+        }
+        else if( $page < $pageMin )
+        {
+            $page = $pageMin;
+        }
+
+        $offset = ( $page - 1 ) * $perPage;
+        $to     =  $offset + $perPage;
+
+        $rst = $callablePreparedRequest()
+            ->offset( $offset )
+            ->limit( $perPage )
+            ->find_many();
+
+        return [
+            'pagination' => [
+                'page'     => (int)( $page ),
+                'page_min' => (int)( $pageMin ),
+                'page_max' => (int)( $pageMax ),
+                'prev'     => $pageMin < $page,
+                'next'     => $pageMax > $page,
+                'per_page' => $perPage,
+                'from'     => $offset + 1,
+                'to'       => $to > $count ? $count : $to,
+                'total'    => $count
+            ],
+            'results'    => $rst
+        ];
+    }
+
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
     /* ************************************************** */
