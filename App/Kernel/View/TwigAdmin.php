@@ -27,7 +27,7 @@ class TwigAdmin extends \Twig_Extension
 
     public function site($url, $withUri = true, $appName = 'default')
     {
-        return Http::getInstance()->getUrl() . '/' . CMS::getInstance()->config('admin.url') . '/' . ltrim($url, '/');
+        return ltrim( Http::getInstance()->getUrl() , '/') . '/' . CMS::getInstance()->config('admin.url') . '/' . ltrim($url, '/');
     }
 
 	public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
