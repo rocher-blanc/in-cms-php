@@ -37,6 +37,8 @@ class TwigUrl extends \Twig_Extension
             $uri = CMS::getInstance()->config('admin.url') . '/' ;
         }
 
+        return 'tttttttttttttttttttt' ;
+
         return Http::getInstance()->getUrl() . '/' . $uri . ltrim($url, '/');
     }
 
