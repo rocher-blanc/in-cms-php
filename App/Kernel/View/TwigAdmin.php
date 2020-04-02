@@ -16,11 +16,17 @@ class TwigAdmin extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            new \Twig_SimpleFunction('siteUrl', [$this, 'site']),
             new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
             new \Twig_SimpleFunction('route', array($this, 'route')),
             new \Twig_SimpleFunction('dRoute', array($this, 'depedencyRoute')),
             new \Twig_SimpleFunction('asset', array($this, 'asset'))
         );
+    }
+
+    public function site($url, $withUri = true, $appName = 'default')
+    {
+        return Http::getInstance()->getUrl() . '/' . CMS::getInstance()->config('admin.url') . '/' . ltrim($url, '/');
     }
 
 	public function route( $module , $type = '' , $parent = '' , $id = NULL , $token = NULL )
