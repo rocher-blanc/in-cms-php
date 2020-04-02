@@ -2,9 +2,7 @@
 
 namespace App\Kernel\View;
 
-use App\Kernel\CMS;
 use App\Kernel\Factory;
-use App\Kernel\Http;
 use Slim\Slim;
 
 class TwigUrl extends \Twig_Extension

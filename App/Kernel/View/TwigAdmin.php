@@ -4,6 +4,7 @@ namespace App\Kernel\View;
 
 use App\Kernel\Factory;
 use App\Kernel\Http;
+use App\Kernel\CMS;
 use Slim\Slim;
 
 class TwigAdmin extends \Twig_Extension
