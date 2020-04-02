@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Factory;
 
+use App\Kernel\Http;
+
 class Url
 {
     private $toreplace  = [
@@ -78,7 +80,7 @@ class Url
     public function get( $url , $front = false )
     {
         $req = $this->getApp()->request();
-        $base = $req->getUrl() . $req->getRootUri() ;
+        $base = Http::getInstance()->getUrl() . $req->getRootUri() ;
         if ( $front ) $base = str_replace( $this->getApp()->config('admin.url') , '' , $base ) ;
         return $base . '/' . ltrim($url, '/');
     }
@@ -228,7 +230,7 @@ class Url
         }
         else
         {
-            $url = \App\Kernel\Http::getInstance()->getUrl() . "/" ;
+            $url = Http::getInstance()->getUrl() . "/" ;
         }
 
 //        if ( $urlFull ){ dump($url); die; }
@@ -258,7 +260,7 @@ class Url
         }
         else
         {
-            $url = \App\Kernel\Http::getInstance()->getUrl() . '/' . $url ;
+            $url = Http::getInstance()->getUrl() . '/' . $url ;
         }
 
         return $url ;
