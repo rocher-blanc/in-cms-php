@@ -640,7 +640,7 @@ class Controller extends \App\Kernel\Common\Controller
                             {
                                 $tab = [];
 
-                                $tab['url']   = $this->getApp()->request()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
+                                $tab['url']   = Http::getInstance()->getUrl() . $this->getEntity()->getPathDocument(false) . '/' . $Doc->getDocumentName();
                                 $tab['icon']  = $Doc->getIcon( $Doc->getDocumentName() );
                                 $tab['name']  = $Doc->getDocumentName();
                                 $tab['title'] = $Doc->getAltText();
