@@ -198,10 +198,11 @@ class Kernel
 
         $locale = strtolower( Lang::getInstance()->getActive()->locale ) . '_' . strtoupper( COUNTRY );
 
-        setlocale( LC_COLLATE, $locale . '.UTF-8', $locale . '.utf8' );
-        setlocale( LC_CTYPE, $locale . '.UTF-8', $locale . '.utf8' );
-        setlocale( LC_TIME, $locale . '.UTF-8', $locale . '.utf8' );
-        setlocale( LC_NUMERIC, 'en_US.UTF-8', 'en_US.utf8' );
+        $encodage = '' ; // '.UTF-8'
+        setlocale( LC_COLLATE, $locale . $encodage );
+        setlocale( LC_CTYPE, $locale . $encodage );
+        setlocale( LC_TIME, $locale . $encodage );
+//        setlocale( LC_NUMERIC, 'en_US.UTF-8', 'en_US.utf8' );
     }
 
     /* ************************************************** */
