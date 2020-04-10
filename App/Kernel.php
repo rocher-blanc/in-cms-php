@@ -201,7 +201,7 @@ class Kernel
         $encodage = '' ; // '.UTF-8'
         setlocale( LC_COLLATE, $locale . $encodage , "French" );
         setlocale( LC_CTYPE, $locale . $encodage , "French" );
-        setlocale (LC_TIME, 'fr_FR.utf8','fra');
+        setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
         //        setlocale( LC_TIME, $locale . $encodage , "French" );
 //        setlocale( LC_NUMERIC, 'en_US.UTF-8', 'en_US.utf8' );
     }
