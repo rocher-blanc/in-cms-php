@@ -937,10 +937,17 @@ class Controller extends \App\Kernel\Common\Controller
         $offset = ( $page - 1 ) * $perPage;
         $to     =  $offset + $perPage;
 
-        $rst = $callablePreparedRequest()
-            ->offset( $offset )
-            ->limit( $perPage )
-            ->find_many();
+        if( $count > 0 )
+        {
+            $rst = $callablePreparedRequest()
+                ->offset( $offset )
+                ->limit( $perPage )
+                ->find_many();
+        }
+        else
+        {
+            $rst = [];
+        }
 
         return [
             'pagination' => [

@@ -44,7 +44,7 @@ $(function() {
             data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
             $.ajax({
-                url     : admin+"admin/translate/add-key",
+                url     : siteurl+"admin/translate/add-key",
                 data    : data,
                 method  : "POST",
                 dataType: 'json',
@@ -191,7 +191,7 @@ var saveCell = function( cell ) {
     data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
     $.ajax({
-        url     : admin+"admin/translate/update-translate",
+        url     : siteurl+"admin/translate/update-translate",
         data    : data,
         method  : "POST",
         dataType: 'json',
@@ -266,7 +266,7 @@ var addKey = function( key ) {
     if( $("meta[name=isadmin]").attr("content") == "1" ) {
         $td.append(
             $("<a>")
-                .attr("href", admin+"admin/translate/remove-key/" + key)
+                .attr("href", siteurl+"admin/translate/remove-key/" + key)
                 .attr("data-lightbox", "ajax")
                 .append(
                     $("<i>")
@@ -340,7 +340,7 @@ var requestGetLang = function( lang_locale ) {
     data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
     $.ajax({
-        url     : admin+"admin/translate/get-lang",
+        url     : siteurl+"admin/translate/get-lang",
         data    : data,
         method  : "POST",
         dataType: 'json',
@@ -371,7 +371,7 @@ var deleteKey = function( key ) {
     data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
 
     $.ajax({
-        url     : admin+"admin/translate/remove-key-action",
+        url     : siteurl+"admin/translate/remove-key-action",
         data    : data,
         method  : "POST",
         dataType: 'json',
