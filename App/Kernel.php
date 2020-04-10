@@ -199,9 +199,9 @@ class Kernel
         $locale = strtolower( Lang::getInstance()->getActive()->locale ) . '_' . strtoupper( COUNTRY );
 
         $encodage = '' ; // '.UTF-8'
-        setlocale( LC_COLLATE, $locale . $encodage );
-        setlocale( LC_CTYPE, $locale . $encodage );
-        setlocale( LC_TIME, $locale . $encodage );
+        setlocale( LC_COLLATE, $locale . $encodage , "French" );
+        setlocale( LC_CTYPE, $locale . $encodage , "French" );
+        setlocale( LC_TIME, $locale . $encodage , "French" );
 //        setlocale( LC_NUMERIC, 'en_US.UTF-8', 'en_US.utf8' );
     }
 
