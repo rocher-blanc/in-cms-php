@@ -67,6 +67,10 @@ $(function() {
         }
     });
 
+    $(".show-new-keys").click(function() {
+        $("#search-key").val("##").trigger("input");
+    });
+
 
     $(".translate-lang-select").change(function() {
         var value = $(".translate-lang-select").val();
