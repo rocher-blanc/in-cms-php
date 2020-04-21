@@ -727,5 +727,6 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"403" => "403",
         "content" => "Contenu",
         "on_line" => "En ligne",
+        "langue_traduction_show_uncompleted" => "Compléter les textes",
 	];
 }
