@@ -937,21 +937,29 @@ class User extends \App\Kernel\Common\User
 
     public function generatePassword( $length = 10 )
     {
-        $alpha          = "abcdefghijklmnopqrstuvwxyz";
-        $alpha_upper    = strtoupper($alpha);
-        $numeric        = "0123456789";
-        $special        = ".-+=_,!@$#*%<>[]{}";
-
-        $chars          = $alpha . $alpha_upper . $numeric;
-        $len            = strlen( $chars );
-        $pw             = '';
-
-        for ( $i = 0; $i < $length; $i++ )
+        while( true )
         {
-            $pw .= substr( $chars, rand( 0 , $len - 1 ) , 1 ) ;
-        }
+            $alpha          = "abcdefghijklmnopqrstuvwxyz";
+            $alpha_upper    = strtoupper($alpha);
+            $numeric        = "0123456789";
+            $special        = "-+=_!@#*<>[]{}";
 
-        return str_shuffle( $pw );
+            $chars          = $alpha . $alpha_upper . $numeric . $special;
+            $len            = strlen( $chars );
+            $pw             = '';
+
+            for ( $i = 0; $i < $length; $i++ )
+            {
+                $pw .= substr( $chars, rand( 0 , $len - 1 ) , 1 ) ;
+            }
+
+            $pass = str_shuffle( $pw );
+
+            if ( $this->formatPasswordRequired( $pass ) )
+            {
+                return $pass ;
+            }
+        }
     }
 
     public function hashPassword( $pass )
