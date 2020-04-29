@@ -1528,7 +1528,7 @@ class Controller extends ControllerCommon
             $data->create();
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->hasLang() == false && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false )
+                if ( $row->hasLang() == false && $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
                 {
                     $data->set( $row->getName() , $content->get( $row->getColumn() ) );
                 }
