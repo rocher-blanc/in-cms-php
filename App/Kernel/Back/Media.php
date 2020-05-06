@@ -235,6 +235,15 @@ class Media extends \App\Kernel\Common\Media
                     $this->genThumb( $thumb[0] , $thumb[1] ) ;
                 }
             }
+
+            if ( $field->hasCover() )
+            {
+                foreach( $field->getCover() as $cover )
+                {
+                    // width, height
+                    $this->genCover( $cover[0] , $cover[1] ) ;
+                }
+            }
         }
 
         return $rst ;
@@ -351,6 +360,37 @@ class Media extends \App\Kernel\Common\Media
 			echo 'Error: ' . $e->getMessage();
 		}
 	}
+
+	public function genCover( $width , $height , $crop = false )
+    {
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $img = $path . $this->getImageName() ;
+
+        if( $crop == true )   $subfolder = 'c' ;
+        else                  $subfolder = 't' ;
+
+        try {
+            $miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
+            $file = $path . $subfolder . "/" . $miniName ;
+
+            if ( ! file_exists( $file ) && file_exists( $img ) )
+            {
+                $tmpImg = new \abeautifulsite\SimpleImage( $img );
+                $tmpImg->thumbnail( $width , $height , "center" );
+
+                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+                $destImg->overlay($tmpImg)->save($file);
+
+                $url = str_replace("/home/madmovies/www/web" , "http://madmovies.vps1.jweb-creation.fr" , $file);
+                echo '<a href="'.$url.'" target="_blank">Image</a>';
+                die;
+            }
+
+            return $miniName ;
+        } catch(Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
 	
 	public function genCropDefaut( $width , $height )
 	{

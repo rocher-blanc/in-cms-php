@@ -117,6 +117,15 @@ class Field
 		$this->setData( "thumb" , $data );
 	}
 
+	public function setCover( Array $tab )
+	{
+		if ( $this->getData('cover') !== NULL )	$data = $this->getData('cover');
+		else									    $data = [] ;
+
+		$data[] = $tab;
+		$this->setData( "cover" , $data );
+	}
+
 	/* ************************************************** */
 	/* ******************     ISER    ******************* */
 	/* ************************************************** */
@@ -268,7 +277,13 @@ class Field
 	public function hasThumb()
 	{
 		if ( $this->getData('thumb') !== NULL ) return true ;
-		else									    return false ;
+		else									     return false ;
+	}
+
+	public function hasCover()
+	{
+		if ( $this->getData('cover') !== NULL ) return true ;
+		else									     return false ;
 	}
 
 	public function hasCrop()
@@ -349,6 +364,11 @@ class Field
 	public function getThumb()
 	{
 		return $this->getData('thumb') ;
+	}
+
+	public function getCover()
+	{
+		return $this->getData('cover') ;
 	}
 
 	public function getFormat()

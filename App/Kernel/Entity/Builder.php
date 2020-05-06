@@ -1681,6 +1681,12 @@ class Builder extends Model
         return $this;
     }
 
+    protected function Cover( $width , $height )
+    {
+        $this->field()->setCover( array( $width , $height ) ) ;
+        return $this;
+    }
+
     protected function Crop( $width , $height )
     {
         $this->field()->setCrop( array( $width , $height ) ) ;
