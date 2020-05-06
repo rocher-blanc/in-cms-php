@@ -2271,6 +2271,15 @@ class Controller extends ControllerCommon
             }
         }
 
+        if ( $field->hasCover() )
+        {
+            foreach( $field->getCover() as $cover )
+            {
+                // width, height
+                $Gallery->setCover( $cover[0] , $cover[1] );
+            }
+        }
+
         $rst = $Gallery->add();
 
         return $this->Factory()->Response()->printJSON( $rst ) ;

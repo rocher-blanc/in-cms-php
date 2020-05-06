@@ -11,6 +11,7 @@ class Gallery extends \App\Kernel\Common\Gallery
     protected $image_size = 0;
     protected $order = [];
     protected $thumb = [];
+    protected $cover = [];
 
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
@@ -33,6 +34,14 @@ class Gallery extends \App\Kernel\Common\Gallery
         ];
     }
 
+    public function setCover( $width , $height )
+    {
+        $this->cover[ $width . "x" . $height ] = [
+            'w' => $width,
+            'h' => $height,
+        ];
+    }
+
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
@@ -50,6 +59,11 @@ class Gallery extends \App\Kernel\Common\Gallery
     public function getThumb()
     {
         return $this->thumb ;
+    }
+
+    public function getCover()
+    {
+        return $this->cover ;
     }
 
     /* ************************************************** */
@@ -105,6 +119,14 @@ class Gallery extends \App\Kernel\Common\Gallery
                         }
                     }
 
+                    if ( ! empty( $this->getCover() ) )
+                    {
+                        foreach( $this->getCover() as $thb )
+                        {
+                            $this->genCover( $thb['w'] , $thb['h'] );
+                        }
+                    }
+
                     $gallery = \DB::for_table('gallery')->create();
                     $gallery->gallery_name = $this->getImageName();
                     $gallery->gallery_module_id = $this->getModuleId();
@@ -141,6 +163,14 @@ class Gallery extends \App\Kernel\Common\Gallery
                     foreach( $this->getThumb() as $thb )
                     {
                         $this->genThumb( $thb['w'] , $thb['h'] );
+                    }
+                }
+
+                if ( ! empty( $this->getCover() ) )
+                {
+                    foreach( $this->getCover() as $cover )
+                    {
+                        $this->genCover( $cover['w'] , $cover['h'] );
                     }
                 }
 

@@ -590,6 +590,21 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                         }
 
+                        if ( $row->hasCover() )
+                        {
+                            foreach( $row->getCover() as $cover )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 't' , $cover[0] , $cover[1] ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $path . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['thumb'][$cover[0].'x'.$cover[1]] = $mini ;
+                            }
+                        }
+
                         if ( $row->hasCrop() )
                         {
                             foreach( $row->getCrop() as $crop )
