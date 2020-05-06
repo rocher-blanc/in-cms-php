@@ -111,7 +111,7 @@ class Field
 	public function setThumb( Array $tab )
 	{
 		if ( $this->getData('thumb') !== NULL )	$data = $this->getData('thumb');
-		else									    $data = [] ;
+		else									        $data = [] ;
 
 		$data[] = $tab;
 		$this->setData( "thumb" , $data );
@@ -120,7 +120,7 @@ class Field
 	public function setCover( Array $tab )
 	{
 		if ( $this->getData('cover') !== NULL )	$data = $this->getData('cover');
-		else									    $data = [] ;
+		else									        $data = [] ;
 
 		$data[] = $tab;
 		$this->setData( "cover" , $data );

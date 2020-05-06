@@ -1683,7 +1683,7 @@ class Builder extends Model
 
     protected function Cover( $width , $height )
     {
-        $this->field()->setCover( array( $width , $height ) ) ;
+        $this->field()->setCover( array( $width , $height ) );
         return $this;
     }
 

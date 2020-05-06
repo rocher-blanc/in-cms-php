@@ -380,10 +380,6 @@ class Media extends \App\Kernel\Common\Media
 
                 $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
                 $destImg->overlay($tmpImg)->save($file);
-
-                $url = str_replace("/home/madmovies/www/web" , "http://madmovies.vps1.jweb-creation.fr" , $file);
-                echo '<a href="'.$url.'" target="_blank">Image</a>';
-                die;
             }
 
             return $miniName ;
