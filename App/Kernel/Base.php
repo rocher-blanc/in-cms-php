@@ -350,7 +350,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
 				"module_lang_module_id" => $this->infoColumn( "INT" , "11" ),
 				"module_lang_url" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
 				"module_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
-				"module_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
+				"module_lang_description" => $this->infoColumn( "VARCHAR" , "300" , NULL , true )
 			],
             "module_group" => [
                 "module_group_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -381,7 +381,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "page_lang_page_id" => $this->infoColumn( "INT" , "11" ),
                 "page_lang_url" => $this->infoColumn( "VARCHAR" , "255" ),
                 "page_lang_title" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
-                "page_lang_description" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
+                "page_lang_description" => $this->infoColumn( "VARCHAR" , "300" , NULL , true )
             ],
             "param" => [
                 "param_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
@@ -410,7 +410,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "seo_lang_id" => $this->infoColumn( "INT" , "11" ),
                 "seo_url" => $this->infoColumn( "VARCHAR" , "255" ),
                 "seo_title" => $this->infoColumn( "VARCHAR" , "255" ),
-                "seo_description" => $this->infoColumn( "VARCHAR" , "255" ),
+                "seo_description" => $this->infoColumn( "VARCHAR" , "300" ),
                 "seo_index" => $this->infoColumn( "TINYINT" , "1" )
             ],
             "user" => [

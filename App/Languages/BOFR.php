@@ -660,7 +660,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"stock_disponible" => "Stock disponible",
 		"subject" => "Sujet",
 		"suppression" => "Suppression",
-		"tab_seo_desc_comment" => "115 caractères maximum, indique aux moteurs de recherche la description de votre page",
+		"tab_seo_desc_comment" => "330 caractères maximum, indique aux moteurs de recherche la description de votre page",
 		"tab_seo_title_comment" => "55 caractères maximum, indique aux moteurs de recherche le titre de votre page",
 		"taux" => "Taux",
 		"taux_reactivite" => "Taux de réactivité (nombre de cliques / nombre d'ouvreurs)",

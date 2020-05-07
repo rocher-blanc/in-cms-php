@@ -54,7 +54,7 @@
                 {% endfor %}
             </div>
             <div class="ed_field col_one_third col_last">
-                <label>{{ _('meta_desc') }}/label>
+                <label>{{ _('meta_desc') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
                         <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -63,10 +63,10 @@
                                     <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                                 </span>
                             </span>
-                            <input type="text" data-plugin-counter="115" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
+                            <input type="text" data-plugin-counter="300" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
                         </div>
                     {% else %}
-                        <input type="text" data-plugin-counter="115" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
+                        <input type="text" data-plugin-counter="300" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
                     {% endif %}
                 {% endfor %}
             </div>
