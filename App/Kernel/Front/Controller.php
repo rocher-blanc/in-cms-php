@@ -949,8 +949,6 @@ class Controller extends \App\Kernel\Common\Controller
             $page = $pageMin;
         }
 
-        dump( $count );
-
         $offset = ( $page - 1 ) * $perPage;
         $to     =  $offset + $perPage;
 
