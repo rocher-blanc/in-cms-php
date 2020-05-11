@@ -937,7 +937,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function getCustomPagination( $page = 1 , $perPage = 10 , $callablePreparedRequest )
     {
-        $count   = $callablePreparedRequest()->count();
+        $count   = $this->getCustomPaginationCount( $callablePreparedRequest );
         $pageMin = 1;
         $pageMax = ceil( $count / $perPage );
         if( $page > $pageMax )
@@ -948,6 +948,8 @@ class Controller extends \App\Kernel\Common\Controller
         {
             $page = $pageMin;
         }
+
+        dump( $count );
 
         $offset = ( $page - 1 ) * $perPage;
         $to     =  $offset + $perPage;
@@ -979,6 +981,11 @@ class Controller extends \App\Kernel\Common\Controller
             'results'    => $rst
         ];
     }
+
+    protected function getCustomPaginationCount( $callablePreparedRequest )
+	{
+		return $callablePreparedRequest()->count();
+	}
 
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
