@@ -942,7 +942,7 @@ class User extends \App\Kernel\Common\User
             $alpha          = "abcdefghijklmnopqrstuvwxyz";
             $alpha_upper    = strtoupper($alpha);
             $numeric        = "0123456789";
-            $special        = "-+=_!@#*<>[]{}";
+            $special        = "-+=_!@#*";
 
             $chars          = $alpha . $alpha_upper . $numeric . $special;
             $len            = strlen( $chars );
