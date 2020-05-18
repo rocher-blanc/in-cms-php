@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Front;
 
+use App\Kernel\Factory;
+
 class TwigDebugBar
 {
 
@@ -105,7 +107,7 @@ class TwigDebugBar
 	public function getDebugTwig()
 	{
 		$data    = [];
-		$tabs    = [ "others" , "user" , "user_error" , "custom" , "site" , "lang" ];
+		$tabs    = [ "others" , "user" , "user_error" , "custom" , "site" , "lang" , "pages" , "modules" ];
 		$excepts = $this->getDebugTwigExcepts();
 
 		foreach( $tabs as $tab ) {
@@ -120,6 +122,47 @@ class TwigDebugBar
 						{
 							$data['others'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
 						}
+					}
+					break;
+
+				case "pages" :
+					$data['pages'] = [];
+					$req = \DB::for_table( "page" )
+						->select( "page_id" )
+						->select( "page_name" )
+						->where_equal( "page_active" , 1 )
+						->find_array();
+
+					foreach( $req as $i ) {
+						$data['pages'][] = [
+							'name'  => $i['page_name'],
+							'type'  => $i['page_id'],
+							'value' => '<a href="'. Factory::getInstance()->Url()->page($i['page_id'], true) .'">go</a>'
+						];
+					}
+
+					break;
+
+				case "modules" :
+					$data['modules'] = [];
+					$req = \DB::for_table( "module" )
+							->select( "module_id" )
+							->select( "module_name" )
+							->select( "module_class_name" )
+							->select( "module_index" )
+							->select( "module_index_elmt" )
+						    ->where_equal( "module_active" , 1 )
+							->where_equal( "module_kernel" , 0 )
+							->find_array();
+
+					foreach( $req as $i ) {
+						$data['modules'][] = [
+							'name'  => $i['module_name'] . ' <em><small>('. $i['module_class_name'] .')</small></em>',
+							'type'  => $i['module_id'],
+							'value' => $i['module_index']
+										? '<a href="'. Factory::getInstance()->Url()->module($i['module_id'], true) .'">go</a>'
+										: ''
+						];
 					}
 					break;
 
