@@ -381,6 +381,12 @@ $app->group('/page', function () use ($app)
 			$result['msg']   = "La page spéciale a bien été " . ( $add == true ? "ajouté" : "modifié" ) ;
 			Factory::getInstance()->Response()->printJSON($result) ;
 		}
+		else
+		{
+			$result['result'] = false ;
+			$result['msg']    = current( $tabError );
+			Factory::getInstance()->Response()->printJSON($result) ;
+		}
 
 	})->name('page_edit');
 });
