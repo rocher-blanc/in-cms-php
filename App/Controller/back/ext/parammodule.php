@@ -1,6 +1,7 @@
 <?php
 
 use App\Kernel\Front\Translate;
+use App\Kernel\Factory;
 
 $app->group('/parammodule', function () use ($app)
 {
@@ -156,7 +157,7 @@ $app->group('/parammodule', function () use ($app)
         $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/parammodule' ) ;
     });
 
-    $app->map('/edit/:id', function ($id) use ($app)
+    $app->get('/edit/:id', function ($id) use ($app)
     {
         $lang = \App\Kernel\Lang::getInstance()->getAll() ;
 
@@ -175,45 +176,6 @@ $app->group('/parammodule', function () use ($app)
         else
         {
             $one = \DB::for_table('module')->where_id_is( $id )->find_one();
-            if ( $app->request->isPost() )
-            {
-                $one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
-                $one->module_index = $app->request->post('module_index') ;
-                $one->module_index_elmt = $app->request->post('module_index_elmt') ;
-                $one->save();
-
-                foreach( $lang as $l )
-                {
-                    $langRows = \DB::for_table('module_lang')
-                        ->where_equal('module_lang_module_id' , $id )
-                        ->where_equal('module_lang_lang_id' , $l->id )
-                        ->find_one();
-
-					$url = $app->request->post('module_lang_url_' . $l->url ) ;
-                    if ( $url == '' ) $url = $contentRows->module_name ;
-					$changeUrl = true ;
-					
-                    if ( ! $langRows )
-					{
-						$langRows = \DB::for_table('module_lang')->create();
-					}
-					else
-					{
-						if ( $url == $langRows->module_lang_url ) $changeUrl = false ;
-					}
-					
-                    $Factory = \App\Kernel\Factory::getInstance() ;
-                    if ( $changeUrl == true ) $url = $Factory->Url()->uniq( $url , $l->id ) ;
-
-                    $langRows->module_lang_module_id    = $id ;
-                    $langRows->module_lang_lang_id      = $l->id ;
-                    $langRows->module_lang_url          = $url ;
-                    $langRows->module_lang_title        = $app->request->post('module_lang_title_' . $l->url ) ;
-                    $langRows->module_lang_description  = $app->request->post('module_lang_description_' . $l->url ) ;
-                    $langRows->save();
-                }
-            }
-
             $post['module_name'] = $contentRows->module_name ;
             foreach( $lang as $l )
             {
@@ -238,5 +200,74 @@ $app->group('/parammodule', function () use ($app)
             'index_elmt' =>  $one->module_index_elmt,
             'contentLang' => $contentLang
         ]);
-    })->name('parammodule_edit')->via('GET', 'POST');
+    })->name('parammodule_edit');
+
+    $app->post('/edit/:id', function ($id) use ($app)
+    {
+        $lang = \App\Kernel\Lang::getInstance()->getAll() ;
+
+        $contentRows = \DB::for_table('module')
+            ->where_equal('module_active' , 1 )
+            ->where_equal('module_id' , $id )
+            ->find_one();
+
+        $post = [];
+        $contentLang = [];
+        if ( ! $contentRows )
+        {
+            $Factory = \App\Kernel\Factory::getInstance() ;
+            $Factory->Response()->flashAndRedirect( "Ce module n'est actuellement pas disponible" , false , 'ext/parammodule' ) ;
+        }
+        else
+        {
+            $one = \DB::for_table('module')->where_id_is( $id )->find_one();
+
+			$one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
+			$one->module_index = $app->request->post('module_index') ;
+			$one->module_index_elmt = $app->request->post('module_index_elmt') ;
+			$one->save();
+
+			foreach( $lang as $l )
+			{
+				$langRows = \DB::for_table('module_lang')
+					->where_equal('module_lang_module_id' , $id )
+					->where_equal('module_lang_lang_id' , $l->id )
+					->find_one();
+
+				$url = $app->request->post('module_lang_url_' . $l->url ) ;
+				if ( $url == '' ) $url = $contentRows->module_name ;
+				$changeUrl = true ;
+
+				if ( ! $langRows )
+				{
+					$langRows = \DB::for_table('module_lang')->create();
+				}
+				else
+				{
+					if ( $url == $langRows->module_lang_url ) $changeUrl = false ;
+				}
+
+				$Factory = \App\Kernel\Factory::getInstance() ;
+				if ( $changeUrl == true ) $url = $Factory->Url()->uniq( $url , $l->id ) ;
+
+				$langRows->module_lang_module_id    = $id ;
+				$langRows->module_lang_lang_id      = $l->id ;
+				$langRows->module_lang_url          = $url ;
+				$langRows->module_lang_title        = $app->request->post('module_lang_title_' . $l->url ) ;
+				$langRows->module_lang_description  = $app->request->post('module_lang_description_' . $l->url ) ;
+				$langRows->save();
+			}
+
+			if ( $app->request->post('buttonaction') == "stay" ) 	$url = '/ext/parammodule/edit/' . $id ;
+			else 										         	$url = '/ext/parammodule' ;
+
+			$result = [];
+			$result['result'] = true ;
+			$result['url']   = Factory::getInstance()->Url()->get( $url ) ;
+			$result['msg']   = "La module a bien été modifié";
+			Factory::getInstance()->Response()->printJSON($result) ;
+
+        }
+
+    })->name('parammodule_edit');
 });
