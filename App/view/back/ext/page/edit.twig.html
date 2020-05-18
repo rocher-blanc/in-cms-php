@@ -11,7 +11,7 @@
 {% endif %}
 
 {% block module %}
-<form method="post" action="{{ siteUrl('ext/page/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" class="form-vertical">
+<form action="{{ siteUrl('ext/page/edit') }}{% if id != -1 %}/{{ id }}{% endif %}" method="post" class="form-vertical">
 	<input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
     <div class="fancy-title title-dotted-border">
         <h3>{{ title_block_page }}</h3>
