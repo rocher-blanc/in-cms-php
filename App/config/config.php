@@ -76,7 +76,8 @@ defined('TECHNO') || define('TECHNO','easyDOOR');
 defined('BACKGROUND_COLOR_THB') || define('BACKGROUND_COLOR_THB', "#FFF" );
 
 // DEBUG
-defined('DEBUG_BAR') || define('DEBUG_BAR', false );
+defined('DEBUG_BAR')  || define('DEBUG_BAR', false );
+defined('DEBUG_TWIG') || define('DEBUG_TWIG', false );
 defined('PRODUCTION') || define('PRODUCTION', false );
 
 // SLACK
