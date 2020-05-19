@@ -728,5 +728,14 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
         "content" => "Contenu",
         "on_line" => "En ligne",
         "langue_traduction_show_uncompleted" => "Compléter les textes",
+        "see_website" => "Voir mon site",
+        "pending_payment" => "En attente de paiement",
+        "under_preparation" => "En cours de préparation",
+        "current_delivery" => "En cours de livraison",
+        "payment_accepted" => "Paiement accepté",
+        "payment_refused" => "Paiement refusé",
+        "partly_shipped" => "Livraison partielle",
+        "shop_status_id" => "ID.",
+        "shop_status_title" => "Status",
 	];
 }
