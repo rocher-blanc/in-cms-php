@@ -16,7 +16,7 @@
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="col_one_third">
+            <div class="col_half">
                 <div class="title-block">
                     <h3><span>{{ _('profil_ip_title') }}</span></h3>
                 </div>
@@ -34,7 +34,7 @@
                     <input type="text" id="user_fname" name="user_fname" class="form-control" value="{{ user.fname }}" />
                 </div>
             </div>
-            <div class="col_one_third">
+            <div class="col_half col_last">
                 <div class="title-block">
                     <h3><span>{{ _('profil_password_title') }}</span></h3>
                 </div>
@@ -51,26 +51,6 @@
                     <label>{{ _('profil_password_confirm') }}</label>
                     <input type="password" id="confirm_password" name="confirm_password" class="form-control" value="" />
                 </div>
-            </div>
-
-            <div class="col_one_third col_last">
-                <div class="title-block">
-                    <h3><span>{{ _('profil_image_title') }}</span></h3>
-                </div>
-
-                <div class="col_two_third">
-                    <div class="ed_field col_full avatar">
-                        <label>{{ _('profil_image_upload') }}</label>
-                        <input value="{{ user.photo }}" name="photo" type="file" class="upload-photo file-loading" data-field="photo" data-uploadurl="{{ siteUrl( 'secured/upload' ) }}">
-                        <input id="photo" value="{{ user.photo }}" name="uphoto" type="hidden">
-                    </div>
-                </div>
-                <div class="col_one_third col_last">
-                    <div class="testi-image">
-                        <img id="avatarview" src="{{ user.photo == '' ? asset('canvas/img/nobody.jpg') : siteUrl( user.photo , false ) }}">
-                    </div>
-                </div>
-
             </div>
 
             {% include 'form/generic/button.twig' %}
