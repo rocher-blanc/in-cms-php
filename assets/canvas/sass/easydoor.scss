@@ -565,6 +565,26 @@ form {
 }
 
 /* ************************************************ */
+/* Amélioration du wyziwig                          */
+/* ************************************************ */
+.note-editor.fixed {
+  .note-editing-area {
+    margin-top: 41px;
+  }
+  .note-toolbar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    z-index: 1000000000000000000000000000;
+    background: #343434;
+    box-shadow: 0 1px 3px 2px #14141434;
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+}
+
+/* ************************************************ */
 /* Gestion des documents                            */
 /* ************************************************ */
 
