@@ -104,7 +104,11 @@ tracking.footer
                             <span class="dbg-menu-content-type">{{ row.type }}</span>
                         </td>
                         <td>
-                            {% if row.value | length > 0 %}<span class="dbg-menu-content-value {{ row.class }}">{{ row.value }}</span>{% endif %}
+                            {% if row.is_link %}
+                                {{ row.value }}
+                            {% else %}
+                                {% if row.value | length > 0 %}<span class="dbg-menu-content-value type-{{ row.class }}">{{ row.value }}</span>{% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -114,7 +118,7 @@ tracking.footer
 
             <div class="dbg-menu-tabs">
                 {% for tab, content in __debug_twig__ %}
-                <button class="dbg-menu-tabs-tab{% if loop.first %} active{% endif %}" data-tab="{{ loop.index }}">{{ tab }}</button>
+                <button class="dbg-menu-tabs-tab{% if loop.first %} active{% endif %}{% if content|length == 0 %} disabled{% endif %}" data-tab="{{ loop.index }}">{{ tab }}</button>
                 {% endfor %}
             </div>
 

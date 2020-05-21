@@ -35,73 +35,81 @@ class TwigDebugBar
 		{
 			case "boolean" :
 				return [
-					'name'   => $name,
-					'type'   => "bool",
-					'class'  => "bool-" . ( $v ? 'true' : 'false' ),
-					'value'  => $v ? 'true' : 'false'
+					'name'    => $name,
+					'type'    => "boolean",
+					'class'   => "boolean-" . ( $v ? 'true' : 'false' ),
+					'is_link' => false,
+					'value'   => $v ? 'true' : 'false'
 				];
 				break;
 
 			case "integer" :
 				return [
-					'name'  => $name,
-					'type'  => "int",
-					'class' => "int",
-					'value' => $v
+					'name'    => $name,
+					'type'    => "int",
+					'class'   => "integer",
+					'is_link' => false,
+					'value'   => $v
 				];
 				break;
 
 			case "double" :
 				return [
-					'name'  => $name,
-					'type'  => "float",
-					'class' => "float",
-					'value' => $v
+					'name'    => $name,
+					'type'    => "float",
+					'class'   => "integer",
+					'is_link' => false,
+					'value'   => $v
 				];
 				break;
 
 			case "string" :
 				return [
-					'name'  => $name,
-					'type'  => "string",
-					'class' => "string",
-					'value' => strlen($v) > 800 ? substr($v, 0, 800) . "..." : $v
+					'name'    => $name,
+					'type'    => "string",
+					'class'   => "string",
+					'is_link' => false,
+					'value'   => strlen($v) > 800 ? substr($v, 0, 800) . "..." : $v
 				];
 				break;
 
 			case "array" :
 				return [
-					'name'  => $name,
-					'type'  => "array",
-					'class' => "array",
-					'value' => count($v)
+					'name'    => $name,
+					'type'    => "array",
+					'class'   => "integer",
+					'is_link' => false,
+					'value'   => count($v)
 				];
 				break;
 
 			case "object" :
 				return [
-					'name'  => $name,
-					'type'  => "object",
-					'class' => "object",
-					'value' => ""
+					'name'    => $name,
+					'type'    => "object",
+					'class'   => "integer",
+					'is_link' => false,
+					'value'   => ""
 				];
 				break;
 
 			case "NULL" :
 				return [
-					'name'  => $name,
-					'type'  => "null",
-					'class' => "null",
-					'value' => ""
+					'name'    => $name,
+					'type'    => "null",
+					'class'   => "boolean-false",
+					'is_link' => false,
+					'value'   => ""
 				];
 				break;
 
 			default :
 				return [
-					'name'  => $name,
-					'type'  => "other",
-					'class' => "other",
-					'value' => ""
+					'name'    => $name,
+					'type'    => "undefined",
+					'class'   => "integer",
+					'is_link' => false,
+					'value'   => ""
 				];
 				break;
 		}
@@ -109,7 +117,7 @@ class TwigDebugBar
 
 	protected function getDebugTwigExcepts()
 	{
-		return [ "others" , "user" , "user_error" , "site" , "lang" , "rgpd" , "og" , "md" , "webmaster_tools" , "analytics" , "meta" , "tracking" ];
+		return [ "current page vars" , "user" , "user_error" , "site" , "lang" , "rgpd" , "og" , "md" , "webmaster_tools" , "analytics" , "meta" , "tracking" ];
 	}
 
 	public function getDebugTwig()
@@ -128,7 +136,7 @@ class TwigDebugBar
 					{
 						if( ! in_array( $k , $excepts ) )
 						{
-							$data['others'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+							$data['current page vars'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
 						}
 					}
 					break;
@@ -143,9 +151,11 @@ class TwigDebugBar
 
 					foreach( $req as $i ) {
 						$data['pages'][] = [
-							'name'  => $i['page_name'],
-							'type'  => $i['page_id'],
-							'value' => '<a href="'. Factory::getInstance()->Url()->page($i['page_id'], true) .'">go</a>'
+							'name'    => $i['page_name'],
+							'type'    => $i['page_id'],
+							'class'   => "link",
+							'is_link' => true,
+							'value'   => '<a href="'. Factory::getInstance()->Url()->page($i['page_id'], true) .'" class="dbg-menu-content-link"></a>'
 						];
 					}
 
@@ -165,10 +175,12 @@ class TwigDebugBar
 
 					foreach( $req as $i ) {
 						$data['modules'][] = [
-							'name'  => $i['module_name'] . ' <em><small>('. $i['module_class_name'] .')</small></em>',
-							'type'  => $i['module_id'],
-							'value' => $i['module_index']
-										? '<a href="'. Factory::getInstance()->Url()->module($i['module_id'], true) .'">go</a>'
+							'name'    => $i['module_name'] . ' <em><small>('. $i['module_class_name'] .')</small></em>',
+							'type'    => $i['module_id'],
+							'class'   => "link",
+							'is_link' => true,
+							'value'   => $i['module_index']
+										? '<a href="'. Factory::getInstance()->Url()->module($i['module_id'], true) .'" class="dbg-menu-content-link"></a>'
 										: ''
 						];
 					}
