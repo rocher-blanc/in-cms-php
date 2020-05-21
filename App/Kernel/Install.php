@@ -63,6 +63,8 @@ class Install
         self::checkFolder() ;
         echo "- Configuration SASS\n" ;
         self::checkConfigSass() ;
+        echo "- Configuration NPM Package\n" ;
+        self::checkNpmPackage() ;
         echo "- HTACCESS\n" ;
         self::checkHtaccess() ;
         echo "- Configuration\n" ;
@@ -267,6 +269,23 @@ class Install
             $php.= 'output_style = :compressed' . "\n" ;
 
             self::create( $rubyFile , $php ) ;
+        }
+    }
+
+    protected static function checkNpmPackage()
+    {
+        $rubyFile = _PATH_ . '/web/package.json.rb' ;
+
+        if ( ! file_exists( $rubyFile ) )
+        {
+            $php = '' ;
+            $php.= '{' . "\n" ;
+            $php.= "\t" . '"dependencies": {' . "\n" ;
+            $php.= "\t\t" . "\n" ;
+			$php.= "\t" . '}' . "\n" ;
+			$php.= '}' ;
+
+			self::create( $rubyFile , $php ) ;
         }
     }
 
