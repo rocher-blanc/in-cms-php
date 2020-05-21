@@ -35,16 +35,18 @@ class TwigDebugBar
 		{
 			case "boolean" :
 				return [
-					'name'  => $name,
+					'name'   => $name,
 					'type'   => "bool",
-					'value'  => $v ? '<span style="color:green;">true</span>' : '<span style="color:red;">false</span>'
+					'class'  => "bool-" . ( $v ? 'true' : 'false' ),
+					'value'  => $v ? 'true' : 'false'
 				];
 				break;
 
 			case "integer" :
 				return [
 					'name'  => $name,
-					'type'   => "int",
+					'type'  => "int",
+					'class' => "int",
 					'value' => $v
 				];
 				break;
@@ -53,6 +55,7 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "float",
+					'class' => "float",
 					'value' => $v
 				];
 				break;
@@ -61,7 +64,8 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "string",
-					'value' => strlen($v) > 150 ? substr($v, 0, 150) . "..." : $v
+					'class' => "string",
+					'value' => strlen($v) > 800 ? substr($v, 0, 800) . "..." : $v
 				];
 				break;
 
@@ -69,6 +73,7 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "array",
+					'class' => "array",
 					'value' => count($v)
 				];
 				break;
@@ -77,6 +82,7 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "object",
+					'class' => "object",
 					'value' => ""
 				];
 				break;
@@ -85,6 +91,7 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "null",
+					'class' => "null",
 					'value' => ""
 				];
 				break;
@@ -93,6 +100,7 @@ class TwigDebugBar
 				return [
 					'name'  => $name,
 					'type'  => "other",
+					'class' => "other",
 					'value' => ""
 				];
 				break;
@@ -107,15 +115,15 @@ class TwigDebugBar
 	public function getDebugTwig()
 	{
 		$data    = [];
-		$tabs    = [ "others" , "user" , "user_error" , "custom" , "site" , "lang" , "pages" , "modules" ];
+		$tabs    = [ "current page vars" , "user" , "user_error" , "custom" , "site" , "lang" , "pages" , "modules" ];
 		$excepts = $this->getDebugTwigExcepts();
 
 		foreach( $tabs as $tab ) {
 
 			switch( $tab ) {
 
-				case "others" :
-					$data['others'] = [];
+				case "current page vars" :
+					$data['current page vars'] = [];
 					foreach( $this->var as $k => $v )
 					{
 						if( ! in_array( $k , $excepts ) )
