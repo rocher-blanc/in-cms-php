@@ -117,13 +117,13 @@ class TwigDebugBar
 
 	protected function getDebugTwigExcepts()
 	{
-		return [ "current page vars" , "user" , "user_error" , "site" , "lang" , "rgpd" , "og" , "md" , "webmaster_tools" , "analytics" , "meta" , "tracking" ];
+		return [ "current page vars" , "element" , "arrayGetAll" , "pagination" , "shop_cart" , "user" , "user_error" , "site" , "lang" , "rgpd" , "og" , "md" , "webmaster_tools" , "analytics" , "meta" , "tracking" ];
 	}
 
 	public function getDebugTwig()
 	{
 		$data    = [];
-		$tabs    = [ "current page vars" , "user" , "user_error" , "custom" , "site" , "lang" , "pages" , "modules" ];
+		$tabs    = [ "current page vars" , "element" , "listing" , "pagination" , "cart" , "user" , "user_error" , "custom" , "site" , "lang" , "pages" , "modules" ];
 		$excepts = $this->getDebugTwigExcepts();
 
 		foreach( $tabs as $tab ) {
@@ -137,6 +137,65 @@ class TwigDebugBar
 						if( ! in_array( $k , $excepts ) )
 						{
 							$data['current page vars'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+						}
+					}
+					break;
+
+				case "element":
+					if( array_key_exists("element" , $this->var ) ) {
+						foreach( $this->var['element'] as $k => $v )
+						{
+							$data['element'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+						}
+					}
+					break;
+
+				case "listing":
+					if( array_key_exists("arrayGetAll" , $this->var ) ) {
+						$data['listing []'] = [];
+						$data['listing []']['total'] = [
+							'name'    => "Total elements",
+							'type'    => "integer",
+							'class'   => "integer",
+							'value'   => count($this->var['arrayGetAll'])
+						];
+						if( count($this->var['arrayGetAll']) > 0 )
+						{
+							foreach( $this->var['arrayGetAll'][0] as $k => $v )
+							{
+								$data['listing []'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+							}
+						}
+					}
+					break;
+
+				case "pagination":
+					if( array_key_exists("pagination" , $this->var ) ) {
+						foreach( $this->var['pagination'] as $k => $v )
+						{
+							$data['pagination'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+						}
+					}
+					break;
+
+				case "cart":
+					if( array_key_exists("shop_cart" , $this->var ) ) {
+						foreach( $this->var['shop_cart'] as $k => $v )
+						{
+							$data['cart'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+						}
+					}
+					break;
+
+				case "product":
+					if( isset($this->var['shop_cart']['products']) ) {
+						$data['product []'] = [];
+						if( count($this->var['shop_cart']['products']) > 0 )
+						{
+							foreach( $this->var['shop_cart']['products'][0] as $k => $v )
+							{
+								$data['product []'][ $k ] = $this->getDebugTwigVariableInfo( $k , $v );
+							}
 						}
 					}
 					break;
