@@ -170,22 +170,25 @@ class Controller extends ControllerCommon
 
     protected function getTreeParent( $rows , $alias , $parent_id = -1 , $level = 0 )
     {
-
         $tree = [];
-        foreach( $rows as $key => $row )
-        {
-            if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
-            {
-                $obj = new \stdClass();
-                $obj->id 		= $row->get('id');
-                $obj->$alias	= $row->get( $alias );
-                $obj->level	    = $level;
-                if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
-                unset( $rows[ $key ]);
-                $obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
-                $tree[] = $obj;
-            }
-        }
+        
+        if( $rows )
+		{
+			foreach( $rows as $key => $row )
+			{
+				if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
+				{
+					$obj = new \stdClass();
+					$obj->id 		= $row->get('id');
+					$obj->$alias	= $row->get( $alias );
+					$obj->level	    = $level;
+					if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
+					unset( $rows[ $key ]);
+					$obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
+					$tree[] = $obj;
+				}
+			}
+		}
 
         return $tree;
     }
