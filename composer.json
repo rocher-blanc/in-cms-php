@@ -8,7 +8,7 @@
   "require": {
     "slim/slim": "2.6.2",
     "slim/views": "0.1.3",
-    "twig/twig": "2.12.5",
+    "twig/twig": "1.*@dev",
     "twig/extensions": "1.2.*@dev",
     "j4mie/idiorm": "1.5.1",
     "abeautifulsite/simpleimage": "2.5.5",
