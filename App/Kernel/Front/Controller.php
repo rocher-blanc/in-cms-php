@@ -1067,6 +1067,7 @@ class Controller extends \App\Kernel\Common\Controller
             'id'         => $form['id'],
             'module'     => $this->getEntityName(),
             'redirect'   => $url,
+            'timer'      => $timer,
             'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
             'result'     => $this->result_form,
         ]);
