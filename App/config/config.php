@@ -101,6 +101,7 @@ defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
 
 // USER
 defined('ACTIVE_USER') || define('ACTIVE_USER', false );
+defined('ACTIVE_USER') || define('ACTIVE_USER', false );
 defined('ACTIVE_USER_CONNECT_AFTER_REGISTER') || define('ACTIVE_USER_CONNECT_AFTER_REGISTER', false );
 defined('USER_ACTIVATION_MAIL') || define('USER_ACTIVATION_MAIL', false );
 
