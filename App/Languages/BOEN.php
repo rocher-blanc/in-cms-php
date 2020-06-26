@@ -660,7 +660,7 @@ class BOEN extends \App\Kernel\Front\LanguageModel {
 		"stock_disponible" => "Available stock",
 		"subject" => "Subject",
 		"suppression" => "Suppression",
-		"tab_seo_desc_comment" => "115 characters maximum, indicates to search engines the description of your page",
+		"tab_seo_desc_comment" => "330 characters maximum, indicates to search engines the description of your page",
 		"tab_seo_title_comment" => "55 characters maximum, indicates to search engines the title of your page",
 		"taux" => "Rate",
 		"taux_reactivite" => "Reactivity rate (number of clicks / number of openers)",

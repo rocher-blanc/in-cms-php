@@ -192,6 +192,32 @@ class Gallery
         }
     }
 
+    public function genCover( $width , $height , $crop = false , $name = '' )
+    {
+        if ( empty( $name ) )
+        {
+            $name = $this->getImageName() ;
+        }
+
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $img  = $path . $name ;
+
+        try {
+            $miniName = $this->updateName( $name , $width . "x" . $height ) ;
+            $file = $path . ( $crop == true ? 'c' : 't' ) . "/" . $miniName ;
+
+            $tmpImg = new SimpleImage( $img );
+            $tmpImg->thumbnail( $width , $height , "center" );
+
+            $destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+            $destImg->overlay($tmpImg)->save($file);
+
+            return $miniName ;
+        } catch(Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
     protected function updateName( $name , $addStr = "" )
     {
         $exp 	= explode( "." , $name ) ;

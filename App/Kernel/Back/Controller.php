@@ -170,22 +170,25 @@ class Controller extends ControllerCommon
 
     protected function getTreeParent( $rows , $alias , $parent_id = -1 , $level = 0 )
     {
-
         $tree = [];
-        foreach( $rows as $key => $row )
-        {
-            if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
-            {
-                $obj = new \stdClass();
-                $obj->id 		= $row->get('id');
-                $obj->$alias	= $row->get( $alias );
-                $obj->level	    = $level;
-                if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
-                unset( $rows[ $key ]);
-                $obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
-                $tree[] = $obj;
-            }
-        }
+
+        if( $rows )
+		{
+			foreach( $rows as $key => $row )
+			{
+				if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
+				{
+					$obj = new \stdClass();
+					$obj->id 		= $row->get('id');
+					$obj->$alias	= $row->get( $alias );
+					$obj->level	    = $level;
+					if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
+					unset( $rows[ $key ]);
+					$obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
+					$tree[] = $obj;
+				}
+			}
+		}
 
         return $tree;
     }
@@ -1513,7 +1516,16 @@ class Controller extends ControllerCommon
 
     protected function duplicate()
     {
-        $content = $this->getRepository()->findOne( $this->getId() );
+        $content     = $this->getRepository()->findOne( $this->getId() );
+
+        if( $this->getEntity()->hasMultilang() )
+		{
+			$contentLang = [];
+			foreach( $this->Lang()->getAll() as $lang )
+			{
+				$contentLang[ $lang->id ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
+			}
+		}
 
         if ( ! $content )
         {
@@ -1523,15 +1535,25 @@ class Controller extends ControllerCommon
             ];
         }
         else
-        {
+		{
             $data = new Data( $this->getEntityName() );
             $data->create();
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->hasLang() == false && $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
-                {
-                    $data->set( $row->getName() , $content->get( $row->getColumn() ) );
-                }
+            	if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
+				{
+					if ( $row->hasLang()  )
+					{
+						foreach( $contentLang as $langId => $lang )
+						{
+							$data->set( $row->getName() , $lang->get( $row->getColumn() ) , $langId );
+						}
+					}
+					else
+					{
+						$data->set( $row->getName() , $content->get( $row->getColumn() ) );
+					}
+				}
             }
 
             if ( $this->getEntity()->hasValidation() )
@@ -1539,7 +1561,7 @@ class Controller extends ControllerCommon
                 $data->set( $this->getEntity()->getValidationName() , 0 );
             }
 
-            if ( ! empty( $this->getEntity()->getFieldReference() ) )
+            if ( ! empty( $this->getEntity()->getFieldReference() ) && ! $this->getEntity()->hasMultilang() )
             {
                 if ( count( $this->getEntity()->getFieldReference() ) == 1 )
                 {
@@ -2268,6 +2290,15 @@ class Controller extends ControllerCommon
             {
                 // width, height
                 $Gallery->setThumb( $thumb[0] , $thumb[1] );
+            }
+        }
+
+        if ( $field->hasCover() )
+        {
+            foreach( $field->getCover() as $cover )
+            {
+                // width, height
+                $Gallery->setCover( $cover[0] , $cover[1] );
             }
         }
 

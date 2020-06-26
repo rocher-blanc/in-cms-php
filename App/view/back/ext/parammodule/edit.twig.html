@@ -14,12 +14,12 @@
     
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="ed_field col_half">
-                <label>{{ _('nom') }}</label>
+            <div class="ed_field col_full">
+                <label>{{ _('nom_interne') }}</label>
                 <input type="text" id="module_name" name="module_name" class="form-control" value="{{ post.module_name }}" readonly />
             </div>
             <div class="clear"></div>
-            <div class="ed_field col_one_third">
+            <div class="ed_field col_half">
                 <label>{{ _('url') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
@@ -36,7 +36,7 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="ed_field col_one_third">
+            <div class="ed_field col_half col_last">
                 <label>{{ _('meta_title') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
@@ -53,8 +53,8 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="ed_field col_one_third col_last">
-                <label>{{ _('meta_desc') }}/label>
+            <div class="ed_field col_full">
+                <label>{{ _('meta_desc') }}</label>
                 {% for l in lang %}
                     {% if lang|length > 1 %}
                         <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -63,22 +63,22 @@
                                     <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                                 </span>
                             </span>
-                            <input type="text" data-plugin-counter="115" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
+                            <input type="text" data-plugin-counter="300" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
                         </div>
                     {% else %}
-                        <input type="text" data-plugin-counter="115" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
+                        <input type="text" data-plugin-counter="300" id="module_lang_description_{{ l.url }}" name="module_lang_description_{{ l.url }}" class="form-control lang_{{ l.url }}" value="{{ contentLang[ l.id ]['module_lang_description'] }}" />
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="ed_field col_one_third">
+            <div class="ed_field col_half">
                 <label>{{ _('parammodule_edit_sitemap')}}</label>
                 <input type="number" id="module_priority" name="module_priority" step="0.1" class="form-control" value="{{ priority }}" />
             </div>
-            <div class="ed_field col_one_third">
+            <div class="ed_field col_one_fourth">
                 <label>{{ _('parammodule_edit_listing')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':index, 'name':'module_index'} %}
             </div>
-            <div class="ed_field col_one_third col_last">
+            <div class="ed_field col_one_fourth col_last">
                 <label>{{ _('parammodule_edit_elmt')}}</label>
                 {% include 'form/generic/switch.twig' with {'value':index_elmt, 'name':'module_index_elmt'} %}
             </div>
@@ -88,4 +88,14 @@
     </div>
 
 </form>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('canvas/css/src/flag-icon/css/flag-icon.min.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
 {% endblock %}

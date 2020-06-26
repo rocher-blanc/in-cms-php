@@ -60,6 +60,20 @@ class Gallery extends \App\Kernel\Common\Gallery
                     }
                 }
 
+                if ( $field->hasCover() )
+                {
+                    foreach( $field->getCover() as $cover )
+                    {
+                        $fileMini = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , $cover[0] , $cover[1] );
+                        if ( ! file_exists( $fileMini ) )
+                        {
+                            $this->genThumb( $cover[0] , $cover[1] , false , $row->gallery_name );
+                        }
+
+                        $tab[ $row->gallery_id ][$cover[0] . 'x' . $cover[1]] = $path . $this->getMini( $row->gallery_name , $cover[0] , $cover[1] ) ;
+                    }
+                }
+
                 if ( $field->hasCrop() )
                 {
                     foreach( $field->getCrop() as $crop )

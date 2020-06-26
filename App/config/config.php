@@ -76,7 +76,8 @@ defined('TECHNO') || define('TECHNO','easyDOOR');
 defined('BACKGROUND_COLOR_THB') || define('BACKGROUND_COLOR_THB', "#FFF" );
 
 // DEBUG
-defined('DEBUG_BAR') || define('DEBUG_BAR', false );
+defined('DEBUG_BAR')  || define('DEBUG_BAR', false );
+defined('DEBUG_TWIG') || define('DEBUG_TWIG', false );
 defined('PRODUCTION') || define('PRODUCTION', false );
 
 // SLACK
@@ -96,7 +97,7 @@ defined('REDIS_PORT') || define('REDIS_PORT', '' );
 defined('RABBIT_QUEUE') || define('RABBIT_QUEUE', serialize([]) );
 
 // SESSION
-defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 1500 );
+defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 172800 ); // 2 jours
 defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
 
 // USER

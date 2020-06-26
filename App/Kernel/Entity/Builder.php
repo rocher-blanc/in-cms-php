@@ -1303,7 +1303,10 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-        $this->field()->setData( "type" , "hidden" ) ;
+//        $this->field()->setData( "type" , "hidden" ) ;
+        $this->field()->setData( "type" , "select" ) ;
+		$this->field()->setData( "manyToMany" , true ) ;
+		$this->field()->setData( "object" , $this->_module_parent_name ) ;
         $this->field()->setData( "moduleParent" , true ) ;
         $this->field()->setData( "twig" , "parent" ) ;
         $this->field()->setData( "object" , $this->getModuleParentName() ) ;
@@ -1678,6 +1681,12 @@ class Builder extends Model
     protected function Thumb( $width , $height )
     {
         $this->field()->setThumb( array( $width , $height ) ) ;
+        return $this;
+    }
+
+    protected function Cover( $width , $height )
+    {
+        $this->field()->setCover( array( $width , $height ) );
         return $this;
     }
 

@@ -20,13 +20,23 @@
                         <span class="label label-{{ colors[level % colors|length] }}">{{ hierarchy }}{{ loop.index }}.</span>&nbsp;{{ row.value }}
                     </td>
                 {% else %}
-                    <td>
-                        {% if type[ index2 ] == "image" %}
-                            <img src="{{ row.value }}" alt="" class="img-responsive" />
-                        {% else %}
-                            {{ row.value }}
-                        {% endif %}
-                    </td>
+                    {% if row.type == 'boolean' %}
+                        <td style="vertical-align: middle;" class="text-center">
+                            {% if row.value == 1 %}
+                                <i class="icon-line-circle-check success"></i>
+                            {% else %}
+                                <i class="icon-line-circle-cross danger"></i>
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td>
+                            {% if type[ index2 ] == "image" %}
+                                <img src="{{ row.value }}" alt="" class="img-responsive" />
+                            {% else %}
+                                {{ row.value }}
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 

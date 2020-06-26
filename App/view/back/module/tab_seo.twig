@@ -27,7 +27,7 @@
         {% for l in lang %}
             {% if lang|length == 1 %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
-                    <input type="text" data-plugin-counter="115" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
+                    <input type="text" data-plugin-counter="300" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
                 </div>
             {% else %}
                 <div style="margin-bottom:10px;" class="input-group input-group-icon">
@@ -36,7 +36,7 @@
                         <i class="flag-icon flag-icon-{{ l.flag }}"></i>
                     </span>
                 </span>
-                    <input type="text" data-plugin-counter="115" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
+                    <input type="text" data-plugin-counter="300" name="seo_description_{{ l.url }}" value="{{ content[ l.url ]['description'] }}" class="form-control" />
                 </div>
             {% endif %}
         {% endfor %}

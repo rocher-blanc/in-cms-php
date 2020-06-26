@@ -93,8 +93,20 @@ class View
 
     public function render( $template , $args = [] )
     {
+    	if( DEBUG_TWIG )
+		{
+			$this->getTwigDebugBar()->merge( $args );
+			$args['__debug_twig__'] = $this->getTwigDebugBar()->getDebugTwig();
+		}
+
         $this->getApp()->render( $template , $args );
     }
+
+    public function getTwigDebugBar()
+	{
+		return \App\Kernel\Front\TwigDebugBar::getInstance();
+	}
+
 
     public function fetch( $template , $args = [] )
     {
@@ -103,6 +115,10 @@ class View
 
     public function appendData( $array )
     {
+		if( DEBUG_TWIG )
+		{
+			$this->getTwigDebugBar()->merge( $array );
+		}
         return $this->getApp()->view()->appendData( $array );
     }
 }

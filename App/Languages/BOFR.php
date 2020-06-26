@@ -660,7 +660,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"stock_disponible" => "Stock disponible",
 		"subject" => "Sujet",
 		"suppression" => "Suppression",
-		"tab_seo_desc_comment" => "115 caractères maximum, indique aux moteurs de recherche la description de votre page",
+		"tab_seo_desc_comment" => "330 caractères maximum, indique aux moteurs de recherche la description de votre page",
 		"tab_seo_title_comment" => "55 caractères maximum, indique aux moteurs de recherche le titre de votre page",
 		"taux" => "Taux",
 		"taux_reactivite" => "Taux de réactivité (nombre de cliques / nombre d'ouvreurs)",
@@ -728,5 +728,14 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
         "content" => "Contenu",
         "on_line" => "En ligne",
         "langue_traduction_show_uncompleted" => "Compléter les textes",
+        "see_website" => "Voir mon site",
+        "pending_payment" => "En attente de paiement",
+        "under_preparation" => "En cours de préparation",
+        "current_delivery" => "En cours de livraison",
+        "payment_accepted" => "Paiement accepté",
+        "payment_refused" => "Paiement refusé",
+        "partly_shipped" => "Livraison partielle",
+        "shop_status_id" => "ID.",
+        "shop_status_title" => "Status",
 	];
 }

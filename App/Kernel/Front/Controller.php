@@ -450,9 +450,9 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $currentPage < 1 )		$currentPage = 1;
 
 
-			$totalItems     = $this->getRepository()->count();
+			$totalItems     = $this->getRepository()->getKit()->count();
 			$itemsPerPage   = $this->getEntity()->getPagination();
-			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/(:num)';
+			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/page/(:num)';
 			$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 
 			$this->setRender('pagination', $this->parsePagination( $paginator ) );
@@ -587,6 +587,21 @@ class Controller extends \App\Kernel\Common\Controller
                                 }
 
                                 $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
+                            }
+                        }
+
+                        if ( $row->hasCover() )
+                        {
+                            foreach( $row->getCover() as $cover )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 't' , $cover[0] , $cover[1] ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $path . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['thumb'][$cover[0].'x'.$cover[1]] = $mini ;
                             }
                         }
 
@@ -760,7 +775,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
                     {
                         $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/page/(:num)';
                     }
                     else
                     {
@@ -844,7 +859,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
                     {
                         $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/page/(:num)';
                     }
                     else
                     {
@@ -922,7 +937,7 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function getCustomPagination( $page = 1 , $perPage = 10 , $callablePreparedRequest )
     {
-        $count   = $callablePreparedRequest()->count();
+        $count   = $this->getCustomPaginationCount( $callablePreparedRequest );
         $pageMin = 1;
         $pageMax = ceil( $count / $perPage );
         if( $page > $pageMax )
@@ -964,6 +979,11 @@ class Controller extends \App\Kernel\Common\Controller
             'results'    => $rst
         ];
     }
+
+    protected function getCustomPaginationCount( $callablePreparedRequest )
+	{
+		return $callablePreparedRequest()->count();
+	}
 
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
@@ -1047,6 +1067,7 @@ class Controller extends \App\Kernel\Common\Controller
             'id'         => $form['id'],
             'module'     => $this->getEntityName(),
             'redirect'   => $url,
+            'timer'      => $timer,
             'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
             'result'     => $this->result_form,
         ]);

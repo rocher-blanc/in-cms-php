@@ -48,7 +48,7 @@ class Repository
 
     public function findAllForSelect( $target , $alias , $parentName , $filter = NULL )
     {
-        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getDefault()->id , $parentName , $filter ) ;
+        return \DB::find_all_for_select( $this->getName() , $target , $alias , \App\Kernel\Lang::getInstance()->getActive()->id , $parentName , $filter ) ;
     }
 
     public function countWhere( $where )
