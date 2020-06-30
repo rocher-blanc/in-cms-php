@@ -169,6 +169,7 @@ class Repository
 		$seo_module_one = \DB::for_module( $this->getName() )
 							 ->select( 'seo.seo_title' )
 							 ->select( 'seo.seo_description' )
+							 ->select( 'seo.seo_element_id' )
 							 ->select( $tbl . '.' . $idName , 'id' )
 							 ->select( $tblField . '.' . $this->getEntity()->get( $this->getEntity()->getUrlName() )->getColumn() , 'value' )
 							 ->left_outer_join( 'seo' , [ 'seo.seo_element_id' , '=', $tbl . '.' . $idName ] );
@@ -184,6 +185,14 @@ class Repository
 					   ->where_raw("(seo.seo_title IS NULL OR seo.seo_description IS NULL)",[])
 					   ->group_by('seo.seo_element_id')
 					   ->find_many();
+
+		if ( $seo_module_one )
+        {
+            foreach( $seo_module_one as $row )
+            {
+                $tab[] = $row->seo_element_id ;
+            }
+        }
 	}
 
     /* Fonction appelée par "add" & "update" */
