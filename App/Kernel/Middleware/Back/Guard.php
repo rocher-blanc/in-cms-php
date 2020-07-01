@@ -37,7 +37,7 @@ class Guard extends \Slim\Middleware
 					else if ( $urlTab[0] == 'module' )	$Guard->setModule( $urlTab[1] );
 					
 					$Guard->load();
-					
+
 					if ( $Guard->hasRight() == false )
 					{
 						$this->Factory()->Response()->redirectForbidden() ;
@@ -66,16 +66,6 @@ class Guard extends \Slim\Middleware
                                 // Suppression
                                 if ( $Guard->checkDelete() == false ) $this->Factory()->Response()->redirectForbidden() ;
                             }
-                            else
-                            {
-                                // Modification
-                                if ( $Guard->checkUpdate() == false ) $this->Factory()->Response()->redirectForbidden() ;
-                            }
-                        }
-                        else
-                        {
-                            // Modification
-                            if ( $Guard->checkUpdate() == false ) $this->Factory()->Response()->redirectForbidden() ;
                         }
 					}
 				}

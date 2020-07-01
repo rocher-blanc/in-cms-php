@@ -97,7 +97,7 @@ class Debug
         {
             foreach( self::$value as $row )
             {
-                dump( $row ) ;
+                self::dump( $row ) ;
             }
         }
     }

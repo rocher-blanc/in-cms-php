@@ -564,6 +564,8 @@ class Builder extends Model
 
     /**
      * @param string $module_parent_name
+     *
+     * @throws Exception
      */
     public function setModuleParent($module_parent_name)
     {

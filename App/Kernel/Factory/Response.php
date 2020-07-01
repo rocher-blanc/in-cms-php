@@ -96,6 +96,9 @@ class Response
 
     public function redirectForbidden()
     {
+//        \App\Kernel\Debug::save('here');
+//        \App\Kernel\Debug::view();
+
         $this->saveUrlDestination() ;
         $this->getApp()->redirect( $this->getApp()->config('forbidden.url') ) ;
     }

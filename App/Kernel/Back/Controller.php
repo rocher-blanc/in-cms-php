@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Back\Acl;
 use App\Kernel\Back\Alt;
 use App\Kernel\Back\Document;
 use App\Kernel\Back\Gallery;
@@ -325,7 +326,7 @@ class Controller extends ControllerCommon
             }
         }
 
-        $Guard = new \App\Kernel\Back\Acl;
+        $Guard = new Acl;
         $Guard->setModule( $this->getEntityName() );
         $Guard->load();
 
@@ -828,7 +829,7 @@ class Controller extends ControllerCommon
                 'mod' => [
                     'id'    	    => $this->getEntityId(),
                     'name'  	    => $this->getEntityName(),
-                    'title' 	    => $rst->module_kernel ? Translate::getInstance()->getText($rst->module_name) : $rst->module_name,
+                    'title' 	    => $rst->module_name,
                     'icon'  	    => $rst->module_icon,
 					'canCreate'     => $this->canCreate(),
 					'canImport'     => $this->getEntity()->canImport(),

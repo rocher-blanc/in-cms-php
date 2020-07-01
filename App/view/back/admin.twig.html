@@ -51,6 +51,85 @@
 </ul>
 {% endmacro parametre %}
 
+{% macro treeMenu(menuTree) %}
+    {% for group in menuTree %}
+        {% if group.columns | length > 1 %}
+            <li class="mega-menu sub-menu">
+                <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
+                <div class="mega-menu-content style-2 clearfix">
+                    {%     if group.columns | length == 1 %} {% set class = "col-lg-12" %}
+                    {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
+                    {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
+                    {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
+                    {% else                               %} {% set class = "col-5" %}
+                    {% endif %}
+
+                    {% for column in group.columns %}
+                        <ul class="mega-menu-column {{ class }}">
+                            {% for block in column.blocks %}
+                                <li class="mega-menu-title sub-menu">
+                                    <a href="#" class="sf-with-ul"><div>{{ block.title }}</div></a>
+                                    <ul>
+                                        {% for module in block.modules %}
+                                            <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                                        {% endfor %}
+                                        {% if block.file != false %}
+                                            {% include block.file %}
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </div>
+            </li>
+        {% else %}
+            {% set modules = group.columns | first .blocks | first .modules %}
+            {% if modules | length > 1 %}
+                <li>
+                    <a href="javascript:;">{{ group.name }}</a>
+                    <ul>
+                        {% for module in group.columns | first . blocks | first . modules %}
+                        <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% elseif modules | length == 1 %}
+                <li>
+                    <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
+                </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+
+    {% for group in menuTree %}
+        {% if group.children|length > 1 %}
+        <li>
+            <a href="javascript:;">
+                <div>{{ group.name }}</div>
+            </a>
+            <ul>
+                {% for module in group.children %}
+                <li>
+                    <a href="{{ route( module.class ) }}">
+                        <div>{{ module.name }}</div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% else %}
+            {% for module in group.children %}
+            <li>
+                <a href="{{ route( module.class ) }}">
+                    <div>{{ module.name }}</div>
+                </a>
+            </li>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endmacro treeMenu %}
+
 {% import _self as menu %}
 
 {% block contenu %}
@@ -86,82 +165,8 @@
                     <!-- Menu -->
                     <nav id="primary-menu">
                         <ul>
-                            {% for group in menuTree %}
-                                {% if group.columns | length > 1 %}
-                                    <li class="mega-menu sub-menu">
-                                        <a href="#" class="sf-with-ul"><div>{{ group.name }}</div></a>
-                                        <div class="mega-menu-content style-2 clearfix">
-                                            {%     if group.columns | length == 1 %} {% set class = "col-lg-12" %}
-                                            {% elseif group.columns | length == 2 %} {% set class = "col-lg-6" %}
-                                            {% elseif group.columns | length == 3 %} {% set class = "col-lg-4" %}
-                                            {% elseif group.columns | length == 4 %} {% set class = "col-lg-3" %}
-                                            {% else                               %} {% set class = "col-5" %}
-                                            {% endif %}
-
-                                            {% for column in group.columns %}
-                                                <ul class="mega-menu-column {{ class }}">
-                                                    {% for block in column.blocks %}
-                                                        <li class="mega-menu-title sub-menu">
-                                                            <a href="#" class="sf-with-ul"><div>{{ block.title }}</div></a>
-                                                            <ul>
-                                                                {% for module in block.modules %}
-                                                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
-                                                                {% endfor %}
-                                                                {% if block.file != false %}
-                                                                    {% include block.file %}
-                                                                {% endif %}
-                                                            </ul>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endfor %}
-                                        </div>
-                                    </li>
-                                {% else %}
-                                    {% set modules = group.columns | first .blocks | first .modules %}
-                                    {% if modules | length > 1 %}
-                                        <li>
-                                            <a href="javascript:;">{{ group.name }}</a>
-                                            <ul>
-                                                {% for module in group.columns | first . blocks | first . modules %}
-                                                    <li><a href="{{ siteUrl('/module/' ~ module.url ) }}"><div>{{ module.title }}</div></a></li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                    {% elseif modules | length == 1 %}
-                                        <li>
-                                            <a href="{{ siteUrl('/module/' ~ modules|first.url ) }}"><div>{{ group.columns | first .blocks | first .modules | first . title }}</div></a>
-                                        </li>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-
-                            {% for group in menuTree %}
-                                {% if group.children|length > 1 %}
-                                    <li>
-                                        <a href="javascript:;">
-                                            <div>{{ group.name }}</div>
-                                        </a>
-                                        <ul>
-                                            {% for module in group.children %}
-                                            <li>
-                                                <a href="{{ route( module.class ) }}">
-                                                    <div>{{ module.name }}</div>
-                                                </a>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                {% else %}
-                                    {% for module in group.children %}
-                                        <li>
-                                            <a href="{{ route( module.class ) }}">
-                                                <div>{{ module.name }}</div>
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                {% endif %}
-                            {% endfor %}
+                            {{ menu.treeMenu(menuTree) }}
+                            {{ menu.treeMenu(menuEasyletter) }}
 
                             {% include 'menu/header.twig' %}
 
@@ -271,137 +276,6 @@
                                     </div>
                                 </li>
                             {% endif %}
-
-                            <li class="mega-menu sub-menu">
-                                <a href="{{ siteUrl('/ext/easyletter_dashboard') }}" class="sf-with-ul"><div>easyLETTER</div></a>
-                                <div class="mega-menu-content style-2 clearfix">
-                                    {% if active_newsletter == true %}
-                                    <ul class="mega-menu-column col-lg-3">
-                                        <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>{{ _('newsletter')}}</div></a>
-                                            <ul>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterCampaignGroup' , 'index' ) }}">
-                                                        <div>{{ _('newsletter_plur')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterGroup' , 'index' ) }}">
-                                                        <div>{{ _('grp_abo')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterSubscriber' , 'index' ) }}">
-                                                        <div>{{ _('abonnes')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                        <div>{{ _('sender')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterCampaign' , 'index' ) }}">
-                                                        <div>{{ _('newsletter_planning')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterModel' , 'index' ) }}">
-                                                        <div>{{ _('gabarits')}}</div>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    {% endif %}
-
-                                    <ul class="mega-menu-column col-lg-3">
-                                        <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>{{ _('automation')}}</div></a>
-                                            <ul>
-                                                {% if active_newsletter != true %}
-                                                <li>
-                                                    <a href="{{ route( 'NewsletterSender' , 'index' ) }}">
-                                                        <div>{{ _('sender')}}</div>
-                                                    </a>
-                                                </li>
-                                                {% endif %}
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomationModelGroup' , 'index' ) }}">
-                                                        <div>{{ _('grp_email')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomationModel' , 'index' ) }}">
-                                                        <div>{{ _('modele_email')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomation' , 'index' ) }}">
-                                                        <div>{{ _('automation')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomationVarGroup' , 'index' ) }}">
-                                                        <div>{{ _('grp_variables')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomationVar' , 'index' ) }}">
-                                                        <div>{{ _('variables_environnement')}}</div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route( 'EdAutomationHistory' , 'index' ) }}">
-                                                        <div>{{ _('historique')}}</div>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                    <ul class="mega-menu-column col-lg-3">
-                                        <li class="mega-menu-title sub-menu">
-                                            <a href="#" class="sf-with-ul"><div>{{ _('email')}}</div></a>
-                                            <ul>
-                                                <li>
-                                                    <a href="{{ route( 'EdEmail' , 'index' ) }}">
-                                                        <div>{{ _('modeles')}}</div>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                    {% if active_easyletter %}
-                                        <ul class="mega-menu-column col-lg-3">
-                                            <li class="mega-menu-title sub-menu">
-                                                <a href="#" class="sf-with-ul"><div>{{ _('credit_email')}}</div></a>
-                                                <div class="widget clearfix">
-                                                    <div class="col_one_fourth"></div>
-                                                    <div class="col_one_fourth text-center" style="padding-top: 10px;">
-                                                        <i class="{{ el_credits <= 1000 ? 'icon-warning-sign' : 'icon-line2-check' }}" style="font-size: 50px; color: {{ el_credits <= 1000 ? '#8a6d3b;' : 'green' }};"></i>
-                                                    </div>
-                                                    <div class="col_two_fourth col_last">
-                                                        <div class="text-center text-uppercase" style="margin-bottom: 15px; font-size: 16px;">
-                                                            <span style="font-weight: bold; font-size: 36px;">{{ el_credits|number_format(0, '', ' ') }}</span><br />
-                                                            {% if el_credits > 1 %}
-                                                            {{ _('credit_plur')}}*
-                                                            {% else %}
-                                                            {{ _('credit_sing')}}*
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col_full">
-                                                        * {{ _('credit_def')}}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    {% endif %}
-                                </div>
-                            </li>
 
                             <li class="website">
                                 <a target="_blank" href="{{ siteUrl('/',false) }}" data-toggle="tooltip" title="{{ _('see_website') }}">
