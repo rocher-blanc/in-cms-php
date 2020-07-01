@@ -76,7 +76,8 @@ defined('TECHNO') || define('TECHNO','easyDOOR');
 defined('BACKGROUND_COLOR_THB') || define('BACKGROUND_COLOR_THB', "#FFF" );
 
 // DEBUG
-defined('DEBUG_BAR') || define('DEBUG_BAR', false );
+defined('DEBUG_BAR')  || define('DEBUG_BAR', false );
+defined('DEBUG_TWIG') || define('DEBUG_TWIG', false );
 defined('PRODUCTION') || define('PRODUCTION', false );
 
 // SLACK
@@ -100,6 +101,7 @@ defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 172800 ); // 2 jours
 defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
 
 // USER
+defined('ACTIVE_USER') || define('ACTIVE_USER', false );
 defined('ACTIVE_USER') || define('ACTIVE_USER', false );
 defined('ACTIVE_USER_CONNECT_AFTER_REGISTER') || define('ACTIVE_USER_CONNECT_AFTER_REGISTER', false );
 defined('USER_ACTIVATION_MAIL') || define('USER_ACTIVATION_MAIL', false );

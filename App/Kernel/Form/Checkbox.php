@@ -122,8 +122,12 @@ class Checkbox extends \App\Kernel\Back\Form
             }
         }
 
+        $_search = ( count( $field->getData('option') ) > 10 )
+			? ' data-live-search="true"'
+			: '' ;
+
         return '
-        <select name="' . $name . '[]" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2">
+        <select name="' . $name . '[]" id="id_' . $field->getColumn() . '" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2" '.$_search.'>
             ' . $select . '
         </select>' ;
     }

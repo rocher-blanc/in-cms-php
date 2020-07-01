@@ -7,7 +7,6 @@ use App\Kernel\Debug;
 
 class Repository extends \App\Kernel\Common\Repository
 {
-
     /* ************************************************** */
     /* ******************   TOOLS    ******************** */
     /* ************************************************** */
@@ -71,6 +70,11 @@ class Repository extends \App\Kernel\Common\Repository
     public function findOne( $id )
     {
         return \DB::for_module( $this->getName() )->where_id_is( $id )->find_one();
+    }
+
+    public function findAll()
+    {
+        return \DB::for_module( $this->getName() )->find_many();
     }
 
     public function first()

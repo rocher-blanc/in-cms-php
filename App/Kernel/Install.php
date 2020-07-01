@@ -63,6 +63,8 @@ class Install
         self::checkFolder() ;
         echo "- Configuration SASS\n" ;
         self::checkConfigSass() ;
+        echo "- Configuration NPM Package\n" ;
+        self::checkNpmPackage() ;
         echo "- HTACCESS\n" ;
         self::checkHtaccess() ;
         echo "- Configuration\n" ;
@@ -223,12 +225,14 @@ class Install
             {
                 $php = '' ;
                 $php.= "<"."?"."php\n" ;
-                $php.= "define('DB_HOST','" . getenv('MYSQL_ADDON_HOST') . "');\n" ;
-                $php.= "define('DB_USER','" . getenv('MYSQL_ADDON_USER') . "');\n" ;
-                $php.= "define('DB_PASSWORD','" . getenv('MYSQL_ADDON_PASSWORD') . "');\n" ;
-                $php.= "define('DB_DATABASE','" . getenv('MYSQL_ADDON_DB') . "');\n" ;
-                $php.= "define('DB_PORT','" . getenv('MYSQL_ADDON_PORT') . "');\n" ;
-                $php.= "define('DEBUG_CMS',true);" ;
+                $php.= "define( 'DB_HOST'     , '" . getenv('MYSQL_ADDON_HOST') . "' );\n" ;
+                $php.= "define( 'DB_USER'     , '" . getenv('MYSQL_ADDON_USER') . "' );\n" ;
+                $php.= "define( 'DB_PASSWORD' , '" . getenv('MYSQL_ADDON_PASSWORD') . "' );\n" ;
+                $php.= "define( 'DB_DATABASE' , '" . getenv('MYSQL_ADDON_DB') . "' );\n" ;
+                $php.= "define( 'DB_PORT'     , '" . getenv('MYSQL_ADDON_PORT') . "' );\n" ;
+				$php.= "define( 'PRODUCTION'  , false       );" ;
+				$php.= "define( 'DEBUG_CMS'   , !PRODUCTION );" ;
+				$php.= "define( 'DEBUG_TWIG'  , DEBUG_CMS   );" ;
 
                 self::create( $configFileProject , $php ) ;
             }
@@ -267,6 +271,23 @@ class Install
             $php.= 'output_style = :compressed' . "\n" ;
 
             self::create( $rubyFile , $php ) ;
+        }
+    }
+
+    protected static function checkNpmPackage()
+    {
+        $rubyFile = _PATH_ . '/web/package.json.rb' ;
+
+        if ( ! file_exists( $rubyFile ) )
+        {
+            $php = '' ;
+            $php.= '{' . "\n" ;
+            $php.= "\t" . '"dependencies": {' . "\n" ;
+            $php.= "\t\t" . "\n" ;
+			$php.= "\t" . '}' . "\n" ;
+			$php.= '}' ;
+
+			self::create( $rubyFile , $php ) ;
         }
     }
 

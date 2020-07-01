@@ -13,6 +13,8 @@ $app->get('/', function () use ( $app ) {
     else            $cdn = "" ;
 
     $seo_page = DB::for_table('page')
+        ->select('page.page_id')
+        ->select('page.*')
         ->left_outer_join( 'page_lang' , [ 'page.page_id' , '=', 'page_lang.page_lang_page_id' ] )
         ->where_equal('page.page_active', 1)
         ->where_in('page_lang.page_lang_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
@@ -38,7 +40,7 @@ $app->get('/', function () use ( $app ) {
                 if ( $entity->hasUrl() == true )
                 {
                     $tab[] = $row->module_id;
-                    $seo_module_one = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getRepository( true )->getOnIndex( $row->module_id );
+                    $seo_module_one = null; //\App\Kernel\Container::getInstance()->module( $row->module_class_name )->getRepository( true )->getOnIndex( $row->module_id );
 
                     if ( $seo_module_one )
                     {
@@ -60,12 +62,29 @@ $app->get('/', function () use ( $app ) {
     if ( $tab )
     {
         $seo_module = DB::for_table('module')
+            ->select('module.module_id')
+            ->select('module.*')
             ->left_outer_join( 'module_lang' , [ 'module.module_id' , '=', 'module_lang.module_lang_module_id' ] )
             ->where_in('module.module_id', $tab)
             ->where_in('module_lang.module_lang_lang_id',\App\Kernel\Lang::getInstance()->getTabLang() )
             ->where_raw("((module_lang.module_lang_title IS NULL OR module_lang.module_lang_description IS NULL) OR (module_lang.module_lang_title = '' OR module_lang.module_lang_description = ''))",[])
             ->group_by('module.module_id')
             ->find_many();
+
+        $tab = [];
+
+        if ( $seo_module )
+        {
+            foreach( $seo_module as $row )
+            {
+                $tab[] = $row->module_id ;
+            }
+
+            $seo_module = DB::for_table('module')
+                ->left_outer_join( 'module_lang' , [ 'module.module_id' , '=', 'module_lang.module_lang_module_id' ] )
+                ->where_in('module.module_id', $tab)
+                ->find_many();
+        }
     }
     else
     {

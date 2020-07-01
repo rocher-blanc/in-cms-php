@@ -711,6 +711,22 @@ checkEditor = function(base) {
                 }
             });
         });
+
+        $(window).on("scroll", function() {
+            $(".note-editor").each(function(index, el) {
+                var $field      = $(el);
+                var fieldTop    = $field.offset().top;
+                var fieldBottom = fieldTop + $field.outerHeight();
+                var scrollTop   = $(window).scrollTop();
+
+                if( scrollTop > fieldTop && scrollTop < fieldBottom ) {
+                    if( ! $field.hasClass("fixed") ) $field.addClass("fixed");
+                }
+                else {
+                    if( $field.hasClass("fixed") ) $field.removeClass("fixed");
+                }
+            });
+        });
     }
 };
 

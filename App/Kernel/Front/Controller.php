@@ -450,9 +450,9 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $currentPage < 1 )		$currentPage = 1;
 
 
-			$totalItems     = $this->getRepository()->count();
+			$totalItems     = $this->getRepository()->getKit()->count();
 			$itemsPerPage   = $this->getEntity()->getPagination();
-			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/(:num)';
+			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/page/(:num)';
 			$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 
 			$this->setRender('pagination', $this->parsePagination( $paginator ) );
@@ -775,7 +775,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
                     {
                         $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/page/(:num)';
                     }
                     else
                     {
@@ -859,7 +859,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
                     {
                         $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/(:num)';
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/page/(:num)';
                     }
                     else
                     {
@@ -1067,6 +1067,7 @@ class Controller extends \App\Kernel\Common\Controller
             'id'         => $form['id'],
             'module'     => $this->getEntityName(),
             'redirect'   => $url,
+            'timer'      => $timer,
             'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
             'result'     => $this->result_form,
         ]);
