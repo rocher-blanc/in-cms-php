@@ -138,13 +138,14 @@
                                         <a href="{{ siteUrl('ext/parammodule/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
                                     </td>
                                     <td class="defaut">
-                                        {% if row.module_lang_title == '' %}
+                                        {#
+                                            {% if row.page_lang_title == '' %}
                                             <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
-                                        {% endif %}
-                                        {% if row.module_lang_description == '' %}
+                                            {% endif %}
+                                            {% if row.page_lang_description == '' %}
                                             <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metadesc') }}</span>
-                                        {% endif %}
-                                    </td>
+                                            {% endif %}
+                                        #}                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>

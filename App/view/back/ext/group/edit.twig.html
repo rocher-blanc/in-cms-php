@@ -58,7 +58,7 @@
             <span>{{ _('group_edit_info')}}</span>
         </div>
                 {% if id == 1 %}
-                    {% include 'form/generic/nocontent.twig' with {'msg': 'group_edit_msg2' } %}
+                    {% include 'form/generic/nocontent.twig' with {'msg': _('group_edit_msg2') } %}
                 {% else %}
                 <div class="tabs tabs-responsive clearfix">
 
@@ -75,7 +75,7 @@
                                     <th style="width: 25%;"></th>
                                     <th style="width: 15%;" class="text-center">{{ _('ajout')}}</th>
                                     <th style="width: 15%;" class="text-center">{{ _('modification')}}</th>
-                                    <th style="width: 15%;" class="text-center">{{ _('supression')}}</th>
+                                    <th style="width: 15%;" class="text-center">{{ _('suppression')}}</th>
                                     <th style="width: 15%;" class="text-center">{{ _('validation')}}</th>
                                     <th style="width: 15%;" class="text-center">{{ _('configuration')}}</th>
                                 </tr>
