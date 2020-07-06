@@ -103,12 +103,14 @@
                                             <a href="{{ siteUrl('ext/page/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
                                         </td>
                                         <td class="defaut">
-                                            {% if row.page_lang_title == '' %}
-                                                <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
-                                            {% endif %}
-                                            {% if row.page_lang_description == '' %}
-                                                <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metadesc') }}</span>
-                                            {% endif %}
+                                            {#
+                                                {% if row.page_lang_title == '' %}
+                                                    <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
+                                                {% endif %}
+                                                {% if row.page_lang_description == '' %}
+                                                    <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metadesc') }}</span>
+                                                {% endif %}
+                                            #}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -178,12 +180,14 @@
                                                         <a href="{{ siteUrl('module/' ~ module.class ~ '/seo/' ~  row.id) }}">{{ row.value }}</a>
                                                     </td>
                                                     <td class="defaut">
-                                                        {% if row.seo_title == '' %}
-                                                            <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
-                                                        {% endif %}
-                                                        {% if row.seo_description == '' %}
-                                                            <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_desc') }}</span>
-                                                        {% endif %}
+                                                        {#
+                                                            {% if row.seo_title == '' %}
+                                                                <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
+                                                            {% endif %}
+                                                            {% if row.seo_description == '' %}
+                                                                <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_desc') }}</span>
+                                                            {% endif %}
+                                                        #}
                                                     </td>
                                                 </tr>
                                             {% endfor %}
