@@ -1052,11 +1052,6 @@ class Controller extends \App\Kernel\Common\Controller
             $this->setId( $id );
         }
 
-        if ( $this->getEntityName() == MODULE_CMS_USER )
-        {
-            $this->field('user_action')->setData( "front" , false ) ;
-        }
-
         $form = parent::generateForm( $id === NULL ? false : true , $data );
         $View = $this->Container()->newClass('App\Kernel\View');
 
@@ -1081,13 +1076,15 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $form['field'] as $field )
             {
                 $fields[ $field['name'] ] = [
-                   'name' => $field['fieldname'],
-                   'value' => $field['value'],
-                   'label' => $field['title'],
-                   'error' => $field['error'],
-                   'help' => $field['comment'],
-                   'row' => $View->fetch( 'module/widget/form/field.twig', [ 'field' => $field ] ),
-                   'widget' => $field['Form_HTML'],
+					'id'        => $field['name'],
+					'name'      => $field['fieldname'],
+					'value'     => $field['value'],
+					'label'     => $field['title'],
+					'error'     => $field['error'],
+					'help'      => $field['comment'],
+					'type'      => $field['type'],
+					'row'       => $View->fetch( 'module/widget/form/field.twig', [ 'field' => $field ] ),
+					'widget'    => $field['Form_HTML'],
                ];
             }
         }

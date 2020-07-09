@@ -115,6 +115,10 @@ class Former
         return false ;
     }
 
+    public function getFields() {
+    	return $this->form['field'];
+	}
+
     public function fields()
     {
         $str = '' ;
