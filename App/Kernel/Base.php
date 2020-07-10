@@ -33,63 +33,63 @@ class Base
     {
         return [
             'NewsletterSender' => [
-                'name' => 'sender',
+                'name' => 'Expéditeurs',
                 'icon' => "icon-line2-users",
             ],
             'NewsletterGroup' => [
-                'name' => 'grp_abo',
+                'name' => 'Groupes d\'abonnés',
                 'icon' => "icon-users",
             ],
             'NewsletterSubscriber' => [
-                'name' => 'abonnes',
+                'name' => 'Abonnés',
                 'icon' => "icon-user",
             ],
             'NewsletterCampaignGroup' => [
-                'name' => 'newsletter_plur',
+                'name' => 'Newsletters',
                 'icon' => "icon-folder",
             ],
             'NewsletterCampaign' => [
-                'name' => 'newsletter_planning',
+                'name' => 'Planification des campagnes',
                 'icon' => "icon-time",
             ],
             'NewsletterModel' => [
-                'name' => 'gabarit',
+                'name' => 'Gabarits',
                 'icon' => "icon-picture",
             ],
             'EdAutomation' => [
-                'name' => 'email_automation',
+                'name' => 'Automations',
                 'icon' => "icon-picture",
             ],
             'EdAutomationVarGroup' => [
-                'name' => 'grp_variables',
+                'name' => 'Groupes de variables',
                 'icon' => "icon-stack2",
             ],
             'EdAutomationVar' => [
-                'name' => 'variables_environnement',
+                'name' => 'Variables d\'environnement',
                 'icon' => "icon-atom",
             ],
             'EdAutomationModelGroup' => [
-                'name' => 'grp_gabarits',
+                'name' => 'Groupe d\'emails',
                 'icon' => "icon-stack",
             ],
             'EdAutomationModel' => [
-                'name' => 'model_gabarits',
+                'name' => 'Modèle d\'emails',
                 'icon' => "icon-vcard",
             ],
             'EdEmail' => [
-                'name' => 'modeles_email',
+                'name' => 'Modèles',
                 'icon' => "icon-news",
             ],
             'EdAutomationHistory' => [
-                'name' => 'historique_email_automation',
+                'name' => 'Historique',
                 'icon' => "icon-line-clock",
             ],
             'NewsletterCampaignGroupUnsubscribe' => [
-                'name' => 'desinscription',
+                'name' => 'Désinscriptions',
                 'icon' => "icon-enter",
             ],
             'GalleryCategory' => [
-                'name' => 'categories',
+                'name' => 'Catégories',
                 'icon' => "icon-line-grid",
             ]
         ];

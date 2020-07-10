@@ -2,7 +2,9 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Back\Acl;
 use App\Kernel\Container;
+use App\Kernel\Front\Translate;
 
 class Menu
 {
@@ -41,15 +43,102 @@ class Menu
 	/* ************************************************** */
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */
-	
-	public function load()
-	{
-		$this->_url = $this->Factory()->Url()->cutUrl() ;
 
-		$rst = \DB::for_table('module_group')
-			->where_equal('module_group_active',1)
-			->order_by_asc('module_group_order')
-			->find_many();
+    public function loadEasyletter()
+    {
+        $groups    = [];
+        $groups[1] = [
+            'name'    => Translate::getInstance()->getText( "easyletter" ),
+            'columns' => [
+                1 => [
+                    'id'     => 1 ,
+                    'group'  => 1 ,
+                    'blocks' => [
+                        1 => [
+                            'id'           => 1 ,
+                            'column'       => 1 ,
+                            'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
+                            'modules'      => [] ,
+                            'modules_list' => [ 'NewsletterCampaignGroup' , 'NewsletterGroup' , 'NewsletterSubscriber' , 'NewsletterSender' , 'NewsletterCampaign' , 'NewsletterModel'] ,
+                        ]
+                    ]
+                ],
+                2 => [
+                    'id'     => 2 ,
+                    'group'  => 1 ,
+                    'blocks' => [
+                        2 => [
+                            'id'           => 2 ,
+                            'column'       => 2 ,
+                            'title'        => Translate::getInstance()->getText( "easyletter_col_automation" ) ,
+                            'modules'      => [] ,
+                            'modules_list' => [ 'NewsletterSender' , 'EdAutomationModelGroup' , 'EdAutomationModel' , 'EdAutomation' , 'EdAutomationVarGroup' , 'EdAutomationVar' , 'EdAutomationHistory'] ,
+                        ],
+                    ]
+                ],
+                3 => [
+                    'id'     => 3 ,
+                    'group'  => 1 ,
+                    'blocks' => [
+                        3 => [
+                            'id'           => 3 ,
+                            'column'       => 3 ,
+                            'title'        => Translate::getInstance()->getText( "easyletter_col_email" ) ,
+                            'modules'      => [] ,
+                            'modules_list' => [ 'EdEmail' ] ,
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        foreach( $groups[1]['columns'] as $column )
+        {
+            foreach( $column['blocks'] as $block )
+            {
+                $req_modules = \DB::for_table( "module" )
+                    ->where_in( "module_class_name" , $block['modules_list'] )
+                    ->order_by_asc( "module_order" )
+                    ->find_many();
+
+                foreach ( $req_modules as $module )
+                {
+                    $Guard = new Acl;
+                    $Guard->setModule( $module->module_class_name );
+                    $Guard->load();
+
+                    if ( $Guard->hasRight() )
+                    {
+                        $groups[1]['columns'][ $column['id'] ]['blocks'][ $block['id'] ][ 'modules' ][ $module->module_id ] = [
+                            'title' => $module->module_name ,
+                            'url'   => $module->module_class_name
+                        ];
+                    }
+                }
+
+                if ( empty( $groups[1]['columns'][ $column['id'] ]['blocks'][ $block['id'] ][ 'modules' ] ) )
+                {
+                    unset( $groups[1]['columns'][ $column['id'] ]['blocks'][ $block['id'] ] );
+                }
+            }
+
+            if ( empty( $groups[1]['columns'][1]['blocks'] ) )
+            {
+                unset( $groups[1]['columns'][ $column['id'] ] );
+            }
+        }
+
+        if ( empty( $groups[1]['columns'] ) )
+        {
+            return [];
+        }
+
+        return $groups;
+    }
+
+    public function load()
+    {
+        $this->_url = $this->Factory()->Url()->cutUrl() ;
 
         // For each groups
         $groups     = [];
@@ -78,8 +167,8 @@ class Menu
         if( ! empty( $groups_id ) )
         {
             $req_column = \DB::for_table( "module_column" )
-                             ->where_in( "module_column_module_group_id" , $groups_id )
-                             ->find_many();
+                ->where_in( "module_column_module_group_id" , $groups_id )
+                ->find_many();
 
             foreach ( $req_column as $column )
             {
@@ -95,9 +184,9 @@ class Menu
 
             // BLOCKS
             $req_blocks = \DB::for_table( "module_column_block" )
-                             ->where_in( "module_column_block_module_column_id" , $columns_id )
-                             ->order_by_asc( "module_column_block_order" )
-                             ->find_many();
+                ->where_in( "module_column_block_module_column_id" , $columns_id )
+                ->order_by_asc( "module_column_block_order" )
+                ->find_many();
 
             foreach ( $req_blocks as $block )
             {
@@ -121,33 +210,37 @@ class Menu
 
             // MODULES
             $req_modules = \DB::for_table( "module" )
-                              ->where_in( "module_module_column_block_id" , $blocks_id )
-                              ->order_by_asc( "module_order" )
-                              ->find_many();
+                ->where_in( "module_module_column_block_id" , $blocks_id )
+                ->order_by_asc( "module_order" )
+                ->find_many();
 
             foreach ( $req_modules as $module )
             {
+                $Guard = new Acl;
+                $Guard->setModule( $module->module_class_name );
+                $Guard->load();
 
-                $blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
-                    'title' => $module->module_name ,
-                    'url'   => $module->module_class_name
-                ];
-
+                if ( $Guard->hasRight() )
+                {
+                    $blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
+                        'title' => $module->module_name ,
+                        'url'   => $module->module_class_name
+                    ];
+                }
             }
 
             // Blocks
             foreach ( $blocks as $block )
             {
-                $columns[ $block[ 'column' ] ][ 'blocks' ][ $block[ 'id' ] ] = $block;
+                if ( ! empty( $block[ 'modules' ] ) ) $columns[ $block[ 'column' ] ][ 'blocks' ][ $block[ 'id' ] ] = $block;
             }
 
             // Columns
             foreach ( $columns as $column )
             {
-                $groups[ $column[ 'group' ] ][ 'columns' ][ $column[ 'id' ] ] = $column;
+                if ( ! empty( $column[ 'blocks' ] ) ) $groups[ $column[ 'group' ] ][ 'columns' ][ $column[ 'id' ] ] = $column;
             }
         }
-
 
         $this->Container()->newClass('App\Kernel\View')->appendData([
             'adminFolder'       => trim( $this->getApp()->config('admin.url') , "/"),
@@ -156,6 +249,7 @@ class Menu
             'menulink'          => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
             'submenu'           => ( array_key_exists( 2 , $this->_url ) == true ? $this->_url[2] : '' ),
             'menuTree'          => $groups,
+            'menuEasyletter'    => $this->loadEasyletter(),
             'active_user'       => ACTIVE_USER,
             'active_newsletter' => NEWSLETTER_ACTIVE,
             'active_easyletter' => defined('EL_TOKEN'),

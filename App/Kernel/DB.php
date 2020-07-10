@@ -204,7 +204,7 @@ class DB extends ORM
         if ( $varchar ) $Tbl.= "\t`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_assoc . "` VARCHAR(100) NOT NULL,\n" ;
         else			$Tbl.= "\t`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_assoc . "` int(11) NOT NULL,\n" ;
 
-        $Tbl.= "\tPRIMARY KEY  (`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_id . "`)\n" ;
+        $Tbl.= "\tUNIQUE (`" . self::getTableNameAssoc( $mod , $nameField ) . self::$suffix_id . "`)\n" ;
         $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
 
         self::get_db()->exec( $Tbl ) ;
@@ -248,7 +248,7 @@ class DB extends ORM
             }
         }
 
-        $Tbl.= "\tPRIMARY KEY  (`" . self::getIdName( $module ) . "`)\n" ;
+        $Tbl.= "\tUNIQUE (`" . self::getIdName( $module ) . "`)\n" ;
         $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
 
         /* *************************** MULTI-LANGUE *************************** */
@@ -268,7 +268,7 @@ class DB extends ORM
                 }
             }
 
-            $Tbl.= "\tPRIMARY KEY  (`" . self::getIdLangName( $module ) . "`)\n" ;
+            $Tbl.= "\tUNIQUE (`" . self::getIdLangName( $module ) . "`)\n" ;
             $Tbl.= ") ENGINE=InnoDB CHARACTER SET=utf8;\n\n" ;
         }
 
