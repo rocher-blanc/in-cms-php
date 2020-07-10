@@ -6,8 +6,12 @@ ini_set('default_charset', 'utf-8');
 ini_set('magic_quotes_runtime', 0);
 ini_set('magic_quotes_sybase', 0);
 
-ini_set('session.cookie_lifetime', 86400);
-ini_set('session.gc_maxlifetime', 86400);
+$ttl = 86400;
+
+ini_set('session.cookie_lifetime', $ttl);
+ini_set('session.gc_maxlifetime', $ttl);
+
+session_set_cookie_params($ttl);
 
 session_start() ;
 
