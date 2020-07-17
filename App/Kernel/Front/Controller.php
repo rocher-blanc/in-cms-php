@@ -1065,6 +1065,8 @@ class Controller extends \App\Kernel\Common\Controller
             'timer'      => $timer,
             'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
             'result'     => $this->result_form,
+			'recaptcha'             => $this->getEntity()->reCAPTCHA(),
+			'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
         ]);
 
         $end = $View->fetch( 'module/widget/form/end.twig' );
