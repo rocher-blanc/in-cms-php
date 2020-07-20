@@ -1085,6 +1085,7 @@ class Controller extends \App\Kernel\Common\Controller
 					'error'     => $field['error'],
 					'help'      => $field['comment'],
 					'type'      => $field['type'],
+					'fieldType' => $field['subtype'],
 					'row'       => $View->fetch( 'module/widget/form/field.twig', [ 'field' => $field ] ),
 					'widget'    => $field['Form_HTML'],
                 ];

@@ -442,7 +442,19 @@ class Field
 
 	public function getType()
 	{
-		return $this->getData('type') ;
+		return $this->getData('type');
+	}
+
+	public function getSubType()
+	{
+		if( ! empty( $this->getData('subtype') ) )
+		{
+			return $this->getData('subtype');
+		}
+		else
+		{
+			return $this->getData('type');
+		}
 	}
 
 	public function getError()
