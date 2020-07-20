@@ -1087,7 +1087,12 @@ class Controller extends \App\Kernel\Common\Controller
 					'type'      => $field['type'],
 					'row'       => $View->fetch( 'module/widget/form/field.twig', [ 'field' => $field ] ),
 					'widget'    => $field['Form_HTML'],
-               ];
+                ];
+
+				if( $field['type'] == "select" ) {
+					$fields[ $field['name'] ]['options'] = $field['options'];
+				}
+
             }
         }
 

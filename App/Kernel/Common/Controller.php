@@ -677,6 +677,7 @@ class Controller
                         "Form_HTML" => $form->genHTML( $row ),
                         "title" 	=> $this->getTitleField( $row ),
                         "type" 		=> $row->getType(),
+						"options"   => $row->getOptions(),
                         "tab" 		=> $row->getTab(),
                         "visible"   => $row->visible(),
                         "show" 		=> $show,
