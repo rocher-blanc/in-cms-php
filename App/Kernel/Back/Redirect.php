@@ -141,9 +141,14 @@ class Redirect
 
     private function deleteUrl()
     {
-        \DB::for_table('redirect')
+        $one = \DB::for_table('redirect')
             ->where(['redirect_url' => $this->getNewFullUrl()])
-            ->delete();
+			->find_one();
+
+        if( $one )
+		{
+			$one->delete();
+		}
 
         return true ;
     }
