@@ -1112,16 +1112,16 @@ class Controller extends \App\Kernel\Common\Controller
     {
         $View = $this->Container()->newClass('App\Kernel\View');
         return $View->fetch( 'module/formDelete.twig' , [
-            'route' => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
-            'id' => $id,
-            'module' => $this->getEntityName(),
-            'redirect' => $url,
-            'button_text' => $var['text'],
+            'route'        => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
+            'id'           => $id,
+            'module'       => $this->getEntityName(),
+            'redirect'     => $url,
+            'button_text'  => $var['text'],
             'button_class' => $var['class'],
-            'form_class' => $var['fclass'],
-            'redirect' => $url,
-            'keyControl' => md5( $this->getEntityName() . $id ),
-            'result' => $this->result_form,
+            'form_class'   => $var['fclass'],
+            'keyControl'   => md5( $this->getEntityName() . $id ),
+			'noview'       => ( array_key_exists( 'noview' , $var ) && $var['noview'] == 1 ),
+			'result'       => $this->result_form,
         ] );
     }
 
