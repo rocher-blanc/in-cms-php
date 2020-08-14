@@ -1,0 +1,109 @@
+{% if tabs|length > 1 %}
+<div class="clearfix" data-active="1">
+    <ul class="nav nav-tabs">
+        {% for tab in tabs %}
+            <li class="nav-item">
+                <a href="#tabs-{{ tab.key }}" class="nav-link {{ loop.first ? 'active' : '' }}" id="onglet-{{ tab.key }}">
+                    <i class="{{ tab.icon }}"></i> {{ tab.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-container" id="form-module">
+{% endif %}
+
+    <form method="post" action="{{ route }}" data-route-condition="" data-condition="{{ condition ? "true" : "false" }}" class="form-vertical ajax" enctype="multipart/form-data" accept-charset="utf-8">
+        <input type="hidden" name="id_element" value="{{ id != NULL ? id : '-1' }}" />
+        <input type="hidden" name="moduleAction" value="1" />
+        <input type="hidden" name="moduleAction" value="1" />
+        <input type="hidden" name="moduleName" value="{{ module }}" />
+        <input type="hidden" name="keyControl" value="{{ keyControl }}" />
+        {% if redirect != '' %}<input type="hidden" name="redirect" value="{{ redirect }}" />{% endif %}
+        {% if timer != '' %}<input type="hidden" name="timer" value="{{ timer }}" />{% endif %}
+
+        {% for c in field if c.type == 'hidden' %}
+            {{ c.Form_HTML }}
+        {% endfor %}
+
+        {% for tab in tabs %}
+            <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
+                {% set counter = 0 %}
+                {% set width = 0 %}
+                <div class="row">
+                {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == null %}
+
+                    {% if width == 0 %}
+                        {% set width = c.width %}
+                    {% endif %}
+
+                    <div class="col-{{ 12/c.width }}">
+                        {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
+                    </div>
+
+                    {% set counter = counter + c.part %}
+                    {% if counter >= width %}
+                        {% set width = 0 %}
+                        {% set counter = 0 %}
+                        </div>
+                        <div class="row">
+                    {% endif %}
+
+                {% endfor %}
+                </div>
+                {% if tab.group|length > 0 %}
+                    {% for group in tab.group %}
+
+                        <div class="clearfix"></div>
+                        {% set width = 0 %}
+                        {% set counter = 0 %}
+
+                        {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
+                            {% if loop.first %}
+                                <div class="fancy-title title-double-border title-center topmargin-sm{{ group.show == false ? ' hide' : '' }}" id="group_form_{{ group.key }}"><h4><span>{{ group.name}}</span></h4></div>
+                            {% endif %}
+
+                            {% if width == 0 %}
+                                {% set width = c.width %}
+                            {% endif %}
+
+                            <div class="col-{{ 12/c.width }}">
+                                {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
+                            </div>
+
+                            {% set counter = counter + c.part %}
+                            {% if counter >= width %}
+                                {% set width = 0 %}
+                                {% set counter = 0 %}
+                                </div>
+                                <div class="row">
+                            {% endif %}
+
+                        {% endfor %}
+
+                    {% endfor %}
+                {% endif %}
+
+                {% if recaptcha == true %}
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <p class="form-note"><strong>Note :</strong> veuillez remplir les champs marqués d'un <span class="icon-asterisk"></span></p>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <button class="btn btn-primary"><i class="icon-save"></i><span>Enregistrer</span></button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </form>
+
+{% if tabs|length > 1 %}
+    </div>
+</div>
+{% endif %}

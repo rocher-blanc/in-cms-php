@@ -1,5 +1,3 @@
-{% import "module/macro.twig" as form %}
-
 {% if tabs|length > 1 %}
 <div class="ed_element tabs tabs-bordered tabs-tb clearfix" data-active="1">
     <ul class="tab-nav clearfix">
@@ -81,7 +79,7 @@
 
                     {% set counter = counter + c.part %}
 
-                    {{ form.field(c, counter, width) }}
+                    {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
 
                     {% if width == counter %}
                         {% set width = 0 %}
@@ -107,7 +105,7 @@
 
                             {% set counter = counter + c.part %}
 
-                            {{ form.field(c, counter, width) }}
+                            {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
 
                             {% if width == counter %}
                                 {% set width = 0 %}
