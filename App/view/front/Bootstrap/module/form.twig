@@ -29,7 +29,7 @@
             <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
                 {% set counter = 0 %}
                 {% set width = 0 %}
-                <div class="row">
+                <div class="row form-group">
                 {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == null %}
 
                     {% if width == 0 %}
@@ -84,7 +84,7 @@
                 {% endif %}
 
                 {% if recaptcha == true %}
-                    <div class="row">
+                    <div class="row form-group">
                         <div class="col-12 text-center">
                             <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
                         </div>
