@@ -154,7 +154,7 @@ class Gallery
         }
     }
 
-    public function getMini( $name , $width , $height , $type = "t" )
+    public function getMini( $name , $width , $height = false , $type = "t" )
     {
         $exp 	= explode( "." , $name ) ;
         $ext 	= end( $exp ) ;
@@ -163,7 +163,9 @@ class Gallery
 
         if ( empty( $name ) ) return false ;
 
-        return $type . '/' . $name . "-" . $width . "x" . $height . "." . $ext ;
+        return $height
+			? $type . '/' . $name . "-" . $width . "x" . $height . "." . $ext
+			: $type . '/' . $name . "-" . $width . "." . $ext ;
     }
 
     public function genThumb( $width , $height , $crop = false , $name = '' )
@@ -217,6 +219,64 @@ class Gallery
             echo 'Error: ' . $e->getMessage();
         }
     }
+
+	public function genWidth( $width , $name = '' )
+	{
+		if ( empty( $name ) )
+		{
+			$name = $this->getImageName() ;
+		}
+
+		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+		$img  = $path . $name ;
+
+		try {
+			$miniName = $this->updateName( $name , $width ) ;
+			$file     = $path . "w/" . $miniName ;
+			$tmpImg   = new SimpleImage( $img );
+
+			$oldW   = $tmpImg->get_width();
+			$oldH   = $tmpImg->get_height();
+			$height = round( $width * $oldH / $oldW , 0 );
+
+			$tmpImg->thumbnail( $width , $height , "center" );
+			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+			$destImg->overlay($tmpImg)->save($file);
+
+			return $miniName ;
+		} catch(Exception $e) {
+			echo 'Error: ' . $e->getMessage();
+		}
+	}
+
+	public function genHeight( $height , $name = '' )
+	{
+		if ( empty( $name ) )
+		{
+			$name = $this->getImageName() ;
+		}
+
+		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+		$img  = $path . $name ;
+
+		try {
+			$miniName = $this->updateName( $name , $height ) ;
+			$file     = $path . "h/" . $miniName ;
+			$tmpImg   = new SimpleImage( $img );
+
+			$oldW  = $tmpImg->get_width();
+			$oldH  = $tmpImg->get_height();
+			$width = round( $height * $oldW / $oldH , 0 );
+
+			$tmpImg->thumbnail( $height , $height , "center" );
+			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+			$destImg->overlay($tmpImg)->save($file);
+
+			return $miniName ;
+		} catch(Exception $e) {
+			echo 'Error: ' . $e->getMessage();
+		}
+	}
 
     protected function updateName( $name , $addStr = "" )
     {

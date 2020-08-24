@@ -9,9 +9,11 @@ class Gallery extends \App\Kernel\Common\Gallery
     /* ************************************************** */
 
     protected $image_size = 0;
-    protected $order = [];
-    protected $thumb = [];
-    protected $cover = [];
+    protected $order  = [];
+    protected $thumb  = [];
+    protected $cover  = [];
+    protected $width  = [];
+    protected $height = [];
 
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
@@ -26,6 +28,7 @@ class Gallery extends \App\Kernel\Common\Gallery
     {
         $this->order = $var;
     }
+
     public function setThumb( $width , $height )
     {
         $this->thumb[ $width . "x" . $height ] = [
@@ -38,6 +41,20 @@ class Gallery extends \App\Kernel\Common\Gallery
     {
         $this->cover[ $width . "x" . $height ] = [
             'w' => $width,
+            'h' => $height,
+        ];
+    }
+
+    public function setWidth( $width )
+    {
+        $this->width[ $width ] = [
+            'w' => $width,
+        ];
+    }
+
+    public function setHeight( $height )
+    {
+        $this->height[ $height ] = [
             'h' => $height,
         ];
     }
@@ -64,6 +81,16 @@ class Gallery extends \App\Kernel\Common\Gallery
     public function getCover()
     {
         return $this->cover ;
+    }
+
+    public function getWidth()
+    {
+        return $this->width ;
+    }
+
+    public function getHeight()
+    {
+        return $this->height ;
     }
 
     /* ************************************************** */
@@ -109,23 +136,7 @@ class Gallery extends \App\Kernel\Common\Gallery
 
                 if ( $this->copyFromUrl( $img ) )
                 {
-                    $this->genThumb( 100 , 100 );
-
-                    if ( ! empty( $this->getThumb() ) )
-                    {
-                        foreach( $this->getThumb() as $thb )
-                        {
-                            $this->genThumb( $thb['w'] , $thb['h'] );
-                        }
-                    }
-
-                    if ( ! empty( $this->getCover() ) )
-                    {
-                        foreach( $this->getCover() as $thb )
-                        {
-                            $this->genCover( $thb['w'] , $thb['h'] );
-                        }
-                    }
+					$this->genImages();
 
                     $gallery = \DB::for_table('gallery')->create();
                     $gallery->gallery_name = $this->getImageName();
@@ -157,22 +168,7 @@ class Gallery extends \App\Kernel\Common\Gallery
             if ( $this->move( $_FILES[ $this->post('field') ]["tmp_name"][$i]) )
             {
                 $this->genThumb( 100 , 100 );
-
-                if ( ! empty( $this->getThumb() ) )
-                {
-                    foreach( $this->getThumb() as $thb )
-                    {
-                        $this->genThumb( $thb['w'] , $thb['h'] );
-                    }
-                }
-
-                if ( ! empty( $this->getCover() ) )
-                {
-                    foreach( $this->getCover() as $cover )
-                    {
-                        $this->genCover( $cover['w'] , $cover['h'] );
-                    }
-                }
+                $this->genImages();
 
                 $gallery = \DB::for_table('gallery')->create();
                 $gallery->gallery_name = $this->getImageName();
@@ -200,6 +196,43 @@ class Gallery extends \App\Kernel\Common\Gallery
 
         return $tab ;
     }
+
+    public function genImages()
+	{
+		$this->genThumb( 100 , 100 );
+
+		if ( ! empty( $this->getThumb() ) )
+		{
+			foreach( $this->getThumb() as $thb )
+			{
+				$this->genThumb( $thb['w'] , $thb['h'] );
+			}
+		}
+
+		if ( ! empty( $this->getCover() ) )
+		{
+			foreach( $this->getCover() as $cover )
+			{
+				$this->genCover( $cover['w'] , $cover['h'] );
+			}
+		}
+
+		if ( ! empty( $this->getWidth() ) )
+		{
+			foreach( $this->getWidth() as $width )
+			{
+				$this->genWidth( $width['w'] );
+			}
+		}
+
+		if ( ! empty( $this->getHeight() ) )
+		{
+			foreach( $this->getHeight() as $height )
+			{
+				$this->genHeight( $height['h'] );
+			}
+		}
+	}
 
     public function duplicate( $id )
     {

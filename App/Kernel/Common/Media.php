@@ -136,7 +136,7 @@ class Media
         else		return false ;
     }
 
-	public function getMini( $name , $type , $width , $height )
+	public function getMini( $name , $type , $width , $height = false )
 	{
 		$exp 	= explode( "." , $name ) ;
 		$ext 	= end( $exp ) ;
@@ -147,10 +147,19 @@ class Media
 
 		if ( ! empty( $this->getFolder() ) && ! empty( $this->getImageName() ) )
         {
-            $this->genThumb( $width , $height );
+        	if( $height )
+        	{
+				$this->genThumb( $width , $height );
+			}
+			else
+			{
+				$this->genThumb( $width , $width );
+			}
         }
 
-		return $type . '/' . $name . "-".$width."x".$height."." . $ext ;
+		return $height
+			? $type . '/' . $name . "-".$width."x".$height."." . $ext
+			: $type . '/' . $name . "-".$width."." . $ext;
 	}
 
     public function rename()

@@ -1700,6 +1700,20 @@ class Builder extends Model
         return $this;
     }
 
+    protected function Width( $width )
+    {
+        $this->field()->setWidth( $width ) ;
+        $this->addAction("width") ;
+        return $this;
+    }
+
+    protected function Height( $height )
+    {
+        $this->field()->setHeight( $height ) ;
+        $this->addAction("height") ;
+        return $this;
+    }
+
     protected function noAltText()
     {
         $this->field()->setData( "hasAltText" , false ) ;

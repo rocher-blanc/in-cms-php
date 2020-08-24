@@ -163,6 +163,7 @@ $app->group('/moduleadmin', function () use ($app)
 				->where_equal('module_id', $id)
 				->find_one();
 
+
 			if ( $contentRow )
 			{
 				$entity = Container::getInstance()->module($contentRow->module_class_name)->getEntity();
@@ -189,23 +190,7 @@ $app->group('/moduleadmin', function () use ($app)
 										$Media->getNameById() ;
 										$Media->genThumb( 100 , 100 ) ;
 
-										if ( $field->hasThumb() )
-										{
-											foreach( $field->getThumb() as $thumb )
-											{
-												// width, height
-												$Media->genThumb( $thumb[0] , $thumb[1] ) ;
-											}
-										}
-
-										if ( $field->hasCrop() )
-										{
-											foreach( $field->getCrop() as $crop )
-											{
-												// width, height
-												$Media->genThumb( $crop[0] , $crop[1] , true ) ;
-											}
-										}
+										$Media->genImages( $field );
 									}
 								}
 							}

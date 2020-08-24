@@ -227,27 +227,47 @@ class Media extends \App\Kernel\Common\Media
             $rst->caption = $source;
             $rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
-            if ( $field->hasThumb() )
-            {
-                foreach( $field->getThumb() as $thumb )
-                {
-                    // width, height
-                    $this->genThumb( $thumb[0] , $thumb[1] ) ;
-                }
-            }
-
-            if ( $field->hasCover() )
-            {
-                foreach( $field->getCover() as $cover )
-                {
-                    // width, height
-                    $this->genCover( $cover[0] , $cover[1] ) ;
-                }
-            }
+            $this->genImages($field);
         }
 
         return $rst ;
     }
+
+    public function genImages( $field )
+	{
+
+		if ( $field->hasThumb() )
+		{
+			foreach( $field->getThumb() as $thumb )
+			{
+				$this->genThumb( $thumb[0] , $thumb[1] ) ; // width, height
+			}
+		}
+
+		if ( $field->hasCover() )
+		{
+			foreach( $field->getCover() as $cover )
+			{
+				$this->genCover( $cover[0] , $cover[1] ) ; // width, height
+			}
+		}
+
+		if( $field->hasWidth() )
+		{
+			foreach( $field->getWidth() as $width )
+			{
+				$this->genWidth( $width ) ;
+			}
+		}
+
+		if( $field->hasHeight() )
+		{
+			foreach( $field->getHeight() as $height )
+			{
+				$this->getHeight( $height ) ;
+			}
+		}
+	}
 
 
 
@@ -379,6 +399,66 @@ class Media extends \App\Kernel\Common\Media
                 $tmpImg->thumbnail( $width , $height , "center" );
 
                 $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+                $destImg->overlay($tmpImg)->save($file);
+            }
+
+            return $miniName ;
+        } catch(Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+	public function genWidth( $width )
+    {
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $img = $path . $this->getImageName() ;
+
+        $subfolder = 'w' ;
+
+        try {
+            $miniName = $this->updateName( $this->getImageName() , $width ) ;
+            $file = $path . $subfolder . "/" . $miniName ;
+
+            if ( ! file_exists( $file ) && file_exists( $img ) )
+            {
+                $tmpImg = new \abeautifulsite\SimpleImage( $img );
+
+				$oldW   = $tmpImg->get_width();
+				$oldH   = $tmpImg->get_height();
+				$height = round( $width * $oldH / $oldW , 0 );
+
+				$tmpImg->thumbnail( $width , $height , "center" );
+				$destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+                $destImg->overlay($tmpImg)->save($file);
+            }
+
+            return $miniName ;
+        } catch(Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+	public function getHeight( $height )
+    {
+        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
+        $img = $path . $this->getImageName() ;
+
+        $subfolder = 'h' ;
+
+        try {
+            $miniName = $this->updateName( $this->getImageName() , $height ) ;
+            $file = $path . $subfolder . "/" . $miniName ;
+
+            if ( ! file_exists( $file ) && file_exists( $img ) )
+            {
+                $tmpImg = new \abeautifulsite\SimpleImage( $img );
+
+				$oldW  = $tmpImg->get_width();
+				$oldH  = $tmpImg->get_height();
+				$width = round( $height * $oldW / $oldH , 0 );
+
+				$tmpImg->thumbnail( $width , $height , "center" );
+				$destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
                 $destImg->overlay($tmpImg)->save($file);
             }
 

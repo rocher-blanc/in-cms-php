@@ -605,6 +605,36 @@ class Controller extends \App\Kernel\Common\Controller
                             }
                         }
 
+                        if ( $row->hasWidth() )
+                        {
+                            foreach( $row->getWidth() as $width )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 'w' , $width ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $path . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['width'][$width] = $mini ;
+                            }
+                        }
+
+                        if ( $row->hasHeight() )
+                        {
+                            foreach( $row->getHeight() as $height )
+                            {
+                                $mini = $media->getMini( $media->getImageName() , 'h' , $height ) ;
+                                if ( $mini !== false )
+                                {
+                                    $img  = $path . '/' . $mini ;
+                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                }
+
+                                $tab['height'][$height] = $mini ;
+                            }
+                        }
+
                         if ( $row->hasCrop() )
                         {
                             foreach( $row->getCrop() as $crop )

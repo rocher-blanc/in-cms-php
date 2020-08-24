@@ -126,6 +126,26 @@ class Field
 		$this->setData( "cover" , $data );
 	}
 
+	public function setWidth( Int $width )
+	{
+		$data = $this->getData('imgWidth') !== NULL
+			? $this->getData('imgWidth')
+			: [];
+
+		$data[] = $width;
+		$this->setData( "imgWidth" , $data );
+	}
+
+	public function setHeight( Int $height )
+	{
+		$data = $this->getData('imgHeight') !== NULL
+			? $this->getData('imgHeight')
+			: [];
+
+		$data[] = $height;
+		$this->setData( "imgHeight" , $data );
+	}
+
 	/* ************************************************** */
 	/* ******************     ISER    ******************* */
 	/* ************************************************** */
@@ -292,6 +312,16 @@ class Field
 		else									    return false ;
 	}
 
+	public function hasWidth()
+	{
+		return $this->getData('imgWidth') !== NULL;
+	}
+
+	public function hasHeight()
+	{
+		return $this->getData('imgHeight') !== NULL;
+	}
+
 	public function hasFormat()
 	{
 		if ( $this->getData('dateFormat') !== NULL ) 	return true ;
@@ -369,6 +399,16 @@ class Field
 	public function getCover()
 	{
 		return $this->getData('cover') ;
+	}
+
+	public function getWidth()
+	{
+		return $this->getData('imgWidth') ;
+	}
+
+	public function getHeight()
+	{
+		return $this->getData('imgHeight') ;
 	}
 
 	public function getFormat()

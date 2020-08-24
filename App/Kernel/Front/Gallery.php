@@ -74,6 +74,34 @@ class Gallery extends \App\Kernel\Common\Gallery
                     }
                 }
 
+                if ( $field->hasWidth() )
+                {
+                    foreach( $field->getWidth() as $width )
+                    {
+                        $fileMini = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , $width , false , 'w' );
+						if ( ! file_exists( $fileMini ) )
+						{
+							$this->genWidth( $width , $row->gallery_name );
+						}
+
+                        $tab[ $row->gallery_id ]['w'.$width] = $path . $this->getMini( $row->gallery_name , $width , false , 'w' ) ;
+                    }
+                }
+
+                if ( $field->hasHeight() )
+                {
+                    foreach( $field->getHeight() as $height )
+                    {
+                        $fileMini = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , $height , false , 'h' );
+						if ( ! file_exists( $fileMini ) )
+						{
+							$this->genHeight( $height , $row->gallery_name );
+						}
+
+                        $tab[ $row->gallery_id ]['h'.$height] = $path . $this->getMini( $row->gallery_name , $height , false , 'h' ) ;
+                    }
+                }
+
                 if ( $field->hasCrop() )
                 {
                     foreach( $field->getCrop() as $crop )

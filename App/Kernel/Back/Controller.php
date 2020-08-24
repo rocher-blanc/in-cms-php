@@ -2289,8 +2289,7 @@ class Controller extends ControllerCommon
         {
             foreach( $field->getThumb() as $thumb )
             {
-                // width, height
-                $Gallery->setThumb( $thumb[0] , $thumb[1] );
+                $Gallery->setThumb( $thumb[0] , $thumb[1] ); // width, height
             }
         }
 
@@ -2298,10 +2297,25 @@ class Controller extends ControllerCommon
         {
             foreach( $field->getCover() as $cover )
             {
-                // width, height
-                $Gallery->setCover( $cover[0] , $cover[1] );
+                $Gallery->setCover( $cover[0] , $cover[1] ); // width, height
             }
         }
+
+        if( $field->hasWidth() )
+		{
+			foreach( $field->getWidth() as $width )
+			{
+				$Gallery->setWidth( $width );
+			}
+		}
+
+        if( $field->hasHeight() )
+		{
+			foreach( $field->getHeight() as $height )
+			{
+				$Gallery->setHeight( $height );
+			}
+		}
 
         $rst = $Gallery->add();
 
