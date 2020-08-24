@@ -22,8 +22,8 @@ class Database
 		\DB::configure('username', DB_USER );
 		\DB::configure('password', DB_PASSWORD );
 		\DB::configure('driver_options', [
-			\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-		]);
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode="", NAMES utf8'
+        ]);
 		
 		if ( DEBUG_CMS OR DEBUG_BAR )
         {
