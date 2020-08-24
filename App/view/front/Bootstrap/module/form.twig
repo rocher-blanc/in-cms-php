@@ -36,9 +36,7 @@
                         {% set width = c.width %}
                     {% endif %}
 
-                    <div class="col-{{ 12/c.width }}">
-                        {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
-                    </div>
+                    {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
 
                     {% set counter = counter + c.part %}
                     {% if counter >= width %}
