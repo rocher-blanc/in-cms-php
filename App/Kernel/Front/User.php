@@ -870,7 +870,7 @@ class User extends \App\Kernel\Common\User
 
     protected function connectWithValidation()
     {
-        return false ;
+        return ACTIVE_USER_CONNECT_AFTER_VALIDATION ;
     }
 
     ###################################################################################################################################

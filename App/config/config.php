@@ -101,10 +101,11 @@ defined('SESSION_LIFETIME') || define('SESSION_LIFETIME', 172800 ); // 2 jours
 defined('COOKIE_EXPIRES') || define('COOKIE_EXPIRES', 2592000 ); // 30 jours
 
 // USER
-defined('ACTIVE_USER') || define('ACTIVE_USER', false );
-defined('ACTIVE_USER') || define('ACTIVE_USER', false );
-defined('ACTIVE_USER_CONNECT_AFTER_REGISTER') || define('ACTIVE_USER_CONNECT_AFTER_REGISTER', false );
-defined('USER_ACTIVATION_MAIL') || define('USER_ACTIVATION_MAIL', false );
+defined('ACTIVE_USER')                          || define('ACTIVE_USER', false );
+defined('ACTIVE_USER')                          || define('ACTIVE_USER', false );
+defined('ACTIVE_USER_CONNECT_AFTER_REGISTER')   || define('ACTIVE_USER_CONNECT_AFTER_REGISTER', false );
+defined('USER_ACTIVATION_MAIL')                 || define('USER_ACTIVATION_MAIL', false );
+defined('ACTIVE_USER_CONNECT_AFTER_VALIDATION') || define('ACTIVE_USER_CONNECT_AFTER_VALIDATION', false );
 
 // NEWSLETTER
 defined('NEWSLETTER_ACTIVE') || define('NEWSLETTER_ACTIVE', false );
