@@ -1878,9 +1878,10 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function frontSize( Array $sizes )
+    protected function frontClass( ?String $sizes , $keepLine = false )
     {
-        $this->field()->setData( "frontSize" , $sizes ) ;
+        $this->field()->setData( "frontClass" , $sizes      ) ;
+        $this->field()->setData( "frontBreak" , ! $keepLine ) ;
         return $this ;
     }
 

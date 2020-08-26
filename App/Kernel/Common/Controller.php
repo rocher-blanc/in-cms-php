@@ -485,6 +485,30 @@ class Controller
         return $View->fetch( 'module/form.twig' , $values );
     }
 
+    protected function parseFieldData( $row , $form , $show ) {
+		return [
+			"name"      => $row->getName(),
+			"value"     => $row->getValue(),
+			"fieldname" => $row->getColumn(),
+			"Form_HTML" => $form->genHTML( $row ),
+			"title" 	=> $this->getTitleField( $row ),
+			"type" 		=> $row->getType(),
+			"subtype"   => $row->getSubType(),
+			"options"   => $row->getOptions(),
+			"tab" 		=> $row->getTab(),
+			"visible"   => $row->visible(),
+			"show" 		=> $show,
+			"group" 	=> $row->getGroup(),
+			"class" 	=> $row->getData('classField'),
+			"part" 		=> $row->getData('part'),
+			"width" 	=> $row->getData('width'),
+			"comment"	=> $row->getComment(),
+			"required"	=> $row->isRequired(),
+			"unit"      => $row->getUnit(),
+			"error" 	=> $row->getError(),
+		];
+	}
+
     protected function generateForm( $valueF = false , $data = [] )
     {
         $form = $this->Factory()->Form() ;
@@ -668,35 +692,12 @@ class Controller
                         $condition = true ;
                     }
 
-                    $show = $shows['fields'][ $row->getName() ]['show'] ;
+					$show = $shows['fields'][ $row->getName() ]['show'] ;
 
-                    $arrayField[] = [
-                        "name"      => $row->getName(),
-                        "value"     => $row->getValue(),
-                        "fieldname" => $row->getColumn(),
-                        "Form_HTML" => $form->genHTML( $row ),
-                        "title" 	=> $this->getTitleField( $row ),
-                        "type" 		=> $row->getType(),
-                        "subtype"   => $row->getSubType(),
-						"options"   => $row->getOptions(),
-                        "tab" 		=> $row->getTab(),
-                        "visible"   => $row->visible(),
-                        "show" 		=> $show,
-                        "group" 	=> $row->getGroup(),
-                        "class" 	=> $row->getData('classField'),
-                        "part" 		=> $row->getData('part'),
-                        "width" 	=> $row->getData('width'),
-						"sizes"     => $row->getData('frontSize'),
-                        "comment"	=> $row->getComment(),
-                        "required"	=> $row->isRequired(),
-                        "unit"      => $row->getUnit(),
-                        "error" 	=> $row->getError(),
-                    ];
+                    $arrayField[] = $this->parseFieldData( $row , $form , $show );
                 }
             }
         }
-
-        dump( $arrayField );
 
         return [
             'condition'  => $condition,

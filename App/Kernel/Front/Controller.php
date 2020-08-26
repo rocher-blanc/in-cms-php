@@ -1058,6 +1058,15 @@ class Controller extends \App\Kernel\Common\Controller
         ]);
     }
 
+	protected function parseFieldData( $row , $form , $show ) {
+    	$rst = parent::parseFieldData( $row , $form , $show );
+
+    	$rst['class'] = $row->getData('frontClass');
+		$rst['break'] = $row->getData('frontBreak') !== NULL ? $row->getData('frontBreak') : true;
+
+    	return $rst;
+	}
+
     protected function getDataView()
     {
         return "front" ;

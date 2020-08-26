@@ -27,23 +27,18 @@
 
         {% for tab in tabs %}
             <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
-                {% set counter = 0 %}
-                {% set width = 0 %}
-                <div class="row form-group">
+                <div class="form-row">
                 {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == null %}
 
-                    {% if width == 0 %}
-                        {% set width = c.width %}
-                    {% endif %}
-
-                    {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
-
-                    {% set counter = counter + c.part %}
-                    {% if counter >= width %}
-                        {% set width = 0 %}
-                        {% set counter = 0 %}
+                    <div class="{% if c.class | length > 0 %}{{ c.class }}{% else %}col{% endif %}">
+                        <div class="form-group">
+                            {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
                         </div>
-                        <div class="row">
+                    </div>
+
+                    {% if c.break %}
+                        </div>
+                        <div class="form-row">
                     {% endif %}
 
                 {% endfor %}
@@ -51,30 +46,27 @@
                 {% if tab.group|length > 0 %}
                     {% for group in tab.group %}
 
-                        <div class="clearfix"></div>
-                        {% set width = 0 %}
-                        {% set counter = 0 %}
+                        <div class="form-row">
+                            {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
+                                {% if loop.first %}
+                                    <div class="col-12 text-center {{ group.show == false ? ' hide' : '' }}">
+                                        <h3>{{ group.name}}</h3>
+                                    </div>
+                                {% endif %}
 
-                        {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
-                            {% if loop.first %}
-                                <div class="fancy-title title-double-border title-center topmargin-sm{{ group.show == false ? ' hide' : '' }}" id="group_form_{{ group.key }}"><h4><span>{{ group.name}}</span></h4></div>
-                            {% endif %}
-
-                            {% if width == 0 %}
-                                {% set width = c.width %}
-                            {% endif %}
-
-                            {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
-
-                            {% set counter = counter + c.part %}
-                            {% if counter >= width %}
-                                {% set width = 0 %}
-                                {% set counter = 0 %}
+                                <div class="{% if c.class | length > 0 %}{{ c.class }}{% else %}col{% endif %}">
+                                    <div class="form-group">
+                                        {% include "module/field.twig" with { c:c, part:counter, numberOfPart:width } %}
+                                    </div>
                                 </div>
-                                <div class="row">
-                            {% endif %}
 
-                        {% endfor %}
+                                {% if c.break %}
+                                    </div>
+                                    <div class="form-row">
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
 
                     {% endfor %}
                 {% endif %}
