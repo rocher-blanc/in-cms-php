@@ -1,4 +1,4 @@
-<div class="col-md-{{ 12/c.width }}">
+<div class="{% for breakpoint, value in c.sizes %}{% if breakpoint == 'xs' %}col-{{ value }}{% else %}col-{{ breakpoint }}-{{ value }}{% endif %} {% endfor %}">
     <label class="control-label" for="id_{{ c.fieldname }}">{{ c.title }}</label>
     {{ c.Form_HTML }}
 </div>

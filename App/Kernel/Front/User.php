@@ -325,7 +325,7 @@ class User extends \App\Kernel\Common\User
 
         if ( ! $this->isLogged() )
         {
-            $login    = $this->post('user_login') ;
+            $login    = strtolower( $this->post('user_login') );
             $password = $this->post('user_password') ;
 
             if ( $login !== '' && $password !== '' )
@@ -365,7 +365,7 @@ class User extends \App\Kernel\Common\User
     protected function getAccount( $login )
     {
         return \DB::for_table('user_front')
-            ->where_equal('user_front_login', $login)
+			->where_raw( "LOWER(`user_front_login`) = ?" , strtolower($login) )
             ->where_equal('user_front_active', 1)
             ->find_one();
     }
@@ -886,7 +886,7 @@ class User extends \App\Kernel\Common\User
              * user_login
              */
 
-            $login = trim( $this->post('user_login') ) ;
+            $login = strtolower( trim( $this->post('user_login') ) );
 
             if ( empty( $login ) )
             {
@@ -895,7 +895,7 @@ class User extends \App\Kernel\Common\User
             else
             {
                 $user = \DB::for_table('user_front')
-                    ->where_equal('user_front_login', $login )
+                    ->where_raw( "LOWER(`user_front_login`) = ?" , $login )
                     ->where_equal('user_front_active', 1 )
                     ->find_one();
 

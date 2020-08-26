@@ -1878,6 +1878,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function frontSize( Array $sizes )
+    {
+        $this->field()->setData( "frontSize" , $sizes ) ;
+        return $this ;
+    }
+
     protected function convertNumber( $i )
     {
         switch( $i )

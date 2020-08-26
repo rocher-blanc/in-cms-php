@@ -686,6 +686,7 @@ class Controller
                         "class" 	=> $row->getData('classField'),
                         "part" 		=> $row->getData('part'),
                         "width" 	=> $row->getData('width'),
+						"sizes"     => $row->getData('frontSize'),
                         "comment"	=> $row->getComment(),
                         "required"	=> $row->isRequired(),
                         "unit"      => $row->getUnit(),
@@ -694,6 +695,8 @@ class Controller
                 }
             }
         }
+
+        dump( $arrayField );
 
         return [
             'condition'  => $condition,
