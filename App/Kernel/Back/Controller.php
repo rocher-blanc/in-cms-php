@@ -208,6 +208,28 @@ class Controller extends ControllerCommon
         return $field->getData('title') ;
     }
 
+    protected function parseFieldData( $row , $form , $show )
+	{
+		$rst = parent::parseFieldData( $row , $form , $show );
+
+		if( $row->getName() === "service" )
+		{
+			$rst['actions'] = [];
+
+			if( $row->getData('manyToMany') )
+			{
+				$rst['actions'][] = [
+					'icon'  => "icon-pencil",
+					'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
+					'label' => "Mettre à jour la liste",
+					'blank' => true
+				];
+			}
+		}
+
+		return $rst;
+	}
+
     protected function generateForm( $value = false , $data = [] )
     {
         $form = parent::generateForm( $value , $data );
