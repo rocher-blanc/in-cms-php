@@ -1,0 +1,28 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}{{ _('redirections_301') }}{% endblock %}
+{% set this_page =  _('redirection') %}
+
+{% block module %}
+    <div class="fancy-title title-dotted-border">
+        <h3>{{ _('redirect_index_title')}}</h3>
+    </div>
+    <div>
+        
+        {% if result %}
+            <div class="alert alert-success alert-center">{{ _('redirect_index_success') }}</div>
+        {% endif %}
+
+        <p>{{ _('redirect_index_title') }}</p>
+
+        <form action="/admin-shop/ext/redirect/edit" method="POST">
+            <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+            <textarea name="content" id="content" rows="30" class="form-control">{{ content }}</textarea>
+            <div class="text-right">
+                <button type="submit" class="ed-button button button-rounded button-reveal button-3d"><i class="icon-save"></i><span>{{ _('save') }}</span></button>
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}
