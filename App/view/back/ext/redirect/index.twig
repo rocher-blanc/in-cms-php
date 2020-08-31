@@ -13,7 +13,7 @@
             <div class="alert alert-success alert-center">{{ _('redirect_index_success') }}</div>
         {% endif %}
 
-        <p>{{ _('redirect_index_title') }}</p>
+        <p>{{ _('redirect_index_intro') }}</p>
 
         <form action="/admin-shop/ext/redirect/edit" method="POST">
             <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
