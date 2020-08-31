@@ -62,8 +62,8 @@ class Redirect
 
     private function urlExist()
     {
-        $ct = \DB::for_table('redirect')
-            ->where(['redirect_url' => $this->getUrl()])
+        $ct = \DB::for_table('redirect_301')
+            ->where(['redirect_301_oldurl' => $this->getUrl()])
             ->count();
 
         if ( $ct == 1 ) return true ;
@@ -72,9 +72,14 @@ class Redirect
 
     private function redirect()
     {
-        $redirect = \DB::for_table('redirect')
-            ->where(['redirect_url' => $this->getUrl()])
+        $redirect = \DB::for_table('redirect_301')
+            ->where(['redirect_301_oldurl' => $this->getUrl()])
             ->find_one();
+
+        if ( $redirect )
+        {
+            $this->Factory()->Response()->redirect( \App\Kernel\Http::getInstance()->getUrl() . $redirect->redirect_301_newurl , 301 );
+        }
 
         $url = '' ;
 

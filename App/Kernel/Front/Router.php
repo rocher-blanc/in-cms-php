@@ -151,6 +151,8 @@ class Router
 
     public function load()
     {
+        $this->check301() ;
+
         if ( ! $this->hasWww() )
         {
             $this->forceWww() ;
@@ -244,7 +246,6 @@ class Router
             }
         }
 
-        $this->check301() ;
         $this->Factory()->Response()->show404() ;
     }
 

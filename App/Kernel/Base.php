@@ -403,6 +403,11 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "redirect_lang_id" => $this->infoColumn( "INT" , "11" ),
                 "redirect_url" => $this->infoColumn( "VARCHAR" , "255" )
             ],
+            "redirect_301" => [
+                "redirect_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "redirect_301_newurl" => $this->infoColumn( "VARCHAR" , "255" ),
+                "redirect_301_oldurl" => $this->infoColumn( "VARCHAR" , "255" )
+            ],
             "seo" => [
                 "seo_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "seo_module_id" => $this->infoColumn( "INT" , "11" ),
