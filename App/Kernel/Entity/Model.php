@@ -90,7 +90,8 @@ class Model
                 'customization',
 				'add',
 				'edit',
-				'delete'
+				'delete',
+				'deleteMany'
 			)
 		);
 	}

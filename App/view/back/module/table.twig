@@ -1,9 +1,14 @@
+{% set enableSelect = hasValidation or mod.canDelete %}
+
 {% if td|length > 0 or search == 1 %}
     <form action="{% if depedency %}{{ dRoute( mod.name , 'table' , dElement , dModule ) }}{% else %}{{ route( mod.name , 'table' , uri_id_parent ) }}{% endif %}" method="get" class="tableFormSearch" data-container="table-content-{{ mod.name }}">
         <div class="table-responsive">
             <table class="table table-striped table-hover{{ hasOrder ? ' table-dnd' : '' }}" id="table-{{ mod.name }}" data-name="{{ mod.name }}">
                 <thead>
                 <tr>
+                    {% if enableSelect %}
+                        <th style="width: 50px;"></th>
+                    {% endif %}
                     {% if hasOrder and right.edit == true %}
                         <th style="width: 50px;"></th>
                     {% endif %}
@@ -41,6 +46,9 @@
                     </th>
                 </tr>
                 <tr class="trSearch">
+                    {% if enableSelect %}
+                        <th style="width: 50px;"></th>
+                    {% endif %}
                     {% if hasOrder and right.edit == true %}
                         <td style="width: 50px;"></td>
                     {% endif %}
@@ -106,6 +114,11 @@
                 <tbody>
                 {% for content in td %}
                     <tr class="tr1" data-parent-id="none" id="{{ content.id }}">
+                        {% if enableSelect %}
+                            <td class="text-center">
+                                <input type="checkbox" name="select[{{ content.id }}]" data-id="{{ content.id }}" data-module-table-action-many-checkbox />
+                            </td>
+                        {% endif %}
                         {% if hasOrder and right.edit == true %}
                             <td>{% if order == 'order' %}<a href="javascript:;" class="color-theme orderTable" data-tr="{{ content.id }}"><i class="icon-move"></i></a>{% endif %}</td>
                         {% endif %}
@@ -200,6 +213,27 @@
                 {% endfor %}
                 </tbody>
             </table>
+
+            {# Outils d'actions massif #}
+            {% if enableSelect %}
+                <div class="action-massive">
+                    <button class="button button-black button-small"                 type="button" data-module-table-action-many-reverse><span>Inverser la sélection</span></button>
+                    {% if hasValidation %}
+                        <button class="button button-yellow button-rounded button-small" type="button" data-module-table-action-many-disable><span>Désactiver</span></button>
+                        <button class="button button-green button-rounded button-small"  type="button" data-module-table-action-many-enable><span>Activer</span></button>
+                    {% endif %}
+                    {% if mod.canDelete %}
+                        <a href="{{ route( mod.name , 'deleteMany' , '' , 0 , csrf_token ) }}"
+                           class="button button-red button-rounded button-small"
+                           type="button"
+                           data-module-table-action-many-delete
+                           data-lightbox="ajax"
+                        ><span>Supprimer</span></a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {# Pagination #}
             {% if paginator|length > 0 %}
                 <div style="float: right;">
                     <ul class="pagination">
@@ -209,10 +243,14 @@
                     </ul>
                 </div>
             {% endif %}
+
         </div>
+
+        {# No result #}
         {% if td|length == 0 %}
             <div class="sb-msg text-center" style="font-size: 16px; font-weight: bold;"><i class="icon-question-sign"></i>{{ _('no_result')}}</div>
         {% endif %}
+
     </form>
 {% else %}
     <div class="style-msg" style="background-color: #eee;">

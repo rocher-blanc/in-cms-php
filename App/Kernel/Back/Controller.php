@@ -2051,6 +2051,28 @@ class Controller extends ControllerCommon
         $this->render('delete.twig') ;
     }
 
+    protected function deleteManyAction()
+    {
+        if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
+        {
+            $this->setToken( $this->getApp()->request->post( $this->getApp()->config('token') ) ) ;
+            $this->checkToken() ;
+            if( is_array( $this->post('listIds') ) )
+			{
+				foreach( $this->post('listIds') as $i )
+				{
+					$rst = $this->delete( $i );
+					if( ! $rst['result'] ) break;
+				}
+			}
+			if( $rst['result'] ) $rst['msg'] = $this->m("delete_many_success");
+            return $this->Factory()->Response()->printJSON( $rst ) ;
+        }
+
+        $this->setRender( 'id' , $this->getId() ) ;
+        $this->render('deleteMany.twig') ;
+    }
+
     protected function defaultAction()
     {
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
