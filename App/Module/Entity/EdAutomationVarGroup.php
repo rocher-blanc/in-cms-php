@@ -12,6 +12,8 @@ class EdAutomationVarGroup extends Builder
         $this->setFieldReference( 'name' );
         $this->setModuleChild( 'EdAutomationVar' );
 
+		$this->addIcon( 'icon-list' , 'addVariables' );
+
         $this->build('name')
             ->column(1, 1)
             ->isVarchar()
