@@ -584,7 +584,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $path . '/' . $mini ;
-                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
                                 }
 
                                 $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
@@ -599,7 +599,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $path . '/' . $mini ;
-                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
                                 }
 
                                 $tab['thumb'][$cover[0].'x'.$cover[1]] = $mini ;
@@ -614,7 +614,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $path . '/' . $mini ;
-                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
                                 }
 
                                 $tab['width'][$width] = $mini ;
@@ -629,7 +629,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $path . '/' . $mini ;
-                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
                                 }
 
                                 $tab['height'][$height] = $mini ;
@@ -644,7 +644,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
-                                    $mini = $this->getApp()->request()->getUrl() . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
                                 }
 
                                 $tab['crop'][$crop[0].'x'.$crop[1]] = $mini ;
