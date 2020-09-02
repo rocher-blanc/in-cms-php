@@ -1,0 +1,59 @@
+{% extends 'module.twig.html' %}
+
+{% set this_page =  _('gestion') %}
+
+{% block module %}
+
+    {% include 'module/header.twig' %}
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col_half">
+
+                <p>{{ _('redirect_index_intro') }}</p>
+
+                <form action="{{ route( "EdAutomationVarGroup" , "addVariables" , null , id ) }}" method="POST">
+                    <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
+                    <input type="hidden" name="action" value="add_variables" />
+                    <textarea name="content" id="content" rows="20" class="form-control">{{ content }}</textarea>
+                    <div class="text-right">
+                        <button type="submit" class="ed-button button button-rounded button-reveal button-3d"><i class="icon-save"></i><span>{{ _('save') }}</span></button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="col_half col_last">
+
+                <div class="fancy-title title-double-border title-center topmargin" id="group_form_connexion">
+                    <h4><span>Clés existantes</span></h4>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Clé</th>
+                        <th>Texte</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, text in keys %}
+                        <tr>
+                            <td>
+                                <strong>{{ key }}</strong>
+                            </td>
+                            <td>
+                                {{ text }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
