@@ -322,6 +322,17 @@ listenFormTable = function( base ) {
         if( $form.find('a[data-modal="true"]').length > 0 ) {
             $form.find('a[data-modal="true"]').magnificPopup(modalConfig());
         }
+
+        /** GESTION DES BOUTONS D'ACTION MASSIVE **/
+        $form.find( "[data-module-table-action-many-reverse]" ).on("click", function() {
+            revertSelection();
+        });
+        $form.find( "[data-module-table-action-many-disable]" ).on("click", function() {
+            disableMany();
+        });
+        $form.find( "[data-module-table-action-many-enable]" ).on("click", function() {
+            enableMany();
+        });
     });
 };
 
@@ -347,6 +358,81 @@ deleteElement = function( url , base ) {
     });
 };
 
+deleteManyElement = function( url , base ) {
+    var data = {};
+    data[ $("meta[name=tokename]").attr("content") ] = $("meta[name=token]").attr("content");
+    data[ 'listIds' ] = [];
+
+    $("[data-module-table-action-many-checkbox]:checked").each(function(index, el) {
+        data.listIds.push( $(el).attr('data-id') );
+    });
+
+    console.log( data );
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function(data) {
+            $.magnificPopup.close();
+            Notify(data.msg, data.result);
+
+            if(data.result == true) {
+                $( '#' + base ).find('form.tableFormSearch').each(function() {
+                    reloadTable( $(this) , base );
+                });
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $.magnificPopup.close();
+            Notify(errorThrown, false);
+        }
+    });
+};
+
+revertSelection = function() {
+    $("[data-module-table-action-many-checkbox]").each(function(index, el) {
+        $(el).prop( 'checked' , !$(el).prop('checked') );
+    });
+};
+
+disableMany = function() {
+    var countdown = $("[data-module-table-action-many-checkbox]:checked").length;
+    $("[data-module-table-action-many-checkbox]:checked").each(function(index, el) {
+        var url = $(this).parents("tr").find("[data-urldisable]").attr("data-urldisable");
+        if( typeof url !== "undefined" ) {
+            $.ajax({
+                url: url,
+                method: "GET",
+                success: function() {
+                    countdown--;
+                    if( countdown <= 0 ) {
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
+};
+
+enableMany = function() {
+    var countdown = $("[data-module-table-action-many-checkbox]:checked").length;
+    $("[data-module-table-action-many-checkbox]:checked").each(function(index, el) {
+        var url = $(this).parents("tr").find("[data-urlenable]").attr("data-urlenable");
+        if( typeof url !== "undefined" ) {
+            $.ajax({
+                url: url,
+                method: "GET",
+                success: function() {
+                    countdown--;
+                    if( countdown <= 0 ) {
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
+};
 
 reloadTable = function( $form , base ) {
     var iddiv = $('#' + $form.data('container')) ;

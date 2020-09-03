@@ -1,0 +1,12 @@
+<div class="modal1" id="myModal1">
+    <div class="block divcenter" style="background-color: #fff; max-width: 500px;">
+        <div class="center" style="padding: 50px;">
+            <h3>{{ _('common_delete_many_msg')}}</h3>
+            <p class="nobottommargin">{{ _('common_delete_many_info')}}</p>
+        </div>
+        <div class="section center nomargin" style="padding: 30px;">
+            <a href="#" class="button" onClick="deleteManyElement('{{ route( mod.name , 'deleteMany' , '' , id , csrf_token ) }}','table-content-{{ mod.name }}');"><i class="icon-ok"></i> {{ _('oui')}}</a>
+            <a href="#" class="button button-red" onClick="$.magnificPopup.close();return false;"><i class="icon-remove"></i> {{ _('non')}}</a>
+        </div>
+    </div>
+</div>

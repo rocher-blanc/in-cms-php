@@ -828,7 +828,7 @@ class Builder extends Model
     public function disableDelete()
     {
         $this->_delete = false ;
-        $this->removeAction('delete');
+        $this->removeAction('deleteMany');
     }
 
     public function canDelete()

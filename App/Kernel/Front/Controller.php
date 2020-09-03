@@ -142,6 +142,7 @@ class Controller extends \App\Kernel\Common\Controller
         $this->getEntity()->removeAction('add');
         $this->getEntity()->removeAction('edit');
         $this->getEntity()->removeAction('delete');
+        $this->getEntity()->removeAction('deleteMany');
         $this->getEntity()->removeAction('import');
         $this->getEntity()->removeAction('export');
         $this->getEntity()->removeAction('show');

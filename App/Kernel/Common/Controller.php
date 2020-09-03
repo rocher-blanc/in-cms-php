@@ -1054,8 +1054,13 @@ class Controller
     /* ************         DELETE         ************** */
     /* ************************************************** */
 
-    public function delete()
+    public function delete( $id = NULL )
     {
+    	if( $id == NULL )
+		{
+			$id = $this->getId() ;
+		}
+
         if ( $this->getEntity()->canDelete() == false )
         {
             return [
@@ -1075,13 +1080,13 @@ class Controller
                 'result' => false
             ];
 
-            $content = $this->getRepository()->findOne( $this->getId() );
+            $content = $this->getRepository()->findOne( $id );
 
             if ( $content )
             {
                 if ( $this->getEntity()->hasMultiLang() )
                 {
-                    \DB::for_module_lang( $this->getEntityName() , $this->getId() )
+                    \DB::for_module_lang( $this->getEntityName() , $id )
                         ->delete_many();
                 }
 
@@ -1092,20 +1097,20 @@ class Controller
                         if ( $row->getType() == "image" && $row->getData('hasAltText') == true )
                         {
                             $Alt = new Alt;
-                            $Alt->setElementId( $this->getId() );
+                            $Alt->setElementId( $id );
                             $Alt->setModuleId( $this->getEntityId() );
                             $Alt->delete();
                         }
                         else if ( $row->getType() == 'checkbox' )
                         {
                             \DB::for_module_assoc( $this->getEntityName() , $name )
-                                ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $this->getId() )
+                                ->where_equal( \DB::getTableNameAssoc( $this->getEntityName() , $name ) . '_' . \DB::getIdName( $this->getEntityName() ) , $id )
                                 ->delete_many();
                         }
                         else if ( $row->getType() == 'gallery' )
                         {
                             $Gallery = new Gallery;
-                            $Gallery->setElementId( $this->getId() );
+                            $Gallery->setElementId( $id );
                             $Gallery->setField( $row->getName() );
                             $Gallery->setModuleId( $this->getEntityId() );
                             $Gallery->setFolder( $this->getEntity()->getFolder() );
@@ -1125,7 +1130,7 @@ class Controller
                 if ( $this->getEntity()->hasUrl() )
                 {
                     $seo = new Seo;
-                    $seo->setElementId( $this->getId() );
+                    $seo->setElementId( $id );
                     $seo->setModuleId( $this->getEntityId() );
                     $seo->delete();
                 }
@@ -1143,7 +1148,7 @@ class Controller
                         $max = $max->count();
                     }
 
-                    $rst = \DB::for_module( $this->getEntityName() )->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $this->getId() ) ;
+                    $rst = \DB::for_module( $this->getEntityName() )->where_equal( $this->getEntity()->get( $this->getEntity()->getParentName() )->getColumn() , $id ) ;
                     if ( $this->getEntity()->hasOrder() ) $rst = $rst->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->getColumn() );
                     $rst = $rst->find_many();
 
@@ -1184,7 +1189,7 @@ class Controller
 
                 $this->hookDeleteAfter() ;
 
-                $this->Log()->warning( 102 , "#" . $this->getId() . " - " . $this->getEntityName() , $this->getEntityId() , $this->getId() ) ;
+                $this->Log()->warning( 102 , "#" . $id . " - " . $this->getEntityName() , $this->getEntityId() , $id ) ;
 
                 $result['msg'] = $this->m("delete_success");
                 $result['result'] = true ;
