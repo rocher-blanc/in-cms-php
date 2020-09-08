@@ -32,6 +32,8 @@ init = function( base ) {
     checkForm( base );
 };
 
+initSelect = function() {};
+
 initFieldImage = function( base ) {
     if ( $(base + ' a.showfieldupload').length ) {
         $(base + ' a.showfieldupload').click(function(e) {
