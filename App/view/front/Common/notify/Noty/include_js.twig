@@ -1,0 +1,14 @@
+    <script src="{{ asset('vendor/cmsmedias/front/lib/noty/noty.js') }}"></script>
+    <script type="text/javascript">
+        Notify = function( msg, result ) {
+            new Noty({
+                type: result ? "success" : "error",
+                text: msg,
+                layout: "bottomRight",
+                theme: "sunset",
+                timeout: 8000,
+                progressBar: true,
+                closeWith: ['button']
+            }).show();
+        }
+    </script>

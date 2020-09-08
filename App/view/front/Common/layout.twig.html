@@ -9,33 +9,64 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% for name,content in meta if name != 'title' and content != '' %}
-        {% if name != 'robots_value' %}        <meta name="{{ name }}" content="{{ content }}" />
-        {% endif %}
-    {% endfor %}
-    {% for name,content in og if content != '' %}
+    {% for name,content in meta if name != 'title' and content != '' -%}
+    {%- if name != 'robots_value' -%}
+        <meta name="{{ name }}" content="{{ content }}" />
+    {% endif -%}
+    {%- endfor %}
+
+    {%- for name,content in og if content != '' -%}
         <meta property="og:{{ name }}" content="{{ content }}" />
-    {% endfor %}
-    {{ block('meta') }}{% if rgpd.enabled == 1 %}<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
-    {% endif %}{% block stylesheets %}{{
-    css() }}{% endblock %}{{
-    analytics.google  }}{{
-    block('javascript_head') }}
-    {% if md.description != '' and md.logo != '' %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"Corporation","description":"{{ md.description }}","url":"{{ siteUrl('/') }}","logo":"{{ md.logo }}"}</script>
+    {% endfor -%}
+
+    {{ block('meta') -}}
+
+    {%- if rgpd.enabled == 1 -%}
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    {% endif -%}
+
+    {% block stylesheets -%}
+        {{ css()|trim }}
+    {% endblock -%}
+
+    {% if notify_engine is defined -%}
+        {% include "notify/"~notify_engine~"/include_css.twig" %}
     {% endif %}
-    {% if md.name != '' and md.alt_name != '' %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"{{ md.name }}","url":"{{ siteUrl('/') }}","alternateName":"{{ md.alt_name }}"}</script>
-    {% endif %}{% if md.sameAs|length > 0 %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","url":"{{ siteUrl('/') }}","sameAs":[{% for row in md.sameAs %}{% if loop.index0 > 0 %},{% endif %}"{{ row }}"{% endfor %}]}</script>
-    {% endif %}{% if md.address != '' and md.zip != '' and md.town != '' and md.phone != '' %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","image":"{{ md.logo }}","telephone":"{{ md.phone }}","name":"{{ md.name }}","address":{"@context":"https://schema.org","@type":"PostalAddress","streetAddress":"{{ md.address }}","postalCode":"{{ md.zip }}","addressLocality":"{{ md.town }}"}}</script>
-    {% endif %}{{
-    webmaster_tools.google }}{{
-    webmaster_tools.bing }}{{
-    tracking.header }}
+
+
+    {{- analytics.google -}}
+
+    {{- block('javascript_head') -}}
+
+    {%- if md.description != '' and md.logo != '' -%}
+        <script type="application/ld+json">{"@context":"https://schema.org","@type":"Corporation","description":"{{ md.description }}","url":"{{ siteUrl('/') }}","logo":"{{ md.logo }}"}</script>
+    {% endif -%}
+
+    {%- if md.name != '' and md.alt_name != '' -%}
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"{{ md.name }}","url":"{{ siteUrl('/') }}","alternateName":"{{ md.alt_name }}"}</script>
+    {% endif -%}
+
+    {%- if md.sameAs|length > 0 -%}
+        <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","url":"{{ siteUrl('/') }}","sameAs":[{% for row in md.sameAs %}{% if loop.index0 > 0 %},{% endif %}"{{ row }}"{% endfor %}]}</script>
+    {% endif -%}
+
+    {%- if md.address != '' and md.zip != '' and md.town != '' and md.phone != '' -%}
+        <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","image":"{{ md.logo }}","telephone":"{{ md.phone }}","name":"{{ md.name }}","address":{"@context":"https://schema.org","@type":"PostalAddress","streetAddress":"{{ md.address }}","postalCode":"{{ md.zip }}","addressLocality":"{{ md.town }}"}}</script>
+    {% endif -%}
+
+    {{- webmaster_tools.google }}
+    {{- webmaster_tools.bing }}
+    {{- tracking.header }}
+
+    {# Cannonical & Alternate -#}
     <link rel="canonical" href="{{ siteUrl( site.url ) }}" hreflang="{{ lang.active.url }}" />
-    {% if lang.count > 1 %}
-        {% for l in lang.all %}
-            {% if l.url != lang.active.url %}<link rel="alternate" href="{{ l.full_url }}" hreflang="{{ l.url }}" />{% endif %}
+    {% if lang.count > 1 -%}
+        {%- for l in lang.all -%}
+            {% if l.url != lang.active.url %}<link rel="alternate" href="{{ l.full_url }}" hreflang="{{ l.url }}" />{% endif -%}
         {% endfor %}
-    {% endif %}{% if env() != 'dev' and tracking.gtm != '' %}
+    {% endif %}
+
+    {% if env() != 'dev' and tracking.gtm != '' %}
     <script>
         (function(w,d,s,l,i) {
             w[l]=w[l]||[];
@@ -49,10 +80,18 @@
     {% endif %}
 </head>
 <body{{ block('classbody') }}>
-{% if env() != 'dev' and tracking.gtm != '' %}<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>{% endif %}
-{{ block('content') }}
-{% block javascripts %}{{
-javascript() }}{% endblock %}{% if rgpd.enabled == 1 %}<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+{% if env() != 'dev' and tracking.gtm != '' %}
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+{% endif %}
+
+{{- block('content') -}}
+
+{% block javascripts %}
+{{- javascript() -}}
+{% endblock %}
+{% if notify_engine is defined %}{%- include "notify/"~notify_engine~"/include_js.twig" -%}{% endif %}
+{% if rgpd.enabled == 1 or true %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 <script>
     window.addEventListener("load", function(){
         window.cookieconsent.initialise({
@@ -79,53 +118,50 @@ javascript() }}{% endblock %}{% if rgpd.enabled == 1 %}<script src="//cdnjs.clou
                 "href": "{{ rgpd.link }}"
         }
     })});
-</script>{% endif %}{{
-tracking.footer
-}}
+</script>
+{% endif %}
+{{- tracking.footer -}}
 
 {% if __debug_twig__ | length > 0 %}
-    <div class="dbg">
+<div class="dbg">
 
-        <button class="dbg-btn" id="dbg-btn">
-            <span class="dbg-btn-icon"></span>
-        </button>
+    <button class="dbg-btn" id="dbg-btn">
+        <span class="dbg-btn-icon"></span>
+    </button>
 
-        <div class="dbg-menu" id="dbg-menu">
+    <div class="dbg-menu" id="dbg-menu">
 
-            {% for tab, content in __debug_twig__ %}
-            <div class="dbg-menu-content{% if loop.first %} open{% endif %}" data-content="{{ loop.index }}">
-                <table class="dbg-menu-content-table">
-                    {% for row in content %}
-                    <tr>
-                        <td>
-                            <span class="dbg-menu-content-name">{{ row.name }}</span>
-                        </td>
-                        <td>
-                            <span class="dbg-menu-content-type">{{ row.type }}</span>
-                        </td>
-                        <td>
-                            {% if row.is_link %}
-                                {{ row.value }}
-                            {% else %}
-                                {% if row.value | length > 0 %}<span class="dbg-menu-content-value type-{{ row.class }}">{{ row.value }}</span>{% endif %}
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            {% endfor %}
-
-            <div class="dbg-menu-tabs">
-                {% for tab, content in __debug_twig__ %}
-                <button class="dbg-menu-tabs-tab{% if loop.first %} active{% endif %}{% if content|length == 0 %} disabled{% endif %}" data-tab="{{ loop.index }}">{{ tab }}</button>
+        {% for tab, content in __debug_twig__ %}
+        <div class="dbg-menu-content{% if loop.first %} open{% endif %}" data-content="{{ loop.index }}">
+            <table class="dbg-menu-content-table">
+                {% for row in content -%}
+                <tr>
+                    <td><span class="dbg-menu-content-name">{{ row.name }}</span></td>
+                    <td><span class="dbg-menu-content-type">{{ row.type }}</span></td>
+                    <td>
+                        {%- if row.is_link -%}
+                            {{- row.value -}}
+                        {%- else -%}
+                            {%- if row.value | length > 0 -%}<span class="dbg-menu-content-value type-{{ row.class }}">{{ row.value }}</span>{%- endif -%}
+                        {%- endif -%}
+                    </td>
+                </tr>
                 {% endfor %}
-            </div>
-
+            </table>
         </div>
+        {% endfor %}
+
+        <div class="dbg-menu-tabs">
+            {% for tab, content in __debug_twig__ %}
+            <button class="dbg-menu-tabs-tab{% if loop.first %} active{% endif %}{% if content|length == 0 %} disabled{% endif %}" data-tab="{{ loop.index }}">{{ tab }}</button>
+            {% endfor %}
+        </div>
+
     </div>
-    <style>@charset "UTF-8";.dbg{position:fixed;right:10px;bottom:10px;font-family:sans-serif;z-index:9999}.dbg-btn,.dbg-btn-icon,.dbg-btn-icon:after,.dbg-btn-icon:before,.dbg-menu{transition:all .3s}.dbg-btn{width:42px;height:42px;border-radius:100%;background-color:rgba(51,51,51,.8);position:absolute;right:0;bottom:0;border:0;outline:0;cursor:pointer}.dbg-btn.active{background-color:#0d0d0d}.dbg-btn-icon{position:absolute;width:14.7px;height:2px;left:50%;margin-left:-7.35px}.active .dbg-btn-icon{transform:rotate(45deg)}.dbg-btn-icon,.dbg-btn-icon:after,.dbg-btn-icon:before{background-color:#fff}.dbg-btn-icon:after,.dbg-btn-icon:before{content:'';position:absolute;left:0;top:0;width:100%;height:100%}.dbg-btn-icon:before{top:-250%}.dbg-btn-icon:after{top:250%}.active .dbg-btn-icon:after,.active .dbg-btn-icon:before{top:0}.active .dbg-btn-icon:before{transform:rotate(90deg)}.active .dbg-btn-icon:after{opacity:0}.dbg-menu{position:absolute;right:42px;bottom:42px;background-color:#242424;border-radius:5px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(21px)}.dbg-menu.open{opacity:1;pointer-events:all;transform:none}.dbg-menu-tabs{display:flex;justify-content:flex-end;background-color:#333}.dbg-menu-tabs-tab{white-space:nowrap;border:0;outline:0;color:#d9d9d9;background-color:transparent;font-size:13px;text-transform:uppercase;padding:1em;margin:0;cursor:default}.dbg-menu-tabs-tab:not(.disabled):not(.active):hover{cursor:pointer;background-color:#212121}.dbg-menu-tabs-tab.active{color:#fff;background-color:#0d0d0d}.dbg-menu-tabs-tab.disabled{color:#787878;pointer-events:none}.dbg-menu-content{display:none;padding:15px;max-height:410px;overflow-y:auto}.dbg-menu-content::-webkit-scrollbar{width:7px}.dbg-menu-content::-webkit-scrollbar-track{background-color:#4d4d4d}.dbg-menu-content::-webkit-scrollbar-thumb{background-color:#999}.dbg-menu-content.open{display:block}.dbg-menu-content-table{width:100%}.dbg-menu-content-table td{padding-top:3px}.dbg-menu-content-table td:not(:last-of-type){padding-right:15px}.dbg-menu-content-name{line-height:1.1;white-space:nowrap;max-width:350px;overflow:hidden;display:inline-block;text-overflow:ellipsis;font-size:14px;color:#fff}.dbg-menu-content-link,.dbg-menu-content-type,.dbg-menu-content-value{line-height:1;white-space:nowrap;max-width:350px;overflow:hidden;display:inline-block;text-overflow:ellipsis;font-size:14px;padding:.2em .4em;border-radius:2px;letter-spacing:.025em}.dbg-menu-content-type{color:#d9d9d9;background-color:rgba(204,204,204,.1)}.dbg-menu-content-value{background-color:#000}.dbg-menu-content-value.type-string{color:#fff}.dbg-menu-content-value.type-boolean-true{color:#84fa68}.dbg-menu-content-value.type-boolean-false{color:#f8801a}.dbg-menu-content-value.type-integer{color:#4daefa}.dbg-menu-content-link{background-color:#4daefa;color:#034578;text-decoration:none;font-size:15px}.dbg-menu-content-link:before{content:'→'}</style>
-    <script type="text/javascript">document.getElementById("dbg-btn").addEventListener("click",function(t){document.getElementById("dbg-btn").classList.toggle("active"),document.getElementById("dbg-menu").classList.toggle("open")});let tabs=document.querySelectorAll("[data-tab]"),contents=document.querySelectorAll("[data-content]");tabs.forEach(function(t,e){t.addEventListener("click",t=>{tabs.forEach(function(t){t.classList.remove("active")}),contents.forEach(function(t){t.classList.remove("open")}),tabs[e].classList.add("active"),contents[e].classList.add("open")})});</script>
+</div>
+<style>@charset "UTF-8";.dbg{position:fixed;right:10px;bottom:10px;font-family:sans-serif;z-index:9999}.dbg-btn,.dbg-btn-icon,.dbg-btn-icon:after,.dbg-btn-icon:before,.dbg-menu{transition:all .3s}.dbg-btn{width:42px;height:42px;border-radius:100%;background-color:rgba(51,51,51,.8);position:absolute;right:0;bottom:0;border:0;outline:0;cursor:pointer}.dbg-btn.active{background-color:#0d0d0d}.dbg-btn-icon{position:absolute;width:14.7px;height:2px;left:50%;margin-left:-7.35px}.active .dbg-btn-icon{transform:rotate(45deg)}.dbg-btn-icon,.dbg-btn-icon:after,.dbg-btn-icon:before{background-color:#fff}.dbg-btn-icon:after,.dbg-btn-icon:before{content:'';position:absolute;left:0;top:0;width:100%;height:100%}.dbg-btn-icon:before{top:-250%}.dbg-btn-icon:after{top:250%}.active .dbg-btn-icon:after,.active .dbg-btn-icon:before{top:0}.active .dbg-btn-icon:before{transform:rotate(90deg)}.active .dbg-btn-icon:after{opacity:0}.dbg-menu{position:absolute;right:42px;bottom:42px;background-color:#242424;border-radius:5px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(21px)}.dbg-menu.open{opacity:1;pointer-events:all;transform:none}.dbg-menu-tabs{display:flex;justify-content:flex-end;background-color:#333}.dbg-menu-tabs-tab{white-space:nowrap;border:0;outline:0;color:#d9d9d9;background-color:transparent;font-size:13px;text-transform:uppercase;padding:1em;margin:0;cursor:default}.dbg-menu-tabs-tab:not(.disabled):not(.active):hover{cursor:pointer;background-color:#212121}.dbg-menu-tabs-tab.active{color:#fff;background-color:#0d0d0d}.dbg-menu-tabs-tab.disabled{color:#787878;pointer-events:none}.dbg-menu-content{display:none;padding:15px;max-height:410px;overflow-y:auto}.dbg-menu-content::-webkit-scrollbar{width:7px}.dbg-menu-content::-webkit-scrollbar-track{background-color:#4d4d4d}.dbg-menu-content::-webkit-scrollbar-thumb{background-color:#999}.dbg-menu-content.open{display:block}.dbg-menu-content-table{width:100%}.dbg-menu-content-table td{padding-top:3px}.dbg-menu-content-table td:not(:last-of-type){padding-right:15px}.dbg-menu-content-name{line-height:1.1;white-space:nowrap;max-width:350px;overflow:hidden;display:inline-block;text-overflow:ellipsis;font-size:14px;color:#fff}.dbg-menu-content-link,.dbg-menu-content-type,.dbg-menu-content-value{line-height:1;white-space:nowrap;max-width:350px;overflow:hidden;display:inline-block;text-overflow:ellipsis;font-size:14px;padding:.2em .4em;border-radius:2px;letter-spacing:.025em}.dbg-menu-content-type{color:#d9d9d9;background-color:rgba(204,204,204,.1)}.dbg-menu-content-value{background-color:#000}.dbg-menu-content-value.type-string{color:#fff}.dbg-menu-content-value.type-boolean-true{color:#84fa68}.dbg-menu-content-value.type-boolean-false{color:#f8801a}.dbg-menu-content-value.type-integer{color:#4daefa}.dbg-menu-content-link{background-color:#4daefa;color:#034578;text-decoration:none;font-size:15px}.dbg-menu-content-link:before{content:'→'}</style>
+<script type="text/javascript">document.getElementById("dbg-btn").addEventListener("click",function(t){document.getElementById("dbg-btn").classList.toggle("active"),document.getElementById("dbg-menu").classList.toggle("open")});let tabs=document.querySelectorAll("[data-tab]"),contents=document.querySelectorAll("[data-content]");tabs.forEach(function(t,e){t.addEventListener("click",t=>{tabs.forEach(function(t){t.classList.remove("active")}),contents.forEach(function(t){t.classList.remove("open")}),tabs[e].classList.add("active"),contents[e].classList.add("open")})});</script>
 {% endif %}
+
 </body>
 </html>{% endblock html_content %}

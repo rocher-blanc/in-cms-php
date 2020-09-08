@@ -107,6 +107,9 @@ defined('ACTIVE_USER_CONNECT_AFTER_REGISTER')   || define('ACTIVE_USER_CONNECT_A
 defined('USER_ACTIVATION_MAIL')                 || define('USER_ACTIVATION_MAIL', false );
 defined('ACTIVE_USER_CONNECT_AFTER_VALIDATION') || define('ACTIVE_USER_CONNECT_AFTER_VALIDATION', false );
 
+// Front client notify
+defined('CLIENT_NOTIFY_ENGINE') || define( 'CLIENT_NOTIFY_ENGINE', "Noty" );
+
 // NEWSLETTER
 defined('NEWSLETTER_ACTIVE') || define('NEWSLETTER_ACTIVE', false );
 
