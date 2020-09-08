@@ -89,7 +89,19 @@
 {% block javascripts %}
 {{- javascript() -}}
 {% endblock %}
+
 {% if notify_engine is defined %}{%- include "notify/"~notify_engine~"/include_js.twig" -%}{% endif %}
+{% if user_error is defined %}
+<script type="text/javascript">Notify( "{{ user_error.msg }}" , {{ user_error.result ? 'true' : 'false' }} );</script>
+{% endif %}
+{% if cart_error is defined %}
+<script type="text/javascript">Notify( "{{ cart_error.msg }}" , {{ cart_error.result ? 'true' : 'false' }} );</script>
+{% endif %}
+{% if address_error is defined %}
+<script type="text/javascript">Notify( "{{ address_error.msg }}" , {{ address_error.result ? 'true' : 'false' }} );</script>
+{% endif %}
+
+
 {% if rgpd.enabled == 1 or true %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 <script>
