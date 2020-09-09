@@ -915,16 +915,16 @@ class User extends \App\Kernel\Common\User
 
                     if ( $rstMail === false )
                     {
-                        return $this->returnError( "user_lost_password_send_mail_error" ) ;
+                        return $this->returnError( "user_lost_password_send_mail_error" , false , true ) ;
                     }
                     else
                     {
-                        return $this->returnError( "user_lost_password_send_mail_successful" , true ) ;
+                        return $this->returnError( "user_lost_password_send_mail_successful" , true , true ) ;
                     }
                 }
                 else
                 {
-                    return $this->returnError( "user_lost_password_failed" ) ;
+                    return $this->returnError( "user_lost_password_failed" , false , true ) ;
                 }
             }
         }
