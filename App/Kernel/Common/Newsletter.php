@@ -64,7 +64,10 @@ class Newsletter
 
     protected function isEmailValid()
     {
-        if ( filter_var( $this->getEmail() , FILTER_VALIDATE_EMAIL ) && $this->getEmail() !== NULL && $this->getEmail() != '' )
+        if ( filter_var( $this->getEmail() , FILTER_VALIDATE_EMAIL )
+			&& $this->getEmail() !== NULL
+			&& $this->getEmail() != ''
+		)
         {
             return true ;
         }
