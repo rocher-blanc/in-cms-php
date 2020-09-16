@@ -80,7 +80,9 @@ class NewsletterCampaign extends Controller
         if ( $data->get('id_easyletter') != '' )
         {
             $EL = new Easyletter;
-            return (bool) $EL->cancel( $data->get('id_easyletter') );
+            $EL->cancel( $data->get('id_easyletter') );
+
+            return true;
         }
 
         return true ;
