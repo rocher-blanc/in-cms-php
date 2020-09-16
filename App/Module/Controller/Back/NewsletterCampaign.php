@@ -83,7 +83,7 @@ class NewsletterCampaign extends Controller
             return (bool) $EL->cancel( $data->get('id_easyletter') );
         }
 
-        return false ;
+        return true ;
     }
 
     protected function statsAction()
