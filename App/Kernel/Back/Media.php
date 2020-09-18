@@ -342,152 +342,7 @@ class Media extends \App\Kernel\Common\Media
 		
 		return false ;
 	}
-	
-	private function getMiniName( $name )
-	{
-		return $this->getMini( $name , 't' , 100 , 100 ) ;
-	}
-	
-	private function getExtension( $name )
-	{
-		$exp = explode( "." , $name ) ;
-		return '.' . end( $exp ) ;
-	}
-	
-	public function genThumb( $width , $height , $crop = false )
-	{
-		$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-		$img  = $path . $this->getImageName() ;
-		
-		if ( $crop == true ) 	$subfolder = 'c' ;
-		else					$subfolder = 't' ;
-		
-		try {
-			$miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
-			$file = $path . $subfolder . "/" . $miniName ;
 
-			if( file_exists($file) )
-			{
-				unlink($file);
-			}
-			
-			if ( ! file_exists( $file ) && file_exists( $img ) )
-			{
-				$tmpImg = new \abeautifulsite\SimpleImage( $img );
-                $tmpImg->best_fit( $width , $height );
-
-                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-                $destImg->overlay($tmpImg)->save($file);
-			}
-			
-			return $miniName ;
-		} catch(Exception $e) {
-			echo 'Error: ' . $e->getMessage();
-		}
-	}
-
-	public function genCover( $width , $height , $crop = false )
-    {
-        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-        $img = $path . $this->getImageName() ;
-
-        if( $crop == true )   $subfolder = 'c' ;
-        else                  $subfolder = 't' ;
-
-        try {
-            $miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
-            $file = $path . $subfolder . "/" . $miniName ;
-
-			if( file_exists($file) )
-			{
-				unlink($file);
-			}
-
-            if ( ! file_exists( $file ) && file_exists( $img ) )
-            {
-                $tmpImg = new \abeautifulsite\SimpleImage( $img );
-                $tmpImg->thumbnail( $width , $height , "center" );
-
-                $destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-                $destImg->overlay($tmpImg)->save($file);
-            }
-
-            return $miniName ;
-        } catch(Exception $e) {
-            echo 'Error: ' . $e->getMessage();
-        }
-    }
-
-	public function genWidth( $width )
-    {
-        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-        $img = $path . $this->getImageName() ;
-
-        $subfolder = 'w' ;
-
-        try {
-            $miniName = $this->updateName( $this->getImageName() , $width ) ;
-            $file = $path . $subfolder . "/" . $miniName ;
-
-			if( file_exists($file) )
-			{
-				unlink($file);
-			}
-
-            if ( ! file_exists( $file ) && file_exists( $img ) )
-            {
-                $tmpImg = new \abeautifulsite\SimpleImage( $img );
-
-				$oldW   = $tmpImg->get_width();
-				$oldH   = $tmpImg->get_height();
-				$height = round( $width * $oldH / $oldW , 0 );
-
-				$tmpImg->thumbnail( $width , $height , "center" );
-				$destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-                $destImg->overlay($tmpImg)->save($file);
-            }
-
-            return $miniName ;
-        } catch(Exception $e) {
-            echo 'Error: ' . $e->getMessage();
-        }
-    }
-
-	public function getHeight( $height )
-    {
-        $path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-        $img = $path . $this->getImageName() ;
-
-        $subfolder = 'h' ;
-
-        try {
-            $miniName = $this->updateName( $this->getImageName() , $height ) ;
-            $file = $path . $subfolder . "/" . $miniName ;
-
-			if( file_exists($file) )
-			{
-				unlink($file);
-			}
-
-            if ( ! file_exists( $file ) && file_exists( $img ) )
-            {
-                $tmpImg = new \abeautifulsite\SimpleImage( $img );
-
-				$oldW  = $tmpImg->get_width();
-				$oldH  = $tmpImg->get_height();
-				$width = round( $height * $oldW / $oldH , 0 );
-
-				$tmpImg->thumbnail( $width , $height , "center" );
-				$destImg = new \abeautifulsite\SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-                $destImg->overlay($tmpImg)->save($file);
-            }
-
-            return $miniName ;
-        } catch(Exception $e) {
-            echo 'Error: ' . $e->getMessage();
-        }
-    }
-	
 	public function genCropDefaut( $width , $height )
 	{
 		return $this->genThumb( $width , $height , true ) ;
@@ -510,5 +365,23 @@ class Media extends \App\Kernel\Common\Media
             ->crop($x, $y, $x2, $y2)
             ->resize( $width , $height )
             ->save( $this->getFolder() . '/c/' . $this->updateName( $imageName , $width . "x" . $height ) );
+	}
+
+
+	/*----------------------------------------------------------------------*/
+	/*----------                                                  ----------*/
+	/*----------                       TOOLS                      ----------*/
+	/*----------                                                  ----------*/
+	/*----------------------------------------------------------------------*/
+
+	private function getMiniName( $name )
+	{
+		return $this->getMini( $name , 't' , 100 , 100 ) ;
+	}
+
+	private function getExtension( $name )
+	{
+		$exp = explode( "." , $name ) ;
+		return '.' . end( $exp ) ;
 	}
 }
