@@ -4,6 +4,7 @@ namespace App\Kernel\Common;
 
 use abeautifulsite\SimpleImage;
 use App\Kernel\Back\Image;
+use App\Kernel\Exception;
 
 class Media
 {
@@ -146,17 +147,17 @@ class Media
 
 		if ( empty( $name ) ) return false ;
 
-		if ( ! empty( $this->getFolder() ) && ! empty( $this->getImageName() ) )
-        {
-        	if( $height )
-        	{
-				$this->genThumb( $width , $height );
-			}
-			else
-			{
-				$this->genThumb( $width , $width );
-			}
-        }
+//		if ( ! empty( $this->getFolder() ) && ! empty( $this->getImageName() ) )
+//        {
+//        	if( $height )
+//        	{
+//				$this->genThumb( $width , $height );
+//			}
+//			else
+//			{
+//				$this->genThumb( $width , $width );
+//			}
+//        }
 
 		return $height
 			? $type . '/' . $name . "-".$width."x".$height."." . $ext
@@ -268,10 +269,6 @@ class Media
 //        }
 //    }
 
-
-
-
-
 	/*----------------------------------------------------------------------*/
 	/*----------                                                  ----------*/
 	/*----------                  IMAGE GENERATION                ----------*/
@@ -304,7 +301,6 @@ class Media
 	public function genImage( $dir , $newNameSuffix , $callable )
 	{
 		try {
-
 			$name = $this->getImageName();
 			$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
 			$img  = $path . $name ;
@@ -319,8 +315,6 @@ class Media
 			echo 'Error: ' . $e->getMessage();
 		}
 	}
-
-
 
 	public function genThumb( $width , $height , $crop = false )
 	{
