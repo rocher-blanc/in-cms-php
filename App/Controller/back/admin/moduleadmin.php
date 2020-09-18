@@ -163,7 +163,6 @@ $app->group('/moduleadmin', function () use ($app)
 				->where_equal('module_id', $id)
 				->find_one();
 
-
 			if ( $contentRow )
 			{
 				$entity = Container::getInstance()->module($contentRow->module_class_name)->getEntity();

@@ -365,6 +365,11 @@ class Media extends \App\Kernel\Common\Media
 		try {
 			$miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
 			$file = $path . $subfolder . "/" . $miniName ;
+
+			if( file_exists($file) )
+			{
+				unlink($file);
+			}
 			
 			if ( ! file_exists( $file ) && file_exists( $img ) )
 			{
@@ -393,6 +398,11 @@ class Media extends \App\Kernel\Common\Media
             $miniName = $this->updateName( $this->getImageName() , $width . "x" . $height ) ;
             $file = $path . $subfolder . "/" . $miniName ;
 
+			if( file_exists($file) )
+			{
+				unlink($file);
+			}
+
             if ( ! file_exists( $file ) && file_exists( $img ) )
             {
                 $tmpImg = new \abeautifulsite\SimpleImage( $img );
@@ -418,6 +428,11 @@ class Media extends \App\Kernel\Common\Media
         try {
             $miniName = $this->updateName( $this->getImageName() , $width ) ;
             $file = $path . $subfolder . "/" . $miniName ;
+
+			if( file_exists($file) )
+			{
+				unlink($file);
+			}
 
             if ( ! file_exists( $file ) && file_exists( $img ) )
             {
@@ -448,6 +463,11 @@ class Media extends \App\Kernel\Common\Media
         try {
             $miniName = $this->updateName( $this->getImageName() , $height ) ;
             $file = $path . $subfolder . "/" . $miniName ;
+
+			if( file_exists($file) )
+			{
+				unlink($file);
+			}
 
             if ( ! file_exists( $file ) && file_exists( $img ) )
             {
