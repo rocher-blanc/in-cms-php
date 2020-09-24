@@ -38,6 +38,16 @@ class EdAutomationHistory extends Controller
 			if ( $content )
 			{
 				$content->stats = $this->resultStats[ $content->id_easyletter ] ;
+                $req = \DB::for_table( "mod_edautomationhistory" )
+                    ->select( "mod_edautomationhistory_information" )
+                    ->where_equal( "mod_edautomationhistory_id_easyletter" , $content->id_easyletter )
+                    ->find_one();
+
+                if ( $req )
+                {
+                    $req->mod_edautomationhistory_information = null;
+                    $req->save();
+                }
 			}
 
 			return $content ;
