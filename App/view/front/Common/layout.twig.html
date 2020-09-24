@@ -15,9 +15,11 @@
     {% endif -%}
     {%- endfor %}
 
-    {%- for name,content in og if content != '' -%}
-        <meta property="og:{{ name }}" content="{{ content }}" />
-    {% endfor -%}
+    {% block og %}
+        {%- for name,content in og if content != '' -%}
+            <meta property="og:{{ name }}" content="{{ content }}" />
+        {% endfor -%}
+    {% endblock %}
 
     {{ block('meta') -}}
 
