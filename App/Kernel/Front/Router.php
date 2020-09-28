@@ -144,6 +144,11 @@ class Router
         $this->_findRoute = true ;
     }
 
+    protected function noRoute()
+    {
+        $this->_findRoute = false ;
+    }
+
     protected function routeIsFind()
     {
         return $this->_findRoute ;
@@ -151,8 +156,6 @@ class Router
 
     public function load()
     {
-        $this->check301() ;
-
         if ( ! $this->hasWww() )
         {
             $this->forceWww() ;
@@ -255,6 +258,8 @@ class Router
 
     private function check301()
     {
+        dump( $_SERVER );
+        die;
         $Redirect = new \App\Kernel\Front\Redirect;
         $Redirect->setUrl( trim( $this->getFullUrl() , "/" ) );
         $Redirect->check301();
@@ -396,7 +401,7 @@ class Router
             $this->urlElementModule( $mp , $url , $id_module );
         }
 
-		$this->getApp()->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
+        $this->getApp()->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
         {
             $Controller = \App\Kernel\Container::getInstance()->module( $class )->getController();
             $Controller->setUrl( explode('/',$url) );
@@ -442,9 +447,10 @@ class Router
 
     protected function displayModule()
     {
-		$result = \DB::for_table('module')
+        $result = \DB::for_table('module')
             ->select('module.module_class_name')
             ->select('module.module_id')
+            ->select('module.module_index')
             ->left_outer_join('module_lang', array('module.module_id', '=', 'module_lang.module_lang_module_id'))
             ->where(['module_lang.module_lang_lang_id' => $this->Lang()->getActive()->id, 'module_lang.module_lang_url' => $this->getUrl( $this->getOffset() )])
             ->where_equal('module.module_active', 1)
@@ -453,7 +459,7 @@ class Router
         $urlTab = $this->getUrl() ;
         $ct     = count( $urlTab ) ;
 
-		$max = 1;
+        $max = 1;
         if ( $this->Lang()->count() > 1 ) $max = 2;
 
         if ( ( $ct == $max or $this->getUrl( ( $this->Lang()->count() > 1 ? 2 : 1 ) ) == 'page' ) && $result )
@@ -463,6 +469,15 @@ class Router
         else
         {
             $element = ( $ct == $this->getOffset() ? false : true ) ;
+        }
+
+        if ( $element == false )
+        {
+            if ( $result->module_index == 0 )
+            {
+                $this->noRoute();
+                return false ;
+            }
         }
 
         $this->loadController( $result->module_class_name , $result->module_id , $element ) ;

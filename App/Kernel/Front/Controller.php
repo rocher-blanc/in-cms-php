@@ -131,7 +131,14 @@ class Controller extends \App\Kernel\Common\Controller
         }
         else
         {
-            return $this->Factory()->Response()->error("Impossible de charger l'entity") ;
+            if ( PRODUCTION )
+            {
+                $this->getApp()->pass();
+            }
+            else
+            {
+                return $this->Factory()->Response()->error("Impossible de charger l'entity") ;
+            }
         }
     }
 
