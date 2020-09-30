@@ -2,6 +2,15 @@
 
 $app->get('/sitemap.xml', function () use ( $app )
 {
+    $data = \DB::for_table('param')
+        ->where_equal('param_key', 'seo_robots')
+        ->find_one();
+
+    if ( $data->param_value == '0' )
+    {
+        $app->pass();
+    }
+
     $app->contentType('text/xml');
 
     $langArray = [] ;
