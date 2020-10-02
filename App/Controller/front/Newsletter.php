@@ -13,27 +13,72 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
 
     if ( $Newsletter->get('type') == 1 )
     {
-        $tab = [];
-
-        $r = Container::getInstance()->module('NewsletterSubscriber');
-
-        foreach( $Newsletter->get('recipient') as $group )
+        if ( EL_VERSION == 'v2' )
         {
-            // on va chercher tous les destinataires
-            $rstRec = $r->getRepository()
-                ->getKit()
-                ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
-                ->find_many();
+            $r = Container::getInstance()->module('NewsletterSubscriber');
+            $lists      = [];
+            $recipients = [];
 
-            if ( $rstRec )
+            foreach( $Newsletter->get('recipient') as $group )
             {
-                foreach( $rstRec as $email )
+                $list = new Data('NewsletterGroup');
+                $rst = $list->find( $group );
+
+                if ( $rst )
                 {
-                    $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
-                    $tab[ $mail ] = [
-                        'Email' => $mail,
-                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                    ] ;
+                    $lists[] = [
+                        'id' => $group,
+                        'name' => $list->get('name'),
+                    ];
+
+                    // on va chercher tous les destinataires
+                    $rstRec = $r->getRepository()
+                        ->getKit()
+                        ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
+                        ->find_many();
+
+                    if ( $rstRec )
+                    {
+                        foreach( $rstRec as $email )
+                        {
+                            $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
+
+                            $recipients[ $mail ]['email'] = $mail ;
+                            $recipients[ $mail ]['list'][] = $group ;
+                        }
+                    }
+                }
+            }
+
+            $tab = [
+                'lists' => $lists,
+                'recipients' => $recipients,
+            ];
+        }
+        else
+        {
+            $tab = [];
+
+            $r = Container::getInstance()->module('NewsletterSubscriber');
+
+            foreach( $Newsletter->get('recipient') as $group )
+            {
+                // on va chercher tous les destinataires
+                $rstRec = $r->getRepository()
+                    ->getKit()
+                    ->where_equal( $r->getEntity()->get('element_module_parent_id')->getColumn() , $group )
+                    ->find_many();
+
+                if ( $rstRec )
+                {
+                    foreach( $rstRec as $email )
+                    {
+                        $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
+                        $tab[ $mail ] = [
+                            'Email' => $mail,
+                            'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                        ] ;
+                    }
                 }
             }
         }
