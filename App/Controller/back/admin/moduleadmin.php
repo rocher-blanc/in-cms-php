@@ -13,6 +13,46 @@ $app->group('/moduleadmin', function () use ($app)
             ]);
         });
 
+        $app->get('/new', function () use ($app)
+        {
+            $contentRows = \DB::for_table('module')
+                ->where_equal('module_kernel' , 0)
+                ->order_by_asc('module_active')
+                ->order_by_asc('module_name')
+                ->find_many();
+
+            $tab = [];
+            $dep = [];
+
+            if ( $contentRows )
+            {
+                foreach( $contentRows as $row )
+                {
+                    $entity = Container::getInstance()->module( $row->module_class_name )->getEntity();
+
+                    if ( $entity->itsDepedency() )
+                    {
+                        $dep[] = [
+                            'class' => $row->module_class_name,
+                            'name' => $row->module_class_name
+                        ];
+                    }
+                    else
+                    {
+                        $tab[] = [
+                            'class' => $row->module_class_name,
+                            'name' => $row->module_class_name
+                        ];
+                    }
+                }
+            }
+
+            $app->render('admin/moduleadmin/new.twig', [
+                "depedentcy" => $dep,
+                "module" => $tab
+            ]);
+        });
+
         $app->get('/', function () use ($app)
         {
             $contentRows = \DB::for_table('module')

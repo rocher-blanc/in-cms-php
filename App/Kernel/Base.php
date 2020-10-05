@@ -323,6 +323,7 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
             "module" => [
                 "module_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "module_name" => $this->infoColumn( "VARCHAR" , "50" ),
+                "module_json" => $this->infoColumn( "TEXT" ),
                 "module_class_name" => $this->infoColumn( "VARCHAR" , "50" ),
                 "module_active" => $this->infoColumn( "TINYINT" , "1" ),
                 "module_kernel" => $this->infoColumn( "TINYINT" , "1" , 0 ),

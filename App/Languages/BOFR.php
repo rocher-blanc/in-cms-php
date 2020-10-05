@@ -2,6 +2,7 @@
 namespace Project\Lang;
 class BOFR extends \App\Kernel\Front\LanguageModel {
 	protected $a = [
+        "moduleadmin_new" => "Nouveau module",
 		"abonnes" => "Abonnés",
 		"absence_msg" => "Message d'absence",
 		"action" => "Action",

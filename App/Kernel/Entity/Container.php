@@ -82,6 +82,9 @@ class Container
         return $this->repositoryBack;
     }
 
+    /**
+     * @return Builder
+     */
     public function getEntity()
     {
         if ( $this->entity === NULL )

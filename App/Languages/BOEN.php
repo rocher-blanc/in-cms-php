@@ -2,7 +2,8 @@
 namespace Project\Lang;
 class BOEN extends \App\Kernel\Front\LanguageModel {
 	protected $a = [
-		"abonnes" => "Subscribers",
+        "moduleadmin_new" => "New module",
+        "abonnes" => "Subscribers",
 		"absence_msg" => "Absence message",
 		"action" => "Action",
 		"action_irreversible" => "This action is irreversible.",

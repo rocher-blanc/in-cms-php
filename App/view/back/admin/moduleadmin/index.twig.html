@@ -8,8 +8,12 @@
         <h3>{{ _('moduleadmin_index_title')}}</h3>
     </div>
 
+    <div class="text-center" style="margin-bottom: 10px;">
+        <a class="btn btn-lg btn-primary" href="{{ siteUrl('admin/moduleadmin/new') }} "><i class="icon-plus-sign2"></i> {{ _('moduleadmin_new') }}</a>
+    </div>
+
 	{% if noInstall|length == 0 and contentRows|length == 0 %}
-		{% include 'form/generic/nocontent.twig' with {'msg': 'moduleadmin_index_msg'}%}
+		{% include 'form/generic/nocontent.twig' with {'msg': _('moduleadmin_index_msg')}%}
 	{% endif %}
 
 	{% if contentRows|length > 0 %}
