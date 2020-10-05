@@ -1,0 +1,131 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}{{ _('modules')}}{% endblock %}
+{% set this_page = _('moduleadmin_new') %}
+
+{% block module %}
+    <div id="app">
+        <div class="card mb-3" v-for="(field, index) in fields">
+            <div class="card-header">
+                <h5 class="float-left">Champ #{{ field.position }}</h5>
+                <div class="float-right">
+                    <button class="btn btn-secondary" v-if="index != 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
+                    <button class="btn btn-secondary" v-if="index != fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Nom du champ</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="field.name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Type de champ</label>
+                    <div class="col-sm-10">
+                        <select name="type" v-model="field.type" class="form-control">
+                            <option value="input">Champ texte</option>
+                            <option value="select">Champ select</option>
+                            <option value="textarea">Champ textarea</option>
+                            <option value="gallery">Galerie</option>
+                            <option value="document">Document</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Champ obligatoire</label>
+                    <div class="col-sm-10">
+                        <select name="type" v-model="field.empty" class="form-control">
+                            <option value="yes">Oui</option>
+                            <option value="no">Non</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="field.type == 'select'>
+                            <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select name="type" v-model="field.empty" class="form-control">
+                        <option value="yes">Oui</option>
+                        <option value="no">Non</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row" v-if="field.empty == 'yes'">
+                <label class="col-sm-2 col-form-label">Message si vide</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="field.emptyMessage">
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="field.type == 'textarea'">
+                <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
+                <div class="col-sm-8">
+                    <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
+                </div>
+            </div>
+        </div>
+    </div>
+    <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <div v-for="field in fields">
+                <pre>
+                $this->build('{{ field.name }}')
+                    <span v-if="field.type == 'input'">->isVarchar()</span><span v-if="field.type == 'select'">->isSelect()</span><span v-if="field.type == 'textarea'">->isText()</span><span v-if="field.type == 'gallery'">->isGallery()</span><span v-if="field.type == 'document'">->isDocument()</span>
+                    <span v-if="field.empty == 'yes'">->notEmpty("{{ field.emptyMessage }}")</span>
+                    <span v-if="field.editor == 1">->editor()</span>
+                </pre>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_end %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                fields: []
+            },
+            methods: {
+                addField: function () {
+                    this.fields.push({
+                        name: 'test #' + this.fields.length,
+                        position: (this.fields.length + 1)
+                    });
+                },
+                up: function (index) {
+                    if (index != 0) {
+                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                            if (i === index - 1) {
+                                return this.fields[index];
+                            } else if (i === index) {
+                                return this.fields[index - 1];
+                            } else {
+                                return e;
+                            }
+                        })
+                    }
+                },
+                down: function (index) {
+                    if (index != this.fields.length-1) { // if its the last in the array
+                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                            if (i === index) {
+                                return this.fields[index + 1];
+                            } else if (i === index + 1) {
+                                return this.fields[index];
+                            } else {
+                                return e;
+                            }
+                        })
+                    }
+                }
+            }
+        })
+    </script>
+{% endblock %}
