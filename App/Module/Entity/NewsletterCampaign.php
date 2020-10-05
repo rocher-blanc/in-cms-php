@@ -14,32 +14,38 @@ class NewsletterCampaign extends Builder
 
         $this->addAction( 'stats' );
         $this->addAction( 'cancel' );
-        $this->addAction( 'downloadStatistic' );
-        $this->addAction( 'downloadStatisticDest' );
 
-        $this->addAction( 'resendNoRead' );
-        $this->addAction( 'resendNoReadView' );
-        $this->addAction( 'resendNoClick' );
-        $this->addAction( 'resendNoClickView' );
+        if ( EL_VERSION == 'v2' )
+        {
+            $this->addAction('downloadStatistic');
+            $this->addAction('downloadStatisticDest');
+
+            $this->addAction('resendNoRead');
+            $this->addAction('resendNoReadView');
+            $this->addAction('resendNoClick');
+            $this->addAction('resendNoClickView');
+        }
 
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
-            return $c->id_easyletter !== NULL && $c->stats['state'] == 10 ? true : false ;
+            return $c->id_easyletter !== NULL && ( ( EL_VERSION == 'v2' && $c->stats['state'] == 10 ) or ( EL_VERSION == 'v3' && $c->stats['state'] == 'sent' ) ) ? true : false ;
         });
 
         $this->addIcon( 'icon-line-square-cross' , 'cancel' , function($c) {
-            return $c->id_easyletter !== NULL && $c->stats['state'] < 9 ? true : false ;
+            return $c->id_easyletter !== NULL && ( ( EL_VERSION == 'v2' && $c->stats['state'] < 9 ) or ( EL_VERSION == 'v3' && $c->stats['state'] == 'queued' ) ) ? true : false ;
         });
+
 /*
         $this->addIcon( 'icon-reply' , 'resend' , function($c) {
             return $c->stats === NULL ? true : false ;
         });
 */
+
         $this->showEdit(function( $c ) {
             return false ;
         });
 
         $this->showDelete(function( $c ) {
-            return ( $c->stats['state'] == 1 ? false : true ) ;
+            return ( (EL_VERSION == 'v2' &&  $c->stats['state'] == 1) or (EL_VERSION == 'v3' && $c->stats['state'] != 'deleted') ? false : true ) ;
         });
 
         $this->build('subject')
@@ -154,22 +160,19 @@ class NewsletterCampaign extends Builder
                 {
                     switch( $c->stats['state'] )
                     {
-                        case 'programmed' : $class = 'info'; break; // pret
-                        case 1 : $class = 'primary'; break; // en cours
-                        case 9 : $class = 'warning'; break; // Suspendu
+                        case 'queued' : // programmée
+                        case 'pending' : $class = 'info'; break; // pret
+                        case 'doing' : $class = 'primary'; break; // en cours
+                        case 'suspended' : $class = 'warning'; break; // Suspendu
                         case 'sent' : $class = 'success'; break; // envoyée
-                        case 'archived' : $class = 'danger'; break; // annulee
+                        case 'deleted' : $class = 'danger'; break; // annulee
                         default : $class = 'default'; break; // en attente
                     }
 
                     switch( $c->stats['state'] )
                     {
-                        case 'programmed' :
-                        case 9 :
-                        case 'sent' :
-                        case 'archived' : $txt = $c->stats['state_str']; break; // annulee
-                        case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
-                        default : $txt = 'En attente'; break; // en attente
+                        case 'doing' : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
+                        default : $txt = $c->stats['state_str']; break; // en attente
                     }
 
                     return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
