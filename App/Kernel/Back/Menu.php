@@ -46,23 +46,44 @@ class Menu
 
     public function loadEasyletter()
     {
+        if ( NEWSLETTER_ACTIVE )
+        {
+            $firstColumn = [
+                'id'     => 1 ,
+                'group'  => 1 ,
+                'blocks' => [
+                    1 => [
+                        'id'           => 1 ,
+                        'column'       => 1 ,
+                        'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
+                        'modules'      => [] ,
+                        'modules_list' => [ 'NewsletterCampaignGroup' , 'NewsletterGroup' , 'NewsletterSubscriber' , 'NewsletterSender' , 'NewsletterCampaign' , 'NewsletterModel'] ,
+                    ]
+                ]
+            ];
+        }
+        else
+        {
+            $firstColumn = [
+                'id'     => 1 ,
+                'group'  => 1 ,
+                'blocks' => [
+                    1 => [
+                        'id'           => 1 ,
+                        'column'       => 1 ,
+                        'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
+                        'modules'      => [] ,
+                        'modules_list' => [ 'NewsletterSender'] ,
+                    ]
+                ]
+            ];
+        }
+
         $groups    = [];
         $groups[1] = [
             'name'    => Translate::getInstance()->getText( "easyletter" ),
             'columns' => [
-                1 => [
-                    'id'     => 1 ,
-                    'group'  => 1 ,
-                    'blocks' => [
-                        1 => [
-                            'id'           => 1 ,
-                            'column'       => 1 ,
-                            'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
-                            'modules'      => [] ,
-                            'modules_list' => [ 'NewsletterCampaignGroup' , 'NewsletterGroup' , 'NewsletterSubscriber' , 'NewsletterSender' , 'NewsletterCampaign' , 'NewsletterModel'] ,
-                        ]
-                    ]
-                ],
+                1 => $firstColumn,
                 2 => [
                     'id'     => 2 ,
                     'group'  => 1 ,
