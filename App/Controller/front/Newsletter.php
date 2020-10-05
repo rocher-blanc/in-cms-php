@@ -13,7 +13,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
 
     if ( $Newsletter->get('type') == 1 )
     {
-        if ( EL_VERSION == 'v2' )
+        if ( EL_VERSION == 'v3' )
         {
             $r = Container::getInstance()->module('NewsletterSubscriber');
             $lists      = [];
@@ -44,7 +44,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                             $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
 
                             $recipients[ $mail ]['email'] = $mail ;
-                            $recipients[ $mail ]['list'][] = $group ;
+                            $recipients[ $mail ]['lists'][] = $group ;
                         }
                     }
                 }

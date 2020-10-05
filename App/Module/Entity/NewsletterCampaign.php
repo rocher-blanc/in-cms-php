@@ -45,7 +45,7 @@ class NewsletterCampaign extends Builder
         });
 
         $this->showDelete(function( $c ) {
-            return ( (EL_VERSION == 'v2' &&  $c->stats['state'] == 1) or (EL_VERSION == 'v3' && $c->stats['state'] != 'deleted') ? false : true ) ;
+            return ( $c->id_easyletter == '' or (EL_VERSION == 'v2' &&  $c->stats['state'] == 1) or (EL_VERSION == 'v3' && ( $c->stats['state'] != 'deleted' && $c->stats['state'] != 'error' ) ) ? false : true ) ;
         });
 
         $this->build('subject')
@@ -53,6 +53,11 @@ class NewsletterCampaign extends Builder
             ->isVarchar()
             ->notEmpty(Translate::getInstance()->getText('mandatory_subject') )
             ->name(Translate::getInstance()->getText('subject') );
+
+        $this->build('version')
+            ->defaut('v3')
+            ->noFront()
+            ->noBack();
 
         $this->build('date')
             ->column(1, 2)
@@ -165,6 +170,7 @@ class NewsletterCampaign extends Builder
                         case 'doing' : $class = 'primary'; break; // en cours
                         case 'suspended' : $class = 'warning'; break; // Suspendu
                         case 'sent' : $class = 'success'; break; // envoyée
+                        case 'error' :
                         case 'deleted' : $class = 'danger'; break; // annulee
                         default : $class = 'default'; break; // en attente
                     }

@@ -14,12 +14,16 @@ class NewsletterCampaign extends Controller
         $tab = [];
         foreach( $content as $row )
         {
-            $tab[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+            if ( ! empty( $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ) )
+            {
+                $tab[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+            }
         }
 
         sort( $tab , SORT_NUMERIC );
 
         $el = new Easyletter();
+
         $this->resultStats = $el->stats( $tab );
 
         return $content ;

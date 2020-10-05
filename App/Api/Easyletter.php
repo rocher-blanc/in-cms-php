@@ -12,7 +12,10 @@ use App\Kernel\Container;
 
 class Easyletter
 {
-    private $urlApi = 'https://api.easyletter.fr/' ;
+    /**
+     * @var string 
+     */
+    private $urlApi ;
     private $token = NULL ;
     private $client ;
     private $obj ;
@@ -20,6 +23,15 @@ class Easyletter
 
     public function __construct()
     {
+        if ( EL_VERSION == 'v2' )
+        {
+            $this->urlApi = 'https://api.easyletter.fr/v1/' ;
+        }
+        else
+        {
+            $this->urlApi = 'https://api.v3.easyletter.fr/v2/' ;
+        }
+
         if( defined('EL_TOKEN') )
         {
             $this->token = EL_TOKEN;
@@ -314,7 +326,7 @@ class Easyletter
 
     private function request( array $data )
     {
-        $response = $this->response( $this->client->post('/v1/campaign', [
+        $response = $this->response( $this->client->post('campaign', [
             'body' => json_encode( $data )
         ]) ) ;
 
@@ -324,12 +336,12 @@ class Easyletter
 
     public function delete( int $id )
     {
-        return $this->response( $this->client->delete('/v1/campaign/' . $id ) ) ;
+        return $this->response( $this->client->delete('campaign/' . $id ) ) ;
     }
 
     public function cancel( int $id )
     {
-        return $this->response( $this->client->put('/v1/campaign/' . $id . '/cancel') ) ;
+        return $this->response( $this->client->put('campaign/' . $id . '/cancel') ) ;
     }
 
     public function stats( $id )
@@ -337,7 +349,7 @@ class Easyletter
         if ( is_array( $id ) )
         {
             try {
-                return $this->response( $this->client->get('v1/campaign/statsLight', [
+                return $this->response( $this->client->get('campaign/statsLight', [
                     'body' => json_encode([
                         'id' => $id
                     ])
@@ -349,7 +361,7 @@ class Easyletter
         }
         else
         {
-            return $this->response( $this->client->get('v1/campaign/stats/' . $id ) ) ;
+            return $this->response( $this->client->get('campaign/stats/' . $id ) ) ;
         }
     }
 
@@ -358,7 +370,7 @@ class Easyletter
         if ( ! empty( $id ) )
         {
             try {
-                $response = $this->client->get('v1/campaign/export/' . $format . '/' . $id) ;
+                $response = $this->client->get('campaign/export/' . $format . '/' . $id) ;
 
                 if ( $response->getStatusCode() == 200 )
                 {
@@ -386,6 +398,9 @@ class Easyletter
 
     public function response( $response )
     {
+//        dump( $response->getStatusCode() );
+//        echo $response->getBody()->getContents();
+//        die;
         if ( $response->getStatusCode() == 200 )
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
@@ -397,6 +412,8 @@ class Easyletter
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
             $this->setError( $body['response']['error'] );
+
+
 
             return false ;
         }
