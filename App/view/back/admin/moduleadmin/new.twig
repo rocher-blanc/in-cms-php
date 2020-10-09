@@ -4,82 +4,110 @@
 {% set this_page = _('moduleadmin_new') %}
 
 {% block module %}
-    <div id="app">
-        <div class="card mb-3" v-for="(field, index) in fields">
-            <div class="card-header">
-                <h5 class="float-left">Champ #{{ field.position }}</h5>
-                <div class="float-right">
-                    <button class="btn btn-secondary" v-if="index != 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
-                    <button class="btn btn-secondary" v-if="index != fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Nom du champ</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="field.name">
+
+    {# TODO Champ obligatoire -> checkbox #}
+    {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
+    {# TODO params global du module #}
+
+    {% verbatim %}
+        <div id="app">
+
+            <div class="card mb-3" v-for="(field, index) in fields" style="margin-bottom: 30px">
+
+                <div class="card-header">
+                    <h5 class="float-left">Champ #{{ field.position }}</h5>
+                    <div class="float-right">
+                        <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Type de champ</label>
-                    <div class="col-sm-10">
-                        <select name="type" v-model="field.type" class="form-control">
-                            <option value="input">Champ texte</option>
-                            <option value="select">Champ select</option>
-                            <option value="textarea">Champ textarea</option>
-                            <option value="gallery">Galerie</option>
-                            <option value="document">Document</option>
-                        </select>
+
+                <div class="card-body">
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Nom du champ</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="field.name">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Type de champ</label>
+                        <div class="col-sm-10">
+                            <select name="type" v-model="field.type" class="form-control">
+                                <option value="input">Texte</option>
+                                <option value="select">Select</option>
+                                <option value="textarea">Textarea</option>
+                                <option value="gallery">Galerie</option>
+                                <option value="document">Documents</option>
+                                <option value="video">Video</option>
+                                <option value="link">Lien</option>
+                                <option value="image">Image</option>
+                                <option value="radio">Radio</option>
+                                <option value="checkbox">Checkbox</option>
+                                <option value="integer">Chiffre entier</option>
+                                <option value="float">Chiffre avec décimale</option>
+                                <option value="icon">Icone</option>
+                                <option value="password">Mot de passe</option>
+                                <option value="date">Date</option>
+                                <option value="hour">Heure</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Champ obligatoire</label>
+                        <div class="col-sm-10">
+                            <select name="type" v-model="field.empty" class="form-control">
+                                <option value="yes">Oui</option>
+                                <option value="no">Non</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="field.type === 'select'">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <select name="type" v-model="field.empty" class="form-control">
+                                <option value="yes">Oui</option>
+                                <option value="no">Non</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="field.empty === 'yes'">
+                        <label class="col-sm-2 col-form-label">Message si vide</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="field.emptyMessage">
+                        </div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Champ obligatoire</label>
-                    <div class="col-sm-10">
-                        <select name="type" v-model="field.empty" class="form-control">
-                            <option value="yes">Oui</option>
-                            <option value="no">Non</option>
-                        </select>
+
+                <div class="form-group row" v-if="field.type === 'textarea'">
+                    <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
                     </div>
-                </div>
-                <div class="form-group row" v-if="field.type == 'select'>
-                            <label class="col-sm-2 col-form-label"></label>
-                <div class="col-sm-10">
-                    <select name="type" v-model="field.empty" class="form-control">
-                        <option value="yes">Oui</option>
-                        <option value="no">Non</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="field.empty == 'yes'">
-                <label class="col-sm-2 col-form-label">Message si vide</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" v-model="field.emptyMessage">
                 </div>
             </div>
 
-            <div class="form-group row" v-if="field.type == 'textarea'">
-                <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
-                <div class="col-sm-8">
-                    <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
+            <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+
+            <div class="card" v-if="fields.length" style="margin-top: 30px">
+                <div class="card-body">
+                    <div v-for="field in fields">
+                        <pre>
+                            $this->build('{{ camelCase(field.name) }}')
+                            <span v-if="field.type === 'input'">->isVarchar()</span><span v-if="field.type === 'select'">->isSelect()</span><span v-if="field.type === 'textarea'">->isText()</span><span v-if="field.type === 'gallery'">->isGallery()</span><span v-if="field.type === 'document'">->isDocument()</span>
+                            <span v-if="field.empty === 'yes'">->notEmpty("{{ field.emptyMessage }}")</span>
+                            <span v-if="field.editor === 1">->editor()</span>
+                        </pre>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+    {% endverbatim %}
 
-    <div class="card mt-3">
-        <div class="card-body">
-            <div v-for="field in fields">
-                <pre>
-                $this->build('{{ field.name }}')
-                    <span v-if="field.type == 'input'">->isVarchar()</span><span v-if="field.type == 'select'">->isSelect()</span><span v-if="field.type == 'textarea'">->isText()</span><span v-if="field.type == 'gallery'">->isGallery()</span><span v-if="field.type == 'document'">->isDocument()</span>
-                    <span v-if="field.empty == 'yes'">->notEmpty("{{ field.emptyMessage }}")</span>
-                    <span v-if="field.editor == 1">->editor()</span>
-                </pre>
-            </div>
-        </div>
-    </div>
-    </div>
 {% endblock %}
 
 {% block javascripts_end %}
@@ -93,14 +121,67 @@
                 fields: []
             },
             methods: {
+
+                camelCase: function(str) {
+                    str = replaceAccents(str);
+                    str = removeNonWord(str)
+                        .replace(/\-/g, " ") //convert all hyphens to spaces
+                        .replace(/\s[a-z]/g, upperCase) //convert first char of each word to UPPERCASE
+                        .replace(/\s+/g, "") //remove spaces
+                        .replace(/^[A-Z]/g, lowerCase); //convert first char to lowercase
+                    return str;
+
+                    function upperCase(str) {
+                        return str.toUpperCase();
+                    }
+
+                    function lowerCase(str) {
+                        return str.toLowerCase();
+                    }
+
+                    function removeNonWord(str) {
+                        return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
+                    }
+
+                    function replaceAccents(str) {
+                        // verifies if the String has accents and replace them
+                        if (str.search(/[\xC0-\xFF]/g) > -1) {
+                            str = str
+                            .replace(/[\xC0-\xC5]/g, "A")
+                            .replace(/[\xC6]/g, "AE")
+                            .replace(/[\xC7]/g, "C")
+                            .replace(/[\xC8-\xCB]/g, "E")
+                            .replace(/[\xCC-\xCF]/g, "I")
+                            .replace(/[\xD0]/g, "D")
+                            .replace(/[\xD1]/g, "N")
+                            .replace(/[\xD2-\xD6\xD8]/g, "O")
+                            .replace(/[\xD9-\xDC]/g, "U")
+                            .replace(/[\xDD]/g, "Y")
+                            .replace(/[\xDE]/g, "P")
+                            .replace(/[\xE0-\xE5]/g, "a")
+                            .replace(/[\xE6]/g, "ae")
+                            .replace(/[\xE7]/g, "c")
+                            .replace(/[\xE8-\xEB]/g, "e")
+                            .replace(/[\xEC-\xEF]/g, "i")
+                            .replace(/[\xF1]/g, "n")
+                            .replace(/[\xF2-\xF6\xF8]/g, "o")
+                            .replace(/[\xF9-\xFC]/g, "u")
+                            .replace(/[\xFE]/g, "p")
+                            .replace(/[\xFD\xFF]/g, "y");
+                        }
+                        return str;
+                    }
+                },
+
                 addField: function () {
                     this.fields.push({
                         name: 'test #' + this.fields.length,
                         position: (this.fields.length + 1)
                     });
                 },
+
                 up: function (index) {
-                    if (index != 0) {
+                    if (index !== 0) {
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
                             if (i === index - 1) {
                                 return this.fields[index];
@@ -112,8 +193,9 @@
                         })
                     }
                 },
+
                 down: function (index) {
-                    if (index != this.fields.length-1) { // if its the last in the array
+                    if (index !== this.fields.length-1) { // if its the last in the array
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
                             if (i === index) {
                                 return this.fields[index + 1];
