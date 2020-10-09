@@ -8,76 +8,74 @@
     {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
 
-    {% verbatim %}
-        <div id="app">
+    <div id="app">
 
-            <div class="card mb-3" v-for="(field, index) in fields" style="margin-bottom: 30px">
+        <div class="card mb-3" v-for="(field, index) in fields" style="margin-bottom: 30px">
 
-                <div class="card-header">
-                    <h5 class="float-left">Champ #{{ field.position }}</h5>
-                    <div class="float-right">
-                        <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
-                        <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
+            <div class="card-header">
+                <h5 class="float-left">Champ #<-- field.position --></h5>
+                <div class="float-right">
+                    <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
+                    <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Nom du champ</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="newField.name">
                     </div>
                 </div>
 
-                <div class="card-body">
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Nom du champ</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="newField.name">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Champ obligatoire</label>
-                        <div class="col-sm-10">
-                            <input type="checkbox" v-model="newField.empty">
-                        </div>
-                    </div>
-
-                    <div class="form-group row" v-if="newField.empty">
-                        <label class="col-sm-2 col-form-label">Message si vide</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="newField.emptyMessage">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Type de champ</label>
-                        <div class="col-sm-10">
-                            <select name="type" v-model="newField.type" class="form-control">
-                                <option v-for="fieldType in fieldTypes" :value="fieldType.value">{{ fieldType.text }}</option>
-                            </select>
-                        </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Champ obligatoire</label>
+                    <div class="col-sm-10">
+                        <input type="checkbox" v-model="newField.empty">
                     </div>
                 </div>
 
-                <div class="form-group row" v-if="newField.type === 'textarea'">
-                    <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
-                    <div class="col-sm-8">
-                        <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
+                <div class="form-group row" v-if="newField.empty">
+                    <label class="col-sm-2 col-form-label">Message si vide</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="newField.emptyMessage">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Type de champ</label>
+                    <div class="col-sm-10">
+                        <select name="type" v-model="newField.type" class="form-control">
+                            <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
-
-            <div class="card" v-if="fields.length" style="margin-top: 30px">
-                <div class="card-body">
-                    <pre>
-                        <div v-for="line in generatedLines">
-                            {{ line }}
-                        </div>
-                    </pre>
-                    <div v-for="field in fields">
-                        {{ field }}
-                    </div>
+            <div class="form-group row" v-if="newField.type === 'textarea'">
+                <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
+                <div class="col-sm-8">
+                    <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
                 </div>
             </div>
         </div>
-    {% endverbatim %}
+
+        <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+
+        <div class="card" v-if="fields.length" style="margin-top: 30px">
+            <div class="card-body">
+                <pre>
+                    <div v-for="line in generatedLines">
+                        <-- line -->
+                    </div>
+                </pre>
+                <div v-for="field in fields">
+                    <-- field -->
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -89,6 +87,7 @@
         var app = new Vue({
 
             el: '#app',
+            delimiters: ["<--","-->"],
 
             data: {
 
