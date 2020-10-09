@@ -7,6 +7,8 @@
 
     {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
+    {# TODO validation champ #}
+    {# TODO ajout champ dans tableau #}
 
     <div id="app">
 
@@ -212,7 +214,8 @@
                     const index = this.fields.length + 1
                     this.fields.push({
                         name: 'champ' + index,
-                        position: index
+                        position: index,
+                        pre: this.newField
                     });
                 },
 
