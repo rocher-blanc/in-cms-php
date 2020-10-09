@@ -26,50 +26,35 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Nom du champ</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="field.name">
+                            <input type="text" class="form-control" v-model="newField.name">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Champ obligatoire</label>
                         <div class="col-sm-10">
-                            <input type="checkbox" v-model="field.empty">
+                            <input type="checkbox" v-model="newField.empty">
                         </div>
                     </div>
 
-                    <div class="form-group row" v-if="field.empty">
+                    <div class="form-group row" v-if="newField.empty">
                         <label class="col-sm-2 col-form-label">Message si vide</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="field.emptyMessage">
+                            <input type="text" class="form-control" v-model="newField.emptyMessage">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Type de champ</label>
                         <div class="col-sm-10">
-                            <select name="type" v-model="field.type" class="form-control">
-                                <option value="input">Texte</option>
-                                <option value="select">Select</option>
-                                <option value="textarea">Textarea</option>
-                                <option value="gallery">Galerie</option>
-                                <option value="document">Documents</option>
-                                <option value="video">Video</option>
-                                <option value="link">Lien</option>
-                                <option value="image">Image</option>
-                                <option value="radio">Radio</option>
-                                <option value="checkbox">Checkbox</option>
-                                <option value="integer">Chiffre entier</option>
-                                <option value="float">Chiffre avec décimale</option>
-                                <option value="icon">Icone</option>
-                                <option value="password">Mot de passe</option>
-                                <option value="date">Date</option>
-                                <option value="hour">Heure</option>
+                            <select name="type" v-model="newField.type" class="form-control">
+                                <option v-for="fieldType in fieldTypes" :value="fieldType.value">{{ fieldType.text }}</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group row" v-if="field.type === 'textarea'">
+                <div class="form-group row" v-if="newField.type === 'textarea'">
                     <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
                     <div class="col-sm-8">
                         <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
@@ -81,13 +66,13 @@
 
             <div class="card" v-if="fields.length" style="margin-top: 30px">
                 <div class="card-body">
+                    <pre>
+                        <div v-for="line in generatedLines">
+                            {{ line }}
+                        </div>
+                    </pre>
                     <div v-for="field in fields">
-                        <pre>
-                            $this->build('{{ camelCase(field.name) }}')
-                            <span v-if="field.type === 'input'">->isVarchar()</span><span v-if="field.type === 'select'">->isSelect()</span><span v-if="field.type === 'textarea'">->isText()</span><span v-if="field.type === 'gallery'">->isGallery()</span><span v-if="field.type === 'document'">->isDocument()</span>
-                            <span v-if="field.empty">->notEmpty("{{ field.emptyMessage }}")</span>
-                            <span v-if="field.editor === 1">->editor()</span>
-                        </pre>
+                        {{ field }}
                     </div>
                 </div>
             </div>
@@ -102,10 +87,75 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
     <script>
         var app = new Vue({
+
             el: '#app',
+
             data: {
+
+                fieldTypes: [
+                  { value: 'input', text: 'Texte' },
+                  { value: 'select', text: 'Select' },
+                  { value: 'textarea', text: 'Textarea' },
+                  { value: 'gallery', text: 'Galerie' },
+                  { value: 'document', text: 'Documents' },
+                  { value: 'video', text: 'Video' },
+                  { value: 'link', text: 'Lien' },
+                  { value: 'image', text: 'Image' },
+                  { value: 'radio', text: 'Radio' },
+                  { value: 'checkbox', text: 'Checkbox' },
+                  { value: 'integer', text: 'Chiffre entier' },
+                  { value: 'float', text: 'Chiffre avec décimale' },
+                  { value: 'icon', text: 'Icone' },
+                  { value: 'password', text: 'Mot de passe' },
+                  { value: 'date', text: 'Date' },
+                  { value: 'hour', text: 'Heure' }
+                ],
+
+                newField: {
+                  name: '',
+                  type: '',
+                  empty: false,
+                  emptyMessage: ''
+                },
+
                 fields: []
             },
+
+            computed: {
+              generatedLines() {
+
+                let arr = [];
+
+                let name = ''
+                name = this.camelCase(this.newField.name);
+                name = '$this->build(\'' + name + '\')';
+                arr.push(name);
+
+                if (this.newField.empty) {
+                    let emptyMessage = '';
+                    emptyMessage = this.newField.emptyMessage;
+                    emptyMessage = '->notEmpty("' + emptyMessage + '")';
+                    arr.push(emptyMessage);
+                }
+
+                let type = '';
+                if (this.newField.type === 'input') {
+                    type = '->isVarchar()';
+                } else if (this.newField.type === 'select') {
+                    type = '->isSelect()';
+                } else if (this.newField.type === 'textarea') {
+                    type = '->isText()';
+                } else if (this.newField.type === 'gallery') {
+                    type = '->isGallery()';
+                } else if (this.newField.type === 'documents') {
+                    type = '->isDocument()';
+                }
+                arr.push(type);
+
+                return arr;
+              }
+            },
+
             methods: {
 
                 camelCase: function(str) {
