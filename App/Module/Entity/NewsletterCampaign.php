@@ -27,11 +27,11 @@ class NewsletterCampaign extends Builder
         }
 
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
-            return $c->id_easyletter !== NULL && ( ( EL_VERSION == 'v2' && $c->stats['state'] == 10 ) or ( EL_VERSION == 'v3' && $c->stats['state'] == 'sent' ) ) ? true : false ;
+            return $c->id_easyletter !== NULL && ( ( $c->version == 'v2' && $c->stats['state'] == 10 ) or ( $c->version == 'v3' && $c->stats['state'] == 'sent' ) ) ? true : false ;
         });
 
         $this->addIcon( 'icon-line-square-cross' , 'cancel' , function($c) {
-            return $c->id_easyletter !== NULL && ( ( EL_VERSION == 'v2' && $c->stats['state'] < 9 ) or ( EL_VERSION == 'v3' && $c->stats['state'] == 'queued' ) ) ? true : false ;
+            return $c->id_easyletter !== NULL && ( ( $c->version == 'v2' && $c->stats['state'] < 9 ) or ( $c->version == 'v3' && $c->stats['state'] == 'queued' ) ) ? true : false ;
         });
 
 /*
@@ -45,7 +45,7 @@ class NewsletterCampaign extends Builder
         });
 
         $this->showDelete(function( $c ) {
-            return ( $c->id_easyletter == '' or (EL_VERSION == 'v2' &&  $c->stats['state'] == 1) or (EL_VERSION == 'v3' && ( $c->stats['state'] != 'deleted' && $c->stats['state'] != 'error' ) ) ? false : true ) ;
+            return ( $c->id_easyletter == '' or ($c->version == 'v2' &&  $c->stats['state'] == 1) or ($c->version == 'v3' && ( $c->stats['state'] != 'deleted' && $c->stats['state'] != 'error' ) ) ? false : true ) ;
         });
 
         $this->build('subject')
@@ -56,6 +56,7 @@ class NewsletterCampaign extends Builder
 
         $this->build('version')
             ->defaut('v3')
+            ->isVarchar(2)
             ->noFront()
             ->noBack();
 
@@ -122,7 +123,7 @@ class NewsletterCampaign extends Builder
                 }
             })
             ->updateValue(function($c) {
-                if ( EL_VERSION == 'v2' )
+                if ( $c->version == 'v2' )
                 {
                     if ( is_array( $c->stats ) )
                     {

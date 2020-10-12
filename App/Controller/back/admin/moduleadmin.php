@@ -48,7 +48,7 @@ $app->group('/moduleadmin', function () use ($app)
             }
 
             $app->render('admin/moduleadmin/new.twig', [
-                "depedentcy" => $dep,
+                "depedency" => $dep,
                 "module" => $tab
             ]);
         });

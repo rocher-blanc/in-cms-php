@@ -191,8 +191,10 @@ class Easyletter
                         'content' => Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id') . "/" . $AutomationHistory->get('id'),
                     ]);
 
+
                     if ( $response !== false )
                     {
+                        $AutomationHistory->set('version' , EL_VERSION );
                         $AutomationHistory->set('id_easyletter' , $response );
                         $AutomationHistory->save();
                     }
@@ -313,7 +315,7 @@ class Easyletter
         if ( $response !== false )
         {
             $NL->set('id_easyletter' , $response );
-            //$NL->set('statut' , 2 );
+            $NL->set('version' , EL_VERSION );
             $NL->save();
 
             return true ;
@@ -398,9 +400,6 @@ class Easyletter
 
     public function response( $response )
     {
-//        dump( $response->getStatusCode() );
-//        echo $response->getBody()->getContents();
-//        die;
         if ( $response->getStatusCode() == 200 )
         {
             $body = json_decode( $response->getBody()->getContents() , true ) ;
