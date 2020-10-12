@@ -104,62 +104,26 @@ class NewsletterCampaign extends Controller
         {
             $rec = new Data('NewsletterGroup');
             $recrst = $rec->find( $recpt );
-            if ( $recrst ) $grps[] = $rec->get('name');
+            if ( $recrst ) $grps[ $recpt ] = $rec->get('name');
         }
 
         $el = new Easyletter();
         $tabStats = $el->stats( $data->get('id_easyletter') );
 
+        $this->setRender('statistics' , $tabStats );
         $this->setRender('id' , $data->get('id') );
         $this->setRender('rst' , [
             'subject' => $data->get('subject'),
             'destinataires' => $grps
         ] );
-        $links = $tabStats['links']['records'];
-        for( $j = 0; $j <= count($links); $j++ )
-        {
-            $tabLinks[] = [
-                "clicCount" => $links[$j][2],
-                "link" => $links[$j][1],
-                "recipientsClic" => $links[$j][3]
-            ];
-        }
-        $state = $tabStats['routage']['records'][0][1];
-        $this->setRender('res' , [
-            'ToSend' => $tabStats['routage']['records'][0][2],
-            "Sent" => $tabStats['routage']['records'][0][3],
-            "HardBounces" => $tabStats['routage']['records'][0][8],
-            "RecipientsRead" => $tabStats['routage']['records'][0][4],
-            "RecipientsClic" => $tabStats['routage']['records'][0][5],
-            "SoftBounces" => $tabStats['routage']['records'][0][7],
-            "Unsubscribe" => $tabStats['routage']['records'][0][6],
-            "State" => $tabStats['routage']['records'][0][1],
-            "StateStr" => $tabStats['state_routage'][$state],
-        ] );
 
-        $records = $tabStats['destStats']['records'];
-        for( $i = 0; $i < count($records); $i++ )
+        $file = 'stats.twig' ;
+        if ( $data->get('version') == 'v3' )
         {
-            $tabDests[] = [
-                "recipientId" => $records[$i][0],
-                "email" => $records[$i][1],
-                "MobilePhone" => $records[$i][2],
-                "state" => $records[$i][3],
-                "read" => $records[$i][4],
-                "readDateUTC" => $records[$i][5],
-                "unsubscribe" => $records[$i][6],
-                "unsubscribeDateUTC" => $records[$i][7],
-                "vacation" => $records[$i][8],
-                "clicCount" => $records[$i][9],
-                "linkClicCount" => $records[$i][10]
-            ];
+            $file = 'stats_v3.twig' ;
         }
 
-        $this->setRender('dests' , $tabDests );
-        $this->setRender('status' , $tabStats['state_mailing']);
-        $this->setRender('links' , $tabLinks );
-
-        $this->render('stats.twig');
+        $this->render($file);
     }
 
     protected function cancelAction()

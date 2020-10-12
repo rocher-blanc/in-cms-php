@@ -15,32 +15,36 @@ $app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $rec
     $Automation = new Data('EdAutomation');
     $rst = $Automation->find( $id );
 
-    $html = $Automation->get('html');
-
-    if ( $recipientId !== NULL )
+    if ( $rst )
     {
-        $History = new Data('EdAutomationHistory');
-        $rstH = $History->find( $recipientId );
+        $html = $Automation->get('html');
 
-        if ( $rstH )
+        if ( $recipientId !== NULL )
         {
-            if ( ! empty( $History->get('information') ) )
-            {
-                $json = json_decode( $History->get('information') , true );
+            $History = new Data('EdAutomationHistory');
+            $rstH = $History->find( $recipientId );
 
-                foreach( $json[ $History->get('email') ] as $key => $value )
+            if ( $rstH )
+            {
+                if ( ! empty( $History->get('information') ) )
                 {
-                    $html = str_replace( '[' . $key . ']' , $value , $html ) ;
-                }
+                    $json = json_decode( $History->get('information') , true );
+
+                    foreach( $json[ $History->get('email') ] as $key => $value )
+                    {
+                        $html = str_replace( '[' . $key . ']' , $value , $html ) ;
+                    }
 
 //                $tab = [] ;
 //                $tab[ $History->get('email') ] = [ 'Email' => $History->get('email') ] ;
 //
 //                $History->set('information' , json_encode( $tab ) );
 //                $History->save();
+                }
             }
         }
     }
+
 
     if ( $rst ) echo $html;
 })->name('email_automation_template');
