@@ -1,0 +1,298 @@
+{% extends 'module.twig.html' %}
+{% set this_page =  _('gestion') %}
+
+{% block module %}
+
+    {% include 'module/header.twig' %}
+
+    <h4 class="ed-h4">
+        <i class="icon-eye-open"></i>
+        {{ rst.subject }}
+    </h4>
+    <h4 class="ed-h4">
+        <i class="icon-users"></i>
+        {% for dest in rst.destinataires %}{% if not loop.first %}, {% endif %}{{ dest }}{% endfor %}
+    </h4>
+
+    {% if statistics.state == 'sent' %}
+
+        <div class="dark bottommargin-lg">
+            <div class="text-center">
+                <div class="counter counter-large color">
+                    <span data-from="0" data-to="{{ statistics.sent }}" data-refresh-interval="5" data-speed="500">0</span>
+                    /
+                    {{ statistics.to_send }}
+                </div>
+                {% if statistics.sent > 1 %}
+                    <h3>{{ _('email-sent-plur') }}</h3>
+                {% else %}
+                    <h3>{{ _('email-sent-sing') }}</h3>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>{{ _('state')}}</span></h3>
+        </div>
+        <h4 class="text-center"><span style="color:{% if statistics.state == 'sent' %}#3c763d{% else %}#31708f{% endif %};">{{ statistics.state_str }}</span></h4>
+
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>{{ _('stats_generales') }}</span></h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _('informations')}}</th>
+                        <th class="center">{{ _('valeur')}}</th>
+                        <th class="center">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ _('email_delivered_rate')}}</td>
+                        {% set ndelivres = statistics.statistics.globalStats.delivered %}
+                        <td class="center">{{ ndelivres }}</td>
+                        <td class="center">{{ ndelivres / statistics.sent * 100 | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('email_opened_rate')}}</td>
+                        {% set uniqueViews = statistics.statistics.globalStats.uniqueViews %}
+                        {% set percentUniqueViews = statistics.sent > 0 ? uniqueViews / statistics.sent * 100 : 0 %}
+                        <td class="center">{{ uniqueViews }}</td>
+                        <td class="center">{{ percentUniqueViews | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('nbr_clic')}}</td>
+                        <td class="center">{{ statistics.statistics.globalStats.clickers }}</td>
+                        <td class="center">-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('nbr_clic_rate')}}</td>
+                        {% set uniqueClicks = statistics.statistics.globalStats.uniqueClicks %}
+                        {% set percentUniqueClicks = statistics.sent > 0 ? uniqueClicks / statistics.sent * 100 : 0 %}
+                        <td class="center">{{ percentUniqueClicks }}</td>
+                        <td class="center">{{ percentUniqueClicks | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('taux_reactivite')}}</td>
+                        {% set percent = res.RecipientsRead != 0 ? uniqueClicks / uniqueViews * 100 : 0 %}
+                        <td class="center">-</td>
+                        <td class="center">{{ percent | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('email_softbounce')}}</td>
+                        {% set softBounces = statistics.statistics.globalStats.softBounces %}
+                        {% set percentSoftBounces = statistics.sent > 0 ? softBounces / statistics.sent * 100 : 0 %}
+                        <td class="center">{{ softBounces }}</td>
+                        <td class="center">{{ percentSoftBounces | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('email_hardbounce')}}</td>
+                        {% set hardBounces = statistics.statistics.globalStats.hardBounces %}
+                        {% set percentHardBounces = statistics.sent > 0 ? hardBounces / statistics.sent * 100 : 0 %}
+                        <td class="center">{{ hardBounces }}</td>
+                        <td class="center">{{ percentHardBounces | number_format(2, ',') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('unsubscribe_nbr')}}</td>
+                        {% set unsubscriptions = statistics.statistics.globalStats.unsubscriptions %}
+                        {% set percentUnsubscriptions = statistics.sent > 0 ? unsubscriptions / statistics.sent * 100 : 0 %}
+                        <td class="center">{{ unsubscriptions }}</td>
+                        <td class="center">{{ percentUnsubscriptions | number_format(2, ',') }} %</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        {% for campaignStats in statistics.statistics.campaignStats %}
+
+            <div class="fancy-title title-dotted-border title-center">
+                <h3><span>{{ _('stats_groupe') }}: {{ rst.destinataires[campaignStats.listId] }}</span></h3>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ _('informations')}}</th>
+                            <th class="center">{{ _('valeur')}}</th>
+                            <th class="center">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ _('email_delivered_rate')}}</td>
+                            {% set ndelivres = campaignStats.delivered %}
+                            <td class="center">{{ ndelivres }}</td>
+                            <td class="center">{{ ndelivres / statistics.sent * 100 | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('email_opened_rate')}}</td>
+                            {% set uniqueViews = campaignStats.uniqueViews %}
+                            {% set percentUniqueViews = statistics.sent > 0 ? uniqueViews / statistics.sent * 100 : 0 %}
+                            <td class="center">{{ uniqueViews }}</td>
+                            <td class="center">{{ percentUniqueViews | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('nbr_clic')}}</td>
+                            <td class="center">{{ campaignStats.clickers }}</td>
+                            <td class="center">-</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('nbr_clic_rate')}}</td>
+                            {% set uniqueClicks = campaignStats.uniqueClicks %}
+                            {% set percentUniqueClicks = statistics.sent > 0 ? uniqueClicks / statistics.sent * 100 : 0 %}
+                            <td class="center">{{ percentUniqueClicks }}</td>
+                            <td class="center">{{ percentUniqueClicks | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('taux_reactivite')}}</td>
+                            {% set percent = res.RecipientsRead != 0 ? uniqueClicks / uniqueViews * 100 : 0 %}
+                            <td class="center">-</td>
+                            <td class="center">{{ percent | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('email_softbounce')}}</td>
+                            {% set softBounces = campaignStats.softBounces %}
+                            {% set percentSoftBounces = statistics.sent > 0 ? softBounces / statistics.sent * 100 : 0 %}
+                            <td class="center">{{ softBounces }}</td>
+                            <td class="center">{{ percentSoftBounces | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('email_hardbounce')}}</td>
+                            {% set hardBounces = campaignStats.hardBounces %}
+                            {% set percentHardBounces = statistics.sent > 0 ? hardBounces / statistics.sent * 100 : 0 %}
+                            <td class="center">{{ hardBounces }}</td>
+                            <td class="center">{{ percentHardBounces | number_format(2, ',') }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ _('unsubscribe_nbr')}}</td>
+                            {% set unsubscriptions = campaignStats.unsubscriptions %}
+                            {% set percentUnsubscriptions = statistics.sent > 0 ? unsubscriptions / statistics.sent * 100 : 0 %}
+                            <td class="center">{{ unsubscriptions }}</td>
+                            <td class="center">{{ percentUnsubscriptions | number_format(2, ',') }} %</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>{{ _('link_plur')}}</span></h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>{{ _('url')}}</th>
+                    <th class="center">{{ _('total_clic')}}</th>
+                    <th class="center">{{ _('net_clic')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for url, clickCount in statistics.statistics.linksStats %}
+                <tr>
+                    <td>{{ url }}</td>
+                    {# TODO : total / net ? #}
+                    <td class="center">{{ clickCount }}</td>
+                    <td class="center">{{ clickCount }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# TODO : Statuts et liste replace new stats #}
+    {{ dump(statistics) }}
+
+    {% set tabStatus = [] %}
+
+    {% for item in dests %}
+
+        {% set state = item.state %}
+        {% set label = attribute(status, item.state) %}
+
+        {% if label in tabStatus|keys %}
+
+            {% set count = attribute(tabStatus, label) %}
+            {% set count = count + 1 %}
+            {% set tabStatus = tabStatus|merge({(label): count}) %}
+
+        {% else %}
+
+            {% set count = 1 %}
+            {% set tabStatus = tabStatus|merge({(label): count}) %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>{{ _('statut_reception')}}</span></h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ _('status')}}</th>
+                <th class="center">{{ _('nbr_email')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key,item in tabStatus %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td class="center">{{ item }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>{{ _('liste_envoi')}}</span></h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table id="ed-table-gestion" class="table table-striped table-hover table-condensed dataTableSimple">
+            <thead class="thead-inverse">
+            <tr>
+                <th>{{ _('email')}}</th>
+                <th>{{ _('status')}}</th>
+                <th class="center">{{ _('opened')}} (UTC)</th>
+                <th>{{ _('absence_msg')}}</th>
+                <th class="center">{{ _('total_clic_nbr')}}</th>
+                <th class="center">{{ _('nbr_clic_unique')}}</th>
+            </tr>
+            </thead>
+            <tbody data-order="0" data-sens="asc">
+            {% for item in dests %}
+                <tr>
+                    <td>{{ item.email }}</td>
+                    <td>{{ attribute(status, item.state) }}</td>
+
+                    {% if item.read == 1 %}
+                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} {{ _('to')}} {{ item.readDateUTC|date("H:i") }}</td>
+                    {% else %}
+                        <td class="center"><i class="icon-line-circle-cross danger"></i></td>
+                    {% endif %}
+                    {% if item.vacation %}
+                        <td>{{ item.vacation }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    <td class="center">{{ item.clicCount }}</td>
+                    <td class="center">{{ item.linkClicCount }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}
