@@ -189,15 +189,12 @@
                 <tr>
                     <th>{{ _('url')}}</th>
                     <th class="center">{{ _('total_clic')}}</th>
-                    <th class="center">{{ _('net_clic')}}</th>
                 </tr>
             </thead>
             <tbody>
             {% for url, clickCount in statistics.statistics.linksStats %}
                 <tr>
                     <td>{{ url }}</td>
-                    {# TODO : total / net ? #}
-                    <td class="center">{{ clickCount }}</td>
                     <td class="center">{{ clickCount }}</td>
                 </tr>
             {% endfor %}
