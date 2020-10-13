@@ -32,7 +32,7 @@ class NewsletterCampaign extends Builder
 
         $this->addIcon( 'icon-line-square-cross' , 'cancel' , function($c) {
             return $c->id_easyletter !== NULL && ( ( $c->version == 'v2' && $c->stats['state'] < 9 ) or ( $c->version == 'v3' && $c->stats['state'] == 'queued' ) ) ? true : false ;
-        });
+        } , 'ajax');
 
 /*
         $this->addIcon( 'icon-reply' , 'resend' , function($c) {
@@ -45,7 +45,7 @@ class NewsletterCampaign extends Builder
         });
 
         $this->showDelete(function( $c ) {
-            return ( $c->id_easyletter == '' or ($c->version == 'v2' &&  $c->stats['state'] == 1) or ($c->version == 'v3' && ( $c->stats['state'] != 'deleted' && $c->stats['state'] != 'error' ) ) ? false : true ) ;
+            return ( $c->id_easyletter == '' or ($c->version == 'v2' &&  $c->stats['state'] == 1) or ($c->version == 'v3' && ( $c->stats['state'] != 'suspended' && $c->stats['state'] != 'deleted' && $c->stats['state'] != 'error' ) ) ? false : true ) ;
         });
 
         $this->build('subject')

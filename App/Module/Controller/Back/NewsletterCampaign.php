@@ -251,6 +251,5 @@ class NewsletterCampaign extends Controller
         {
             die('error');
         }
-
     }
 }
