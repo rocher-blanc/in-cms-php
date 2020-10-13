@@ -5,6 +5,9 @@
 
 {% block module %}
 
+    {{ dump(depedency) }}
+    {{ dump(module) }}
+
     {# TODO params global du module #}
     {# TODO affichage des modules créer #}
 
@@ -14,10 +17,77 @@
 
         <div class="card card-body" style="margin-bottom: 30px">
 
+            {# TODO - module est dépendance #}
+            {# TODO - module a des dépendance #}
+
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Nom du champ</label>
+                <label class="col-sm-3">Édition</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="checkbox" v-model="globalParams.edition.delete">
+                                delete
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="checkbox" v-model="globalParams.edition.edit">
+                                edit
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="checkbox" v-model="globalParams.edition.add">
+                                add
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="checkbox" v-model="globalParams.edition.valid">
+                                valid
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Ordonner les éléments</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="globalParams.order">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Nombre maximum d'éléments</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" v-model="globalParams.limit">
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="!globalParams.hasDepedency">
+                <label class="col-sm-3">Ce module est une dépendance</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="globalParams.isDepedency">
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="!globalParams.isDepedency">
+                <label class="col-sm-3">Ce module a des dépendances</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="globalParams.hasDepedency">
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="globalParams.hasDepedency">
+                <label class="col-sm-3">Choisir les dépendances</label>
+                <div class="col-sm-9">
+                    <select multiple v-model="globalParams.depedencies">
+                        <option value="moduleA">module A</option>
+                        <option value="moduleB">module B</option>
+                        <option value="moduleC">module C</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -27,35 +97,35 @@
         <div class="card card-body" style="margin-bottom: 30px">
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Nom du champ</label>
+                <label class="col-sm-3">Nom du champ</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" v-model="newField.name">
                 </div>
             </div>
 
             <div class="form-group row" v-if="!hasUrl">
-                <label class="col-sm-3 col-form-label">Créer l'url à partir du nom</label>
+                <label class="col-sm-3">Créer l'url à partir du nom</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="newField.isUrl">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Champ obligatoire</label>
+                <label class="col-sm-3">Champ obligatoire</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="newField.empty">
                 </div>
             </div>
 
             <div class="form-group row" v-if="newField.empty">
-                <label class="col-sm-3 col-form-label">Message si vide</label>
+                <label class="col-sm-3">Message si vide</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" v-model="newField.emptyMessage">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Type de champ</label>
+                <label class="col-sm-3">Type de champ</label>
                 <div class="col-sm-9">
                     <select name="type" v-model="newField.type" class="form-control">
                         <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
@@ -63,10 +133,82 @@
                 </div>
             </div>
 
+            {#
+                TODO type : select
+                - manuel key value
+                - auto fetch modules
+            #}
+
+            {#
+                TODO type : gallery
+                - idem image
+            #}
+
+            {#
+                TODO type : document
+            #}
+
+            {#
+                TODO type : video
+            #}
+
+            {#
+                TODO type : link
+            #}
+
+            {#
+                TODO type : image
+                - thumb, cover, width, height
+            #}
+
+            {#
+                TODO type : boolean
+            #}
+
+            {#
+                TODO type : radio
+                - manuel key value
+                - auto fetch modules
+            #}
+
+            {#
+                TODO type : checkbox
+                - manuel key value
+                - auto fetch modules
+            #}
+
+            {#
+                TODO type : integer
+                - step
+            #}
+
+            {#
+                TODO type : float (décimal)
+                - step
+            #}
+
+            {#
+                TODO type : icon
+            #}
+
+            {#
+                TODO type : password
+            #}
+
+            {#
+                TODO type : date
+                - avec ou sans heure
+                - key value (string)
+            #}
+
+            {#
+                TODO type : hour
+            #}
+
             <div class="form-group row" v-if="newField.type === 'textarea'">
-                <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
-                <div class="col-sm-8">
-                    <input type="checkbox" class="form-check-input" value="1">
+                <label class="col-sm-3">Activer l'éditeur HTML</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" v-model="newField.textareaHtml">
                 </div>
             </div>
 
@@ -124,10 +266,21 @@
                     empty: false,
                     emptyMessage: '',
                     type: '',
+                    textareaHtml: false
                 },
 
                 globalParams: {
-
+                    edition: {
+                        delete: true,
+                        edit: true,
+                        add: true,
+                        valid: true
+                    },
+                    order: false,
+                    limit: false,
+                    isDepedency: false,
+                    hasDepedency: false,
+                    depedencies: []
                 },
 
                 fields: []
@@ -166,6 +319,7 @@
                         empty: this.newField.empty,
                         emptyMessage: this.newField.emptyMessage,
                         type: this.newField.type,
+                        textareaHtml: this.newField.textareaHtml,
                     });
                     this.newField.name = '';
                     this.newField.type = '';
