@@ -9,6 +9,7 @@
     {# TODO dynamiser les relations {{ dump(module) }}#}
 
     {# TODO affichage des modules créer #}
+    {# TODO validation de formulaire #}
 
     <div id="app">
 
@@ -129,84 +130,90 @@
                 </div>
             </div>
 
-            {#
-                TODO type : select
-                - manuel key value
-                - auto fetch modules
-            #}
-
-            {#
-                TODO type : gallery
-                - idem image
-            #}
-
-            {#
-                TODO type : document
-            #}
-
-            {#
-                TODO type : video
-            #}
-
-            {#
-                TODO type : link
-            #}
-
-            {#
-                TODO type : image
-                - thumb, cover, width, height
-            #}
-
-            {#
-                TODO type : boolean
-            #}
-
-            {#
-                TODO type : radio
-                - manuel key value
-                - auto fetch modules
-            #}
-
-            {#
-                TODO type : checkbox
-                - manuel key value
-                - auto fetch modules
-            #}
-
-            {#
-                TODO type : integer
-                - step
-            #}
-
-            {#
-                TODO type : float (décimal)
-                - step
-            #}
-
-            {#
-                TODO type : icon
-            #}
-
-            {#
-                TODO type : password
-            #}
-
-            {#
-                TODO type : date
-                - avec ou sans heure
-                - key value (string)
-            #}
-
-            {#
-                TODO type : hour
-            #}
-
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-3">Activer l'éditeur HTML</label>
                 <div class="col-sm-9">
                     <input type="checkbox" class="form-check-input" v-model="newField.textareaHtml">
                 </div>
             </div>
+
+            {#
+            TODO type : select && radio && checkbox
+            - auto fetch modules
+            #}
+
+            <div class="form-group row" v-if="['select','radio','checkbox'].includes(newField.type)">
+                <label class="col-sm-3">Liste des options</label>
+                <div class="col-sm-9">
+                    <div class="row" v-if="newField.selectOptions.length" v-for="(selectOption, index) in newField.selectOptions" style="margin-bottom: 10px">
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" readonly v-model="selectOption.key">
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" readonly v-model="selectOption.value">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="removeOption(index)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" placeholder="key" v-model="newField.optionKey">
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" placeholder="value" v-model="newField.optionValue">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-primary btn-block" @click="addOption">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {#
+            TODO type : image && gallery
+            - thumb, cover, width, height
+            #}
+
+            <div class="form-group row" v-if="['image','gallery'].includes(newField.type)">
+                <label class="col-sm-3">Options d'image</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            Type
+                            <select class="form-control" v-model="newField.imageType" style="margin-top: 5px">
+                                <option v-for="imageType in imageTypes" :value="imageType">
+                                    <-- imageType -->
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" v-if="newField.imageType !== 'height'">
+                            Width
+                            <input class="form-control" type="text" v-model="newField.imageWidth" style="margin-top: 5px">
+                        </div>
+                        <div class="col-sm-4" v-if="newField.imageType !== 'width'">
+                            Height
+                            <input class="form-control" type="text" v-model="newField.imageHeight" style="margin-top: 5px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {#
+            TODO type : integer
+            - step
+            #}
+
+            {#
+            TODO type : float (décimal)
+            - step
+            #}
+
+            {#
+            TODO type : date
+            - avec ou sans heure
+            - key value (string)
+            #}
 
             <div class="form-group row">
                 <div class="col-sm-12 text-right">
@@ -250,6 +257,7 @@
                     { value: 'image', text: 'Image' },
                     { value: 'radio', text: 'Radio' },
                     { value: 'checkbox', text: 'Checkbox' },
+                    { value: 'boolean', text: 'Boolean' },
                     { value: 'integer', text: 'Chiffre entier' },
                     { value: 'float', text: 'Chiffre avec décimale' },
                     { value: 'icon', text: 'Icone' },
@@ -258,13 +266,21 @@
                     { value: 'hour', text: 'Heure' }
                 ],
 
+                imageTypes: ['thumb','cover','width','height'],
+
                 newField: {
                     name: '',
                     isUrl: false,
                     empty: false,
                     emptyMessage: '',
                     type: '',
-                    textareaHtml: false
+                    textareaHtml: false,
+                    selectOptions: [],
+                    optionKey: '',
+                    optionValue: '',
+                    imageType: '',
+                    imageWidth: 0,
+                    imageHeight: 0,
                 },
 
                 globalParams: {
@@ -318,11 +334,32 @@
                         emptyMessage: this.newField.emptyMessage,
                         type: this.newField.type,
                         textareaHtml: this.newField.textareaHtml,
+                        selectOptions: this.newField.selectOptions,
+                        imageType: this.newField.imageType,
+                        imageWidth: this.newField.imageWidth,
+                        imageHeight: this.newField.imageHeight,
                     });
                     this.newField.name = '';
                     this.newField.type = '';
                     this.newField.empty = false;
                     this.newField.emptyMessage = '';
+                    this.newField.selectOptions = [];
+                    this.newField.optionKey = '';
+                    this.newField.optionValue = '';
+                    this.newField.imageType = '';
+                    this.newField.imageWidth = 0;
+                    this.newField.imageHeight = 0;
+                },
+
+                addOption() {
+                    this.newField.selectOptions.push({
+                        key: this.newField.optionKey,
+                        value: this.newField.optionValue
+                    })
+                },
+
+                removeOption(index) {
+                    this.newField.selectOptions.splice(index, 1);
                 },
 
                 moveUp: function (index) {
