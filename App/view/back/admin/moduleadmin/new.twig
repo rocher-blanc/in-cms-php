@@ -6,58 +6,60 @@
 {% block module %}
 
     {# TODO params global du module #}
+    {# TODO affichage des modules créer #}
 
     <div id="app">
 
-        <div class="card" v-if="fields.length" style="margin-bottom: 30px">
-            <div class="card-body">
-                <div v-for="field in fields">
-                    <-- field -->
+        <h4 style="margin-bottom: 20px">Paramètres du module</h4>
+
+        <div class="card card-body" style="margin-bottom: 30px">
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nom du champ</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control">
                 </div>
             </div>
         </div>
 
         <h4 style="margin-bottom: 20px">Nouveau champ</h4>
 
-        <div class="card mb-3" style="margin-bottom: 30px">
+        <div class="card card-body" style="margin-bottom: 30px">
 
-            <div class="card-body">
-
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Nom du champ</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" v-model="newField.name">
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nom du champ</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="newField.name">
                 </div>
+            </div>
 
-                <div class="form-group row" v-if="!hasUrl">
-                    <label class="col-sm-3 col-form-label">Créer l'url à partir du nom</label>
-                    <div class="col-sm-9">
-                        <input type="checkbox" v-model="newField.isUrl">
-                    </div>
+            <div class="form-group row" v-if="!hasUrl">
+                <label class="col-sm-3 col-form-label">Créer l'url à partir du nom</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="newField.isUrl">
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Champ obligatoire</label>
-                    <div class="col-sm-9">
-                        <input type="checkbox" v-model="newField.empty">
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Champ obligatoire</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="newField.empty">
                 </div>
+            </div>
 
-                <div class="form-group row" v-if="newField.empty">
-                    <label class="col-sm-3 col-form-label">Message si vide</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" v-model="newField.emptyMessage">
-                    </div>
+            <div class="form-group row" v-if="newField.empty">
+                <label class="col-sm-3 col-form-label">Message si vide</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="newField.emptyMessage">
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Type de champ</label>
-                    <div class="col-sm-9">
-                        <select name="type" v-model="newField.type" class="form-control">
-                            <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
-                        </select>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type de champ</label>
+                <div class="col-sm-9">
+                    <select name="type" v-model="newField.type" class="form-control">
+                        <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
+                    </select>
                 </div>
             </div>
 
@@ -67,9 +69,21 @@
                     <input type="checkbox" class="form-check-input" value="1">
                 </div>
             </div>
+
+            <div class="form-group row">
+                <div class="col-sm-12 text-right">
+                    <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
+                </div>
+            </div>
         </div>
 
-        <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
+        <div v-if="fields.length" v-for="(field, index) in fields" class="card card-body" style="margin-bottom: 15px">
+            <div class="float-right">
+                <button class="btn btn-secondary" v-if="index !== 0" v-on:click="moveUp( index )">moveUp</button>
+                <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="moveDown( index )">moveDown</button>
+            </div>
+            <-- field -->
+        </div>
     </div>
 {% endblock %}
 
@@ -112,6 +126,10 @@
                     type: '',
                 },
 
+                globalParams: {
+
+                },
+
                 fields: []
             },
 
@@ -144,7 +162,7 @@
                     this.newField.emptyMessage = '';
                 },
 
-                /*up: function (index) {
+                moveUp: function (index) {
                     if (index !== 0) {
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
                             if (i === index - 1) {
@@ -158,7 +176,7 @@
                     }
                 },
 
-                down: function (index) {
+                moveDown: function (index) {
                     if (index !== this.fields.length-1) { // if its the last in the array
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
                             if (i === index) {
@@ -170,7 +188,7 @@
                             }
                         })
                     }
-                }*/
+                },
 
                 camelCase: function(str) {
                     str = replaceAccents(str);
