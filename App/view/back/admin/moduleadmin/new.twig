@@ -5,7 +5,6 @@
 
 {% block module %}
 
-    {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
 
     <div id="app">
@@ -15,8 +14,8 @@
             <div class="card-header">
                 <h5 class="float-left">Champ #<-- field.position --></h5>
                 <div class="float-right">
-                    <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
-                    <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
+                    <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )">up</button>
+                    <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )">down</button>
                 </div>
             </div>
 
@@ -26,6 +25,13 @@
                     <label class="col-sm-2 col-form-label">Nom du champ</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" v-model="field.name">
+                    </div>
+                </div>
+
+                <div class="form-group row" v-if="!hasUrl">
+                    <label class="col-sm-2 col-form-label">Ce champ définit l'url</label>
+                    <div class="col-sm-10">
+                        <input type="checkbox" v-model="field.isUrl" @click="moduleHasUrl">
                     </div>
                 </div>
 
@@ -90,9 +96,14 @@
             el: '#app',
             delimiters: ["<--","-->"],
             data: {
+                hasUrl: false,
                 fields: []
             },
             methods: {
+
+                moduleHasUrl() {
+                    this.hasUrl = true;
+                },
 
                 camelCase: function(str) {
                     str = replaceAccents(str);
