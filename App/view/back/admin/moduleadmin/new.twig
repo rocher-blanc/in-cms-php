@@ -5,10 +5,9 @@
 
 {% block module %}
 
-    {{ dump(depedency) }}
-    {{ dump(module) }}
+    {# TODO dynamiser les relations {{ dump(depedency) }}#}
+    {# TODO dynamiser les relations {{ dump(module) }}#}
 
-    {# TODO params global du module #}
     {# TODO affichage des modules créer #}
 
     <div id="app">
@@ -16,9 +15,6 @@
         <h4 style="margin-bottom: 20px">Paramètres du module</h4>
 
         <div class="card card-body" style="margin-bottom: 30px">
-
-            {# TODO - module est dépendance #}
-            {# TODO - module a des dépendance #}
 
             <div class="form-group row">
                 <label class="col-sm-3">Édition</label>
@@ -231,6 +227,8 @@
 
 {% block javascripts_end %}
     {{ parent() }}
+    <script src="{{ asset('canvas/js/components/bs-select.js') }}"></script>
+    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
     <script>
