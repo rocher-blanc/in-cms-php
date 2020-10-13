@@ -202,94 +202,121 @@
         </table>
     </div>
 
-    {# TODO : Statuts et liste replace new stats #}
-    {{ dump(statistics) }}
-
-    {% set tabStatus = [] %}
-
-    {% for item in dests %}
-
-        {% set state = item.state %}
-        {% set label = attribute(status, item.state) %}
-
-        {% if label in tabStatus|keys %}
-
-            {% set count = attribute(tabStatus, label) %}
-            {% set count = count + 1 %}
-            {% set tabStatus = tabStatus|merge({(label): count}) %}
-
-        {% else %}
-
-            {% set count = 1 %}
-            {% set tabStatus = tabStatus|merge({(label): count}) %}
-        {% endif %}
-    {% endfor %}
-
     <div class="fancy-title title-dotted-border title-center">
-        <h3><span>{{ _('statut_reception')}}</span></h3>
+        <h3><span>{{ _('stats_domain')}}</span></h3>
     </div>
-
     <div class="table-responsive">
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>{{ _('status')}}</th>
-                <th class="center">{{ _('nbr_email')}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for key,item in tabStatus %}
-                <tr>
-                    <td>{{ key }}</td>
-                    <td class="center">{{ item }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _('url')}}</th>
+                        <th class="center">{{ _('uniqueClicks')}}</th>
+                        <th class="center">{{ _('clickers')}}</th>
+                        <th class="center">{{ _('complaints')}}</th>
+                        <th class="center">{{ _('sent')}}</th>
+                        <th class="center">{{ _('softBounces')}}</th>
+                        <th class="center">{{ _('hardBounces')}}</th>
+                        <th class="center">{{ _('uniqueViews')}}</th>
+                        <th class="center">{{ _('unsubscriptions')}}</th>
+                        <th class="center">{{ _('viewed')}}</th>
+                        <th class="center">{{ _('delivered')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for domain, datas in statistics.statistics.statsByDomain %}
+                        <th>{{ domain }}</th>
+                        <th class="center">{{ datas.uniqueClicks }}</th>
+                        <th class="center">{{ datas.clickers }}</th>
+                        <th class="center">{{ datas.complaints }}</th>
+                        <th class="center">{{ datas.sent }}</th>
+                        <th class="center">{{ datas.softBounces }}</th>
+                        <th class="center">{{ datas.hardBounces }}</th>
+                        <th class="center">{{ datas.uniqueViews }}</th>
+                        <th class="center">{{ datas.unsubscriptions }}</th>
+                        <th class="center">{{ datas.viewed }}</th>
+                        <th class="center">{{ datas.delivered }}</th>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="fancy-title title-dotted-border title-center">
-        <h3><span>{{ _('liste_envoi')}}</span></h3>
+        <h3><span>{{ _('stats_device')}}</span></h3>
     </div>
-
     <div class="table-responsive">
-
-        <table id="ed-table-gestion" class="table table-striped table-hover table-condensed dataTableSimple">
-            <thead class="thead-inverse">
-            <tr>
-                <th>{{ _('email')}}</th>
-                <th>{{ _('status')}}</th>
-                <th class="center">{{ _('opened')}} (UTC)</th>
-                <th>{{ _('absence_msg')}}</th>
-                <th class="center">{{ _('total_clic_nbr')}}</th>
-                <th class="center">{{ _('nbr_clic_unique')}}</th>
-            </tr>
-            </thead>
-            <tbody data-order="0" data-sens="asc">
-            {% for item in dests %}
-                <tr>
-                    <td>{{ item.email }}</td>
-                    <td>{{ attribute(status, item.state) }}</td>
-
-                    {% if item.read == 1 %}
-                        <td class="center"><span class="hidden">{{ item.readDateUTC }}</span>{{ item.readDateUTC|date("d/m/Y") }} {{ _('to')}} {{ item.readDateUTC|date("H:i") }}</td>
-                    {% else %}
-                        <td class="center"><i class="icon-line-circle-cross danger"></i></td>
-                    {% endif %}
-                    {% if item.vacation %}
-                        <td>{{ item.vacation }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
-                    <td class="center">{{ item.clicCount }}</td>
-                    <td class="center">{{ item.linkClicCount }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
+        <div class="table-responsive">
+            <table class="table table-striped">
+                {% for device, systems in statistics.statistics.statsByDevice %}
+                    <thead>
+                        <tr>
+                            <th colspan="5">{{ device }}</th>
+                        </tr>
+                        <tr>
+                            <th>{{ _('system') }}</th>
+                            <th class="center">{{ _('clickers') }}</th>
+                            <th class="center">{{ _('uniqueClicks') }}</th>
+                            <th class="center">{{ _('viewed') }}</th>
+                            <th class="center">{{ _('uniqueViews') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for system, datas in systems %}
+                            <td>{{ system }}</td>
+                            <td class="center">{{ datas.clickers }}</td>
+                            <td class="center">{{ datas.uniqueClicks }}</td>
+                            <td class="center">{{ datas.viewed }}</td>
+                            <td class="center">{{ datas.uniqueViews }}</td>
+                        {% endfor %}
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 
+    <div class="fancy-title title-dotted-border title-center">
+        <h3><span>{{ _('stats_browser')}}</span></h3>
+    </div>
+    <div class="table-responsive">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _('browser')}}</th>
+                        <th class="center">{{ _('clickers')}}</th>
+                        <th class="center">{{ _('uniqueClicks')}}</th>
+                        <th class="center">{{ _('viewed')}}</th>
+                        <th class="center">{{ _('uniqueViews')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for browser, datas in statistics.statistics.statsByBrowser %}
+                        <th>{{ browser }}</th>
+                        <th class="center">{{ datas.clickers }}</th>
+                        <th class="center">{{ datas.uniqueClicks }}</th>
+                        <th class="center">{{ datas.viewed }}</th>
+                        <th class="center">{{ datas.uniqueViews }}</th>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
+
+{#
+    stats_generales : Statistiques générales
+    stats_groupe : Statistiques du groupe
+    stats_domain : Statistiques par nom de domaine
+    stats_device : Statistiques par appareil
+    stats_browser : Statistiques par navigateur
+    uniqueclicks : Clicks uniques
+    clickers : Clicks
+    complaints : Plaintes
+    sent : Envoyés
+    softbounces : Soft bounces
+    hardbounces : Hard bounces
+    uniqueviews : Vues uniques
+    unsubscriptions : Désinscriptions
+    viewed : Vues
+#}
