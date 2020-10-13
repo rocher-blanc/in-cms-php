@@ -5,7 +5,6 @@
 
 {% block module %}
 
-    {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
 
     <div id="app">
@@ -25,29 +24,36 @@
             <div class="card-body">
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Nom du champ</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label">Nom du champ</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" v-model="newField.name">
                     </div>
                 </div>
 
+                <div class="form-group row" v-if="!hasUrl">
+                    <label class="col-sm-3 col-form-label">Créer l'url à partir du nom</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" v-model="newField.isUrl">
+                    </div>
+                </div>
+
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Champ obligatoire</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label">Champ obligatoire</label>
+                    <div class="col-sm-9">
                         <input type="checkbox" v-model="newField.empty">
                     </div>
                 </div>
 
                 <div class="form-group row" v-if="newField.empty">
-                    <label class="col-sm-2 col-form-label">Message si vide</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label">Message si vide</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" v-model="newField.emptyMessage">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Type de champ</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label">Type de champ</label>
+                    <div class="col-sm-9">
                         <select name="type" v-model="newField.type" class="form-control">
                             <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
                         </select>
@@ -100,9 +106,10 @@
 
                 newField: {
                     name: '',
-                    type: '',
+                    isUrl: false,
                     empty: false,
-                    emptyMessage: ''
+                    emptyMessage: '',
+                    type: '',
                 },
 
                 fields: []
@@ -111,6 +118,10 @@
             computed: {
                 formValidation() {
                     return !!(this.newField.name.length && this.newField.type.length > 0);
+                },
+                hasUrl() {
+                    const result = this.fields.filter(field => field.isUrl);
+                    return result.length;
                 }
             },
 
@@ -122,9 +133,10 @@
                         title: 'champ' + index,
                         position: index,
                         name: this.camelCase(this.newField.name),
-                        type: this.newField.type,
+                        isUrl: this.newField.isUrl,
                         empty: this.newField.empty,
-                        emptyMessage: this.newField.emptyMessage
+                        emptyMessage: this.newField.emptyMessage,
+                        type: this.newField.type,
                     });
                     this.newField.name = '';
                     this.newField.type = '';
