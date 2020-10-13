@@ -7,21 +7,11 @@
 
     {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
-    {# TODO validation champ #}
     {# TODO ajout champ dans tableau #}
 
     <div id="app">
 
-        <div class="card mb-3" v-for="(field, index) in fields" style="margin-bottom: 30px">
-
-            <div class="card-header">
-                <h5 class="float-left">Champ #<-- field.position --></h5>
-                <div class="float-right">
-                    <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )"><i class="fas fa-chevron-up"></i></button>
-                    <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )"><i class="fas fa-chevron-down"></i></button>
-                </div>
-            </div>
-
+        <div class="card mb-3" style="margin-bottom: 30px">
             <div class="card-body">
 
                 <div class="form-group row">
@@ -58,17 +48,17 @@
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
                 <div class="col-sm-8">
-                    <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
+                    <input type="checkbox" class="form-check-input" value="1">
                 </div>
             </div>
         </div>
 
-        <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+        <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter un champ</button>
 
         <div class="card" v-if="fields.length" style="margin-top: 30px">
             <div class="card-body">
                 <pre>
-                    <div v-for="line in generatedLines">
+                    <div v-for="line in output">
                         <-- line -->
                     </div>
                 </pre>
@@ -78,7 +68,6 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block javascripts_end %}
@@ -123,7 +112,8 @@
             },
 
             computed: {
-              generatedLines() {
+
+              output() {
 
                 let arr = [];
 
@@ -154,6 +144,10 @@
                 arr.push(type);
 
                 return arr;
+              },
+
+              formValidation() {
+                return !!(this.newField.name.length && this.newField.type.length > 0);
               }
             },
 
@@ -215,11 +209,16 @@
                     this.fields.push({
                         name: 'champ' + index,
                         position: index,
-                        pre: this.newField
+                        datas: this.newField,
+                        output: this.output
                     });
+                    this.newField.name = '';
+                    this.newField.type = '';
+                    this.newField.empty = false;
+                    this.newField.emptyMessage = '';
                 },
 
-                up: function (index) {
+                /*up: function (index) {
                     if (index !== 0) {
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
                             if (i === index - 1) {
@@ -245,7 +244,7 @@
                             }
                         })
                     }
-                }
+                }*/
             }
         })
     </script>
