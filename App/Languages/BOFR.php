@@ -2,6 +2,20 @@
 namespace Project\Lang;
 class BOFR extends \App\Kernel\Front\LanguageModel {
 	protected $a = [
+        "stats_generales" => "Statistiques générales",
+        "stats_groupe" => "Statistiques du groupe",
+        "stats_domain" => "Statistiques par nom de domaine",
+        "stats_device" => "Statistiques par appareil",
+        "stats_browser" => "Statistiques par navigateur",
+        "uniqueclicks" => "Clicks uniques",
+        "clickers" => "Clicks",
+        "complaints" => "Plaintes",
+        "sent" => "Envoyés",
+        "softbounces" => "Soft bounces",
+        "hardbounces" => "Hard bounces",
+        "uniqueviews" => "Vues uniques",
+        "unsubscriptions" => "Désinscriptions",
+        "viewed" => "Vues",
         "moduleadmin_new" => "Nouveau module",
 		"abonnes" => "Abonnés",
 		"absence_msg" => "Message d'absence",
