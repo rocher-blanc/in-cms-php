@@ -135,7 +135,18 @@
 
             computed: {
                 formValidation() {
-                    return !!(this.newField.name.length && this.newField.type.length > 0);
+                    if (this.newField.empty) {
+                        return !!(
+                            this.newField.name.length &&
+                            this.newField.type.length > 0 &&
+                            this.newField.emptyMessage.length > 0
+                        );
+                    } else {
+                        return !!(
+                            this.newField.name.length &&
+                            this.newField.type.length > 0
+                        );
+                    }
                 },
                 hasUrl() {
                     const result = this.fields.filter(field => field.isUrl);
