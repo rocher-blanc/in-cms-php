@@ -5,86 +5,66 @@
 
 {% block module %}
 
+    {# TODO champ text rajouter variable is url UNE FOIS PAR MODULE #}
     {# TODO params global du module #}
 
     <div id="app">
 
-        <div class="card mb-3" v-for="(field, index) in fields" style="margin-bottom: 30px">
-
-            <div class="card-header">
-                <h5 class="float-left">Champ #<-- field.position --></h5>
-                <div class="float-right">
-                    <button class="btn btn-secondary" v-if="index !== 0" v-on:click="up( index )">up</button>
-                    <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="down( index )">down</button>
+        <div class="card" v-if="fields.length" style="margin-bottom: 30px">
+            <div class="card-body">
+                <div v-for="field in fields">
+                    <-- field -->
                 </div>
             </div>
+        </div>
+
+        <h4 style="margin-bottom: 20px">Nouveau champ</h4>
+
+        <div class="card mb-3" style="margin-bottom: 30px">
 
             <div class="card-body">
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Nom du champ</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="field.name">
-                    </div>
-                </div>
-
-                <div class="form-group row" v-if="!hasUrl">
-                    <label class="col-sm-2 col-form-label">Ce champ définit l'url</label>
-                    <div class="col-sm-10">
-                        <input type="checkbox" v-model="field.isUrl" @click="moduleHasUrl">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Type de champ</label>
-                    <div class="col-sm-10">
-                        <select name="type" v-model="field.type" class="form-control">
-                            <option value="input">Texte</option>
-                            <option value="select">Select</option>
-                            <option value="textarea">Textarea</option>
-                            <option value="gallery">Galerie</option>
-                            <option value="document">Documents</option>
-                            <option value="video">Video</option>
-                            <option value="link">Lien</option>
-                            <option value="image">Image</option>
-                            <option value="radio">Radio</option>
-                            <option value="checkbox">Checkbox</option>
-                            <option value="integer">Chiffre entier</option>
-                            <option value="float">Chiffre avec décimale</option>
-                            <option value="icon">Icone</option>
-                            <option value="password">Mot de passe</option>
-                            <option value="date">Date</option>
-                            <option value="hour">Heure</option>
-                        </select>
+                        <input type="text" class="form-control" v-model="newField.name">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Champ obligatoire</label>
                     <div class="col-sm-10">
-                        <input type="checkbox" v-model="field.empty">
+                        <input type="checkbox" v-model="newField.empty">
                     </div>
                 </div>
 
-                <div class="form-group row" v-if="field.empty">
+                <div class="form-group row" v-if="newField.empty">
                     <label class="col-sm-2 col-form-label">Message si vide</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="field.emptyMessage">
+                        <input type="text" class="form-control" v-model="newField.emptyMessage">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Type de champ</label>
+                    <div class="col-sm-10">
+                        <select name="type" v-model="newField.type" class="form-control">
+                            <option v-for="fieldType in fieldTypes" :value="fieldType.value"><-- fieldType.text --></option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group row" v-if="field.type === 'textarea'">
+            <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-4 col-form-label">Activer l'éditeur HTML</label>
                 <div class="col-sm-8">
-                    <input type="checkbox" class="form-check-input" value="1" v-model="field.editor">
+                    <input type="checkbox" class="form-check-input" value="1">
                 </div>
             </div>
         </div>
 
-        <button v-on:click="addField" class="btn btn-primary">Ajouter un champ</button>
+        <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
     </div>
-
 {% endblock %}
 
 {% block javascripts_end %}
@@ -93,17 +73,92 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
     <script>
         var app = new Vue({
+
             el: '#app',
             delimiters: ["<--","-->"],
+
             data: {
-                hasUrl: false,
+
+                fieldTypes: [
+                    { value: 'input', text: 'Texte' },
+                    { value: 'select', text: 'Select' },
+                    { value: 'textarea', text: 'Textarea' },
+                    { value: 'gallery', text: 'Galerie' },
+                    { value: 'document', text: 'Documents' },
+                    { value: 'video', text: 'Video' },
+                    { value: 'link', text: 'Lien' },
+                    { value: 'image', text: 'Image' },
+                    { value: 'radio', text: 'Radio' },
+                    { value: 'checkbox', text: 'Checkbox' },
+                    { value: 'integer', text: 'Chiffre entier' },
+                    { value: 'float', text: 'Chiffre avec décimale' },
+                    { value: 'icon', text: 'Icone' },
+                    { value: 'password', text: 'Mot de passe' },
+                    { value: 'date', text: 'Date' },
+                    { value: 'hour', text: 'Heure' }
+                ],
+
+                newField: {
+                    name: '',
+                    type: '',
+                    empty: false,
+                    emptyMessage: ''
+                },
+
                 fields: []
             },
+
+            computed: {
+                formValidation() {
+                    return !!(this.newField.name.length && this.newField.type.length > 0);
+                }
+            },
+
             methods: {
 
-                moduleHasUrl() {
-                    this.hasUrl = true;
+                addField: function () {
+                    const index = this.fields.length + 1
+                    this.fields.push({
+                        title: 'champ' + index,
+                        position: index,
+                        name: this.camelCase(this.newField.name),
+                        type: this.newField.type,
+                        empty: this.newField.empty,
+                        emptyMessage: this.newField.emptyMessage
+                    });
+                    this.newField.name = '';
+                    this.newField.type = '';
+                    this.newField.empty = false;
+                    this.newField.emptyMessage = '';
                 },
+
+                /*up: function (index) {
+                    if (index !== 0) {
+                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                            if (i === index - 1) {
+                                return this.fields[index];
+                            } else if (i === index) {
+                                return this.fields[index - 1];
+                            } else {
+                                return e;
+                            }
+                        })
+                    }
+                },
+
+                down: function (index) {
+                    if (index !== this.fields.length-1) { // if its the last in the array
+                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                            if (i === index) {
+                                return this.fields[index + 1];
+                            } else if (i === index + 1) {
+                                return this.fields[index];
+                            } else {
+                                return e;
+                            }
+                        })
+                    }
+                }*/
 
                 camelCase: function(str) {
                     str = replaceAccents(str);
@@ -153,41 +208,6 @@
                                 .replace(/[\xFD\xFF]/g, "y");
                         }
                         return str;
-                    }
-                },
-
-                addField: function () {
-                    this.fields.push({
-                        name: 'test #' + this.fields.length,
-                        position: (this.fields.length + 1)
-                    });
-                },
-
-                up: function (index) {
-                    if (index !== 0) {
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
-                            if (i === index - 1) {
-                                return this.fields[index];
-                            } else if (i === index) {
-                                return this.fields[index - 1];
-                            } else {
-                                return e;
-                            }
-                        })
-                    }
-                },
-
-                down: function (index) {
-                    if (index !== this.fields.length-1) { // if its the last in the array
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
-                            if (i === index) {
-                                return this.fields[index + 1];
-                            } else if (i === index + 1) {
-                                return this.fields[index];
-                            } else {
-                                return e;
-                            }
-                        })
                     }
                 }
             }
