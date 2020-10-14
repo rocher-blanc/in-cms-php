@@ -137,12 +137,7 @@
                 </div>
             </div>
 
-            {#
-            TODO type : select && radio && checkbox
-            - auto fetch modules
-            #}
-
-            <div class="form-group row" v-if="['select','radio','checkbox'].includes(newField.type)">
+            <div class="form-group row" v-if="['select','radio','checkbox','date'].includes(newField.type)">
                 <label class="col-sm-3">Liste des options</label>
                 <div class="col-sm-9">
                     <div class="row" v-if="newField.selectOptions.length" v-for="(selectOption, index) in newField.selectOptions" style="margin-bottom: 10px">
@@ -170,10 +165,12 @@
                 </div>
             </div>
 
-            {#
-            TODO type : image && gallery
-            - thumb, cover, width, height
-            #}
+            <div class="form-group row" v-if="newField.type === 'date'">
+                <label class="col-sm-3">Activer l'heure</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" v-model="newField.dateWithHour">
+                </div>
+            </div>
 
             <div class="form-group row" v-if="['image','gallery'].includes(newField.type)">
                 <label class="col-sm-3">Options d'image</label>
@@ -199,16 +196,12 @@
                 </div>
             </div>
 
-            {#
-                TODO type : integer && float (decimal)
-                - step (number)
-            #}
-
-            {#
-                TODO type : date
-                - avec ou sans heure
-                - key value (nom format)
-            #}
+            <div class="form-group row" v-if="['integer','float'].includes(newField.type)">
+                <label class="col-sm-3">Step</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="number" class="form-check-input" v-model="newField.intStep">
+                </div>
+            </div>
 
             <div class="form-group row">
                 <div class="col-sm-12 text-right">
@@ -276,6 +269,8 @@
                     imageType: '',
                     imageWidth: 0,
                     imageHeight: 0,
+                    intStep: 0,
+                    dateWithHour: false
                 },
 
                 globalParams: {
@@ -319,7 +314,7 @@
             methods: {
 
                 addField: function () {
-                    const index = this.fields.length + 1
+                    const index = this.fields.length + 1;
                     this.fields.push({
                         title: 'champ' + index,
                         position: index,
@@ -333,6 +328,8 @@
                         imageType: this.newField.imageType,
                         imageWidth: this.newField.imageWidth,
                         imageHeight: this.newField.imageHeight,
+                        intStep: this.newField.intStep,
+                        dateWithHour: this.newField.dateWithHour
                     });
                     this.newField.name = '';
                     this.newField.type = '';
@@ -344,11 +341,13 @@
                     this.newField.imageType = '';
                     this.newField.imageWidth = 0;
                     this.newField.imageHeight = 0;
+                    this.newField.intStep = 0;
+                    this.dateWithHour = false;
                 },
 
                 addOption() {
                     this.newField.selectOptions.push({
-                        key: this.newField.optionKey,
+                        key: this.camelCase(this.newField.optionKey),
                         value: this.newField.optionValue
                     })
                 },
