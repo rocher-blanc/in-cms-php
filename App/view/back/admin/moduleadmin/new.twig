@@ -8,8 +8,6 @@
     {# TODO dynamiser les relations {{ dump(depedency) }}#}
     {# TODO dynamiser les relations {{ dump(module) }}#}
 
-    {# TODO utiliser comme reference #}
-
     <div id="app">
 
         <h4 style="margin-bottom: 20px">Paramètres du module</h4>
@@ -113,6 +111,13 @@
                 </div>
             </div>
 
+            <div class="form-group row" v-if="!hasUrl">
+                <label class="col-sm-3">Ajouter comme référence</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="newField.isRef">
+                </div>
+            </div>
+
             <div class="form-group row">
                 <label class="col-sm-3">Champ obligatoire</label>
                 <div class="col-sm-9">
@@ -172,13 +177,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" placeholder="key" v-model="newField.optionKey">
+                            <input type="text" class="form-control" placeholder="key" v-model="optionKey">
                         </div>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" placeholder="value" v-model="newField.optionValue">
+                            <input type="text" class="form-control" placeholder="value" v-model="optionValue">
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-primary btn-block" @click="addOption">Add</button>
+                            <button class="btn btn-primary btn-block" @click="addOption(optionKey,optionValue)">Add</button>
                         </div>
                     </div>
                 </div>
@@ -257,6 +262,7 @@
                 </div>
                 <div class="col-sm-2">
                     <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean><br>
+                    <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean><br>
                     <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
                 </div>
                 <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float'].includes(field.type)">
@@ -321,6 +327,7 @@
                     id: '',
                     name: '',
                     isUrl: false,
+                    isRef: false,
                     empty: false,
                     column: {
                         size: 0,
@@ -329,8 +336,6 @@
                     type: '',
                     textareaHtml: false,
                     selectOptions: [],
-                    optionKey: '',
-                    optionValue: '',
                     imageType: '',
                     imageWidth: 0,
                     imageHeight: 0,
@@ -377,17 +382,23 @@
                 hasUrl() {
                     const result = this.fields.filter(field => field.isUrl);
                     return result.length;
+                },
+                refs() {
+                    let fieldsId = [];
+                    const filteredFields = this.fields.filter(field => field.isRef);
+                    filteredFields.forEach(field => fieldsId.push(field.id));
+                    return fieldsId;
                 }
             },
             methods: {
                 addField: function () {
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
-                addOption() {
+                addOption(key, value) {
                     this.newField.selectOptions.push(
                         JSON.parse(JSON.stringify({
-                            key: this.camelCase(this.newField.optionKey),
-                            value: this.newField.optionValue
+                            key: this.camelCase(key),
+                            value: value
                         }))
                     )
                 },
