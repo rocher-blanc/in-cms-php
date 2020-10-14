@@ -8,8 +8,7 @@
     {# TODO dynamiser les relations {{ dump(depedency) }}#}
     {# TODO dynamiser les relations {{ dump(module) }}#}
 
-    {# TODO affichage des modules créer #}
-    {# TODO validation de formulaire #}
+    {# TODO utiliser comme reference #}
 
     <div id="app">
 
@@ -80,7 +79,7 @@
             <div class="form-group row" v-if="globalParams.hasDepedency">
                 <label class="col-sm-3">Choisir les dépendances</label>
                 <div class="col-sm-9">
-                    <select multiple v-model="globalParams.depedencies">
+                    <select class="form-control" multiple v-model="globalParams.depedencies">
                         <option value="moduleA">module A</option>
                         <option value="moduleB">module B</option>
                         <option value="moduleC">module C</option>
@@ -92,6 +91,13 @@
         <h4 style="margin-bottom: 20px">Nouveau champ</h4>
 
         <div class="card card-body" style="margin-bottom: 30px">
+
+            <div class="form-group row">
+                <label class="col-sm-3">Id du champ</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="newField.id">
+                </div>
+            </div>
 
             <div class="form-group row">
                 <label class="col-sm-3">Nom du champ</label>
@@ -114,10 +120,23 @@
                 </div>
             </div>
 
-            <div class="form-group row" v-if="newField.empty">
-                <label class="col-sm-3">Message si vide</label>
+            <div class="form-group row">
+                <label class="col-sm-3">Taille du champ</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" v-model="newField.emptyMessage">
+                    <div class="row">
+                        <div class="col-sm-6" v-if="newField.column.total">
+                            Largeur
+                            <select class="form-control" v-model="newField.column.size" style="margin-top: 5px">
+                                <option v-for="col in maxCols" v-if="col <= newField.column.total" :value="col"><-- col --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            Total
+                            <select class="form-control" v-model="newField.column.total" style="margin-top: 5px">
+                                <option v-for="col in maxCols" :value="col"><-- col --></option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -211,29 +230,72 @@
         </div>
 
         <div v-if="fields.length" v-for="(field, index) in fields" class="card card-body" style="margin-bottom: 15px">
-            <div class="float-right">
-                <button class="btn btn-secondary" v-if="index !== 0" v-on:click="moveUp( index )">moveUp</button>
-                <button class="btn btn-secondary" v-if="index !== fields.length - 1" v-on:click="moveDown( index )">moveDown</button>
+            <div class="text-right" style="margin-bottom: 10px">
+                <button class="btn btn-sm btn-secondary" v-if="index !== 0" v-on:click="moveUp( index )"><i class="icon-line-arrow-up"></i></button>
+                <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" v-on:click="moveDown( index )"><i class="icon-line-arrow-down"></i></button>
             </div>
-            <-- field -->
+            <div class="row">
+                <div class="col-sm-1">
+                    <strong>Position</strong><br>
+                    <-- index + 1 -->
+                </div>
+                <div class="col-sm-1">
+                    <strong>Taille</strong><br>
+                    <-- field.column.size --> / <-- field.column.total -->
+                </div>
+                <div class="col-sm-2">
+                    <strong>Id</strong><br>
+                    <-- field.id -->
+                </div>
+                <div class="col-sm-2">
+                    <strong>Nom</strong><br>
+                    <-- field.name -->
+                </div>
+                <div class="col-sm-2">
+                    <strong>Type</strong><br>
+                    <-- field.type -->
+                </div>
+                <div class="col-sm-2">
+                    <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean><br>
+                    <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
+                </div>
+                <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float'].includes(field.type)">
+                    <strong>Options</strong><br>
+                    <display-boolean v-if="['textarea'].includes(field.type)" :value="field.textareaHtml" text="Éditeur HTML"></display-boolean>
+                    <div v-if="['select','radio','checkbox','date'].includes(field.type)">
+                        <div v-for="option in field.selectOptions"><-- option --></div>
+                    </div>
+                    <div v-if="['image','gallery'].includes(field.type)">
+                        <div>Type: <-- field.imageType --></div>
+                        <div v-if="field.imageWidth">Width: <-- field.imageWidth --></div>
+                        <div v-if="field.imageHeight">Height: <-- field.imageHeight --></div>
+                    </div>
+                    <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
+                    <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts_end %}
     {{ parent() }}
-    <script src="{{ asset('canvas/js/components/bs-select.js') }}"></script>
-    <script src="{{ asset('canvas/js/easydoor/form.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
     <script>
-        var app = new Vue({
-
+        Vue.component('display-boolean', {
+            delimiters: ["<--","-->"],
+            props: ['value','text'],
+            computed: {
+                icon() { return this.value ? 'icon-line-check' : 'icon-line-cross' },
+                color() { return this.value ? 'text-success' : 'text-warning' }
+            },
+            template: `<strong :class="color"><i :class="icon"></i> <-- text --></strong>`
+        });
+        const app = new Vue({
             el: '#app',
             delimiters: ["<--","-->"],
-
             data: {
-
                 fieldTypes: [
                     { value: 'input', text: 'Texte' },
                     { value: 'select', text: 'Select' },
@@ -253,14 +315,17 @@
                     { value: 'date', text: 'Date' },
                     { value: 'hour', text: 'Heure' }
                 ],
-
                 imageTypes: ['thumb','cover','width','height'],
-
+                maxCols: 5,
                 newField: {
+                    id: '',
                     name: '',
                     isUrl: false,
                     empty: false,
-                    emptyMessage: '',
+                    column: {
+                        size: 0,
+                        total: 0
+                    },
                     type: '',
                     textareaHtml: false,
                     selectOptions: [],
@@ -272,7 +337,6 @@
                     intStep: 0,
                     dateWithHour: false
                 },
-
                 globalParams: {
                     edition: {
                         delete: true,
@@ -286,23 +350,28 @@
                     hasDepedency: false,
                     depedencies: []
                 },
-
                 fields: []
             },
-
             computed: {
                 formValidation() {
-                    if (this.newField.empty) {
-                        return !!(
-                            this.newField.name.length &&
-                            this.newField.type.length > 0 &&
-                            this.newField.emptyMessage.length > 0
-                        );
+                    const basicDatasFilled =
+                        this.newField.id.length &&
+                        this.newField.name.length &&
+                        this.newField.column.size &&
+                        this.newField.column.total &&
+                        this.newField.type.length > 0;
+                    if (['select','radio','checkbox','date'].includes(this.newField.type)) {
+                        return basicDatasFilled && this.newField.selectOptions.length > 1;
+                    } else if (['image','gallery'].includes(this.newField.type)) {
+                        if (['width'].includes(this.newField.imageType)) {
+                            return basicDatasFilled && this.newField.imageType.length > 0 && this.newField.imageWidth;
+                        } else if (['height'].includes(this.newField.imageType)) {
+                            return basicDatasFilled && this.newField.imageType.length > 0 && this.newField.imageHeight;
+                        } else {
+                            return basicDatasFilled && this.newField.imageType.length > 0 && this.newField.imageWidth && this.newField.imageHeight;
+                        }
                     } else {
-                        return !!(
-                            this.newField.name.length &&
-                            this.newField.type.length > 0
-                        );
+                        return basicDatasFilled;
                     }
                 },
                 hasUrl() {
@@ -310,52 +379,21 @@
                     return result.length;
                 }
             },
-
             methods: {
-
                 addField: function () {
-                    const index = this.fields.length + 1;
-                    this.fields.push({
-                        title: 'champ' + index,
-                        position: index,
-                        name: this.camelCase(this.newField.name),
-                        isUrl: this.newField.isUrl,
-                        empty: this.newField.empty,
-                        emptyMessage: this.newField.emptyMessage,
-                        type: this.newField.type,
-                        textareaHtml: this.newField.textareaHtml,
-                        selectOptions: this.newField.selectOptions,
-                        imageType: this.newField.imageType,
-                        imageWidth: this.newField.imageWidth,
-                        imageHeight: this.newField.imageHeight,
-                        intStep: this.newField.intStep,
-                        dateWithHour: this.newField.dateWithHour
-                    });
-                    this.newField.name = '';
-                    this.newField.type = '';
-                    this.newField.empty = false;
-                    this.newField.emptyMessage = '';
-                    this.newField.selectOptions = [];
-                    this.newField.optionKey = '';
-                    this.newField.optionValue = '';
-                    this.newField.imageType = '';
-                    this.newField.imageWidth = 0;
-                    this.newField.imageHeight = 0;
-                    this.newField.intStep = 0;
-                    this.dateWithHour = false;
+                    this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
-
                 addOption() {
-                    this.newField.selectOptions.push({
-                        key: this.camelCase(this.newField.optionKey),
-                        value: this.newField.optionValue
-                    })
+                    this.newField.selectOptions.push(
+                        JSON.parse(JSON.stringify({
+                            key: this.camelCase(this.newField.optionKey),
+                            value: this.newField.optionValue
+                        }))
+                    )
                 },
-
                 removeOption(index) {
                     this.newField.selectOptions.splice(index, 1);
                 },
-
                 moveUp: function (index) {
                     if (index !== 0) {
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
@@ -369,7 +407,6 @@
                         })
                     }
                 },
-
                 moveDown: function (index) {
                     if (index !== this.fields.length-1) { // if its the last in the array
                         this.fields = this.fields.map((e, i) => { // iterate array and change places
@@ -383,7 +420,6 @@
                         })
                     }
                 },
-
                 camelCase: function(str) {
                     str = replaceAccents(str);
                     str = removeNonWord(str)
@@ -435,6 +471,6 @@
                     }
                 }
             }
-        })
+        });
     </script>
 {% endblock %}
