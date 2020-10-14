@@ -177,13 +177,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" placeholder="key" v-model="optionKey">
+                            <input type="text" class="form-control" placeholder="key" v-model="newField.option.key">
                         </div>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" placeholder="value" v-model="optionValue">
+                            <input type="text" class="form-control" placeholder="value" v-model="newField.option.value">
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-primary btn-block" @click="addOption(optionKey,optionValue)">Add</button>
+                            <button class="btn btn-primary btn-block" @click="addOption()" :disabled="!optionValidation">Add</button>
                         </div>
                     </div>
                 </div>
@@ -336,6 +336,10 @@
                     type: '',
                     textareaHtml: false,
                     selectOptions: [],
+                    option: {
+                        key: '',
+                        value: ''
+                    },
                     imageType: '',
                     imageWidth: 0,
                     imageHeight: 0,
@@ -379,6 +383,9 @@
                         return basicDatasFilled;
                     }
                 },
+                optionValidation() {
+                    return (this.newField.option.key.length > 0 && this.newField.option.value.length > 0);
+                },
                 hasUrl() {
                     const result = this.fields.filter(field => field.isUrl);
                     return result.length;
@@ -394,11 +401,11 @@
                 addField: function () {
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
-                addOption(key, value) {
+                addOption() {
                     this.newField.selectOptions.push(
                         JSON.parse(JSON.stringify({
-                            key: this.camelCase(key),
-                            value: value
+                            key: this.camelCase(this.newField.option.key),
+                            value: this.newField.option.value
                         }))
                     )
                 },
