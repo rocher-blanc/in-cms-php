@@ -7,12 +7,28 @@
 
     {# TODO dynamiser les relations {{ dump(depedency) }}#}
     {# TODO dynamiser les relations {{ dump(module) }}#}
+    {# TODO Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email et rajouter une option de taille du champ (255 par defaut) #}
+    {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
+    {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
+    {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
+    {# TODO Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
+    {# TODO Pour le manyToMany (select) des modules (variable many) #}
+    {# TODO ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
+    {# TODO Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
+    {# TODO Pouvoir supprimer un champ #}
 
     <div id="app">
 
         <h4 style="margin-bottom: 20px">Paramètres du module</h4>
 
         <div class="card card-body" style="margin-bottom: 30px">
+
+            <div class="form-group row">
+                <label class="col-sm-3">Nom</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="globalParams.name">
+                </div>
+            </div>
 
             <div class="form-group row">
                 <label class="col-sm-3">Édition</label>
@@ -54,9 +70,30 @@
             </div>
 
             <div class="form-group row">
+                <label class="col-sm-3">Module de profil utilisateur</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="globalParams.user_module">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Module associer à un utilisateur</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" v-model="globalParams.user">
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-sm-3">Nombre maximum d'éléments</label>
                 <div class="col-sm-9">
                     <input type="number" class="form-control" v-model="globalParams.limit">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Nombre par page</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" v-model="globalParams.pagination">
                 </div>
             </div>
 
@@ -281,6 +318,10 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="fields.length" class="text-center">
+            <button v-on:click="saveJson" class="btn btn-primary">Sauvegarder</button>
+        </div>
     </div>
 {% endblock %}
 
@@ -327,8 +368,11 @@
                     id: '',
                     name: '',
                     isUrl: false,
+                    lang: false,
                     isRef: false,
                     empty: false,
+                    many: false,
+                    comment: false,
                     column: {
                         size: 0,
                         total: 0
@@ -353,8 +397,12 @@
                         add: true,
                         valid: true
                     },
+                    name: '',
+                    user: false,
+                    user_module: false,
                     order: false,
                     limit: false,
+                    pagination: false,
                     isDepedency: false,
                     hasDepedency: false,
                     depedencies: []
@@ -400,6 +448,19 @@
             methods: {
                 addField: function () {
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
+                },
+                saveJson: function () {
+                    axios.post('{{ siteUrl('admin/moduleadmin/generate') }}', {
+                        {{csrf_key}}:'{{csrf_token}}',
+                        fields: JSON.stringify(this.fields),
+                        global: JSON.stringify(this.globalParams)
+                    })
+                    .then(function (response) {
+                       // document.location.href='{{ siteUrl('admin/moduleadmin') }}';
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 },
                 addOption() {
                     this.newField.selectOptions.push(

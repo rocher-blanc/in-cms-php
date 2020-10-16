@@ -13,6 +13,116 @@ $app->group('/moduleadmin', function () use ($app)
             ]);
         });
 
+        $app->post('/generate', function () use ($app)
+        {
+            $g = json_decode( $_POST['global'] , true );
+            $f = json_decode( $_POST['fields'] , true );
+
+//            dump($f);
+
+            $php = '' ;
+            $php.= "<"."?"."php\n\n" ;
+            $php.= "namespace Project\Module\Entity;\n\n" ;
+            $php.= "use App\Kernel\Entity\Builder;\n\n" ;
+            $php.= "/* Module généré automatiquement par le générateur de easyDOOR le " . date('d/m/Y H:i:s') . " */\n\n" ;
+            $php.= "class " . $g['name'] . " extends Builder\n" ;
+            $php.= "{\n" ;
+            $php.= "\tprotected function load()\n" ;
+            $php.= "\t{\n" ;
+
+                if ( $g['isDepedency'] ) $php.= "\t\t$"."this->isDependency();\n" ;
+                if ( $g['order'] ) $php.= "\t\t$"."this->enableOrder();\n" ;
+                if ( $g['limit'] !== false ) $php.= "\t\t$"."this->setMaxElement(".$g['limit'].");\n" ;
+                if ( $g['pagination'] !== false ) $php.= "\t\t$"."this->setPagination(".$g['pagination'].");\n" ;
+                if ( $g['user'] ) $php.= "\t\t$"."this->enableUser();\n" ;
+                if ( $g['user_module'] ) $php.= "\t\t$"."this->enableUserModule();\n" ;
+                if ( $g['edition']['delete'] === false ) $php.= "\t\t$"."this->disableDelete();\n" ;
+                if ( $g['edition']['edit'] === false ) $php.= "\t\t$"."this->disableUpdate();\n" ;
+                if ( $g['edition']['add'] === false ) $php.= "\t\t$"."this->disableCreate();\n" ;
+                if ( $g['edition']['import'] === false ) $php.= "\t\t$"."this->disableImport();\n" ;
+                if ( $g['edition']['valid'] ) $php.= "\t\t$"."this->enableValidation();\n" ;
+
+            $php.= "\t\t\n" ;
+
+                if ( ! empty( $f ) )
+                {
+                    foreach ( $f as $field )
+                    {
+                        $php.= "\t\t$"."this->build('".$field['id']."')\n" ;
+                        $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
+                        $php.= "\t\t\t->column(".$field['column']['size'].",".$field['column']['total'].")\n" ;
+                        $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
+
+                        if ( $field['lang'] ) $php.= "\t\t\t->isLang()\n" ;
+                        if ( $field['comment'] !== false ) $php.= "\t\t\t->comment(\"". $field['comment'] ."\")\n" ;
+                        if ( $field['isUrl'] ) $php.= "\t\t\t->isUrl()\n" ;
+                        if ( $field['empty'] ) $php.= "\t\t\t->notEmpty(\"Merci de remplir le champ : ".$field['name']."\")\n" ;
+                        if ( $field['textareaHtml'] ) $php.= "\t\t\t->editor()\n" ;
+                        if ( $field['type'] == 'input' ) $php.= "\t\t\t->isVarchar()\n" ;
+                        if ( $field['type'] == 'textarea' ) $php.= "\t\t\t->isText()\n" ;
+                        if ( $field['type'] == 'gallery' ) $php.= "\t\t\t->isGallery()\n" ;
+                        if ( $field['type'] == 'document' ) $php.= "\t\t\t->isDocument()\n" ;
+                        if ( $field['type'] == 'video' ) $php.= "\t\t\t->isVideo()\n" ;
+                        if ( $field['type'] == 'link' ) $php.= "\t\t\t->isLink()\n" ;
+                        if ( $field['type'] == 'image' ) $php.= "\t\t\t->isImage()\n" ;
+//                        if ( $field['type'] == 'radio' ) $php.= "\t\t\t->isRadio()\n" ;
+                        if ( $field['type'] == 'boolean' ) $php.= "\t\t\t->isBoolean()\n" ;
+                        if ( $field['type'] == 'checkbox' ) $php.= "\t\t\t->isCheckbox()\n" ;
+                        if ( $field['type'] == 'integer' ) $php.= "\t\t\t->isInteger()\n" ;
+                        if ( $field['type'] == 'float' ) $php.= "\t\t\t->isFloat()\n" ;
+                        if ( $field['type'] == 'icon' ) $php.= "\t\t\t->isIcon()\n" ;
+                        if ( $field['type'] == 'password' ) $php.= "\t\t\t->isPassword()\n" ;
+                        if ( $field['type'] == 'hour' ) $php.= "\t\t\t->isHour()\n" ;
+
+                        if ( $field['type'] == 'date' )
+                        {
+                            if ( $field['dateWithHour'] )   $php.= "\t\t\t->isDate(true)\n" ;
+                            else                            $php.= "\t\t\t->isDate()\n" ;
+
+                            if ( ! empty( $field['selectOptions'] ) )
+                            {
+                                foreach ( $field['selectOptions'] as $option )
+                                {
+                                    $php.= "\t\t\t->format(\"".$option['value']."\" , \"".$option['value']."\")\n" ;
+                                }
+                            }
+                        }
+
+                        if ( $field['type'] == 'select' )
+                        {
+                            $php.= "\t\t\t->isSelect()\n" ;
+                            if ( $field['many'] !== false )
+                            {
+                                $php.= "\t\t\t->manyToMany(\"". $field['many'] ."\")\n" ;
+                            }
+                            else
+                            {
+                                if ( ! empty( $field['selectOptions'] ) )
+                                {
+                                    $php.= "\t\t\t->option([\n" ;
+                                    foreach ( $field['selectOptions'] as $option )
+                                    {
+                                        $php.= "\t\t\t\t\"".$option['value']."\" => \"".$option['value']."\",\n" ;
+                                    }
+                                    $php.= "\t\t\t])\n" ;
+                                }
+                            }
+                        }
+
+                        $php.= "\t\t\t;\n\n" ;
+                    }
+                }
+
+
+
+            $php.= "\t}\n" ;
+            $php.= "}" ;
+
+            echo '<pre>';
+            dump( $php );
+
+        });
+
         $app->get('/new', function () use ($app)
         {
             $contentRows = \DB::for_table('module')

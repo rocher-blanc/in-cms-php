@@ -23,7 +23,6 @@ class CsrfGuard extends \Slim\Middleware
         {
             \App\Kernel\Factory::getInstance()->Response()->error('Invalid CSRF token key "' . $key . '"');
         }
-
         $this->key = $key;
     }
 
@@ -65,10 +64,28 @@ class CsrfGuard extends \Slim\Middleware
         // Validate the CSRF token.
         if ( in_array( $this->app->request()->getMethod() , ['POST', 'PUT', 'DELETE'] ) )
         {
-            $userToken = $this->app->request()->post( $this->key ) ;
+            if ( ! empty( $this->app->request()->headers('Content-Type') ) )
+            {
+                if ( strpos( $this->app->request()->headers('Content-Type') , 'application/json' ) !== false )
+                {
+                    $json = file_get_contents('php://input');
+                    $_POST = json_decode( $json , true );
+
+                    $userToken = $_POST[ $this->key ];
+                }
+                else
+                {
+                    $userToken = $this->app->request()->post( $this->key ) ;
+                }
+            }
+            else
+            {
+                $userToken = $this->app->request()->post( $this->key ) ;
+            }
+
             if ( $token !== $userToken )
             {
-                $this->app->halt(400, 'Invalid or missing CSRF token.');
+                $this->app->halt(400, "Invalid or missing CSRF token. ---  $token !== $userToken");
             }
         }
 
