@@ -590,8 +590,8 @@ class Controller extends \App\Kernel\Common\Controller
                                 $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
                                 if ( $mini !== false )
                                 {
-                                    $img  = $path . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
+									$img  = $path . '/' . $mini ;
+									$mini = Http::getInstance()->getUrl() . "/" . trim( $img , "/" ) ;
                                 }
 
                                 $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
@@ -606,7 +606,7 @@ class Controller extends \App\Kernel\Common\Controller
                                 if ( $mini !== false )
                                 {
                                     $img  = $path . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
+                                    $mini = Http::getInstance()->getUrl() . "/" . trim( $img , "/" );
                                 }
 
                                 $tab['thumb'][$cover[0].'x'.$cover[1]] = $mini ;
