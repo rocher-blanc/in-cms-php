@@ -1305,8 +1305,7 @@ class Builder extends Model
     {
         $this->field()->setData( "SQL_VALUE" , 11 ) ;
         $this->field()->setData( "SQL_TYPE" , "INT" ) ;
-//        $this->field()->setData( "type" , "hidden" ) ;
-        $this->field()->setData( "type" , "select" ) ;
+        $this->field()->setData( "type" , "hidden" ) ;
 		$this->field()->setData( "manyToMany" , true ) ;
 		$this->field()->setData( "object" , $this->_module_parent_name ) ;
         $this->field()->setData( "moduleParent" , true ) ;
@@ -1878,7 +1877,7 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function frontClass( ?String $sizes , $keepLine = false )
+    protected function frontClass( $sizes , $keepLine = false )
     {
         $this->field()->setData( "frontClass" , $sizes      ) ;
         $this->field()->setData( "frontBreak" , ! $keepLine ) ;
