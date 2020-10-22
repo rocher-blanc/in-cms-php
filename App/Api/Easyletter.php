@@ -26,15 +26,22 @@ class Easyletter
         if ( EL_VERSION == 'v2' )
         {
             $this->urlApi = 'https://api.easyletter.fr/v1/' ;
+            if( defined('EL_TOKEN') )
+            {
+                $this->token = EL_TOKEN;
+            }
         }
         else
         {
             $this->urlApi = 'https://api.v3.easyletter.fr/v2/' ;
-        }
-
-        if( defined('EL_TOKEN') )
-        {
-            $this->token = EL_TOKEN;
+            if( defined('EL_TOKEN_V3') )
+            {
+                $this->token = EL_TOKEN_V3;
+            }
+            else if( defined('EL_TOKEN') )
+            {
+                $this->token = EL_TOKEN;
+            }
         }
 
         if ( $this->token === NULL )
