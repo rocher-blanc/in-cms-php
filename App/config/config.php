@@ -129,6 +129,9 @@ defined('MAIL_SMTP_PORT') || define('MAIL_SMTP_PORT', 587 );
 defined('TOPOL_USER_ID') || define('TOPOL_USER_ID',NULL);
 defined('TOPOL_API_KEY') || define('TOPOL_API_KEY',NULL);
 
+defined('SELECT_FORM') || define('SELECT_FORM',false);
+
+
 // DATABASE
 if ( defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_DATABASE') )
 {

@@ -20,4 +20,3 @@ defined('ADMIN') || define('ADMIN',true);
 
 /* Thème du back office pour JContent */
 defined('COLOR') || define('COLOR','#008fc1');
-
