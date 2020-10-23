@@ -99,11 +99,10 @@ $app->group('/translate', function () use ($app) {
 		}
 
 		echo json_encode([
-							 'result' => true,
-							 'msg'    => Translate::getInstance()->getText('msg_text_maj')
-						 ]);
+             'result' => true,
+             'msg'    => Translate::getInstance()->getText('msg_text_maj')
+         ]);
 	});
-
 
 	$app->post('/add-key', function() use ($app) {
 		$new_key = $app->request->post('new_key');

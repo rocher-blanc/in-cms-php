@@ -13,7 +13,7 @@ class Install
 
     public static function postUpdate()
     {
-        $vendorName = 'JWebCreation/cms' ;
+        $vendorName = 'jwebcreation/cms' ;
         if ( getenv('APP_HOME') === false )
         {
             $separator = "/" ;

@@ -180,27 +180,29 @@
         {% endfor %}
     {% endif %}
 
-    <div class="fancy-title title-dotted-border title-center">
-        <h3><span>{{ _('link_plur')}}</span></h3>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>{{ _('url')}}</th>
-                    <th class="center">{{ _('total_clic')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for url, clickCount in statistics.statistics.linksStats %}
-                <tr>
-                    <td>{{ url }}</td>
-                    <td class="center">{{ clickCount }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% if statistics.statistics.linksStats|length > 0 %}
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>{{ _('link_plur')}}</span></h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _('url')}}</th>
+                        <th class="center">{{ _('total_clic')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for url, clickCount in statistics.statistics.linksStats %}
+                    <tr>
+                        <td>{{ url }}</td>
+                        <td class="center">{{ clickCount }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 
     <div class="fancy-title title-dotted-border title-center">
         <h3><span>{{ _('stats_domain')}}</span></h3>
@@ -242,66 +244,70 @@
         </div>
     </div>
 
-    <div class="fancy-title title-dotted-border title-center">
-        <h3><span>{{ _('stats_device')}}</span></h3>
-    </div>
-    <div class="table-responsive">
+    {% if statistics.statistics.statsByDevice|length > 0 %}
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>{{ _('stats_device')}}</span></h3>
+        </div>
         <div class="table-responsive">
-            <table class="table table-striped">
-                {% for device, systems in statistics.statistics.statsByDevice %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    {% for device, systems in statistics.statistics.statsByDevice %}
+                        <thead>
+                            <tr>
+                                <th colspan="5">{{ device }}</th>
+                            </tr>
+                            <tr>
+                                <th>{{ _('system') }}</th>
+                                <th class="center">{{ _('clickers') }}</th>
+                                <th class="center">{{ _('uniqueClicks') }}</th>
+                                <th class="center">{{ _('viewed') }}</th>
+                                <th class="center">{{ _('uniqueViews') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for system, datas in systems %}
+                                <td>{{ system }}</td>
+                                <td class="center">{{ datas.clickers }}</td>
+                                <td class="center">{{ datas.uniqueClicks }}</td>
+                                <td class="center">{{ datas.viewed }}</td>
+                                <td class="center">{{ datas.uniqueViews }}</td>
+                            {% endfor %}
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if statistics.statistics.statsByBrowser|length > 0 %}
+        <div class="fancy-title title-dotted-border title-center">
+            <h3><span>{{ _('stats_browser')}}</span></h3>
+        </div>
+        <div class="table-responsive">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th colspan="5">{{ device }}</th>
-                        </tr>
-                        <tr>
-                            <th>{{ _('system') }}</th>
-                            <th class="center">{{ _('clickers') }}</th>
-                            <th class="center">{{ _('uniqueClicks') }}</th>
-                            <th class="center">{{ _('viewed') }}</th>
-                            <th class="center">{{ _('uniqueViews') }}</th>
+                            <th>{{ _('browser')}}</th>
+                            <th class="center">{{ _('clickers')}}</th>
+                            <th class="center">{{ _('uniqueClicks')}}</th>
+                            <th class="center">{{ _('viewed')}}</th>
+                            <th class="center">{{ _('uniqueViews')}}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for system, datas in systems %}
-                            <td>{{ system }}</td>
-                            <td class="center">{{ datas.clickers }}</td>
-                            <td class="center">{{ datas.uniqueClicks }}</td>
-                            <td class="center">{{ datas.viewed }}</td>
-                            <td class="center">{{ datas.uniqueViews }}</td>
+                        {% for browser, datas in statistics.statistics.statsByBrowser %}
+                            <th>{{ browser }}</th>
+                            <th class="center">{{ datas.clickers }}</th>
+                            <th class="center">{{ datas.uniqueClicks }}</th>
+                            <th class="center">{{ datas.viewed }}</th>
+                            <th class="center">{{ datas.uniqueViews }}</th>
                         {% endfor %}
                     </tbody>
-                {% endfor %}
-            </table>
+                </table>
+            </div>
         </div>
-    </div>
-
-    <div class="fancy-title title-dotted-border title-center">
-        <h3><span>{{ _('stats_browser')}}</span></h3>
-    </div>
-    <div class="table-responsive">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>{{ _('browser')}}</th>
-                        <th class="center">{{ _('clickers')}}</th>
-                        <th class="center">{{ _('uniqueClicks')}}</th>
-                        <th class="center">{{ _('viewed')}}</th>
-                        <th class="center">{{ _('uniqueViews')}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for browser, datas in statistics.statistics.statsByBrowser %}
-                        <th>{{ browser }}</th>
-                        <th class="center">{{ datas.clickers }}</th>
-                        <th class="center">{{ datas.uniqueClicks }}</th>
-                        <th class="center">{{ datas.viewed }}</th>
-                        <th class="center">{{ datas.uniqueViews }}</th>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {% endif %}
 {% endblock %}
 
 {#

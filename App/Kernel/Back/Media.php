@@ -378,10 +378,4 @@ class Media extends \App\Kernel\Common\Media
 	{
 		return $this->getMini( $name , 't' , 100 , 100 ) ;
 	}
-
-	private function getExtension( $name )
-	{
-		$exp = explode( "." , $name ) ;
-		return '.' . end( $exp ) ;
-	}
 }

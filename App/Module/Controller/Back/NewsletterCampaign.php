@@ -11,20 +11,48 @@ class NewsletterCampaign extends Controller
 {
     protected function filterTable( $content )
     {
+        $v2  = [];
+        $v3  = [];
         $tab = [];
+
         foreach( $content as $row )
         {
             if ( ! empty( $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ) )
             {
-                $tab[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+                if ( $row->get( $this->getEntity()->get('version')->getColumn() ) == 'v2' )
+                {
+                    $v2[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+                }
+                else
+                {
+                    $v3[] = $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ;
+                }
             }
         }
 
-        sort( $tab , SORT_NUMERIC );
+        if ( ! empty( $v2 ) && ( EL_VERSION == 'v2' or ( EL_VERSION == 'v3' && defined('EL_TOKEN') && defined('EL_TOKEN_V3') ) ) )
+        {
+            sort( $v2 , SORT_NUMERIC );
 
-        $el = new Easyletter();
+            $elv2 = new Easyletter('v2');
+            $tab = $elv2->stats($v2);
+        }
 
-        $this->resultStats = $el->stats( $tab );
+        if ( ! empty( $v3 ) )
+        {
+            $elv3 = new Easyletter('v3');
+            $statsV3 = $elv3->stats( $v3 );
+
+            if ( $statsV3 )
+            {
+                foreach ( $statsV3 as $id => $stats )
+                {
+                    $tab[ $id ] = $stats;
+                }
+            }
+        }
+
+        $this->resultStats = $tab ;
 
         return $content ;
     }
@@ -110,17 +138,63 @@ class NewsletterCampaign extends Controller
         $el = new Easyletter();
         $tabStats = $el->stats( $data->get('id_easyletter') );
 
-        $this->setRender('statistics' , $tabStats );
         $this->setRender('id' , $data->get('id') );
         $this->setRender('rst' , [
             'subject' => $data->get('subject'),
             'destinataires' => $grps
         ] );
 
-        $file = 'stats.twig' ;
         if ( $data->get('version') == 'v3' )
         {
+            $this->setRender('statistics' , $tabStats );
             $file = 'stats_v3.twig' ;
+        }
+        else
+        {
+            $file = 'stats.twig' ;
+            $links = $tabStats['links']['records'];
+            for( $j = 0; $j <= count($links); $j++ )
+            {
+                $tabLinks[] = [
+                    "clicCount" => $links[$j][2],
+                    "link" => $links[$j][1],
+                    "recipientsClic" => $links[$j][3]
+                ];
+            }
+            $state = $tabStats['routage']['records'][0][1];
+            $this->setRender('res' , [
+                'ToSend' => $tabStats['routage']['records'][0][2],
+                "Sent" => $tabStats['routage']['records'][0][3],
+                "HardBounces" => $tabStats['routage']['records'][0][8],
+                "RecipientsRead" => $tabStats['routage']['records'][0][4],
+                "RecipientsClic" => $tabStats['routage']['records'][0][5],
+                "SoftBounces" => $tabStats['routage']['records'][0][7],
+                "Unsubscribe" => $tabStats['routage']['records'][0][6],
+                "State" => $tabStats['routage']['records'][0][1],
+                "StateStr" => $tabStats['state_routage'][$state],
+            ] );
+
+            $records = $tabStats['destStats']['records'];
+            for( $i = 0; $i < count($records); $i++ )
+            {
+                $tabDests[] = [
+                    "recipientId" => $records[$i][0],
+                    "email" => $records[$i][1],
+                    "MobilePhone" => $records[$i][2],
+                    "state" => $records[$i][3],
+                    "read" => $records[$i][4],
+                    "readDateUTC" => $records[$i][5],
+                    "unsubscribe" => $records[$i][6],
+                    "unsubscribeDateUTC" => $records[$i][7],
+                    "vacation" => $records[$i][8],
+                    "clicCount" => $records[$i][9],
+                    "linkClicCount" => $records[$i][10]
+                ];
+            }
+
+            $this->setRender('dests' , $tabDests );
+            $this->setRender('status' , $tabStats['state_mailing']);
+            $this->setRender('links' , $tabLinks );
         }
 
         $this->render($file);

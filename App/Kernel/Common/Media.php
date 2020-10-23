@@ -280,7 +280,7 @@ class Media
 		$currentPath = "/" . trim( $basePath , "/" );
 		foreach( explode("/" , $dir) as $currentDir )
 		{
-			if( strlen(trim($currentDir)) > 0 )
+			if ( strlen(trim($currentDir)) > 0 )
 			{
 				$currentPath .= "/" . $currentDir;
 				if( ! is_dir($currentPath) )
@@ -360,5 +360,9 @@ class Media
 		});
 	}
 
-
+    protected function getExtension( $name )
+    {
+        $exp = explode( "." , $name ) ;
+        return '.' . end( $exp ) ;
+    }
 }

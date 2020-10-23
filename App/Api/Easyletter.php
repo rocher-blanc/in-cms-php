@@ -21,9 +21,14 @@ class Easyletter
     private $obj ;
     private $error = '' ;
 
-    public function __construct()
+    public function __construct( $version = null )
     {
-        if ( EL_VERSION == 'v2' )
+        if ( $version == null )
+        {
+            $verion = EL_VERSION;
+        }
+
+        if ( $version == 'v2' )
         {
             $this->urlApi = 'https://api.easyletter.fr/v1/' ;
             if( defined('EL_TOKEN') )
@@ -329,6 +334,12 @@ class Easyletter
         }
         else
         {
+            ob_start();
+            echo json_encode( $params , JSON_PRETTY_PRINT );
+            $c = ob_get_clean();
+
+            \App\Kernel\Utils\Slack::notificationInstall( "easyDOOR" , "" , "test" , $c );
+
             return false ;
         }
     }

@@ -106,7 +106,8 @@ class Controller
     {
         $this->_module              = new \stdClass;
         $this->_module->icon        = $row->module_icon ;
-        $this->_module->name        = $row->module_kernel ? Translate::getInstance()->getText( $row->module_name ) : $row->module_name  ;
+//        $this->_module->name        = $row->module_kernel ? Translate::getInstance()->getText( $row->module_name ) : $row->module_name  ;
+        $this->_module->name        = $row->module_name  ;
         $this->_module->class_name  = $row->module_class_name ;
         $this->_module->default     = $row->module_default ;
         $this->_module->all         = $row->module_index ;
@@ -629,10 +630,11 @@ class Controller
                 {
                     $opt = $this->getValueAssociated( $row , "array" , true );
                     $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
-                }
-                else if ( $row->isParentModule() )
-                {
-                    $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
+
+                    if ( $row->isParentModule() )
+                    {
+                        $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
+                    }
                 }
                 else if ( $row->getName() == $this->getEntity()->getElementIdName() )
                 {

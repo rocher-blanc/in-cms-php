@@ -41,7 +41,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                     {
                         foreach( $rstRec as $email )
                         {
-                            $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
+                            $mail = strtolower( trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) );
 
                             $recipients[ $mail ]['email'] = $mail ;
                             $recipients[ $mail ]['lists'][] = $group ;
