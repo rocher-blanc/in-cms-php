@@ -9,7 +9,7 @@
     {# TODO dynamiser les relations {{ dump(module) }}#}
 
     {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
-    {# TODO Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
+    {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
     {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
     {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
     {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
@@ -202,6 +202,13 @@
                 </div>
             </div>
 
+            <div class="form-group row" v-if="newField.type === 'input'">
+                <label class="col-sm-3">Taille du champ</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="number" v-model="newField.inputCharLength">
+                </div>
+            </div>
+
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-3">Activer l'éditeur HTML</label>
                 <div class="col-sm-9">
@@ -326,6 +333,7 @@
                     </div>
                     <div v-if="['input'].includes(field.type)">
                         <div>Type d'input: <-- field.inputType --></div>
+                        <div>Taille du champ: <-- field.inputCharLength --></div>
                     </div>
                     <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
                     <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
@@ -398,6 +406,7 @@
                     },
                     type: '',
                     inputType: '',
+                    inputCharLength: 255,
                     textareaHtml: false,
                     selectOptions: [],
                     option: {
