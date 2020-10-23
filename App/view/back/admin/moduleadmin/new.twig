@@ -474,6 +474,13 @@
                     const filteredFields = this.fields.filter(field => field.isRef);
                     filteredFields.forEach(field => fieldsId.push(field.id));
                     return fieldsId;
+                },
+                duplicatedId() {
+                    let result = false;
+                    this.fields.forEach(field => {
+                        if (field.id === this.newField.id) { result = true }
+                    });
+                    return result;
                 }
             },
             methods: {
