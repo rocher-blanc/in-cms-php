@@ -7,7 +7,9 @@
 
     {# TODO dynamiser les relations {{ dump(depedency) }}#}
     {# TODO dynamiser les relations {{ dump(module) }}#}
-    {# TODO Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email et rajouter une option de taille du champ (255 par defaut) #}
+
+    {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
+    {# TODO Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
     {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
     {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
     {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
@@ -191,6 +193,15 @@
                 </div>
             </div>
 
+            <div class="form-group row" v-if="newField.type === 'input'">
+                <label class="col-sm-3">Type d'input</label>
+                <div class="col-sm-9">
+                    <select name="type" v-model="newField.inputType" class="form-control">
+                        <option v-for="inputType in inputTypes" :value="inputType.value"><-- inputType.text --></option>
+                    </select>
+                </div>
+            </div>
+
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-3">Activer l'éditeur HTML</label>
                 <div class="col-sm-9">
@@ -302,7 +313,7 @@
                     <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean><br>
                     <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
                 </div>
-                <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float'].includes(field.type)">
+                <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float','input'].includes(field.type)">
                     <strong>Options</strong><br>
                     <display-boolean v-if="['textarea'].includes(field.type)" :value="field.textareaHtml" text="Éditeur HTML"></display-boolean>
                     <div v-if="['select','radio','checkbox','date'].includes(field.type)">
@@ -312,6 +323,9 @@
                         <div>Type: <-- field.imageType --></div>
                         <div v-if="field.imageWidth">Width: <-- field.imageWidth --></div>
                         <div v-if="field.imageHeight">Height: <-- field.imageHeight --></div>
+                    </div>
+                    <div v-if="['input'].includes(field.type)">
+                        <div>Type d'input: <-- field.inputType --></div>
                     </div>
                     <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
                     <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
@@ -344,7 +358,7 @@
             delimiters: ["<--","-->"],
             data: {
                 fieldTypes: [
-                    { value: 'input', text: 'Texte' },
+                    { value: 'input', text: 'Input' },
                     { value: 'select', text: 'Select' },
                     { value: 'textarea', text: 'Textarea' },
                     { value: 'gallery', text: 'Galerie' },
@@ -362,6 +376,11 @@
                     { value: 'date', text: 'Date' },
                     { value: 'hour', text: 'Heure' }
                 ],
+                inputTypes: [
+                    { value: 'text', text: 'Text' },
+                    { value: 'phone', text: 'Phone' },
+                    { value: 'email', text: 'Email' }
+                ],
                 imageTypes: ['thumb','cover','width','height'],
                 maxCols: 5,
                 newField: {
@@ -378,6 +397,7 @@
                         total: 0
                     },
                     type: '',
+                    inputType: '',
                     textareaHtml: false,
                     selectOptions: [],
                     option: {
@@ -427,6 +447,8 @@
                         } else {
                             return basicDatasFilled && this.newField.imageType.length > 0 && this.newField.imageWidth && this.newField.imageHeight;
                         }
+                    } else if (['input'].includes(this.newField.type)) {
+                        return basicDatasFilled && this.newField.inputType.length > 1;
                     } else {
                         return basicDatasFilled;
                     }
