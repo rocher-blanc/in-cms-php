@@ -12,8 +12,8 @@
     {# DONE Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
     {# DONE Pouvoir supprimer un champ #}
 
-    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
-    {# TODO [en attente] dynamiser les relations {{ dump(module) }}#}
+    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }} #}
+    {# TODO [en attente] dynamiser les relations {{ dump(module) }} #}
     {# TODO [besoin de détails] Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
     {# TODO [besoin de détails] Pour le manyToMany (select) des modules (variable many) #}
     {# TODO [besoin de détails] Pouvoir ajouter des onglet (ID, nom, icone) #}
@@ -310,7 +310,7 @@
 
         <div v-if="fields.length" v-for="(field, index) in fields" class="card card-body" style="margin-bottom: 15px">
             <div class="text-right" style="margin-bottom: 10px">
-                <button class="btn btn-sm btn-danger" @click="remove(index)"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-sm btn-danger" @click="remove(index)"><i class="icon-line-trash"></i></button>
                 <button class="btn btn-sm btn-secondary" v-if="index !== 0" @click="moveUp(index)"><i class="icon-line-arrow-up"></i></button>
                 <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" @click="moveDown(index)"><i class="icon-line-arrow-down"></i></button>
             </div>
@@ -510,6 +510,7 @@
             },
             methods: {
                 addField: function () {
+                    this.newField.id = this.camelCase(this.newField.id);
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
                 saveJson: function () {
@@ -534,7 +535,7 @@
                     )
                 },
                 removeOption(index) {
-                    this.newField.selectOptions.splice(index, 1);
+                    this.newField.selectOptions.splice(index);
                 },
                 moveUp(index) {
                     if (index !== 0) {
@@ -565,7 +566,7 @@
                 remove(index) {
                     this.fields.splice(index, 1);
                 },
-                camelCase: function(str) {
+                camelCase(str) {
                     str = replaceAccents(str);
                     str = removeNonWord(str)
                         .replace(/\-/g, " ") //convert all hyphens to spaces
@@ -573,19 +574,15 @@
                         .replace(/\s+/g, "") //remove spaces
                         .replace(/^[A-Z]/g, lowerCase); //convert first char to lowercase
                     return str;
-
                     function upperCase(str) {
                         return str.toUpperCase();
                     }
-
                     function lowerCase(str) {
                         return str.toLowerCase();
                     }
-
                     function removeNonWord(str) {
                         return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
                     }
-
                     function replaceAccents(str) {
                         // verifies if the String has accents and replace them
                         if (str.search(/[\xC0-\xFF]/g) > -1) {
