@@ -9,8 +9,8 @@
     {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
     {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
     {# DONE Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
+    {# DONE Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
 
-    {# TODO Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
     {# TODO Pouvoir supprimer un champ #}
 
     {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
@@ -222,6 +222,13 @@
                 </div>
             </div>
 
+            <div class="form-group row" v-if="['input','textarea'].includes(newField.type)">
+                <label class="col-sm-3">Activer le multilang</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" v-model="newField.lang">
+                </div>
+            </div>
+
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-3">Activer l'éditeur HTML</label>
                 <div class="col-sm-9">
@@ -329,8 +336,8 @@
                     <-- field.type -->
                 </div>
                 <div class="col-sm-2">
-                    <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean><br>
-                    <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean><br>
+                    <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean>
+                    <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean>
                     <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
                     <div v-if="field.comment">
                         <div>Commentaire: <-- field.comment --></div>
@@ -339,6 +346,7 @@
                 <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float','input'].includes(field.type)">
                     <strong>Options</strong><br>
                     <display-boolean v-if="['textarea'].includes(field.type)" :value="field.textareaHtml" text="Éditeur HTML"></display-boolean>
+                    <display-boolean v-if="['textarea','input'].includes(field.type)" :value="field.lang" text="Multilang"></display-boolean>
                     <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
                     <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
                     <div v-if="['select','radio','checkbox','date'].includes(field.type)">
@@ -375,7 +383,7 @@
                 icon() { return this.value ? 'icon-line-check' : 'icon-line-cross' },
                 color() { return this.value ? 'text-success' : 'text-warning' }
             },
-            template: `<strong :class="color"><i :class="icon"></i> <-- text --></strong>`
+            template: `<div><strong :class="color"><i :class="icon"></i> <-- text --></strong></div>`
         });
         const app = new Vue({
             el: '#app',
@@ -411,10 +419,10 @@
                     id: '',
                     name: '',
                     isUrl: false,
-                    lang: false,
                     isRef: false,
                     empty: false,
                     many: false,
+                    lang: false,
                     comment: '',
                     column: {
                         size: 0,
