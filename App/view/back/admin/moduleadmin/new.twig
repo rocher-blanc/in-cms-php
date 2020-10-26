@@ -10,8 +10,7 @@
     {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
     {# DONE Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
     {# DONE Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
-
-    {# TODO Pouvoir supprimer un champ #}
+    {# DONE Pouvoir supprimer un champ #}
 
     {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
     {# TODO [en attente] dynamiser les relations {{ dump(module) }}#}
@@ -304,15 +303,16 @@
 
             <div class="form-group row">
                 <div class="col-sm-12 text-right">
-                    <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
+                    <button @click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
                 </div>
             </div>
         </div>
 
         <div v-if="fields.length" v-for="(field, index) in fields" class="card card-body" style="margin-bottom: 15px">
             <div class="text-right" style="margin-bottom: 10px">
-                <button class="btn btn-sm btn-secondary" v-if="index !== 0" v-on:click="moveUp( index )"><i class="icon-line-arrow-up"></i></button>
-                <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" v-on:click="moveDown( index )"><i class="icon-line-arrow-down"></i></button>
+                <button class="btn btn-sm btn-danger" @click="remove(index)"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-sm btn-secondary" v-if="index !== 0" @click="moveUp(index)"><i class="icon-line-arrow-up"></i></button>
+                <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" @click="moveDown(index)"><i class="icon-line-arrow-down"></i></button>
             </div>
             <div class="row">
                 <div class="col-sm-1">
@@ -366,7 +366,7 @@
         </div>
 
         <div v-if="fields.length" class="text-center">
-            <button v-on:click="saveJson" class="btn btn-primary">Sauvegarder</button>
+            <button @click="saveJson" class="btn btn-primary">Sauvegarder</button>
         </div>
     </div>
 {% endblock %}
@@ -425,8 +425,8 @@
                     lang: false,
                     comment: '',
                     column: {
-                        size: 0,
-                        total: 0
+                        size: 5,
+                        total: 5
                     },
                     type: '',
                     inputType: '',
@@ -536,9 +536,9 @@
                 removeOption(index) {
                     this.newField.selectOptions.splice(index, 1);
                 },
-                moveUp: function (index) {
+                moveUp(index) {
                     if (index !== 0) {
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                        this.fields = this.fields.map((e, i) => {
                             if (i === index - 1) {
                                 return this.fields[index];
                             } else if (i === index) {
@@ -549,9 +549,9 @@
                         })
                     }
                 },
-                moveDown: function (index) {
-                    if (index !== this.fields.length-1) { // if its the last in the array
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                moveDown(index) {
+                    if (index !== this.fields.length-1) {
+                        this.fields = this.fields.map((e, i) => {
                             if (i === index) {
                                 return this.fields[index + 1];
                             } else if (i === index + 1) {
@@ -561,6 +561,9 @@
                             }
                         })
                     }
+                },
+                remove(index) {
+                    this.fields.splice(index, 1);
                 },
                 camelCase: function(str) {
                     str = replaceAccents(str);
