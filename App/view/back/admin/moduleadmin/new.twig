@@ -10,7 +10,7 @@
 
     {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
     {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
-    {# TODO [en cours] ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
+    {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
     {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
     {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
     {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
@@ -18,6 +18,10 @@
     {# TODO Pour le manyToMany (select) des modules (variable many) #}
     {# TODO Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
     {# TODO Pouvoir supprimer un champ #}
+
+    <style>
+        .border-danger { border-color: #a94442 }
+    </style>
 
     <div id="app">
 
@@ -132,7 +136,8 @@
             <div class="form-group row">
                 <label class="col-sm-3">Id du champ</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" v-model="newField.id">
+                    <input type="text" class="form-control" :class="{ 'border-danger' : duplicatedId }" v-model="newField.id">
+                    <div class="text-danger" v-if="duplicatedId">Cet ID est déjà utilisé par un autre champ</div>
                 </div>
             </div>
 
@@ -441,6 +446,7 @@
             computed: {
                 formValidation() {
                     const basicDatasFilled =
+                        !this.duplicatedId &&
                         this.newField.id.length &&
                         this.newField.name.length &&
                         this.newField.column.size &&
