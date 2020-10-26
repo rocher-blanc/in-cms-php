@@ -5,19 +5,20 @@
 
 {% block module %}
 
-    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
-    {# TODO [en attente] dynamiser les relations {{ dump(module) }}#}
-
     {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
     {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
     {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
-    {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
-    {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
-    {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
+    {# DONE Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
+
     {# TODO Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
-    {# TODO Pour le manyToMany (select) des modules (variable many) #}
-    {# TODO Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
     {# TODO Pouvoir supprimer un champ #}
+
+    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
+    {# TODO [en attente] dynamiser les relations {{ dump(module) }}#}
+    {# TODO [besoin de détails] Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
+    {# TODO [besoin de détails] Pour le manyToMany (select) des modules (variable many) #}
+    {# TODO [besoin de détails] Pouvoir ajouter des onglet (ID, nom, icone) #}
+    {# TODO [besoin de détails] Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
 
     <style>
         .border-danger { border-color: #a94442 }
@@ -166,6 +167,13 @@
                 <label class="col-sm-3">Champ obligatoire</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="newField.empty">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Commentaire</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="newField.comment">
                 </div>
             </div>
 
@@ -324,10 +332,15 @@
                     <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean><br>
                     <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean><br>
                     <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
+                    <div v-if="field.comment">
+                        <div>Commentaire: <-- field.comment --></div>
+                    </div>
                 </div>
                 <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float','input'].includes(field.type)">
                     <strong>Options</strong><br>
                     <display-boolean v-if="['textarea'].includes(field.type)" :value="field.textareaHtml" text="Éditeur HTML"></display-boolean>
+                    <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
+                    <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
                     <div v-if="['select','radio','checkbox','date'].includes(field.type)">
                         <div v-for="option in field.selectOptions"><-- option --></div>
                     </div>
@@ -340,8 +353,6 @@
                         <div>Type d'input: <-- field.inputType --></div>
                         <div>Taille du champ: <-- field.inputCharLength --></div>
                     </div>
-                    <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
-                    <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
                 </div>
             </div>
         </div>
@@ -404,7 +415,7 @@
                     isRef: false,
                     empty: false,
                     many: false,
-                    comment: false,
+                    comment: '',
                     column: {
                         size: 0,
                         total: 0
