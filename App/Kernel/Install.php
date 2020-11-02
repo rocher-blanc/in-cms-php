@@ -16,15 +16,13 @@ class Install
 
     public static function postUpdate( Event $event )
     {
-        $vendorName = 'jwebcreation/cms' ;
+        $vendorName = 'JWebCreation/cms' ;
 
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
 
         defined('VENDOR_PATH') || define("VENDOR_PATH", $vendorDir);
         defined('_PATH_') || define('_PATH_', substr( $vendorDir, 0 , ( strlen( "/vendor" ) * -1 ) ) );
 
-        require VENDOR_PATH . '/autoload.php';
-        //
         defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
         defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
         defined('SLACK_AUTHORNAME') || define('SLACK_AUTHORNAME', "JWeb" );
