@@ -19,7 +19,7 @@ class Install
         $vendorName = 'jwebcreation/cms' ;
 
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-        require VENDOR_PATH . '/autoload.php';
+        require $vendorDir . '/autoload.php';
 
         dump( $vendorDir );
 //        if ( getenv('APP_HOME') === false )
