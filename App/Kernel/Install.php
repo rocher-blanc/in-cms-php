@@ -16,45 +16,45 @@ class Install
 
     public static function postUpdate( Event $event )
     {
-//        $vendorName = 'jwebcreation/cms' ;
-//        if ( getenv('APP_HOME') === false )
-//        {
-//            $separator = "/" ;
-//            $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
-//
-//            if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
-//
-//            $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
-//            $path   = str_replace( $vendor , "" , $path );
-//
-//            defined('_PATH_') || define('_PATH_', $path );
-//            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
-//        }
-//        else
-//        {
-//            $path   = getenv('APP_HOME') . "/public" ;
-//            defined('_PATH_') || define('_PATH_', $path );
-//            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
-//        }
-//
-//        defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
-//        defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
-//        defined('SLACK_AUTHORNAME') || define('SLACK_AUTHORNAME', "JWeb" );
-//        defined('SLACK_USERNAME') || define('SLACK_USERNAME', "JWeb-Bot" );
-//        defined('SLACK_COLOR') || define('SLACK_COLOR', "#ffab40" );
-//
-//        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
-//
-//        defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
-//        defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
-//        defined('LANGUAGE_PATH') || define('LANGUAGE_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Languages');
-//        defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
-//        defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
-//
-//        require VENDOR_PATH . '/autoload.php';
-//        require KERNEL_PATH . '/DB.php';
-//
-//        self::postInstall() ;
+        $vendorName = 'jwebcreation/cms' ;
+        if ( getenv('APP_HOME') === false )
+        {
+            $separator = "/" ;
+            $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
+
+            if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
+
+            $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
+            $path   = str_replace( $vendor , "" , $path );
+
+            defined('_PATH_') || define('_PATH_', $path );
+            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
+        }
+        else
+        {
+            $path   = getenv('APP_HOME') . "/public" ;
+            defined('_PATH_') || define('_PATH_', $path );
+            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
+        }
+
+        defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
+        defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
+        defined('SLACK_AUTHORNAME') || define('SLACK_AUTHORNAME', "JWeb" );
+        defined('SLACK_USERNAME') || define('SLACK_USERNAME', "JWeb-Bot" );
+        defined('SLACK_COLOR') || define('SLACK_COLOR', "#ffab40" );
+
+        defined('PROJECT_PATH') || define('PROJECT_PATH', _PATH_ . '/Project');
+
+        defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
+        defined('KERNEL_PATH') || define('KERNEL_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Kernel');
+        defined('LANGUAGE_PATH') || define('LANGUAGE_PATH', VENDOR_PATH . "/" . $vendorName . '/App/Languages');
+        defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
+        defined('BOWER_PATH') || define('BOWER_PATH', ASSET_PATH . '/vendor');
+
+        require VENDOR_PATH . '/autoload.php';
+        require KERNEL_PATH . '/DB.php';
+
+        self::postInstall( $event ) ;
     }
 
     public static function postInstall( Event $event )
