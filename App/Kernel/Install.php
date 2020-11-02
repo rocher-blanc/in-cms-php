@@ -18,10 +18,8 @@ class Install
     {
         $vendorName = 'JWebCreation/cms' ;
 
-        $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-
-        defined('VENDOR_PATH') || define("VENDOR_PATH", $vendorDir);
-        defined('_PATH_') || define('_PATH_', substr( $vendorDir, 0 , ( strlen( "/vendor" ) * -1 ) ) );
+        defined('VENDOR_PATH') || define("VENDOR_PATH", $event->getComposer()->getConfig()->get('vendor-dir'));
+        defined('_PATH_') || define('_PATH_', substr( VENDOR_PATH, 0 , ( strlen( "/vendor" ) * -1 ) ) );
 
         defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
         defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
@@ -352,13 +350,28 @@ class Install
         $files = glob( LANGUAGE_PATH . '/BO*.php');
         if ( $files && count( $files ) > 0 )
         {
-
             foreach( $files as $file )
             {
                 $array    = explode( '/' , $file ) ;
                 $filename = end( $array );
                 copy( $file , PROJECT_PATH . "/Lang/" . $filename );
             }
+        }
+
+        $fileFrontDefault = PROJECT_PATH . "/Lang/FR.php";
+
+        if ( ! file_exists( $fileFrontDefault ) )
+        {
+            $php = '' ;
+            $php.= "<"."?"."php\n" ;
+            $php.= "namespace Project\Lang;\n" ;
+            $php.= "class FR extends \App\Kernel\Front\LanguageModel {\n" ;
+            $php.= "\tprotected $"."a = [\n" ;
+            $php.= "\t];\n" ;
+            $php.= "}" ;
+
+            self::create( $fileFrontDefault , $php ) ;
+
         }
     }
 
