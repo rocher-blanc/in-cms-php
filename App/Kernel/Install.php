@@ -39,7 +39,7 @@ class Install
 
         require VENDOR_PATH . '/autoload.php';
         require KERNEL_PATH . '/DB.php';
-//        self::postInstall( $event ) ;
+        self::postInstall( $event ) ;
     }
 
     public static function postInstall( Event $event )
