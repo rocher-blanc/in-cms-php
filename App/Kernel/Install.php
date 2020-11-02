@@ -2,6 +2,9 @@
 
 namespace App\Kernel;
 
+use Composer\Script\Event;
+use Composer\Installer\PackageEvent;
+
 class Install
 {
     public function __construct() {}
