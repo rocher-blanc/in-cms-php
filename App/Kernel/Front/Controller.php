@@ -536,6 +536,11 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function parseValue( $result )
     {
+        if ( ! $result )
+        {
+            return false ;
+        }
+        
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
         if ( $this->getId() === NULL )
