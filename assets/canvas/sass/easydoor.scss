@@ -912,6 +912,11 @@ ul.docs-icons li span {
   }
 }
 
+/* Plus petits éditeurs de texte */
+.tab-content textarea.form-control {
+  height: 208px;
+}
+
 /* Bug des selects : texte qui sort de la zone */
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
   overflow: hidden;
