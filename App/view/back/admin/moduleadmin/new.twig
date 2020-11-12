@@ -5,19 +5,12 @@
 
 {% block module %}
 
-    {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
-    {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
-    {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
-    {# DONE Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
-    {# DONE Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
-    {# DONE Pouvoir supprimer un champ #}
+    {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
+    {# TODO Pouvoir ajouter des groupes (ID, nom) #}
 
-    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }} #}
-    {# TODO [en attente] dynamiser les relations {{ dump(module) }} #}
-    {# TODO [besoin de détails] Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
-    {# TODO [besoin de détails] Pour le manyToMany (select) des modules (variable many) #}
-    {# TODO [besoin de détails] Pouvoir ajouter des onglet (ID, nom, icone) #}
-    {# TODO [besoin de détails] Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
+    {# TODO [en attente finalisation v1] dynamiser les relations {{ dump(depedency) }} #}
+    {# TODO [en attente finalisation v1] dynamiser les relations {{ dump(module) }} #}
+    {# TODO [en attente finalisation v1] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
 
     <style>
         .border-danger { border-color: #a94442 }
@@ -76,16 +69,28 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3">Module de profil utilisateur</label>
+                <label class="col-sm-3">Type de module</label>
                 <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user_module">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Module associer à un utilisateur</label>
-                <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="standard">
+                                Standard
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_profile">
+                                Profil utilisateur
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_association">
+                                Associer à un utilisateur
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -451,8 +456,7 @@
                         valid: true
                     },
                     name: '',
-                    user: false,
-                    user_module: false,
+                    type: 'standard',
                     order: false,
                     limit: false,
                     pagination: false,
