@@ -136,7 +136,6 @@ class Gallery
 			$name = $this->getImageName() ;
 		}
 		try {
-
 			$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
 			$img  = $path . $name ;
 			$miniName = $this->updateName( $name , $newNameSuffix ) ;
@@ -157,7 +156,7 @@ class Gallery
 			$tmpImg->best_fit( $width , $height , "center" );
 			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
 			$destImg->overlay($tmpImg)->save($file);
-		});
+		}, $name );
 	}
 
 	public function genCover( $width , $height , $crop = false , $name = '' )
@@ -166,7 +165,7 @@ class Gallery
 			$tmpImg->thumbnail( $width , $height , "center" );
 			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
 			$destImg->overlay($tmpImg)->save($file);
-		});
+		}, $name );
 	}
 
 	public function genWidth( $width , $name = '' )
@@ -179,7 +178,7 @@ class Gallery
 			$tmpImg->thumbnail( $width , $height , "center" );
 			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
 			$destImg->overlay($tmpImg)->save($file);
-		});
+		}, $name );
 	}
 
 	public function genHeight( $height , $name = '' )
@@ -192,7 +191,7 @@ class Gallery
 			$tmpImg->thumbnail( $height , $height , "center" );
 			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
 			$destImg->overlay($tmpImg)->save($file);
-		});
+		}, $name );
 	}
 
 

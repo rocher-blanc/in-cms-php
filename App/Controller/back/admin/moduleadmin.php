@@ -308,6 +308,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 		$app->post('/image/:id', function ($id) use ($app)
 		{
+			set_time_limit(0);
 			$ret = false;
 			$contentRow = \DB::for_table('module')
 				->where_equal('module_id', $id)

@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Kernel\Back\Seo;
+use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
 use App\Kernel\Front\Alt;
 use App\Kernel\Front\Gallery;
@@ -535,6 +536,11 @@ class Controller extends \App\Kernel\Common\Controller
 
     public function parseValue( $result )
     {
+        if ( ! $result )
+        {
+            return false ;
+        }
+        
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
         if ( $this->getId() === NULL )
@@ -1215,6 +1221,9 @@ class Controller extends \App\Kernel\Common\Controller
                                 $content = $this->getRepository()->create();
                             }
 
+                            /**
+                             * @var Field $row
+                             */
                             foreach( $this->getEntity()->getField() as $row )
                             {
                                 if ( $this->checkCustomField( $row ) == true )
@@ -1268,9 +1277,12 @@ class Controller extends \App\Kernel\Common\Controller
 
                             if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
 
+                            /**
+                             * @var Field $field
+                             */
                             foreach( $this->getEntity()->getField() as $nameField => $field )
                             {
-                                if ( $field->getType() == "checkbox" )
+                                if ( $field->getType() == "checkbox" && $field->front() !== false )
                                 {
                                     $this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
                                 }

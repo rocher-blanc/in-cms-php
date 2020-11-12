@@ -168,6 +168,7 @@ class NewsletterCampaign extends Builder
                     {
                         case 'queued' : // programmée
                         case 'pending' : $class = 'info'; break; // pret
+                        case 'in_progress' :
                         case 'doing' : $class = 'primary'; break; // en cours
                         case 'suspended' : $class = 'warning'; break; // Suspendu
                         case 'sent' : $class = 'success'; break; // envoyée
