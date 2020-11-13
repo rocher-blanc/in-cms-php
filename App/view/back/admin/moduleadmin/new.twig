@@ -5,15 +5,14 @@
 
 {% block module %}
 
-    {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
-    {# TODO Pouvoir ajouter des groupes (ID, nom) #}
-
-    {# TODO [en attente finalisation v1] dynamiser les relations {{ dump(depedency) }} #}
-    {# TODO [en attente finalisation v1] dynamiser les relations {{ dump(module) }} #}
-    {# TODO [en attente finalisation v1] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
+    {# TODO [v2] dynamiser les relations {{ dump(depedency) }} #}
+    {# TODO [v2] dynamiser les relations {{ dump(module) }} #}
+    {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
 
     <style>
         .border-danger { border-color: #a94442 }
+        .modal-header:before, .modal-header:after { content: none }
+        .modal-hide { display: none }
     </style>
 
     <div id="app">
@@ -137,6 +136,44 @@
         <h4 style="margin-bottom: 20px">Nouveau champ</h4>
 
         <div class="card card-body" style="margin-bottom: 30px">
+
+            <div class="form-group row">
+                <label class="col-sm-3">Groupe</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!groups.length" v-model="newField.groupId">
+                                <option value="">Aucun groupe</option>
+                                <option v-for="group in groups" :value="group.id"><-- group.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewGroup')">
+                                + Ajouter un groupe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Onglet</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!tabs.length" v-model="newField.tabId">
+                                <option value="">Aucun onglet</option>
+                                <option v-for="tab in tabs" :value="tab.id"><-- tab.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewTab')">
+                                + Ajouter un onglet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-group row">
                 <label class="col-sm-3">Id du champ</label>
@@ -320,7 +357,7 @@
                 <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" @click="moveDown(index)"><i class="icon-line-arrow-down"></i></button>
             </div>
             <div class="row">
-                <div class="col-sm-1">
+                <div class="col-sm-2">
                     <strong>Position</strong><br>
                     <-- index + 1 -->
                 </div>
@@ -328,17 +365,25 @@
                     <strong>Taille</strong><br>
                     <-- field.column.size --> / <-- field.column.total -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Id</strong><br>
                     <-- field.id -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Nom</strong><br>
                     <-- field.name -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Type</strong><br>
                     <-- field.type -->
+                </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.groupId" text="Groupe"></display-boolean>
+                    <div v-if="field.groupId">Id: <-- field.groupId --></div>
+                </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.tabId" text="Onglet"></display-boolean>
+                    <div v-if="field.tabId">Id: <-- field.tabId --></div>
                 </div>
                 <div class="col-sm-2">
                     <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean>
@@ -373,6 +418,59 @@
         <div v-if="fields.length" class="text-center">
             <button @click="saveJson" class="btn btn-primary">Sauvegarder</button>
         </div>
+
+        {% for modal in ['tab','group'] %}
+            {% set id = modal == 'group' ? 'addNewGroup' : 'addNewTab' %}
+            {% set title = modal == 'group' ? 'Ajouter un groupe' : 'Ajouter un onglet' %}
+            {% set method = modal == 'group' ? 'addGroup' : 'addTab' %}
+            <div id="{{ id }}" class="modal-hide" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,.7); z-index: 1000;">
+                <div class="modal" style="display: flex; align-items: center">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="display: flex; justify-content: space-between">
+                                <h5 class="modal-title">{{ title }}</h5>
+                                <button type="button" class="close" @click="toggleModal('{{ id }}')">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% if modal == 'group' %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newGroup.id">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newGroup.name">
+                                        </div>
+                                    </div>
+                                {% elseif modal == 'tab' %}
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newTab.id">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.name">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Icone</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.icon">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer" style="border: 0">
+                                <button type="button" class="btn btn-primary" @click="{{ method }}">Sauvegarder</button>
+                                <button type="button" class="btn btn-secondary" @click="toggleModal('{{ id }}')">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
 
@@ -420,9 +518,22 @@
                 ],
                 imageTypes: ['thumb','cover','width','height'],
                 maxCols: 5,
+                tabs: [],
+                groups: [],
+                newGroup: {
+                  id: '',
+                  name: ''
+                },
+                newTab: {
+                  id: '',
+                  name: '',
+                  icon: ''
+                },
                 newField: {
                     id: '',
                     name: '',
+                    groupId: '',
+                    tabId: '',
                     isUrl: false,
                     isRef: false,
                     empty: false,
@@ -513,7 +624,16 @@
                 }
             },
             methods: {
-                addField: function () {
+                toggleModal(modalId) {
+                  document.getElementById(modalId).classList.toggle('modal-hide');
+                },
+                addGroup() {
+                  this.groups.push(JSON.parse(JSON.stringify(this.newGroup)));
+                },
+                addTab() {
+                  this.tabs.push(JSON.parse(JSON.stringify(this.newTab)));
+                },
+                addField () {
                     this.newField.id = this.camelCase(this.newField.id);
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
