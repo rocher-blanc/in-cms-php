@@ -5,6 +5,10 @@
 
 {% block module %}
 
+    {# TODO Ne pas pouvoir sauvegarder si pas de nom de module #}
+    {# TODO Quand on creer un groupe, cela ferme la modal #}
+    {# TODO Quand on creer un onglet, cela ferme la modal #}
+
     {# TODO [v2] dynamiser les relations {{ dump(depedency) }} #}
     {# TODO [v2] dynamiser les relations {{ dump(module) }} #}
     {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
@@ -518,8 +522,6 @@
                 ],
                 imageTypes: ['thumb','cover','width','height'],
                 maxCols: 5,
-                tabs: [],
-                groups: [],
                 newGroup: {
                   id: '',
                   name: ''
@@ -559,12 +561,13 @@
                     intStep: 0,
                     dateWithHour: false
                 },
+                /* DATA DYNAMIQUE */
                 globalParams: {
                     edition: {
                         delete: true,
                         edit: true,
                         add: true,
-                        valid: true
+                        valid: false
                     },
                     name: '',
                     type: 'standard',
@@ -575,7 +578,9 @@
                     hasDepedency: false,
                     depedencies: []
                 },
-                fields: []
+                fields: [],
+                tabs: [],
+                groups: []
             },
             computed: {
                 formValidation() {
@@ -640,6 +645,8 @@
                 saveJson: function () {
                     axios.post('{{ siteUrl('admin/moduleadmin/generate') }}', {
                         {{csrf_key}}:'{{csrf_token}}',
+                        tabs: JSON.stringify(this.tabs),
+                        groups: JSON.stringify(this.groups),
                         fields: JSON.stringify(this.fields),
                         global: JSON.stringify(this.globalParams)
                     })

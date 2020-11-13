@@ -17,7 +17,8 @@ $app->group('/translate', function () use ($app) {
 
 
 	$app->post('/get-lang', function() use ($app) {
-		$lang_abbr = $this->getApp()->request->post('lang_locale');
+        header('Content-Type: application/json;charset=utf-8');
+        $lang_abbr = $this->getApp()->request->post('lang_locale');
 
         $keys = [];
         $lang = strtoupper( $lang_abbr ) ;
@@ -51,12 +52,14 @@ $app->group('/translate', function () use ($app) {
 			'title' => $req ? $req->lang_display : "Langue"
 		];
 
-		echo json_encode([
-             'result' => true,
-             'msg'    => "",
-             'lang'   => $lang,
-             'keys'   => $keys,
-         ]);
+		$result = json_encode([
+            'result' => true,
+            'msg'    => "",
+            'lang'   => $lang,
+            'keys'   => $keys,
+        ], JSON_UNESCAPED_UNICODE);
+
+        echo $result;
 	});
 
 
