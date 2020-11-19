@@ -5,22 +5,18 @@
 
 {% block module %}
 
-    {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
-    {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
-    {# DONE ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
-    {# DONE Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
-    {# DONE Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
-    {# DONE Pouvoir supprimer un champ #}
+    {# TODO Ne pas pouvoir sauvegarder si pas de nom de module #}
+    {# TODO Quand on creer un groupe, cela ferme la modal #}
+    {# TODO Quand on creer un onglet, cela ferme la modal #}
 
-    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }} #}
-    {# TODO [en attente] dynamiser les relations {{ dump(module) }} #}
-    {# TODO [besoin de détails] Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
-    {# TODO [besoin de détails] Pour le manyToMany (select) des modules (variable many) #}
-    {# TODO [besoin de détails] Pouvoir ajouter des onglet (ID, nom, icone) #}
-    {# TODO [besoin de détails] Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
+    {# TODO [v2] dynamiser les relations {{ dump(depedency) }} #}
+    {# TODO [v2] dynamiser les relations {{ dump(module) }} #}
+    {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
 
     <style>
         .border-danger { border-color: #a94442 }
+        .modal-header:before, .modal-header:after { content: none }
+        .modal-hide { display: none }
     </style>
 
     <div id="app">
@@ -76,16 +72,28 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3">Module de profil utilisateur</label>
+                <label class="col-sm-3">Type de module</label>
                 <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user_module">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Module associer à un utilisateur</label>
-                <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="standard">
+                                Standard
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_profile">
+                                Profil utilisateur
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_association">
+                                Associer à un utilisateur
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -132,6 +140,44 @@
         <h4 style="margin-bottom: 20px">Nouveau champ</h4>
 
         <div class="card card-body" style="margin-bottom: 30px">
+
+            <div class="form-group row">
+                <label class="col-sm-3">Groupe</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!groups.length" v-model="newField.groupId">
+                                <option value="">Aucun groupe</option>
+                                <option v-for="group in groups" :value="group.id"><-- group.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewGroup')">
+                                + Ajouter un groupe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Onglet</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!tabs.length" v-model="newField.tabId">
+                                <option value="">Aucun onglet</option>
+                                <option v-for="tab in tabs" :value="tab.id"><-- tab.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewTab')">
+                                + Ajouter un onglet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-group row">
                 <label class="col-sm-3">Id du champ</label>
@@ -315,7 +361,7 @@
                 <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" @click="moveDown(index)"><i class="icon-line-arrow-down"></i></button>
             </div>
             <div class="row">
-                <div class="col-sm-1">
+                <div class="col-sm-2">
                     <strong>Position</strong><br>
                     <-- index + 1 -->
                 </div>
@@ -323,17 +369,25 @@
                     <strong>Taille</strong><br>
                     <-- field.column.size --> / <-- field.column.total -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Id</strong><br>
                     <-- field.id -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Nom</strong><br>
                     <-- field.name -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Type</strong><br>
                     <-- field.type -->
+                </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.groupId" text="Groupe"></display-boolean>
+                    <div v-if="field.groupId">Id: <-- field.groupId --></div>
+                </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.tabId" text="Onglet"></display-boolean>
+                    <div v-if="field.tabId">Id: <-- field.tabId --></div>
                 </div>
                 <div class="col-sm-2">
                     <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean>
@@ -368,6 +422,59 @@
         <div v-if="fields.length" class="text-center">
             <button @click="saveJson" class="btn btn-primary">Sauvegarder</button>
         </div>
+
+        {% for modal in ['tab','group'] %}
+            {% set id = modal == 'group' ? 'addNewGroup' : 'addNewTab' %}
+            {% set title = modal == 'group' ? 'Ajouter un groupe' : 'Ajouter un onglet' %}
+            {% set method = modal == 'group' ? 'addGroup' : 'addTab' %}
+            <div id="{{ id }}" class="modal-hide" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,.7); z-index: 1000;">
+                <div class="modal" style="display: flex; align-items: center">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="display: flex; justify-content: space-between">
+                                <h5 class="modal-title">{{ title }}</h5>
+                                <button type="button" class="close" @click="toggleModal('{{ id }}')">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% if modal == 'group' %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newGroup.id">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newGroup.name">
+                                        </div>
+                                    </div>
+                                {% elseif modal == 'tab' %}
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newTab.id">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.name">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Icone</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.icon">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer" style="border: 0">
+                                <button type="button" class="btn btn-primary" @click="{{ method }}">Sauvegarder</button>
+                                <button type="button" class="btn btn-secondary" @click="toggleModal('{{ id }}')">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
 
@@ -415,9 +522,20 @@
                 ],
                 imageTypes: ['thumb','cover','width','height'],
                 maxCols: 5,
+                newGroup: {
+                  id: '',
+                  name: ''
+                },
+                newTab: {
+                  id: '',
+                  name: '',
+                  icon: ''
+                },
                 newField: {
                     id: '',
                     name: '',
+                    groupId: '',
+                    tabId: '',
                     isUrl: false,
                     isRef: false,
                     empty: false,
@@ -443,16 +561,16 @@
                     intStep: 0,
                     dateWithHour: false
                 },
+                /* DATA DYNAMIQUE */
                 globalParams: {
                     edition: {
                         delete: true,
                         edit: true,
                         add: true,
-                        valid: true
+                        valid: false
                     },
                     name: '',
-                    user: false,
-                    user_module: false,
+                    type: 'standard',
                     order: false,
                     limit: false,
                     pagination: false,
@@ -460,7 +578,9 @@
                     hasDepedency: false,
                     depedencies: []
                 },
-                fields: []
+                fields: [],
+                tabs: [],
+                groups: []
             },
             computed: {
                 formValidation() {
@@ -509,13 +629,24 @@
                 }
             },
             methods: {
-                addField: function () {
+                toggleModal(modalId) {
+                  document.getElementById(modalId).classList.toggle('modal-hide');
+                },
+                addGroup() {
+                  this.groups.push(JSON.parse(JSON.stringify(this.newGroup)));
+                },
+                addTab() {
+                  this.tabs.push(JSON.parse(JSON.stringify(this.newTab)));
+                },
+                addField () {
                     this.newField.id = this.camelCase(this.newField.id);
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
                 saveJson: function () {
                     axios.post('{{ siteUrl('admin/moduleadmin/generate') }}', {
                         {{csrf_key}}:'{{csrf_token}}',
+                        tabs: JSON.stringify(this.tabs),
+                        groups: JSON.stringify(this.groups),
                         fields: JSON.stringify(this.fields),
                         global: JSON.stringify(this.globalParams)
                     })
