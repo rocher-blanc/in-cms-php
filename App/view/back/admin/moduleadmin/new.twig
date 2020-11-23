@@ -5,12 +5,10 @@
 
 {% block module %}
 
-    {# TODO Ne pas pouvoir sauvegarder si pas de nom de module #}
-    {# TODO Quand on creer un groupe, cela ferme la modal #}
-    {# TODO Quand on creer un onglet, cela ferme la modal #}
+    {# TODO Ne pas pouvoir sauvegarder si pas de nom de module ou module déjà éxistant #}
+    {# TODO dynamiser les relations {{ dump(depedency) }} #}
+    {# TODO dynamiser les relations {{ dump(module) }} #}
 
-    {# TODO [v2] dynamiser les relations {{ dump(depedency) }} #}
-    {# TODO [v2] dynamiser les relations {{ dump(module) }} #}
     {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
 
     <style>
@@ -18,6 +16,9 @@
         .modal-header:before, .modal-header:after { content: none }
         .modal-hide { display: none }
     </style>
+
+    {{ dump(depedency) }}
+    {{ dump(module) }}
 
     <div id="app">
 
@@ -634,9 +635,11 @@
                 },
                 addGroup() {
                   this.groups.push(JSON.parse(JSON.stringify(this.newGroup)));
+                  this.toggleModal('addNewGroup');
                 },
                 addTab() {
                   this.tabs.push(JSON.parse(JSON.stringify(this.newTab)));
+                  this.toggleModal('addNewTab');
                 },
                 addField () {
                     this.newField.id = this.camelCase(this.newField.id);
