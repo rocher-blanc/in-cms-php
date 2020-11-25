@@ -13,6 +13,7 @@ function installModule( $name )
     $contentRow->module_active 		= 1 ;
     $contentRow->save() ;
 
+
     // On génère le webservice
     $php = '' ;
     $php.= "<"."?"."php\n\n" ;
