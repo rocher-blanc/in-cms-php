@@ -43,6 +43,7 @@ class Gallery extends \App\Kernel\Common\Gallery
         {
             foreach( $rst as $row )
             {
+                $tab[ $row->gallery_id ]['name']  = $row->gallery_name ;
                 $tab[ $row->gallery_id ]['source']  = $path . $row->gallery_name ;
                 $tab[ $row->gallery_id ]['100x100'] = $path . $this->getMini( $row->gallery_name , 100 , 100 ) ;
 
@@ -67,7 +68,7 @@ class Gallery extends \App\Kernel\Common\Gallery
 						$fileMini = IMAGE_PATH . '/' . $this->getFolder() . '/' . $this->getMini( $row->gallery_name , $cover[0] , $cover[1] );
 						if ( ! file_exists( $fileMini ) )
                         {
-                            $this->genThumb( $cover[0] , $cover[1] , false , $row->gallery_name );
+                            $this->genCover( $cover[0] , $cover[1] , false , $row->gallery_name );
                         }
 
                         $tab[ $row->gallery_id ][$cover[0] . 'x' . $cover[1]] = $path . $this->getMini( $row->gallery_name , $cover[0] , $cover[1] ) ;
