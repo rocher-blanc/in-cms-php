@@ -424,8 +424,10 @@ $app->group('/langue', function () use ($app)
 
     })->name('langue_traduction');
 
-    $app->post('/traduction/get-lang', function() use ($app) {
-        $lang_abbr = $this->getApp()->request->post('lang_locale');
+    $app->get('/traduction/get-lang', function() use ($app) {
+        header('Content-Type: application/json;charset=utf-8');
+
+        $lang_abbr = $this->getApp()->request->get('lang_locale');
         $className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
         $class     = new $className ;
         $arrayTrad = $class->getVar();
