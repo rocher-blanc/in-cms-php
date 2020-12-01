@@ -539,18 +539,17 @@ class User extends \App\Kernel\Common\User
      */
     public function register()
     {
-        /*
-         * @POST
-         *
-         */
-
-        if ( $this->checkRegister() )
+        if( $this->checkRegister() )
         {
             $login    = trim( $this->post('user_login') ) ;
             $password = trim( $this->post('user_password') ) ;
 
             return $this->registerInBase( $login , $password ) ;
         }
+        else
+		{
+			return false;
+		}
     }
 
     public function registerInBase( $login , $password , $fb_id = NULL )
@@ -561,12 +560,12 @@ class User extends \App\Kernel\Common\User
         if ( $fb_id !== NULL ) $active = 1;
 
         $user = \DB::for_table('user_front')->create();
-        $user->user_front_token                 = $this->getNewToken();
-        $user->user_front_login                 = $login;
-        $user->user_front_password              = $this->hashPassword( $password );
-        $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
-        $user->user_front_active                = $active;
-        $user->user_front_user_front_group_id   = $this->getDefaultGroup() ;
+        $user->user_front_token               = $this->getNewToken();
+        $user->user_front_login               = $login;
+        $user->user_front_password            = $this->hashPassword( $password );
+        $user->user_front_date_created        = $date->format('Y-m-d H:i:s');
+        $user->user_front_active              = $active;
+        $user->user_front_user_front_group_id = $this->getDefaultGroup() ;
         if ( $fb_id !== NULL ) $user->user_front_user_fb_id = $fb_id ;
 
         $user->save();
@@ -600,6 +599,7 @@ class User extends \App\Kernel\Common\User
 
                 $this->save( $user ) ;
             }
+
             return $this->returnError( "user_register_successful" , true ) ;
         }
     }
