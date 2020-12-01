@@ -1546,8 +1546,8 @@ var SEMICOLON = SEMICOLON || {};
 						on: {
 							init: function(swiper){
 								SEMICOLON.slider.sliderParallaxDimensions();
-								element.find('.yt-bg-player').removeClass('customjs');
-								SEMICOLON.widget.youtubeBgVideo();
+								// element.find('.yt-bg-player').removeClass('customjs');
+								// SEMICOLON.widget.youtubeBgVideo();
 								$('.swiper-slide-active [data-caption-animate]').each(function(){
 									var $toAnimateElement = $(this),
 										toAnimateDelay = $toAnimateElement.attr('data-caption-delay'),
@@ -2060,7 +2060,7 @@ var SEMICOLON = SEMICOLON || {};
 		init: function(){
 
 			SEMICOLON.widget.animations();
-			SEMICOLON.widget.youtubeBgVideo();
+			// SEMICOLON.widget.youtubeBgVideo();
 			SEMICOLON.widget.tabs();
 			SEMICOLON.widget.tabsJustify();
 			SEMICOLON.widget.tabsResponsive();
