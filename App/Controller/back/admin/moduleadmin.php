@@ -2,6 +2,7 @@
 
 use App\Kernel\Container;
 use App\Kernel\Factory;
+use App\Kernel\Back\Gallery;
 use App\Kernel\Front\Translate;
 
 function installModule( $name )
@@ -12,6 +13,7 @@ function installModule( $name )
     $contentRow->module_icon 		= "icon-question" ;
     $contentRow->module_active 		= 1 ;
     $contentRow->save() ;
+
 
     // On génère le webservice
     $php = '' ;
@@ -381,8 +383,41 @@ $app->group('/moduleadmin', function () use ($app)
 								}
 							}
 						}
+						else if ( $field->getType() == 'gallery' )
+						{
+                            $content = \DB::for_module( $contentRow->module_class_name )
+                                ->select( $entity->get( $entity->getIdName() )->getColumn() , 'id' )
+                                ->find_many();
+
+                            if ( $content )
+                            {
+                                foreach( $content as $row )
+                                {
+                                    $Gal = new Gallery();
+                                    $Gal->setElementId( $row->get('id') );
+                                    $Gal->setModuleId( $id );
+                                    $Gal->setModuleName( $contentRow->module_class_name );
+                                    $Gal->setField( $field->getName() );
+                                    $Gal->setFolder( $entity->getFolder() );
+                                    $tab = $Gal->getAllByField();
+
+                                    if ( $tab )
+                                    {
+                                        foreach( $tab as $key => $item )
+                                        {
+                                            $Gal->setImageId( $key );
+                                            $Gal->setImageName( $item['name'] );
+                                            $Gal->genImages();
+                                        }
+                                    }
+                                }
+                            }
+                        }
 					}
 
+					/*
+					 * while true; do desktop xxxxxxxxxxxxxxxxxxxxx; sleep 600; done
+					 */
 					\App\Kernel\Back\Log::getInstance()->warning( 47 , $contentRow->module_name ) ;
 
 					$ret = true ;

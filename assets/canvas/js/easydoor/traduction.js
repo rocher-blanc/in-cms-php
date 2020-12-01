@@ -347,7 +347,7 @@ var requestGetLang = function( lang_locale ) {
     $.ajax({
         url     : siteurl +"ext/langue/traduction/get-lang",
         data    : data,
-        method  : "POST",
+        method  : "GET",
         dataType: 'json',
         success: function (response) {
 
