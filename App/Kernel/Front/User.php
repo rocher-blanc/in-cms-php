@@ -190,7 +190,13 @@ class User extends \App\Kernel\Common\User
                 if ( $this->post('redirect' ) != '' )
                 {
                     $tab = [
-                        'url' => $this->post('redirect' )
+                        'url' => $this->post( 'redirect' )
+                    ];
+                }
+                if ( $this->post('timer' ) != '' )
+                {
+                    $tab = [
+                        'timer' => $this->post( 'timer' )
                     ];
                 }
 
