@@ -189,15 +189,11 @@ class User extends \App\Kernel\Common\User
                 $tab = [];
                 if ( $this->post('redirect' ) != '' )
                 {
-                    $tab = [
-                        'url' => $this->post( 'redirect' )
-                    ];
+                    $tab[ 'url' ] = $this->post( 'redirect' );
                 }
-                if ( $this->post('timer' ) != '' )
+                if ( $this->post('timer' ) > 0 )
                 {
-                    $tab = [
-                        'timer' => $this->post( 'timer' )
-                    ];
+					$tab[ 'timer' ] = (int)( $this->post( 'timer' ) );
                 }
 
                 $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result , $tab );
