@@ -5,7 +5,6 @@
 
 {% block module %}
 
-    {# TODO Ne pas pouvoir sauvegarder si pas de nom de module ou module déjà éxistant #}
     {# TODO dynamiser les relations {{ dump(depedency) }} #}
     {# TODO dynamiser les relations {{ dump(module) }} #}
 
@@ -420,8 +419,8 @@
             </div>
         </div>
 
-        <div v-if="fields.length" class="text-center">
-            <button @click="saveJson" class="btn btn-primary">Sauvegarder</button>
+        <div class="text-center">
+            <button @click="saveJson" class="btn btn-lg btn-primary" :disabled="!(fields.length && globalParams.name.length && !modules.includes(globalParams.name))">Sauvegarder</button>
         </div>
 
         {% for modal in ['tab','group'] %}
@@ -497,6 +496,11 @@
             el: '#app',
             delimiters: ["<--","-->"],
             data: {
+                modules: [
+                  {% for m in module %}
+                    '{{ m.name }}',
+                  {% endfor %}
+                ],
                 fieldTypes: [
                     { value: 'input', text: 'Input' },
                     { value: 'select', text: 'Select' },
