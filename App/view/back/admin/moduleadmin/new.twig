@@ -5,7 +5,6 @@
 
 {% block module %}
 
-    {# TODO dynamiser les relations {{ dump(depedency) }} #}
     {# TODO dynamiser les relations {{ dump(module) }} #}
 
     {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
@@ -118,20 +117,18 @@
                 </div>
             </div>
 
-            <div class="form-group row" v-if="!globalParams.isDepedency">
+            <div class="form-group row" v-if="!globalParams.isDepedency && depedencies.length">
                 <label class="col-sm-3">Ce module a des dépendances</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="globalParams.hasDepedency">
                 </div>
             </div>
 
-            <div class="form-group row" v-if="globalParams.hasDepedency">
+            <div class="form-group row" v-if="globalParams.hasDepedency && depedencies.length">
                 <label class="col-sm-3">Choisir les dépendances</label>
                 <div class="col-sm-9">
                     <select class="form-control" multiple v-model="globalParams.depedencies">
-                        <option value="moduleA">module A</option>
-                        <option value="moduleB">module B</option>
-                        <option value="moduleC">module C</option>
+                        <option v-for="depedency in depedencies" :value="depedency"><-- depedency --></option>
                     </select>
                 </div>
             </div>
@@ -499,6 +496,11 @@
                 modules: [
                   {% for m in module %}
                     '{{ m.name }}',
+                  {% endfor %}
+                ],
+                depedencies: [
+                  {% for d in depedency %}
+                    '{{ d.class }}',
                   {% endfor %}
                 ],
                 fieldTypes: [
