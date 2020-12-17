@@ -30,14 +30,7 @@ class Media extends \App\Kernel\Common\Media
             $rst->caption = $source;
             $rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
-            if ( $field->hasThumb() )
-            {
-                foreach( $field->getThumb() as $thumb )
-                {
-                    // width, height
-                    $this->genThumb( $thumb[0] , $thumb[1] ) ;
-                }
-            }
+            $this->genImages( $field );
         }
 
         return $rst ;
