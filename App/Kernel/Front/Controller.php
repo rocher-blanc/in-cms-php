@@ -534,6 +534,29 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
 
+    protected function getImagePath( $media , $path , $type , $w , $h )
+	{
+		$mini = $media->getMini( $media->getImageName() , $type , $w , $h ) ;
+		if ( $mini !== false )
+		{
+			$img  = trim( $path . '/' . $mini , "/" );
+			$mini = Http::getInstance()->getUrl() . "/" . $img ;
+		}
+
+		$path = WEB_PATH . "/" . $img;
+		if( ! file_exists($path) )
+		{
+			switch( $type )
+			{
+				case "t" : $media->genThumb( $w , $h ); break;
+				case "w" : $media->genWidth( $w ); break;
+				case "h" : $media->genHeight( $h ); break;
+			}
+		}
+
+		return $mini ;
+	}
+
     public function parseValue( $result )
     {
         if ( ! $result )
@@ -585,6 +608,7 @@ class Controller extends \App\Kernel\Common\Controller
                         if ( $media->getGalleryId() !== NULL )
                         {
                             $path = str_replace( WEB_PATH , '' , IMAGE_PATH . '/_lib' );
+                            $media->setFolder( "_lib" );
                         }
 
                         $tab['source'] = $this->getApp()->request()->getUrl() . $path . '/' . $media->getImageName();
@@ -593,14 +617,7 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getThumb() as $thumb )
                             {
-                                $mini = $media->getMini( $media->getImageName() , 't' , $thumb[0] , $thumb[1] ) ;
-                                if ( $mini !== false )
-                                {
-									$img  = $path . '/' . $mini ;
-									$mini = Http::getInstance()->getUrl() . "/" . trim( $img , "/" ) ;
-                                }
-
-                                $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $mini ;
+                                $tab['thumb'][$thumb[0].'x'.$thumb[1]] = $this->getImagePath( $media , $path , "t" , $thumb[0] , $thumb[1] ) ;
                             }
                         }
 
@@ -608,14 +625,7 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getCover() as $cover )
                             {
-                                $mini = $media->getMini( $media->getImageName() , 't' , $cover[0] , $cover[1] ) ;
-                                if ( $mini !== false )
-                                {
-                                    $img  = $path . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . trim( $img , "/" );
-                                }
-
-                                $tab['thumb'][$cover[0].'x'.$cover[1]] = $mini ;
+                                $tab['thumb'][$cover[0].'x'.$cover[1]] = $this->getImagePath( $media , $path , "t" , $cover[0] , $cover[1] ) ;
                             }
                         }
 
@@ -623,14 +633,8 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getWidth() as $width )
                             {
-                                $mini = $media->getMini( $media->getImageName() , 'w' , $width ) ;
-                                if ( $mini !== false )
-                                {
-                                    $img  = $path . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
-                                }
-
-                                $tab['width'][$width] = $mini ;
+                            	$path = $this->getImagePath( $media , $path , "w" , $width , NULL ) ;
+                                $tab['width'][$width] = $path ;
                             }
                         }
 
@@ -638,29 +642,7 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getHeight() as $height )
                             {
-                                $mini = $media->getMini( $media->getImageName() , 'h' , $height ) ;
-                                if ( $mini !== false )
-                                {
-                                    $img  = $path . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
-                                }
-
-                                $tab['height'][$height] = $mini ;
-                            }
-                        }
-
-                        if ( $row->hasCrop() )
-                        {
-                            foreach( $row->getCrop() as $crop )
-                            {
-                                $mini = $media->getMini( $media->getImageName() , 'c' , $crop[0] , $crop[1] ) ;
-                                if ( $mini !== false )
-                                {
-                                    $img  = $this->getEntity()->getPathImage(false) . '/' . $mini ;
-                                    $mini = Http::getInstance()->getUrl() . "/" . $img ;
-                                }
-
-                                $tab['crop'][$crop[0].'x'.$crop[1]] = $mini ;
+                                $tab['height'][$height] = $this->getImagePath( $media , $path , "h" , NULL , $height ) ;
                             }
                         }
 
