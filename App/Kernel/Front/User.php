@@ -234,6 +234,7 @@ class User extends \App\Kernel\Common\User
             {
                 $rst = $data->getDataArray() ;
                 $array = $rst ;
+                $array['module_element_id'] = $array['id'];
                 unset( $array['id'] );
 
                 $this->_var = array_merge( $this->_var , $array );
