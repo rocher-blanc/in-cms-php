@@ -812,7 +812,7 @@ class Builder extends Model
         $this->addAction('duplicate');
         $this->_dupliacate = true ;
     }
- 
+
     public function canDuplicate()
     {
         return $this->_dupliacate ;

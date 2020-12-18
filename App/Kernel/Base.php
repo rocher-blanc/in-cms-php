@@ -153,7 +153,7 @@ INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_fl
 (11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0, 0);
   
 INSERT INTO `param` (`param_key`, `param_value`) VALUES
-('seo_author', 'JWeb Création'),
+('seo_author', '29ter'),
 ('security_lock_ip', '0'),
 ('el_credits', '0'),
 ('seo_geo_region', NULL),
