@@ -776,5 +776,6 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"save" => "Enregistrer",
 		"common_delete_many_msg" => "Supprimer ces éléments",
 		"common_delete_many_info" => "Êtes-vous sûr de vouloir supprimer tous les éléments cochés ?<br />Cette action est irréversible !",
+		"index_easydoor_mode_information" => "Mode de livraison choisi"
 	];
 }
