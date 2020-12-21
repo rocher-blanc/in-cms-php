@@ -360,4 +360,41 @@ $app->group('/pageadmin', function () use ($app)
             }
         }
     });
+
+	$app->get('/delete/:id', function ($id) use ($app)
+	{
+		$app->render('delete.twig',[
+			'id'  => $id,
+			'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/pageadmin/delete/' . $id )
+		]);
+	});
+
+	$app->post('/delete/:id', function ($id) use ($app)
+	{
+		$ret = false ;
+		$contentRow = \DB::for_table('page')
+			->where_equal('page_id' , $id)
+			->find_one();
+
+		if ( $contentRow )
+		{
+			\App\Kernel\Back\Log::getInstance()->warning( 32 , "#{$contentRow->page_id} - {$contentRow->page_name}" ) ;
+
+			$msg = Translate::getInstance()->getText( 'page_deleted' );
+			$ret = true ;
+			$contentRow->delete();
+		}
+		else
+		{
+			$msg = Translate::getInstance()->getText('delete_error' );
+		}
+
+
+		echo json_encode([
+			"msg"    => $msg ,
+			"result" => $ret,
+			'url'    => \App\Kernel\Factory::getInstance()->Url()->get('admin/pageadmin')
+		]) ;
+	})->name('page_delete');
+
 });
