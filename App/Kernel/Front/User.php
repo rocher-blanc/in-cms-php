@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Api\Easyletter;
+use App\Kernel\Http;
 
 class User extends \App\Kernel\Common\User
 {
@@ -620,9 +621,10 @@ class User extends \App\Kernel\Common\User
     protected function sendValidationMail( $user )
     {
         $el = new Easyletter;
+        $url = Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token;
         $el->automotion("user_account_validation" , $user->user_front_login , array_merge([
-            'url_validation' => \App\Kernel\Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token,
-            'email' => $user->user_front_login
+            'url_validation' => '<a href="'. $url .'">'. $url .'</a>',
+            'email'          => $user->user_front_login
         ], $this->getEmailVariableValidation() ));
 
         return true ;
