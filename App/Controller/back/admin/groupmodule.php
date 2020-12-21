@@ -86,72 +86,75 @@ $app->group('/groupmodule', function () use ($app)
 
     $app->post('/delete/:id', function ($id) use ($app)
     {
-        $ret = false ;
-        $contentRow = \DB::for_table('module_group')
-                         ->where_equal('module_group_id' , $id)
-                         ->find_one();
+        $ret = false;
+		$contentRow = \DB::for_table( 'module_group' )
+			->where_equal( 'module_group_id' , $id )
+			->find_one();
 
-        if ( $contentRow )
-        {
-            $content = \DB::for_table('module_group')
-                          ->where_gt('module_group_order' , $contentRow->module_group_order)
-                          ->find_many();
-            if ( $content )
-            {
-                foreach( $content as $row )
-                {
-                    $row->module_group_order--;
-                    $row->save();
-                }
-            }
+		if( $contentRow )
+		{
+			// Mise à jour de l'ordre des autres groupes
+			$content = \DB::for_table( 'module_group' )
+				->where_gt( 'module_group_order' , $contentRow->module_group_order )
+				->find_many();
+			if( $content )
+			{
+				foreach( $content as $row )
+				{
+					$row->module_group_order--;
+					$row->save();
+				}
+			}
 
-            // Foreach column columns in group
-            $req_columns = \DB::for_table( "module_column" )
-                              ->where_equal( "module_column_module_group_id" , $id )
-                              ->find_many();
-            foreach ( $req_columns as $column )
-            {
+			// Foreach column columns in group
+			$req_columns = \DB::for_table( "module_column" )
+				->where_equal( "module_column_module_group_id" , $id )
+				->find_many();
 
-                // Foreach blocks in column
-                $req_blocks = \DB::for_table( "module_column_block" )
-                                 ->where_equal( "module_column_block_module_column_id" , $column->module_column_id )
-                                 ->find_many();
-                foreach ( $req_blocks as $block )
-                {
+			foreach( $req_columns as $column )
+			{
 
-                    // Foreach modules in block
-                    $req_modules = \DB::for_table( "module" )
-                                      ->where_equal( "module_module_column_block_id" , $block->module_column_block_id )
-                                      ->find_many();
-                    foreach ( $req_modules as $module )
-                    {
-                        $module->module_module_column_block_id = NULL;
-                        $module->save();
-                    }
+				// Foreach blocks in column
+				$req_blocks = \DB::for_table( "module_column_block" )
+					->where_equal( "module_column_block_module_column_id" , $column->module_column_id )
+					->find_many();
 
-                    $block->delete();
-                }
+				foreach( $req_blocks as $block )
+				{
 
-                $column->delete();
-            }
+					// Foreach modules in block
+					$req_modules = \DB::for_table( "module" )
+						->where_equal( "module_module_column_block_id" , $block->module_column_block_id )
+						->find_many();
+					foreach( $req_modules as $module )
+					{
+						$module->module_module_column_block_id = NULL;
+						$module->save();
+					}
 
-            \App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name );
+					$block->delete();
+				}
 
-            $msg = Translate::getInstance()->getText( 'domain_supr_msg' );
-            $ret = true;
-            $contentRow->delete();
-        }
-        else
-        {
-            $msg = Translate::getInstance()->getText( 'domain_supr_error' );
-        }
+				$column->delete();
+			}
 
-        $result['msg'] = $msg;
-        $result['result'] = $ret;
-        $result['url'] = \App\Kernel\Factory::getInstance()->Url()->get('/admin/groupmodule') ;
+			\App\Kernel\Back\Log::getInstance()->warning( 22 , $contentRow->module_group_name );
 
-        \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
-    })->name('groupmodule_delete');
+			$msg = Translate::getInstance()->getText( 'domain_supr_msg' );
+			$ret = true;
+			$contentRow->delete();
+		}
+		else
+		{
+			$msg = Translate::getInstance()->getText( 'domain_supr_error' );
+		}
+
+		$result[ 'msg' ] = $msg;
+		$result[ 'result' ] = $ret;
+		$result[ 'url' ] = \App\Kernel\Factory::getInstance()->Url()->get( '/admin/groupmodule' );
+
+		\App\Kernel\Factory::getInstance()->Response()->printJSON( $result );
+	} )->name( 'groupmodule_delete' );
 
     $app->get('/active/:id/:token', function ($id,$token) use ($app)
     {
@@ -477,7 +480,6 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-
     $app->post('/delete-column', function() use ($app) {
         $column_id = $app->request->post('column_id');
 
@@ -566,9 +568,6 @@ $app->group('/groupmodule', function () use ($app)
         ]) ;
     });
 
-
-
-
     /*----------------------------------------------------------------------*/
     /*----------                                                  ----------*/
     /*----------                  BLOCKS REQUESTS                 ----------*/
@@ -589,7 +588,6 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-
     $app->post('/rename-block', function() use ($app) {
         $one = \DB::for_table( "module_column_block" )
             ->find_one( $app->request->post('block_id') );
@@ -601,7 +599,6 @@ $app->group('/groupmodule', function () use ($app)
             'msg'       => "",
         ]);
     });
-
 
     $app->post('/order-block', function() use ($app) {
         $new_order = explode( ",", $app->request->post('new_order') );
@@ -621,7 +618,6 @@ $app->group('/groupmodule', function () use ($app)
             'msg'       => "",
         ]);
     });
-
 
     $app->post('/delete-block', function() use ($app) {
         $block_id = $app->request->post('block_id');
@@ -650,9 +646,6 @@ $app->group('/groupmodule', function () use ($app)
             'msg'       => "",
         ]);
     });
-
-
-
 
     /*----------------------------------------------------------------------*/
     /*----------                                                  ----------*/
