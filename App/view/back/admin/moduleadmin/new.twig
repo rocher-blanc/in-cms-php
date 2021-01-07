@@ -5,19 +5,15 @@
 
 {% block module %}
 
-    {# TODO dynamiser les relations {{ dump(module) }} #}
-
-    {# TODO [v2] Pour le manyToMany (select) des modules (variable many) (select manuel ou auto) #}
-
     <style>
         .border-danger { border-color: #a94442 }
         .modal-header:before, .modal-header:after { content: none }
         .modal-hide { display: none }
     </style>
 
-    {{ dump(module) }}
-
     <div id="app">
+
+        <-- modules -->
 
         <h4 style="margin-bottom: 20px">Paramètres du module</h4>
 
@@ -277,7 +273,18 @@
                 </div>
             </div>
 
-            <div class="form-group row" v-if="['select','radio','checkbox','date'].includes(newField.type)">
+            <div class="form-group row" v-if="newField.type === 'select'">
+                <label class="col-sm-3">Type</label>
+                <div class="col-sm-9">
+                    <select class="form-control" v-model="newField.selectType" style="margin-top: 5px">
+                        <option v-for="selectType in selectTypes" :value="selectType">
+                            <-- selectType -->
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="['radio','checkbox','date'].includes(newField.type) || newField.type === 'select' && newField.selectType === 'manual'">
                 <label class="col-sm-3">Liste des options</label>
                 <div class="col-sm-9">
                     <div class="row" v-if="newField.selectOptions.length" v-for="(selectOption, index) in newField.selectOptions" style="margin-bottom: 10px">
@@ -302,6 +309,17 @@
                             <button class="btn btn-primary btn-block" @click="addOption()" :disabled="!optionValidation">Add</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="newField.type === 'select' && newField.selectType === 'module'">
+                <label class="col-sm-3">Module</label>
+                <div class="col-sm-9">
+                    <select class="form-control" v-model="newField.selectModule" style="margin-top: 5px">
+                        <option v-for="module in modules" :value="module">
+                            <-- module -->
+                        </option>
+                    </select>
                 </div>
             </div>
 
@@ -527,6 +545,7 @@
                     { value: 'email', text: 'Email' }
                 ],
                 imageTypes: ['thumb','cover','width','height'],
+                selectTypes: ['manual','module'],
                 maxCols: 5,
                 newGroup: {
                   id: '',
@@ -557,6 +576,8 @@
                     inputCharLength: 255,
                     textareaHtml: false,
                     selectOptions: [],
+                    selectModule: '',
+                    selectModule: '',
                     option: {
                         key: '',
                         value: ''
