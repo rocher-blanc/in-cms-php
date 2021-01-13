@@ -54,7 +54,7 @@
                         <td>{{ _('email_delivered_rate')}}</td>
                         {% set ndelivres = statistics.statistics.globalStats.delivered %}
                         <td class="center">{{ ndelivres }}</td>
-                        <td class="center">{{ ndelivres / statistics.sent * 100 | number_format(2, ',') }} %</td>
+                        <td class="center">{{ (ndelivres / statistics.sent * 100) | number_format(2, ',') }} %</td>
                     </tr>
                     <tr>
                         <td>{{ _('email_opened_rate')}}</td>
@@ -72,7 +72,7 @@
                         <td>{{ _('nbr_clic_rate')}}</td>
                         {% set uniqueClicks = statistics.statistics.globalStats.uniqueClicks %}
                         {% set percentUniqueClicks = statistics.sent > 0 ? uniqueClicks / statistics.sent * 100 : 0 %}
-                        <td class="center">{{ percentUniqueClicks }}</td>
+                        <td class="center">-</td>
                         <td class="center">{{ percentUniqueClicks | number_format(2, ',') }} %</td>
                     </tr>
                     <tr>
@@ -126,7 +126,7 @@
                             <td>{{ _('email_delivered_rate')}}</td>
                             {% set ndelivres = campaignStats.delivered %}
                             <td class="center">{{ ndelivres }}</td>
-                            <td class="center">{{ ndelivres / statistics.sent * 100 | number_format(2, ',') }} %</td>
+                            <td class="center">{{ (ndelivres / statistics.sent * 100) | number_format(2, ',') }} %</td>
                         </tr>
                         <tr>
                             <td>{{ _('email_opened_rate')}}</td>
@@ -144,7 +144,7 @@
                             <td>{{ _('nbr_clic_rate')}}</td>
                             {% set uniqueClicks = campaignStats.uniqueClicks %}
                             {% set percentUniqueClicks = statistics.sent > 0 ? uniqueClicks / statistics.sent * 100 : 0 %}
-                            <td class="center">{{ percentUniqueClicks }}</td>
+                            <td class="center">-</td>
                             <td class="center">{{ percentUniqueClicks | number_format(2, ',') }} %</td>
                         </tr>
                         <tr>
@@ -227,17 +227,19 @@
                 </thead>
                 <tbody>
                     {% for domain, datas in statistics.statistics.statsByDomain %}
-                        <th>{{ domain }}</th>
-                        <th class="center">{{ datas.uniqueClicks }}</th>
-                        <th class="center">{{ datas.clickers }}</th>
-                        <th class="center">{{ datas.complaints }}</th>
-                        <th class="center">{{ datas.sent }}</th>
-                        <th class="center">{{ datas.softBounces }}</th>
-                        <th class="center">{{ datas.hardBounces }}</th>
-                        <th class="center">{{ datas.uniqueViews }}</th>
-                        <th class="center">{{ datas.unsubscriptions }}</th>
-                        <th class="center">{{ datas.viewed }}</th>
-                        <th class="center">{{ datas.delivered }}</th>
+                        <tr>
+                            <th>{{ domain }}</th>
+                            <th class="center">{{ datas.uniqueClicks }}</th>
+                            <th class="center">{{ datas.clickers }}</th>
+                            <th class="center">{{ datas.complaints }}</th>
+                            <th class="center">{{ datas.sent }}</th>
+                            <th class="center">{{ datas.softBounces }}</th>
+                            <th class="center">{{ datas.hardBounces }}</th>
+                            <th class="center">{{ datas.uniqueViews }}</th>
+                            <th class="center">{{ datas.unsubscriptions }}</th>
+                            <th class="center">{{ datas.viewed }}</th>
+                            <th class="center">{{ datas.delivered }}</th>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -254,7 +256,7 @@
                     {% for device, systems in statistics.statistics.statsByDevice %}
                         <thead>
                             <tr>
-                                <th colspan="5">{{ device }}</th>
+                                <th colspan="5">{{ device|upper }}</th>
                             </tr>
                             <tr>
                                 <th>{{ _('system') }}</th>
@@ -266,11 +268,13 @@
                         </thead>
                         <tbody>
                             {% for system, datas in systems %}
-                                <td>{{ system }}</td>
-                                <td class="center">{{ datas.clickers }}</td>
-                                <td class="center">{{ datas.uniqueClicks }}</td>
-                                <td class="center">{{ datas.viewed }}</td>
-                                <td class="center">{{ datas.uniqueViews }}</td>
+                                <tr>
+                                    <td>{{ system }}</td>
+                                    <td class="center">{{ datas.clickers }}</td>
+                                    <td class="center">{{ datas.uniqueClicks }}</td>
+                                    <td class="center">{{ datas.viewed }}</td>
+                                    <td class="center">{{ datas.uniqueViews }}</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     {% endfor %}
@@ -297,11 +301,13 @@
                     </thead>
                     <tbody>
                         {% for browser, datas in statistics.statistics.statsByBrowser %}
-                            <th>{{ browser }}</th>
-                            <th class="center">{{ datas.clickers }}</th>
-                            <th class="center">{{ datas.uniqueClicks }}</th>
-                            <th class="center">{{ datas.viewed }}</th>
-                            <th class="center">{{ datas.uniqueViews }}</th>
+                            <tr>
+                                <th>{{ browser }}</th>
+                                <th class="center">{{ datas.clickers }}</th>
+                                <th class="center">{{ datas.uniqueClicks }}</th>
+                                <th class="center">{{ datas.viewed }}</th>
+                                <th class="center">{{ datas.uniqueViews }}</th>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

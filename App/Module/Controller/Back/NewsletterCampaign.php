@@ -218,6 +218,14 @@ class NewsletterCampaign extends Controller
         }
     }
 
+    protected function reloadAction()
+    {
+        $EL = new Easyletter;
+        $EL->newsletter( $this->getId() );
+
+        $this->Factory()->Response()->printJSON( ['msg' => 'La campagne a bien été relancée', 'result' => true, 'url' => $this->Factory()->Url()->route( $this->getEntityName() , "index" , $this->getUriParent() ) ] );
+    }
+
     protected function resend( $type )
     {
         $rst = $this->duplicate();
