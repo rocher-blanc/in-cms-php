@@ -93,6 +93,7 @@
                         </td>
                         <td class="text-right">
                             <a href="{{ siteUrl('admin/pageadmin/edit/' ~ row.page_id) }}"><i class="icon-pencil"></i></a>
+                            <a href="{{ siteUrl('admin/pageadmin/delete/' ~ row.page_id) }}" data-lightbox="ajax"><i class="icon-trash2"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -812,7 +812,7 @@ class Builder extends Model
         $this->addAction('duplicate');
         $this->_dupliacate = true ;
     }
- 
+
     public function canDuplicate()
     {
         return $this->_dupliacate ;
@@ -1337,6 +1337,38 @@ class Builder extends Model
         return $this ;
     }
 
+	/* GDPR */
+	protected function enableGDPR( $label , $linkLabel , $errorLabel , $type , $id = NULL , $elementId = NULL , $blank = false )
+	{
+		switch( $type )
+		{
+			case 'module':
+				$seo = new \App\Kernel\Front\Seo();
+				$seo->setModuleId( $id );
+				$seo->setElementId( $elementId );
+				$url = \App\Kernel\Factory::getInstance()->Url()->module( $id , true ) . "/" . $seo->getUrl() ;
+				break;
+
+			case 'page':
+				$url = \App\Kernel\Factory::getInstance()->Url()->page( $id , true );
+				break;
+
+			default:
+				$url = "#";
+				break;
+		}
+
+		$_blank = $blank
+			? 'target="_blank"'
+			: '';
+
+		$link = "<a href=\"$url\" $_blank>$linkLabel</a>";
+		$rst  = str_replace( '{link}' , $link , $label );
+		$this->build( 'gdpr' )
+			->isBoolean()
+			->notEmpty( $errorLabel )
+			->name( $rst );
+	}
     /* ************************************************** */
     /* *****************   FUNCTIONS   ****************** */
     /* ************************************************** */

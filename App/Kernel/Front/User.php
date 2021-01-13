@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Api\Easyletter;
+use App\Kernel\Http;
 
 class User extends \App\Kernel\Common\User
 {
@@ -189,9 +190,11 @@ class User extends \App\Kernel\Common\User
                 $tab = [];
                 if ( $this->post('redirect' ) != '' )
                 {
-                    $tab = [
-                        'url' => $this->post('redirect' )
-                    ];
+                    $tab[ 'url' ] = $this->post( 'redirect' );
+                }
+                if ( $this->post('timer' ) > 0 )
+                {
+					$tab[ 'timer' ] = (int)( $this->post( 'timer' ) );
                 }
 
                 $this->Factory()->Response()->returnJSON( $this->text( $key ) , $result , $tab );
@@ -232,6 +235,7 @@ class User extends \App\Kernel\Common\User
             {
                 $rst = $data->getDataArray() ;
                 $array = $rst ;
+                $array['module_element_id'] = $array['id'];
                 unset( $array['id'] );
 
                 $this->_var = array_merge( $this->_var , $array );
@@ -539,18 +543,17 @@ class User extends \App\Kernel\Common\User
      */
     public function register()
     {
-        /*
-         * @POST
-         *
-         */
-
-        if ( $this->checkRegister() )
+        if( $this->checkRegister() )
         {
             $login    = trim( $this->post('user_login') ) ;
             $password = trim( $this->post('user_password') ) ;
 
             return $this->registerInBase( $login , $password ) ;
         }
+        else
+		{
+			return false;
+		}
     }
 
     public function registerInBase( $login , $password , $fb_id = NULL )
@@ -561,12 +564,12 @@ class User extends \App\Kernel\Common\User
         if ( $fb_id !== NULL ) $active = 1;
 
         $user = \DB::for_table('user_front')->create();
-        $user->user_front_token                 = $this->getNewToken();
-        $user->user_front_login                 = $login;
-        $user->user_front_password              = $this->hashPassword( $password );
-        $user->user_front_date_created          = $date->format('Y-m-d H:i:s');
-        $user->user_front_active                = $active;
-        $user->user_front_user_front_group_id   = $this->getDefaultGroup() ;
+        $user->user_front_token               = $this->getNewToken();
+        $user->user_front_login               = $login;
+        $user->user_front_password            = $this->hashPassword( $password );
+        $user->user_front_date_created        = $date->format('Y-m-d H:i:s');
+        $user->user_front_active              = $active;
+        $user->user_front_user_front_group_id = $this->getDefaultGroup() ;
         if ( $fb_id !== NULL ) $user->user_front_user_fb_id = $fb_id ;
 
         $user->save();
@@ -600,6 +603,7 @@ class User extends \App\Kernel\Common\User
 
                 $this->save( $user ) ;
             }
+
             return $this->returnError( "user_register_successful" , true ) ;
         }
     }
@@ -617,9 +621,10 @@ class User extends \App\Kernel\Common\User
     protected function sendValidationMail( $user )
     {
         $el = new Easyletter;
+        $url = Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token;
         $el->automotion("user_account_validation" , $user->user_front_login , array_merge([
-            'url_validation' => \App\Kernel\Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token,
-            'email' => $user->user_front_login
+            'url_validation' => '<a href="'. $url .'">'. $url .'</a>',
+            'email'          => $user->user_front_login
         ], $this->getEmailVariableValidation() ));
 
         return true ;

@@ -43,6 +43,15 @@ redirect = function( url ) {
     d.location.href = url ;
 };
 
+select2MatchStart = function(params, data) {
+    if( typeof params.term === "undefined" ) return data;
+    if( params.term.trim() === "" )          return data;
+
+    return data.text.indexOf(params.term.trim()) > -1
+        ? data
+        : null;
+};
+
 initSelect = function( base ) {
     if ( $(base + " select[data-plugin-selectTwo]").length ) {
         $(base + " select[data-plugin-selectTwo]").select2({
@@ -50,7 +59,8 @@ initSelect = function( base ) {
                 "noResults": function () {
                     return "Aucun résultat trouvé";
                 }
-            }
+            },
+            matcher: select2MatchStart
         });
     }
 };

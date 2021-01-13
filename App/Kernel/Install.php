@@ -2,6 +2,9 @@
 
 namespace App\Kernel;
 
+use Composer\Script\Event;
+use Composer\Installer\PackageEvent;
+
 class Install
 {
     public function __construct() {}
@@ -11,28 +14,12 @@ class Install
         return 'admin-site' ;
     }
 
-    public static function postUpdate()
+    public static function postUpdate( Event $event )
     {
-        $vendorName = 'jwebcreation/cms' ;
-        if ( getenv('APP_HOME') === false )
-        {
-            $separator = "/" ;
-            $path = implode( PATH_SEPARATOR, array( realpath( dirname(__FILE__) . '/../../' ) ) ) ;
+        $vendorName = 'JWebCreation/cms' ;
 
-            if ( substr( $path , 0 , 1 ) != '/' )  $separator = "\\" ;
-
-            $vendor = str_replace( "/" , $separator , "/vendor/" . $vendorName ) ;
-            $path   = str_replace( $vendor , "" , $path );
-
-            defined('_PATH_') || define('_PATH_', $path );
-            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/vendor");
-        }
-        else
-        {
-            $path   = getenv('APP_HOME') . "/public" ;
-            defined('_PATH_') || define('_PATH_', $path );
-            defined('VENDOR_PATH') || define("VENDOR_PATH", _PATH_ . "/..//vendor");
-        }
+        defined('VENDOR_PATH') || define("VENDOR_PATH", $event->getComposer()->getConfig()->get('vendor-dir'));
+        defined('_PATH_') || define('_PATH_', substr( VENDOR_PATH, 0 , ( strlen( "/vendor" ) * -1 ) ) );
 
         defined('SLACK_WEBHOOK') || define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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' );
         defined('SLACK_EMOJI') || define('SLACK_EMOJI', ":jweb:" );
@@ -50,11 +37,10 @@ class Install
 
         require VENDOR_PATH . '/autoload.php';
         require KERNEL_PATH . '/DB.php';
-
-        self::postInstall() ;
+        self::postInstall( $event ) ;
     }
 
-    public static function postInstall()
+    public static function postInstall( Event $event )
     {
         echo "Installation du CMS\n" ;
         $install = self::isInstallation() ;
@@ -364,13 +350,28 @@ class Install
         $files = glob( LANGUAGE_PATH . '/BO*.php');
         if ( $files && count( $files ) > 0 )
         {
-
             foreach( $files as $file )
             {
                 $array    = explode( '/' , $file ) ;
                 $filename = end( $array );
                 copy( $file , PROJECT_PATH . "/Lang/" . $filename );
             }
+        }
+
+        $fileFrontDefault = PROJECT_PATH . "/Lang/FR.php";
+
+        if ( ! file_exists( $fileFrontDefault ) )
+        {
+            $php = '' ;
+            $php.= "<"."?"."php\n" ;
+            $php.= "namespace Project\Lang;\n" ;
+            $php.= "class FR extends \App\Kernel\Front\LanguageModel {\n" ;
+            $php.= "\tprotected $"."a = [\n" ;
+            $php.= "\t];\n" ;
+            $php.= "}" ;
+
+            self::create( $fileFrontDefault , $php ) ;
+
         }
     }
 

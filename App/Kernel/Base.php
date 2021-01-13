@@ -121,7 +121,7 @@ class Base
     {
         return str_replace("\r", "", 'CREATE TRIGGER `after_delete_page` AFTER DELETE ON `page` FOR EACH ROW BEGIN DELETE FROM page_lang WHERE page_lang_page_id = old.page_id; END;
 CREATE TRIGGER `after_delete_extension` AFTER DELETE ON `extension` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_extension_id = old.extension_id; END;
-CREATE TRIGGER `after_delete_module_group` AFTER DELETE ON `module_group` FOR EACH ROW BEGIN UPDATE module SET module_module_group_id = NULL WHERE module_module_group_id = old.module_group_id; END;
+CREATE TRIGGER `after_delete_module_group` AFTER DELETE ON `module_group` FOR EACH ROW BEGIN UPDATE module SET module_module_column_block_id = NULL WHERE module_module_column_block_id = old.module_group_id; END;
 CREATE TRIGGER `after_delete_module` AFTER DELETE ON `module` FOR EACH ROW BEGIN DELETE FROM param WHERE param_key = CONCAT(\'key_module_\',old.module_id); DELETE FROM module_lang WHERE module_lang_module_id = old.module_id; END;
 CREATE TRIGGER `after_delete_user_group` AFTER DELETE ON `user_group` FOR EACH ROW BEGIN DELETE FROM permission WHERE permission_group_id = old.user_group_id; END;');
     }
@@ -153,7 +153,7 @@ INSERT INTO `lang` (`lang_id`, `lang_display`, `lang_name`, `lang_url`, `lang_fl
 (11, 'Polak', 'Polonais', 'pl', 'pl', 'pl', 0, 0, 0);
   
 INSERT INTO `param` (`param_key`, `param_value`) VALUES
-('seo_author', 'JWeb Création'),
+('seo_author', '29ter'),
 ('security_lock_ip', '0'),
 ('el_credits', '0'),
 ('seo_geo_region', NULL),

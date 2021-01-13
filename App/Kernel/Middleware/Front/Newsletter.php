@@ -55,7 +55,7 @@ class Newsletter extends \Slim\Middleware
 	{
 		$this->app->response->body( json_encode([
 			'result'  => $result,
-			'message' => $message
+			'msg' => $message
 		]) );
 
 		return $result;

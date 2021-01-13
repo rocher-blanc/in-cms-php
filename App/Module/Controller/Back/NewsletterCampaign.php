@@ -135,9 +135,6 @@ class NewsletterCampaign extends Controller
             if ( $recrst ) $grps[ $recpt ] = $rec->get('name');
         }
 
-        $el = new Easyletter();
-        $tabStats = $el->stats( $data->get('id_easyletter') );
-
         $this->setRender('id' , $data->get('id') );
         $this->setRender('rst' , [
             'subject' => $data->get('subject'),
@@ -146,11 +143,17 @@ class NewsletterCampaign extends Controller
 
         if ( $data->get('version') == 'v3' )
         {
+            $el = new Easyletter();
+            $tabStats = $el->stats( $data->get('id_easyletter') );
+
             $this->setRender('statistics' , $tabStats );
             $file = 'stats_v3.twig' ;
         }
         else
         {
+            $el = new Easyletter('v2');
+            $tabStats = $el->stats( $data->get('id_easyletter') );
+
             $file = 'stats.twig' ;
             $links = $tabStats['links']['records'];
             for( $j = 0; $j <= count($links); $j++ )

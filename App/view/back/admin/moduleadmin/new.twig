@@ -5,21 +5,15 @@
 
 {% block module %}
 
-    {# TODO [en attente] dynamiser les relations {{ dump(depedency) }}#}
-    {# TODO [en attente] dynamiser les relations {{ dump(module) }}#}
-
-    {# DONE Quand on selectionne un type text : rajouter un select avec 3 types : text (par defaut), phone, email #}
-    {# DONE Quand on selectionne un type text : rajouter une option de taille du champ (255 par defaut) #}
-    {# TODO [en cours] ATTENTION ! Deux champs ne peuvent pas avoir le meme ID #}
-    {# TODO Pouvoir ajouter des groupes de champ et associer les champs a ses groupes - Un champ peut ne pas etre associer a un groupe #}
-    {# TODO Pouvoir ajouter des onglet (ID, nom, icone) #}
-    {# TODO Pour chaque champ, possibilité de mettre un commentaire (variable comment) #}
-    {# TODO Pour les champs de type texte (input text, textarea), on peut mettre le multi-langue sur le champ (variable lang)#}
-    {# TODO Pour le manyToMany (select) des modules (variable many) #}
-    {# TODO Si un module est user, il ne peut etre user_module - Si un module est user_module, il ne peut etre user #}
-    {# TODO Pouvoir supprimer un champ #}
+    <style>
+        .border-danger { border-color: #a94442 }
+        .modal-header:before, .modal-header:after { content: none }
+        .modal-hide { display: none }
+    </style>
 
     <div id="app">
+
+        <-- modules -->
 
         <h4 style="margin-bottom: 20px">Paramètres du module</h4>
 
@@ -72,16 +66,28 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3">Module de profil utilisateur</label>
+                <label class="col-sm-3">Type de module</label>
                 <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user_module">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Module associer à un utilisateur</label>
-                <div class="col-sm-9">
-                    <input type="checkbox" v-model="globalParams.user">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="standard">
+                                Standard
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_profile">
+                                Profil utilisateur
+                            </label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="radio" v-model="globalParams.type" value="user_association">
+                                Associer à un utilisateur
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -106,20 +112,18 @@
                 </div>
             </div>
 
-            <div class="form-group row" v-if="!globalParams.isDepedency">
+            <div class="form-group row" v-if="!globalParams.isDepedency && depedencies.length">
                 <label class="col-sm-3">Ce module a des dépendances</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="globalParams.hasDepedency">
                 </div>
             </div>
 
-            <div class="form-group row" v-if="globalParams.hasDepedency">
+            <div class="form-group row" v-if="globalParams.hasDepedency && depedencies.length">
                 <label class="col-sm-3">Choisir les dépendances</label>
                 <div class="col-sm-9">
                     <select class="form-control" multiple v-model="globalParams.depedencies">
-                        <option value="moduleA">module A</option>
-                        <option value="moduleB">module B</option>
-                        <option value="moduleC">module C</option>
+                        <option v-for="depedency in depedencies" :value="depedency"><-- depedency --></option>
                     </select>
                 </div>
             </div>
@@ -130,9 +134,48 @@
         <div class="card card-body" style="margin-bottom: 30px">
 
             <div class="form-group row">
+                <label class="col-sm-3">Groupe</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!groups.length" v-model="newField.groupId">
+                                <option value="">Aucun groupe</option>
+                                <option v-for="group in groups" :value="group.id"><-- group.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewGroup')">
+                                + Ajouter un groupe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Onglet</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control" :disabled="!tabs.length" v-model="newField.tabId">
+                                <option value="">Aucun onglet</option>
+                                <option v-for="tab in tabs" :value="tab.id"><-- tab.name --></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-secondary btn-block" @click="toggleModal('addNewTab')">
+                                + Ajouter un onglet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-sm-3">Id du champ</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" v-model="newField.id">
+                    <input type="text" class="form-control" :class="{ 'border-danger' : duplicatedId }" v-model="newField.id">
+                    <div class="text-danger" v-if="duplicatedId">Cet ID est déjà utilisé par un autre champ</div>
                 </div>
             </div>
 
@@ -161,6 +204,13 @@
                 <label class="col-sm-3">Champ obligatoire</label>
                 <div class="col-sm-9">
                     <input type="checkbox" v-model="newField.empty">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Commentaire</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" v-model="newField.comment">
                 </div>
             </div>
 
@@ -209,6 +259,13 @@
                 </div>
             </div>
 
+            <div class="form-group row" v-if="['input','textarea'].includes(newField.type)">
+                <label class="col-sm-3">Activer le multilang</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" class="form-check-input" v-model="newField.lang">
+                </div>
+            </div>
+
             <div class="form-group row" v-if="newField.type === 'textarea'">
                 <label class="col-sm-3">Activer l'éditeur HTML</label>
                 <div class="col-sm-9">
@@ -216,7 +273,18 @@
                 </div>
             </div>
 
-            <div class="form-group row" v-if="['select','radio','checkbox','date'].includes(newField.type)">
+            <div class="form-group row" v-if="newField.type === 'select'">
+                <label class="col-sm-3">Type</label>
+                <div class="col-sm-9">
+                    <select class="form-control" v-model="newField.selectType" style="margin-top: 5px">
+                        <option v-for="selectType in selectTypes" :value="selectType">
+                            <-- selectType -->
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="['radio','checkbox','date'].includes(newField.type) || newField.type === 'select' && newField.selectType === 'manual'">
                 <label class="col-sm-3">Liste des options</label>
                 <div class="col-sm-9">
                     <div class="row" v-if="newField.selectOptions.length" v-for="(selectOption, index) in newField.selectOptions" style="margin-bottom: 10px">
@@ -241,6 +309,17 @@
                             <button class="btn btn-primary btn-block" @click="addOption()" :disabled="!optionValidation">Add</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="form-group row" v-if="newField.type === 'select' && newField.selectType === 'module'">
+                <label class="col-sm-3">Module</label>
+                <div class="col-sm-9">
+                    <select class="form-control" v-model="newField.selectModule" style="margin-top: 5px">
+                        <option v-for="module in modules" :value="module">
+                            <-- module -->
+                        </option>
+                    </select>
                 </div>
             </div>
 
@@ -284,18 +363,19 @@
 
             <div class="form-group row">
                 <div class="col-sm-12 text-right">
-                    <button v-on:click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
+                    <button @click="addField" class="btn btn-primary" :disabled="!formValidation">Ajouter le champ</button>
                 </div>
             </div>
         </div>
 
         <div v-if="fields.length" v-for="(field, index) in fields" class="card card-body" style="margin-bottom: 15px">
             <div class="text-right" style="margin-bottom: 10px">
-                <button class="btn btn-sm btn-secondary" v-if="index !== 0" v-on:click="moveUp( index )"><i class="icon-line-arrow-up"></i></button>
-                <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" v-on:click="moveDown( index )"><i class="icon-line-arrow-down"></i></button>
+                <button class="btn btn-sm btn-danger" @click="remove(index)"><i class="icon-line-trash"></i></button>
+                <button class="btn btn-sm btn-secondary" v-if="index !== 0" @click="moveUp(index)"><i class="icon-line-arrow-up"></i></button>
+                <button class="btn btn-sm btn-secondary" v-if="index !== fields.length - 1" @click="moveDown(index)"><i class="icon-line-arrow-down"></i></button>
             </div>
             <div class="row">
-                <div class="col-sm-1">
+                <div class="col-sm-2">
                     <strong>Position</strong><br>
                     <-- index + 1 -->
                 </div>
@@ -303,26 +383,40 @@
                     <strong>Taille</strong><br>
                     <-- field.column.size --> / <-- field.column.total -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Id</strong><br>
                     <-- field.id -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Nom</strong><br>
                     <-- field.name -->
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
                     <strong>Type</strong><br>
                     <-- field.type -->
                 </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.groupId" text="Groupe"></display-boolean>
+                    <div v-if="field.groupId">Id: <-- field.groupId --></div>
+                </div>
+                <div class="col-sm-1">
+                    <display-boolean :value="field.tabId" text="Onglet"></display-boolean>
+                    <div v-if="field.tabId">Id: <-- field.tabId --></div>
+                </div>
                 <div class="col-sm-2">
-                    <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean><br>
-                    <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean><br>
+                    <display-boolean :value="field.isUrl" text="Url à partir du nom"></display-boolean>
+                    <display-boolean :value="field.isUrl" text="Ajouté comme référence"></display-boolean>
                     <display-boolean :value="field.empty" text="Champ obligatoire"></display-boolean>
+                    <div v-if="field.comment">
+                        <div>Commentaire: <-- field.comment --></div>
+                    </div>
                 </div>
                 <div class="col-sm-2" v-if="['textarea','select','radio','checkbox','date','image','gallery','integer','float','input'].includes(field.type)">
                     <strong>Options</strong><br>
                     <display-boolean v-if="['textarea'].includes(field.type)" :value="field.textareaHtml" text="Éditeur HTML"></display-boolean>
+                    <display-boolean v-if="['textarea','input'].includes(field.type)" :value="field.lang" text="Multilang"></display-boolean>
+                    <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
+                    <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
                     <div v-if="['select','radio','checkbox','date'].includes(field.type)">
                         <div v-for="option in field.selectOptions"><-- option --></div>
                     </div>
@@ -335,15 +429,66 @@
                         <div>Type d'input: <-- field.inputType --></div>
                         <div>Taille du champ: <-- field.inputCharLength --></div>
                     </div>
-                    <display-boolean v-if="['integer','float'].includes(field.type)" :value="field.intStep" :text="'Step '+field.intStep"></display-boolean>
-                    <display-boolean v-if="['date'].includes(field.type)" :value="field.dateWithHour" text="Avec heure"></display-boolean>
                 </div>
             </div>
         </div>
 
-        <div v-if="fields.length" class="text-center">
-            <button v-on:click="saveJson" class="btn btn-primary">Sauvegarder</button>
+        <div class="text-center">
+            <button @click="saveJson" class="btn btn-lg btn-primary" :disabled="!(fields.length && globalParams.name.length && !modules.includes(globalParams.name))">Sauvegarder</button>
         </div>
+
+        {% for modal in ['tab','group'] %}
+            {% set id = modal == 'group' ? 'addNewGroup' : 'addNewTab' %}
+            {% set title = modal == 'group' ? 'Ajouter un groupe' : 'Ajouter un onglet' %}
+            {% set method = modal == 'group' ? 'addGroup' : 'addTab' %}
+            <div id="{{ id }}" class="modal-hide" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,.7); z-index: 1000;">
+                <div class="modal" style="display: flex; align-items: center">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="display: flex; justify-content: space-between">
+                                <h5 class="modal-title">{{ title }}</h5>
+                                <button type="button" class="close" @click="toggleModal('{{ id }}')">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% if modal == 'group' %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newGroup.id">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newGroup.name">
+                                        </div>
+                                    </div>
+                                {% elseif modal == 'tab' %}
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <label for="groupId">Id</label>
+                                            <input id="groupId" class="form-control" type="text" v-model="newTab.id">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Nom</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.name">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="groupName">Icone</label>
+                                            <input id="groupName" class="form-control" type="text" v-model="newTab.icon">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer" style="border: 0">
+                                <button type="button" class="btn btn-primary" @click="{{ method }}">Sauvegarder</button>
+                                <button type="button" class="btn btn-secondary" @click="toggleModal('{{ id }}')">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
 
@@ -359,12 +504,22 @@
                 icon() { return this.value ? 'icon-line-check' : 'icon-line-cross' },
                 color() { return this.value ? 'text-success' : 'text-warning' }
             },
-            template: `<strong :class="color"><i :class="icon"></i> <-- text --></strong>`
+            template: `<div><strong :class="color"><i :class="icon"></i> <-- text --></strong></div>`
         });
         const app = new Vue({
             el: '#app',
             delimiters: ["<--","-->"],
             data: {
+                modules: [
+                  {% for m in module %}
+                    '{{ m.name }}',
+                  {% endfor %}
+                ],
+                depedencies: [
+                  {% for d in depedency %}
+                    '{{ d.class }}',
+                  {% endfor %}
+                ],
                 fieldTypes: [
                     { value: 'input', text: 'Input' },
                     { value: 'select', text: 'Select' },
@@ -390,25 +545,39 @@
                     { value: 'email', text: 'Email' }
                 ],
                 imageTypes: ['thumb','cover','width','height'],
+                selectTypes: ['manual','module'],
                 maxCols: 5,
+                newGroup: {
+                  id: '',
+                  name: ''
+                },
+                newTab: {
+                  id: '',
+                  name: '',
+                  icon: ''
+                },
                 newField: {
                     id: '',
                     name: '',
+                    groupId: '',
+                    tabId: '',
                     isUrl: false,
-                    lang: false,
                     isRef: false,
                     empty: false,
                     many: false,
-                    comment: false,
+                    lang: false,
+                    comment: '',
                     column: {
-                        size: 0,
-                        total: 0
+                        size: 5,
+                        total: 5
                     },
                     type: '',
                     inputType: '',
                     inputCharLength: 255,
                     textareaHtml: false,
                     selectOptions: [],
+                    selectModule: '',
+                    selectModule: '',
                     option: {
                         key: '',
                         value: ''
@@ -419,16 +588,16 @@
                     intStep: 0,
                     dateWithHour: false
                 },
+                /* DATA DYNAMIQUE */
                 globalParams: {
                     edition: {
                         delete: true,
                         edit: true,
                         add: true,
-                        valid: true
+                        valid: false
                     },
                     name: '',
-                    user: false,
-                    user_module: false,
+                    type: 'standard',
                     order: false,
                     limit: false,
                     pagination: false,
@@ -436,11 +605,14 @@
                     hasDepedency: false,
                     depedencies: []
                 },
-                fields: []
+                fields: [],
+                tabs: [],
+                groups: []
             },
             computed: {
                 formValidation() {
                     const basicDatasFilled =
+                        !this.duplicatedId &&
                         this.newField.id.length &&
                         this.newField.name.length &&
                         this.newField.column.size &&
@@ -484,12 +656,26 @@
                 }
             },
             methods: {
-                addField: function () {
+                toggleModal(modalId) {
+                  document.getElementById(modalId).classList.toggle('modal-hide');
+                },
+                addGroup() {
+                  this.groups.push(JSON.parse(JSON.stringify(this.newGroup)));
+                  this.toggleModal('addNewGroup');
+                },
+                addTab() {
+                  this.tabs.push(JSON.parse(JSON.stringify(this.newTab)));
+                  this.toggleModal('addNewTab');
+                },
+                addField () {
+                    this.newField.id = this.camelCase(this.newField.id);
                     this.fields.push(JSON.parse(JSON.stringify(this.newField)));
                 },
                 saveJson: function () {
                     axios.post('{{ siteUrl('admin/moduleadmin/generate') }}', {
                         {{csrf_key}}:'{{csrf_token}}',
+                        tabs: JSON.stringify(this.tabs),
+                        groups: JSON.stringify(this.groups),
                         fields: JSON.stringify(this.fields),
                         global: JSON.stringify(this.globalParams)
                     })
@@ -509,11 +695,11 @@
                     )
                 },
                 removeOption(index) {
-                    this.newField.selectOptions.splice(index, 1);
+                    this.newField.selectOptions.splice(index);
                 },
-                moveUp: function (index) {
+                moveUp(index) {
                     if (index !== 0) {
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                        this.fields = this.fields.map((e, i) => {
                             if (i === index - 1) {
                                 return this.fields[index];
                             } else if (i === index) {
@@ -524,9 +710,9 @@
                         })
                     }
                 },
-                moveDown: function (index) {
-                    if (index !== this.fields.length-1) { // if its the last in the array
-                        this.fields = this.fields.map((e, i) => { // iterate array and change places
+                moveDown(index) {
+                    if (index !== this.fields.length-1) {
+                        this.fields = this.fields.map((e, i) => {
                             if (i === index) {
                                 return this.fields[index + 1];
                             } else if (i === index + 1) {
@@ -537,7 +723,10 @@
                         })
                     }
                 },
-                camelCase: function(str) {
+                remove(index) {
+                    this.fields.splice(index, 1);
+                },
+                camelCase(str) {
                     str = replaceAccents(str);
                     str = removeNonWord(str)
                         .replace(/\-/g, " ") //convert all hyphens to spaces
@@ -545,19 +734,15 @@
                         .replace(/\s+/g, "") //remove spaces
                         .replace(/^[A-Z]/g, lowerCase); //convert first char to lowercase
                     return str;
-
                     function upperCase(str) {
                         return str.toUpperCase();
                     }
-
                     function lowerCase(str) {
                         return str.toLowerCase();
                     }
-
                     function removeNonWord(str) {
                         return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
                     }
-
                     function replaceAccents(str) {
                         // verifies if the String has accents and replace them
                         if (str.search(/[\xC0-\xFF]/g) > -1) {

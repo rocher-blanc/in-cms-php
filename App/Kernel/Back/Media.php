@@ -233,44 +233,6 @@ class Media extends \App\Kernel\Common\Media
         return $rst ;
     }
 
-    public function genImages( $field )
-	{
-
-		if ( $field->hasThumb() )
-		{
-			foreach( $field->getThumb() as $thumb )
-			{
-				$this->genThumb( $thumb[0] , $thumb[1] ) ; // width, height
-			}
-		}
-
-		if ( $field->hasCover() )
-		{
-			foreach( $field->getCover() as $cover )
-			{
-				$this->genCover( $cover[0] , $cover[1] ) ; // width, height
-			}
-		}
-
-		if( $field->hasWidth() )
-		{
-			foreach( $field->getWidth() as $width )
-			{
-				$this->genWidth( $width ) ;
-			}
-		}
-
-		if( $field->hasHeight() )
-		{
-			foreach( $field->getHeight() as $height )
-			{
-				$this->getHeight( $height ) ;
-			}
-		}
-	}
-
-
-
     public function editor()
     {
         $folder     = IMAGE_PATH . "/" . $this->getFolder() . "/e" ;

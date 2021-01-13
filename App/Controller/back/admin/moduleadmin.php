@@ -2,7 +2,63 @@
 
 use App\Kernel\Container;
 use App\Kernel\Factory;
+use App\Kernel\Back\Gallery;
 use App\Kernel\Front\Translate;
+
+function installModule( $name )
+{
+    $contentRow = DB::for_table('module')->create();
+    $contentRow->module_name 		= $name ;
+    $contentRow->module_class_name 	= $name ;
+    $contentRow->module_icon 		= "icon-question" ;
+    $contentRow->module_active 		= 1 ;
+    $contentRow->save() ;
+
+
+    // On génère le webservice
+    $php = '' ;
+    $php.= "<"."?"."php\n\n" ;
+    $php.= "namespace Project\Module\Webservice;\n\n" ;
+    $php.= "use App\Kernel\Front\WebserviceModule;\n\n" ;
+    $php.= "class " . $name . " extends WebserviceModule\n" ;
+    $php.= "{\n" ;
+    $php.= "\t\n" ;
+    $php.= "}" ;
+    if ( ! file_exists( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" , $php );
+
+    $tab = ["Back","Front"];
+
+    // On génére le repository
+    foreach( $tab as $row )
+    {
+        $php = '' ;
+        $php.= "<"."?"."php\n\n" ;
+        $php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
+        $php.= "use App\Kernel\\" . $row . "\Repository;\n\n" ;
+        $php.= "class " . $name . " extends Repository\n" ;
+        $php.= "{\n" ;
+        $php.= "\t\n" ;
+        $php.= "}" ;
+        if ( ! file_exists( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
+    }
+
+    // On génére le controller
+    foreach( $tab as $row )
+    {
+        $php = '' ;
+        $php.= "<"."?"."php\n\n" ;
+        $php.= "namespace Project\Module\Controller\\" . $row . ";\n\n" ;
+        $php.= "use App\Kernel\\" . $row . "\Controller;\n\n" ;
+        $php.= "class " . $name . " extends Controller\n" ;
+        $php.= "{\n" ;
+        $php.= "\t\n" ;
+        $php.= "}" ;
+        if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
+    }
+
+    Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
+    Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
+}
 
 $app->group('/moduleadmin', function () use ($app)
 	{
@@ -17,8 +73,10 @@ $app->group('/moduleadmin', function () use ($app)
         {
             $g = json_decode( $_POST['global'] , true );
             $f = json_decode( $_POST['fields'] , true );
+            $tabs = json_decode( $_POST['tabs'] , true );
+            $groups = json_decode( $_POST['groups'] , true );
 
-//            dump($f);
+            $g['name'] = ucfirst($g['name']);
 
             $php = '' ;
             $php.= "<"."?"."php\n\n" ;
@@ -30,97 +88,132 @@ $app->group('/moduleadmin', function () use ($app)
             $php.= "\tprotected function load()\n" ;
             $php.= "\t{\n" ;
 
-                if ( $g['isDepedency'] ) $php.= "\t\t$"."this->isDependency();\n" ;
-                if ( $g['order'] ) $php.= "\t\t$"."this->enableOrder();\n" ;
-                if ( $g['limit'] !== false ) $php.= "\t\t$"."this->setMaxElement(".$g['limit'].");\n" ;
-                if ( $g['pagination'] !== false ) $php.= "\t\t$"."this->setPagination(".$g['pagination'].");\n" ;
-                if ( $g['user'] ) $php.= "\t\t$"."this->enableUser();\n" ;
-                if ( $g['user_module'] ) $php.= "\t\t$"."this->enableUserModule();\n" ;
-                if ( $g['edition']['delete'] === false ) $php.= "\t\t$"."this->disableDelete();\n" ;
-                if ( $g['edition']['edit'] === false ) $php.= "\t\t$"."this->disableUpdate();\n" ;
-                if ( $g['edition']['add'] === false ) $php.= "\t\t$"."this->disableCreate();\n" ;
-                if ( $g['edition']['import'] === false ) $php.= "\t\t$"."this->disableImport();\n" ;
-                if ( $g['edition']['valid'] ) $php.= "\t\t$"."this->enableValidation();\n" ;
+            if ( $g['isDepedency'] ) $php.= "\t\t$"."this->isDependency();\n" ;
+            if ( $g['order'] ) $php.= "\t\t$"."this->enableOrder();\n" ;
+            if ( $g['limit'] !== false ) $php.= "\t\t$"."this->setMaxElement(".$g['limit'].");\n" ;
+            if ( $g['pagination'] !== false ) $php.= "\t\t$"."this->setPagination(".$g['pagination'].");\n" ;
+            if ( $g['user'] ) $php.= "\t\t$"."this->enableUser();\n" ;
+            if ( $g['user_module'] ) $php.= "\t\t$"."this->enableUserModule();\n" ;
+            if ( $g['edition']['delete'] === false ) $php.= "\t\t$"."this->disableDelete();\n" ;
+            if ( $g['edition']['edit'] === false ) $php.= "\t\t$"."this->disableUpdate();\n" ;
+            if ( $g['edition']['add'] === false ) $php.= "\t\t$"."this->disableCreate();\n" ;
+            if ( $g['edition']['import'] === false ) $php.= "\t\t$"."this->disableImport();\n" ;
+            if ( $g['edition']['valid'] ) $php.= "\t\t$"."this->enableValidation();\n" ;
+
+            if ( ! empty( $tabs ) )
+            {
+                foreach( $tabs as $tab )
+                {
+                    $php.= "\t\t$"."this->addTab(\"" . $tab['id'] . "\",\"" . $tab['name'] . "\",\"" . $tab['icon'] . "\");\n" ;
+                }
+            }
+
+            if ( ! empty( $groups ) )
+            {
+                foreach( $groups as $group )
+                {
+                    $php.= "\t\t$"."this->addGroup(\"" . $group['id'] . "\",\"" . $group['name'] . "\");\n" ;
+                }
+            }
 
             $php.= "\t\t\n" ;
 
-                if ( ! empty( $f ) )
+            if ( ! empty( $f ) )
+            {
+                foreach ( $f as $field )
                 {
-                    foreach ( $f as $field )
-                    {
-                        $php.= "\t\t$"."this->build('".$field['id']."')\n" ;
-                        $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
-                        $php.= "\t\t\t->column(".$field['column']['size'].",".$field['column']['total'].")\n" ;
-                        $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
+                    $php.= "\t\t$"."this->build('".$field['id']."')\n" ;
+                    $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
+                    $php.= "\t\t\t->column(".$field['column']['size'].",".$field['column']['total'].")\n" ;
+                    $php.= "\t\t\t->name(\"".$field['name']."\")\n" ;
 
-                        if ( $field['lang'] ) $php.= "\t\t\t->isLang()\n" ;
-                        if ( $field['comment'] !== false ) $php.= "\t\t\t->comment(\"". $field['comment'] ."\")\n" ;
-                        if ( $field['isUrl'] ) $php.= "\t\t\t->isUrl()\n" ;
-                        if ( $field['empty'] ) $php.= "\t\t\t->notEmpty(\"Merci de remplir le champ : ".$field['name']."\")\n" ;
-                        if ( $field['textareaHtml'] ) $php.= "\t\t\t->editor()\n" ;
-                        if ( $field['type'] == 'input' ) $php.= "\t\t\t->isVarchar()\n" ;
-                        if ( $field['type'] == 'textarea' ) $php.= "\t\t\t->isText()\n" ;
-                        if ( $field['type'] == 'gallery' ) $php.= "\t\t\t->isGallery()\n" ;
-                        if ( $field['type'] == 'document' ) $php.= "\t\t\t->isDocument()\n" ;
-                        if ( $field['type'] == 'video' ) $php.= "\t\t\t->isVideo()\n" ;
-                        if ( $field['type'] == 'link' ) $php.= "\t\t\t->isLink()\n" ;
-                        if ( $field['type'] == 'image' ) $php.= "\t\t\t->isImage()\n" ;
+                    if ( ! empty( $field['groupId'] ) ) $php.= "\t\t\t->group(\"" . $field['groupId'] . "\")\n" ;
+                    if ( ! empty( $field['tabId'] ) ) $php.= "\t\t\t->tab(\"" . $field['tabId'] . "\")\n" ;
+                    if ( $field['lang'] ) $php.= "\t\t\t->isLang()\n" ;
+                    if ( $field['comment'] !== false && ! empty( $field['comment'] ) ) $php.= "\t\t\t->comment(\"". $field['comment'] ."\")\n" ;
+                    if ( $field['isUrl'] ) $php.= "\t\t\t->isUrl()\n" ;
+                    if ( $field['empty'] ) $php.= "\t\t\t->notEmpty(\"Merci de remplir le champ : ".$field['name']."\")\n" ;
+                    if ( $field['textareaHtml'] ) $php.= "\t\t\t->editor()\n" ;
+                    if ( $field['type'] == 'input' ) $php.= "\t\t\t->isVarchar()\n" ;
+                    if ( $field['type'] == 'textarea' ) $php.= "\t\t\t->isText()\n" ;
+                    if ( $field['type'] == 'gallery' ) $php.= "\t\t\t->isGallery()\n" ;
+                    if ( $field['type'] == 'document' ) $php.= "\t\t\t->isDocument()\n" ;
+                    if ( $field['type'] == 'video' ) $php.= "\t\t\t->isVideo()\n" ;
+                    if ( $field['type'] == 'link' ) $php.= "\t\t\t->isLink()\n" ;
+                    if ( $field['type'] == 'image' ) $php.= "\t\t\t->isImage()\n" ;
 //                        if ( $field['type'] == 'radio' ) $php.= "\t\t\t->isRadio()\n" ;
-                        if ( $field['type'] == 'boolean' ) $php.= "\t\t\t->isBoolean()\n" ;
-                        if ( $field['type'] == 'checkbox' ) $php.= "\t\t\t->isCheckbox()\n" ;
-                        if ( $field['type'] == 'integer' ) $php.= "\t\t\t->isInteger()\n" ;
-                        if ( $field['type'] == 'float' ) $php.= "\t\t\t->isFloat()\n" ;
-                        if ( $field['type'] == 'icon' ) $php.= "\t\t\t->isIcon()\n" ;
-                        if ( $field['type'] == 'password' ) $php.= "\t\t\t->isPassword()\n" ;
-                        if ( $field['type'] == 'hour' ) $php.= "\t\t\t->isHour()\n" ;
+                    if ( $field['type'] == 'boolean' ) $php.= "\t\t\t->isBoolean()\n" ;
+                    if ( $field['type'] == 'checkbox' ) $php.= "\t\t\t->isCheckbox()\n" ;
+                    if ( $field['type'] == 'integer' ) $php.= "\t\t\t->isInteger()\n" ;
+                    if ( $field['type'] == 'float' ) $php.= "\t\t\t->isFloat()\n" ;
+                    if ( $field['type'] == 'icon' ) $php.= "\t\t\t->isIcon()\n" ;
+                    if ( $field['type'] == 'password' ) $php.= "\t\t\t->isPassword()\n" ;
+                    if ( $field['type'] == 'hour' ) $php.= "\t\t\t->isHour()\n" ;
 
-                        if ( $field['type'] == 'date' )
+                    if ( $field['type'] == 'date' )
+                    {
+                        if ( $field['dateWithHour'] )   $php.= "\t\t\t->isDate(true)\n" ;
+                        else                            $php.= "\t\t\t->isDate()\n" ;
+
+                        if ( ! empty( $field['selectOptions'] ) )
                         {
-                            if ( $field['dateWithHour'] )   $php.= "\t\t\t->isDate(true)\n" ;
-                            else                            $php.= "\t\t\t->isDate()\n" ;
+                            foreach ( $field['selectOptions'] as $option )
+                            {
+                                $php.= "\t\t\t->format(\"".$option['value']."\" , \"".$option['value']."\")\n" ;
+                            }
+                        }
+                    }
 
+                    if ( $field['type'] == 'select' )
+                    {
+                        $php.= "\t\t\t->isSelect()\n" ;
+                        if ( $field['many'] !== false )
+                        {
+                            $php.= "\t\t\t->manyToMany(\"". $field['many'] ."\")\n" ;
+                        }
+                        else
+                        {
                             if ( ! empty( $field['selectOptions'] ) )
                             {
+                                $php.= "\t\t\t->option([\n" ;
                                 foreach ( $field['selectOptions'] as $option )
                                 {
-                                    $php.= "\t\t\t->format(\"".$option['value']."\" , \"".$option['value']."\")\n" ;
+                                    $php.= "\t\t\t\t\"".$option['value']."\" => \"".$option['value']."\",\n" ;
                                 }
+                                $php.= "\t\t\t])\n" ;
                             }
                         }
-
-                        if ( $field['type'] == 'select' )
-                        {
-                            $php.= "\t\t\t->isSelect()\n" ;
-                            if ( $field['many'] !== false )
-                            {
-                                $php.= "\t\t\t->manyToMany(\"". $field['many'] ."\")\n" ;
-                            }
-                            else
-                            {
-                                if ( ! empty( $field['selectOptions'] ) )
-                                {
-                                    $php.= "\t\t\t->option([\n" ;
-                                    foreach ( $field['selectOptions'] as $option )
-                                    {
-                                        $php.= "\t\t\t\t\"".$option['value']."\" => \"".$option['value']."\",\n" ;
-                                    }
-                                    $php.= "\t\t\t])\n" ;
-                                }
-                            }
-                        }
-
-                        $php.= "\t\t\t;\n\n" ;
                     }
+
+                    $php.= "\t\t\t;\n\n" ;
                 }
-
-
+            }
 
             $php.= "\t}\n" ;
             $php.= "}" ;
 
-            echo '<pre>';
-            dump( $php );
+            $contentRow = \DB::for_table('module')
+                ->where_equal('module_class_name',$g['name'])
+                ->find_one();
 
+            if ( ! $contentRow )
+            {
+                Factory::getInstance()->File()->create( ENTITY_PATH . "/" . $g['name'] . ".php" , $php );
+
+                installModule( $g['name'] );
+                Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( 'msg_module_installed' ) , true , '/admin/moduleadmin' );
+            }
+            else
+            {
+                $md5 = md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) ;
+
+                if ( $md5 == Container::getInstance()->param()->get('key_module_' . $contentRow->module_id ) )
+                {
+                    Factory::getInstance()->File()->create( ENTITY_PATH . "/" . $g['name'] . ".php" , $php );
+                    Container::getInstance()->module( $g['name'] )->getRepository( true )->checkDatabase();
+                    Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
+                }
+            }
         });
 
         $app->get('/new', function () use ($app)
@@ -231,62 +324,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 			if ( ! $contentRow )
 			{
-				$contentRow = DB::for_table('module')->create();
-				$contentRow->module_name 		= $name ;
-				$contentRow->module_class_name 	= $name ;
-				$contentRow->module_icon 		= "icon-question" ;
-				$contentRow->module_active 		= 1 ;
-				$contentRow->save() ;
-
-				// On génère le webservice
-				$php = '' ;
-				$php.= "<"."?"."php\n\n" ;
-				$php.= "namespace Project\Module\Webservice;\n\n" ;
-				$php.= "class " . $name . " extends \App\Kernel\Front\WebserviceModule\n" ;
-				$php.= "{\n" ;
-				$php.= "\t\n" ;
-				$php.= "}" ;
-				if ( ! file_exists( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( WEBSERVICE_PROJECT_PATH . "/" . $name . ".php" , $php );
-
-
-				$tab = ["Back","Front"];
-
-				// On génére le repository
-				foreach( $tab as $row )
-				{
-					$php = '' ;
-					$php.= "<"."?"."php\n\n" ;
-					$php.= "namespace Project\Module\Repository\\" . $row . ";\n\n" ;
-					$php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Repository\n" ;
-					$php.= "{\n" ;
-					$php.= "\t\n" ;
-					$php.= "}" ;
-					if ( ! file_exists( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( REPOSITORY_PROJECT_PATH . "/" . $row . "/" . $name . ".php" , $php );
-				}
-
-				// On génére le controller
-				foreach( $tab as $row )
-				{
-					$php = '' ;
-					$php.= "<"."?"."php\n\n" ;
-					$php.= "namespace Project\Module\Controller\Front;\n\n" ;
-					$php.= "class " . $name . " extends \App\Kernel\Front\Controller\n" ;
-					$php.= "{\n" ;
-					$php.= "\t\n" ;
-					$php.= "}" ;
-
-					$php = '' ;
-					$php.= "<"."?"."php\n\n" ;
-					$php.= "namespace Project\Module\Controller\\" . $row . ";\n\n" ;
-					$php.= "class " . $name . " extends \App\Kernel\\" . $row . "\Controller\n" ;
-					$php.= "{\n" ;
-					$php.= "\t\n" ;
-					$php.= "}" ;
-					if ( ! file_exists( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" ) ) Factory::getInstance()->File()->create( MODULE_PATH . "/Controller/" . $row . "/" . $name . ".php" , $php );
-				}
-
-                Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
-				Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
+                installModule( ucfirst($name) );
 				Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( 'msg_module_installed' ) , true , '/admin/moduleadmin' );
 
 			}
@@ -308,6 +346,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 		$app->post('/image/:id', function ($id) use ($app)
 		{
+			set_time_limit(0);
 			$ret = false;
 			$contentRow = \DB::for_table('module')
 				->where_equal('module_id', $id)
@@ -344,8 +383,41 @@ $app->group('/moduleadmin', function () use ($app)
 								}
 							}
 						}
+						else if ( $field->getType() == 'gallery' )
+						{
+                            $content = \DB::for_module( $contentRow->module_class_name )
+                                ->select( $entity->get( $entity->getIdName() )->getColumn() , 'id' )
+                                ->find_many();
+
+                            if ( $content )
+                            {
+                                foreach( $content as $row )
+                                {
+                                    $Gal = new Gallery();
+                                    $Gal->setElementId( $row->get('id') );
+                                    $Gal->setModuleId( $id );
+                                    $Gal->setModuleName( $contentRow->module_class_name );
+                                    $Gal->setField( $field->getName() );
+                                    $Gal->setFolder( $entity->getFolder() );
+                                    $tab = $Gal->getAllByField();
+
+                                    if ( $tab )
+                                    {
+                                        foreach( $tab as $key => $item )
+                                        {
+                                            $Gal->setImageId( $key );
+                                            $Gal->setImageName( $item['name'] );
+                                            $Gal->genImages();
+                                        }
+                                    }
+                                }
+                            }
+                        }
 					}
 
+					/*
+					 * while true; do desktop xxxxxxxxxxxxxxxxxxxxx; sleep 600; done
+					 */
 					\App\Kernel\Back\Log::getInstance()->warning( 47 , $contentRow->module_name ) ;
 
 					$ret = true ;
