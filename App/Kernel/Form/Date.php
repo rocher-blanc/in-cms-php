@@ -23,7 +23,6 @@ class Date extends \App\Kernel\Back\Form
             'name' => $name,
             'value' => $value,
             'hour' => $field->getData('hour'),
-            'old' => $field->getData('old'),
             'column' => $field->getColumn(),
             'required' => $field->isRequired()
         ]);
