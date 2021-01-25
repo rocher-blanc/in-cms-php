@@ -228,6 +228,12 @@ class Builder extends Model
 
     /*
      * @boolean
+     * Affiche la date de création de l'élément
+     */
+    protected $_show_date_created = false ;
+
+    /*
+     * @boolean
      * Désactive l'import
      */
     protected $_import = true ;
@@ -910,6 +916,20 @@ class Builder extends Model
     {
         return $this->_import ;
     }
+
+    /* ************************************************** */
+    /* ****************   DATE CREATION   *************** */
+    /* ************************************************** */
+
+	public function showDateCreated()
+	{
+		$this->_show_date_created = true;
+	}
+
+	public function isShowDateCreation()
+	{
+		return $this->_show_date_created;
+	}
 
     /* ************************************************** */
     /* *****************   TABULATIONS   **************** */

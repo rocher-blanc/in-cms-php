@@ -299,8 +299,13 @@ class Controller extends ControllerCommon
             foreach( $rst as $row )
             {
                 $tab[ $row->module_table_field ] = $row->module_table_field ;
-            }
-        }
+			}
+
+            if( $this->getEntity()->isShowDateCreation() )
+			{
+				$tab['date_created'] = "date_created" ;
+			}
+		}
 
         return $tab ;
     }
@@ -486,6 +491,7 @@ class Controller extends ControllerCommon
                         {
                             $typeField = $field->getType() ;
 
+                            // Type select avec options existantes
                             if ( $field->getType() == "select" && $field->getData('option') !== NULL )
                             {
                                 $opt = $field->getData('option') ;
@@ -505,11 +511,13 @@ class Controller extends ControllerCommon
                                     $value = $opt[ $row->get( $field->getColumn() ) ] ;
                                 }
                             }
+                            // Type boolean
                             else if ( $field->getType() == "radio" && $field->getData('isBoolean') == true )
                             {
                                 $typeField = 'boolean' ;
                                 $value = $row->get( $field->getColumn() ) ;
                             }
+                            // Type date
                             else if ( $field->getType() == "date" )
                             {
                                 if ( $row->get( $field->getColumn() ) === NULL )
@@ -523,6 +531,7 @@ class Controller extends ControllerCommon
                                     else                                    $value = $date->format('d/m/Y') ;
                                 }
                             }
+                            // Type vidéo
                             else if ( $field->getType() == "video" )
                             {
                                 $color  = '' ;
@@ -550,6 +559,7 @@ class Controller extends ControllerCommon
                                     "source" => $source,
                                 ];
                             }
+                            // Type checkbox
                             else if ( $field->getType() == "checkbox" )
                             {
                                 $arrayCheckbox = [];
@@ -572,6 +582,7 @@ class Controller extends ControllerCommon
                                     $value = $arrayCheckbox;
                                 }
                             }
+                            // Type image
                             else if ( $field->getType() == "image" )
                             {
                                 $Media = new Media;
@@ -597,6 +608,14 @@ class Controller extends ControllerCommon
                                     $value = '' ;
                                 }
                             }
+                            // Date de création
+							elseif( $typeField == null && $field->getName() == "date_created" )
+							{
+								$date  = $row->get( $field->getColumn() );
+								$dt    = \DateTime::createFromFormat("Y-m-d H:i:s" , $date);
+								$value = $dt->format( "d/m/Y H:i:s");
+							}
+                            // Autre types non renseignés
                             else
                             {
                                 $value = '' ;
@@ -663,13 +682,13 @@ class Controller extends ControllerCommon
 
                             $typeArray[ $field->getName() ] = $field->getType() ;
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
-                                'style' => $style,
+                                'style'      => $style,
                                 'javascript' => $js,
-                                'value' => $value,
-                                'module' => $field->getData('object'),
-                                'subtype' => $field->getData('subtype'),
-                                'id' => $idTd,
-                                'type' => $typeField
+                                'value'      => $value,
+                                'module'     => $field->getData('object'),
+                                'subtype'    => $field->getData('subtype'),
+                                'id'         => $idTd,
+                                'type'       => $typeField
                             ];
                         }
                     }
