@@ -229,26 +229,33 @@ class Menu
                 ];
             }
 
-            // MODULES
-            $req_modules = \DB::for_table( "module" )
-                ->where_in( "module_module_column_block_id" , $blocks_id )
-                ->order_by_asc( "module_order" )
-                ->find_many();
+            // MODULE
+			if( count($blocks_id) > 0 )
+			{
+				$req_modules = \DB::for_table( "module" )
+					->where_in( "module_module_column_block_id" , $blocks_id )
+					->order_by_asc( "module_order" )
+					->find_many();
+			}
 
-            foreach ( $req_modules as $module )
-            {
-                $Guard = new Acl;
-                $Guard->setModule( $module->module_class_name );
-                $Guard->load();
+			if( $req_modules )
+			{
+				foreach ( $req_modules as $module )
+				{
+					$Guard = new Acl;
+					$Guard->setModule( $module->module_class_name );
+					$Guard->load();
 
-                if ( $Guard->hasRight() )
-                {
-                    $blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
-                        'title' => $module->module_name ,
-                        'url'   => $module->module_class_name
-                    ];
-                }
-            }
+					if ( $Guard->hasRight() )
+					{
+						$blocks[ $module->module_module_column_block_id ][ 'modules' ][ $module->module_id ] = [
+							'title' => $module->module_name ,
+							'url'   => $module->module_class_name
+						];
+					}
+				}
+			}
+
 
             // Blocks
             foreach ( $blocks as $block )
