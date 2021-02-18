@@ -117,7 +117,7 @@ class Easyletter
         return $this->error ;
     }
 
-    public function automotion( string $keyAutomation , string $email , array $data = [] , $idSender = NULL )
+    public function automotion( string $keyAutomation , string $email , array $data = [] , $idSender = NULL , $subject = null )
     {
         if ( $idSender !== NULL )
         {
@@ -175,7 +175,7 @@ class Easyletter
 
                     $this->phpmailer->AltBody = strip_tags( $html ) ;
                     $this->phpmailer->Body = $html ;
-                    $ret = $this->phpmailer->send();
+                    $this->phpmailer->send();
 
                 }
                 else
@@ -194,7 +194,7 @@ class Easyletter
                         'sendingRate' => '0',
                         'transactional' => '1',
 
-                        'subject' => $EdAutomationModel->get('subject'),
+                        'subject' => ( $subject === null ? $EdAutomationModel->get('subject') : $subject ),
                         'senderName' => $Sender->get('name'),
                         'senderEmail' => $Sender->get('email'),
                         'returnPathEmail' => $Sender->get('email_response'),
