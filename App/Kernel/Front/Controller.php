@@ -633,8 +633,7 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getWidth() as $width )
                             {
-                            	$path = $this->getImagePath( $media , $path , "w" , $width , NULL ) ;
-                                $tab['width'][$width] = $path ;
+								$tab['width'][$width] = $this->getImagePath( $media , $path , "w" , $width , NULL ) ;
                             }
                         }
 
