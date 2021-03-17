@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Api\Easyletter;
+use App\Kernel\Factory;
 use App\Kernel\Http;
 
 class User extends \App\Kernel\Common\User
@@ -816,6 +817,78 @@ class User extends \App\Kernel\Common\User
         }
     }
 
+    public function recoveryPassword()
+	{
+		$login              = strtolower( trim( $this->post('user_login') ) );
+		$token              = trim( $this->post('token') ) ;
+		$newPassword        = trim( $this->post('user_new_password') ) ;
+		$newPasswordConfirm = trim( $this->post('user_new_password_confirm') ) ;
+
+		// Si l'utilisteur est déjà connecté
+		if( $this->isLogged() )
+		{
+			return $this->returnError( "user_recovery_password_logged" ) ;
+		}
+		// Sinon : l'utilisateur n'est pas connecté
+		else
+		{
+			// Si le nom d'utilisteur est vide
+			if ( empty( $login ) )
+			{
+				return $this->returnError( "user_recovery_password_login_empty" ) ;
+			}
+			// Sinon : le nom d'utilisteur n'est pas vide
+			else
+			{
+				// Recherche pas l'utilisateur dans la base de données
+				$user = $this->getByLogin( $login );
+
+				// Si l'utilisateur n'a pas été trouvé dans la base de données
+				if( ! $user )
+				{
+					return $this->returnError( "user_recovery_password_failed" , false , true ) ;
+				}
+				// Si le token le l'utilisateur ne correspond pas au token utilisé dans l'url
+				else if ( $user->user_front_token != $token )
+				{
+					return $this->returnError( "user_recovery_password_failed" , false , true ) ;
+				}
+				// Si le nouveau mot de passe est vide
+				else if ( empty( $newPassword ) )
+				{
+					return $this->returnError( "user_recovery_new_password_empty" , false , true ) ;
+				}
+				// Si le nouveau mot de passe n'est pas au format valide
+				else if ( $this->formatPasswordRequired( $newPassword ) == false )
+				{
+					return $this->returnError( "user_recovery_new_password_invalid_format" , false , true ) ;
+				}
+				// Si la confirmation du mot de passe est vide
+				else if ( empty( $newPasswordConfirm ) )
+				{
+					return $this->returnError( "user_recovery_new_password_confirm_empty" , false , true ) ;
+				}
+				// Si le mot de passe et sa confirmation ne sont pas identique
+				else if ( $newPassword != $newPasswordConfirm )
+				{
+					return $this->returnError( "user_recovery_new_password_different" , false , true ) ;
+				}
+				// Tout est correct
+				else
+				{
+					// Régénération du token de l'utilisateur
+					$user->user_front_token    = $this->getNewToken() ;
+					// Enregistrement du nouveau mot de passe
+					$user->user_front_password = $this->hashPassword( $newPassword ) ;
+					// Sauvegarde des nouvelles données de l'utilisateur
+					$user->save();
+
+					return $this->returnError( "user_recovery_password_successful" , true , true ) ;
+				}
+			}
+		}
+	}
+
     protected function formatPasswordRequired( $pass )
     {
         return true ;
@@ -890,7 +963,6 @@ class User extends \App\Kernel\Common\User
              * @POST
              * user_login
              */
-
             $login = strtolower( trim( $this->post('user_login') ) );
 
             if ( empty( $login ) )
@@ -899,33 +971,51 @@ class User extends \App\Kernel\Common\User
             }
             else
             {
-                $user = \DB::for_table('user_front')
-                    ->where_raw( "LOWER(`user_front_login`) = ?" , $login )
-                    ->where_equal('user_front_active', 1 )
-                    ->find_one();
+                $user = $this->getByLogin( $login );
 
                 if ( $user )
                 {
-                    $pass = $this->generatePassword();
-                    $user->user_front_password = $this->hashPassword( $pass ) ;
-                    $user->user_front_token    = $this->getNewToken();
-                    $user->save();
+                	if( USER_LOST_PASSWORD_METHOD == "FORM" )
+					{
+						$token = $this->getNewToken();
+						$user->user_front_token = $token;
+						$user->save();
 
-                    $el = new Easyletter;
-                    $rstMail = $el->automotion("lost_password" , $login , array_merge([
-                        'password' => $pass,
-						'Email' => $login,
-                        'email' => $login,
-                    ], $this->getEmailVariablePassword() ));
+						$url = Factory::getInstance()->Url()->page( USER_LOST_PASSWORD_FORM_PAGE_ID , true )
+							. "?user_action=recovery_password"
+							. "&login=$login"
+							. "&token=$token";
 
-                    if ( $rstMail === false )
-                    {
-                        return $this->returnError( "user_lost_password_send_mail_error" , false , true ) ;
-                    }
-                    else
-                    {
-                        return $this->returnError( "user_lost_password_send_mail_successful" , true , true ) ;
-                    }
+						$data = [
+							'email'         => $login,
+							'recovery_link' => '<a href="'.$url.'">'.$url.'</a>'
+						];
+					}
+                	else
+					{
+						$pass = $this->generatePassword();
+						$user->user_front_password = $this->hashPassword( $pass ) ;
+						$user->user_front_token    = $this->getNewToken();
+						$user->save();
+
+						$data = [
+							'password' => $pass,
+							'Email'    => $login,
+							'email'    => $login,
+						];
+					}
+
+					$el = new Easyletter;
+					$rstMail = $el->automotion("lost_password" , $login , array_merge($data, $this->getEmailVariablePassword()));
+
+					if ( $rstMail === false )
+					{
+						return $this->returnError( "user_lost_password_send_mail_error" , false , true ) ;
+					}
+					else
+					{
+						return $this->returnError( "user_lost_password_send_mail_successful" , true , true ) ;
+					}
                 }
                 else
                 {
@@ -1049,6 +1139,14 @@ class User extends \App\Kernel\Common\User
             ->where_equal('user_front_id', $this->getId() )
             ->find_one();
     }
+
+    protected function getByLogin( $login )
+	{
+		return \DB::for_table('user_front')
+			->where_raw( "LOWER(`user_front_login`) = ?" , $login )
+			->where_equal('user_front_active', 1 )
+			->find_one();
+	}
 
     public function getOne( $id )
     {

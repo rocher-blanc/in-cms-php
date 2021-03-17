@@ -109,6 +109,14 @@ defined('ACTIVE_USER')                          || define('ACTIVE_USER', false )
 defined('ACTIVE_USER_CONNECT_AFTER_REGISTER')   || define('ACTIVE_USER_CONNECT_AFTER_REGISTER', false );
 defined('USER_ACTIVATION_MAIL')                 || define('USER_ACTIVATION_MAIL', false );
 defined('ACTIVE_USER_CONNECT_AFTER_VALIDATION') || define('ACTIVE_USER_CONNECT_AFTER_VALIDATION', false );
+/*
+ * Méthode utilisée pour récupérer un mot passe :
+ * EMAIL : Envoie un email avec le nouveau mot de passe déjà généré
+ * FORM  : Envoie un email avec un lien pour créer un nouveau mot de passe
+ * 		   Cette méthode nécesside de renseigner l'id de la page sur laquelle l'utilisateur sera renvoyé pour saisir son nouveau mot de passe
+ */
+defined('USER_LOST_PASSWORD_METHOD'      ) || define('USER_LOST_PASSWORD_METHOD'      , "EMAIL" );
+defined('USER_LOST_PASSWORD_FORM_PAGE_ID') || define('USER_LOST_PASSWORD_FORM_PAGE_ID', 1       );
 
 // Front client notify
 defined('CLIENT_NOTIFY_ENGINE') || define( 'CLIENT_NOTIFY_ENGINE', "Noty" );
