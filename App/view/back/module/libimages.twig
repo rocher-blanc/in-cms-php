@@ -17,6 +17,11 @@
                         {% for gallery in galleries %}
                             <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
 
+                                <div class="bottommargin-sm" style="position:relative;">
+                                    <input type="search" class="form-control" id="gallery-search" placeholder="Rechercher..." />
+                                    <i class="icon-line-cross" id="gallery-search-reset"></i>
+                                </div>
+
                                 {% if gallery.comment | length > 0 %}
                                     <div style="margin-bottom: 10px;">
                                         <em>{{ gallery.comment }}</em>
@@ -44,6 +49,16 @@
     </div>
 
     <style>
+        #gallery-search {
+            padding-right: 32px;
+        }
+        #gallery-search-reset {
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            cursor: pointer;
+        }
+
         .select-picture img {
             border: 1px #d6d6d6 solid;
             margin-right: 3px;
@@ -85,14 +100,30 @@
                 img.onload = function() {
                     $("#lib-images-zoom").html("").append( img );
                 };
-
             }).on("mouseout", function() {
                 $("#lib-images-zoom").html("");
             });
         };
 
+        var initLibSearch = function (base) {
+            $(base).find("#gallery-search").on("input" , function () {
+                var key = $(this).val().trim();
+                $(this).parents(".tab-content").find(".select-picture").each(function() {
+                    let split = $(this).find("img").data("full").split("/");
+                    let name = split[ split.length - 1 ];
+                    $(this)[ name.indexOf(key) > -1 ? "show" : "hide" ]();
+                });
+            });
+
+            $(base).find("#gallery-search-reset").on("click", function() {
+                $(this).prev().val("");
+                $(this).parents(".tab-content").find(".select-picture").show();
+            });
+        };
+
         $(function () {
             initSelectPicture( "#lib-images" );
+            initLibSearch( "#lib-images" );
 
             $("#lib-images").tabs({
                 active: 0,
