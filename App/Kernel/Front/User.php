@@ -579,7 +579,8 @@ class User extends \App\Kernel\Common\User
 
         if ( USER_ACTIVATION_MAIL )
         {
-            $rst = $this->sendValidationMail( $user ) ;
+			$url = Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token;
+            $rst = $this->sendValidationMail( $user , $url ) ;
 
             if ( ! $rst )
             {
@@ -619,10 +620,9 @@ class User extends \App\Kernel\Common\User
         return true ;
     }
 
-    protected function sendValidationMail( $user )
+    protected function sendValidationMail( $user , $url )
     {
         $el = new Easyletter;
-        $url = Http::getInstance()->getUrl() . "?user_validation=me&token=" . $user->user_front_token;
         $el->automotion("user_account_validation" , $user->user_front_login , array_merge([
             'url_validation' => '<a href="'. $url .'">'. $url .'</a>',
             'email'          => $user->user_front_login
@@ -630,6 +630,12 @@ class User extends \App\Kernel\Common\User
 
         return true ;
     }
+
+    protected function sendLostPasswordMail( $login , $data )
+	{
+		$el = new Easyletter;
+		return $el->automotion("lost_password" , $login , array_merge($data, $this->getEmailVariablePassword()));
+	}
 
     protected function getEmailVariableWelcome()
     {
@@ -1005,8 +1011,7 @@ class User extends \App\Kernel\Common\User
 						];
 					}
 
-					$el = new Easyletter;
-					$rstMail = $el->automotion("lost_password" , $login , array_merge($data, $this->getEmailVariablePassword()));
+					$rstMail = $this->sendLostPasswordMail( $login , $data );
 
 					if ( $rstMail === false )
 					{
