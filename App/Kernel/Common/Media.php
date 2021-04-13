@@ -403,7 +403,7 @@ class Media
 			$oldH  = $tmpImg->get_height();
 			$width = round( $height * $oldW / $oldH , 0 );
 
-			$tmpImg->thumbnail( $height , $height , "center" );
+			$tmpImg->thumbnail( $width , $height , "center" );
 			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
 			$destImg->overlay($tmpImg)->save($file);
 		});
