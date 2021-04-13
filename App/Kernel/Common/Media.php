@@ -159,9 +159,22 @@ class Media
 //			}
 //        }
 
-		return $height
-			? $type . '/' . $name . "-".$width."x".$height."." . $ext
-			: $type . '/' . $name . "-".$width."." . $ext;
+		if( $width && $height )
+		{
+			return $type . '/' . $name . "-".$width."x".$height."." . $ext;
+		}
+		elseif( $width && ! $height )
+		{
+			return $type . '/' . $name . "-".$width."." . $ext;
+		}
+		elseif( ! $width && $height )
+		{
+			return $type . '/' . $name . "-".$height."." . $ext;
+		}
+		else
+			{
+			return "";
+		}
 	}
 
     public function rename()
@@ -329,7 +342,7 @@ class Media
 		{
 			foreach( $field->getHeight() as $height )
 			{
-				$this->getHeight( $height ) ;
+				$this->genHeight( $height ) ;
 			}
 		}
 	}
