@@ -538,6 +538,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"order_num" => "Order N°",
 		"order_statut" => "Commande - Statuts",
 		"orders" => "Commandes",
+		"orders_doing" => "Commandes en préparation",
 		"oui" => "Oui",
 		"page_activated" => "La page a bien été activé",
 		"page_already_activated_err" => "Impossible, la page est déja activée",
