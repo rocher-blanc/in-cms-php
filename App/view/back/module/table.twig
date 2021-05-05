@@ -84,9 +84,9 @@
                                         {% endfor %}
                                     </select>
                                 {% elseif thvalue.type == 'checkbox' %}
-                                    <select name="{{ thvalue.name }}[]" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2">
+                                    <select name="{{ thvalue.name }}[]" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2" data-live-search="true">
                                         {% for key,value in thvalue.options %}
-                                            <option value="{{ key }}">{{ value }}</option>
+                                            <option value="{{ key }}"{{ key in thvalue.value ? ' selected' }}>{{ value }}</option>
                                         {% endfor %}
                                     </select>
                                 {% elseif thvalue.type == 'radio' and thvalue.boolean == true %}

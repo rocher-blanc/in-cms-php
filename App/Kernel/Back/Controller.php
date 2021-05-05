@@ -399,6 +399,7 @@ class Controller extends ControllerCommon
                     if ( $field->isAssociated() )
                     {
                         $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) , true );
+						$this->getEntity()->get( $field->getName() )->setData('option',$option);
                     }
                     else if ( $field->hasOption() )
                     {
@@ -406,24 +407,17 @@ class Controller extends ControllerCommon
                     }
 
                     $thArray[ $field->getName() ] = array_merge([
-                        'group' => $this->getEntity()->getGroup( $field->getGroup() )['name'],
-                        'name' => $field->getName(),
-                        'title' => $field->getTitle(),
-                        'search' => ( is_callable( $field->getData('updateValue') ) ? false : true ),
-                        'value' => ( $this->getApp()->request->get( $field->getName() ) !== NULL ? $this->getApp()->request->get( $field->getName() ) : $field->getDefaultSearch() ),
+                        'group'       => $this->getEntity()->getGroup( $field->getGroup() )['name'],
+                        'name'        => $field->getName(),
+                        'title'       => $field->getTitle(),
+                        'search'      => ( is_callable( $field->getData('updateValue') ) ? false : true ),
+                        'value'       => ( $this->getApp()->request->get( $field->getName() ) !== NULL ? $this->getApp()->request->get( $field->getName() ) : $field->getDefaultSearch() ),
                         'value_start' => $this->getApp()->request->get( $field->getName() . "_start" ),
-                        'value_end' => $this->getApp()->request->get( $field->getName() . "_end" ),
-                        'type' => $field->getType(),
-                        'boolean' => $field->getData('isBoolean'),
-                        'options' => $option
+                        'value_end'   => $this->getApp()->request->get( $field->getName() . "_end" ),
+                        'type'        => $field->getType(),
+                        'boolean'     => $field->getData('isBoolean'),
+                        'options'     => $option
                     ], $arrayDate);
-
-                    if ( $field->getType() == "select" && $field->isAssociated() == true )
-                    {
-
-                        $option = $this->getValueAssociated( $field , 'array' );
-                        $this->getEntity()->get( $field->getName() )->setData('option',$option);
-                    }
                 }
             }
 
@@ -512,13 +506,13 @@ class Controller extends ControllerCommon
                                 }
                             }
                             // Type boolean
-                            else if ( $field->getType() == "radio" && $field->getData('isBoolean') == true )
+                            else if ( $typeField == "radio" && $field->getData('isBoolean') == true )
                             {
                                 $typeField = 'boolean' ;
                                 $value = $row->get( $field->getColumn() ) ;
                             }
                             // Type date
-                            else if ( $field->getType() == "date" )
+                            else if ( $typeField == "date" )
                             {
                                 if ( $row->get( $field->getColumn() ) === NULL )
                                 {
@@ -532,7 +526,7 @@ class Controller extends ControllerCommon
                                 }
                             }
                             // Type vidéo
-                            else if ( $field->getType() == "video" )
+                            else if ( $typeField == "video" )
                             {
                                 $color  = '' ;
                                 $source = '' ;
@@ -560,7 +554,7 @@ class Controller extends ControllerCommon
                                 ];
                             }
                             // Type checkbox
-                            else if ( $field->getType() == "checkbox" )
+                            else if ( $typeField == "checkbox" )
                             {
                                 $arrayCheckbox = [];
                                 $opt = $thArray[ $field->getName() ]['options'];
@@ -583,7 +577,7 @@ class Controller extends ControllerCommon
                                 }
                             }
                             // Type image
-                            else if ( $field->getType() == "image" )
+                            else if ( $typeField == "image" )
                             {
                                 $Media = new Media;
                                 $Media->setModuleId( $this->getEntityId() ) ;
