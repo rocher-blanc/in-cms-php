@@ -74,6 +74,9 @@ checkBox = function( base ) {
         $(base + ' select[data-plugin-selectPicker]').selectpicker({
             iconBase: '',
             tickIcon: 'icon-line-check',
+            actionsBox: true,
+            selectAllText: 'Tout cocher',
+            deselectAllText: 'Tout décocher',
             countSelectedText: function(num) {
                 if (num === 0) {
                     return 'Aucune sélection';
