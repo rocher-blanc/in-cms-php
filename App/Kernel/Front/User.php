@@ -889,6 +889,14 @@ class User extends \App\Kernel\Common\User
 					// Sauvegarde des nouvelles données de l'utilisateur
 					$user->save();
 
+					if ( ACTIVE_USER_CONNECT_AFTER_RECOVERY_PASSWORD )
+					{
+						$date = new \DateTime();
+						$user->user_front_last_connection = $date->format('Y-m-d H:i:s');
+						$user->save();
+						$this->save( $user ) ;
+					}
+
 					return $this->returnError( "user_recovery_password_successful" , true , true ) ;
 				}
 			}

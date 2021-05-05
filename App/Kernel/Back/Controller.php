@@ -1552,9 +1552,27 @@ class Controller extends ControllerCommon
 
     protected function duplicate()
     {
-        $content     = $this->getRepository()->findOne( $this->getId() );
+		$result = $this->duplicateElement( $this->getId() );
 
-        if( $this->getEntity()->hasMultilang() )
+		if( is_array($result) && ! $result['result'] )
+		{
+			return $result;
+		}
+		else
+		{
+			return [
+				'result' => true,
+				'id'     => $result->get('id'),
+				'msg'    => Translate::getInstance()->getText('contents_duplicate' ),
+			];
+		}
+    }
+
+	public function duplicateElement( $originalElementId )
+	{
+		$content = $this->getRepository()->findOne( $originalElementId );
+
+		if( $this->getEntity()->hasMultilang() )
 		{
 			$contentLang = [];
 			foreach( $this->Lang()->getAll() as $lang )
@@ -1562,21 +1580,20 @@ class Controller extends ControllerCommon
 				$contentLang[ $lang->id ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
 			}
 		}
-
-        if ( ! $content )
-        {
-            return [
-                'result' => false,
-                'msg' => Translate::getInstance()->getText( 'contents_unavailable' ),
-            ];
-        }
-        else
+		if( ! $content )
 		{
-            $data = new Data( $this->getEntityName() );
-            $data->create();
-            foreach( $this->getEntity()->getField() as $row )
-            {
-            	if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
+			return [
+				'result' => false,
+				'msg' => Translate::getInstance()->getText( 'contents_unavailable' ),
+			];
+		}
+		else
+		{
+			$data = new Data( $this->getEntityName() );
+			$data->create();
+			foreach( $this->getEntity()->getField() as $row )
+			{
+				if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
 				{
 					if ( $row->hasLang()  )
 					{
@@ -1590,51 +1607,86 @@ class Controller extends ControllerCommon
 						$data->set( $row->getName() , $content->get( $row->getColumn() ) );
 					}
 				}
-            }
+			}
 
-            if ( $this->getEntity()->hasValidation() )
-            {
-                $data->set( $this->getEntity()->getValidationName() , 0 );
-            }
+			if ( $this->getEntity()->hasValidation() )
+			{
+				$data->set( $this->getEntity()->getValidationName() , 0 );
+			}
 
-            if ( ! empty( $this->getEntity()->getFieldReference() ) && ! $this->getEntity()->hasMultilang() )
-            {
-                if ( count( $this->getEntity()->getFieldReference() ) == 1 )
-                {
-                    $field =  $this->getEntity()->getFieldReference()[0] ;
+			if ( ! empty( $this->getEntity()->getFieldReference() ) && ! $this->getEntity()->hasMultilang() )
+			{
+				if ( count( $this->getEntity()->getFieldReference() ) == 1 )
+				{
+					$field =  $this->getEntity()->getFieldReference()[0] ;
 
-                    if ( $this->getEntity()->get( $field )->getType() == 'text' )
-                    {
-                        $data->set( $field , "Copie de " . $content->get( $this->getEntity()->get( $field )->getColumn() ) );
-                    }
-                }
-            }
+					if ( $this->getEntity()->get( $field )->getType() == 'text' )
+					{
+						$data->set( $field , "Copie de " . $content->get( $this->getEntity()->get( $field )->getColumn() ) );
+					}
+				}
+			}
 
-            $data->save();
+			$data->save();
 
-            foreach( $this->getEntity()->getField() as $row )
-            {
-                if ( $row->getType() == "checkbox" )
-                {
-                    $this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
-                }
-                else if ( $row->getType() == "gallery" )
-                {
-                    $Gallery = new Gallery;
-                    $Gallery->setElementId( $this->getId() );
-                    $Gallery->setModuleId( $this->getEntityId() );
-                    $Gallery->setField( $row->getName() );
-                    $Gallery->duplicate( $data->get('id' ) );
-                }
-            }
+			foreach( $this->getEntity()->getField() as $row )
+			{
+				if ( $row->getType() == "checkbox" )
+				{
+					$this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
+				}
+				else if ( $row->getType() == "gallery" )
+				{
+					$Gallery = new Gallery;
+					$Gallery->setElementId( $this->getId() );
+					$Gallery->setModuleId( $this->getEntityId() );
+					$Gallery->setField( $row->getName() );
+					$Gallery->duplicate( $data->get('id' ) );
+				}
+			}
 
-            return [
-                'result' => true,
-                'id'     => $data->get('id'),
-                'msg'    => Translate::getInstance()->getText('contents_duplicate' ),
-            ];
-        }
-    }
+			// Pour chaque dépendance
+			foreach( $this->getEntity()->getDependency() as $dependencyData )
+			{
+				// Récupération du module de dépendance
+				$dependency = Container::getInstance()->module( $dependencyData['class'] );
+				// Si le module a bien été trouvé
+				if( $dependency )
+				{
+					// Récupération de tous les éléments contenu dans la dépendance
+					$reqDependencies = $dependency->getRepository(false)->getKit()
+						->select( $dependency->getEntity()->get('id')->getColumn() )
+						->where_equal( $dependency->getEntity()->get('module_id')->getColumn() , $this->getEntityId() )
+						->where_equal( $dependency->getEntity()->get('element_id')->getColumn() , $originalElementId )
+						->find_many();
+
+					// Si des résultats ont été trouvés
+					if( $reqDependencies )
+					{
+						// Pour chaque résultat
+						foreach( $reqDependencies as $originalDependencyElement )
+						{
+							// Exctraction de l'id de l'élément de dépendance à dupliquer
+							$originalDependencyId = $originalDependencyElement->get( $dependency->getEntity()->get('id')->getColumn() );
+							// Duplication de la dépendance
+							$dataNewDependency = $dependency->getController(true)->duplicateElement( $originalDependencyId );
+							// Si l'élément a bien été duppliqué
+
+							if( $dataNewDependency instanceof Data )
+							{
+								// Modification de l'id du parent
+								$dataNewDependency->set('element_id', $data->get('id'));
+								// Mise à jour de la dépendance copiée
+								$dataNewDependency->save();
+							}
+						}
+					}
+				}
+			}
+
+			return $data;
+		}
+	}
 
     /* ************************************************** */
     /* ******************    TABLE    ******************* */

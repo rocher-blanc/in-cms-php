@@ -115,8 +115,9 @@ defined('ACTIVE_USER_CONNECT_AFTER_VALIDATION') || define('ACTIVE_USER_CONNECT_A
  * FORM  : Envoie un email avec un lien pour créer un nouveau mot de passe
  * 		   Cette méthode nécesside de renseigner l'id de la page sur laquelle l'utilisateur sera renvoyé pour saisir son nouveau mot de passe
  */
-defined('USER_LOST_PASSWORD_METHOD'      ) || define('USER_LOST_PASSWORD_METHOD'      , "EMAIL" );
-defined('USER_LOST_PASSWORD_FORM_PAGE_ID') || define('USER_LOST_PASSWORD_FORM_PAGE_ID', 1       );
+defined('USER_LOST_PASSWORD_METHOD'      )             || define('USER_LOST_PASSWORD_METHOD'      , "EMAIL" );
+defined('USER_LOST_PASSWORD_FORM_PAGE_ID')             || define('USER_LOST_PASSWORD_FORM_PAGE_ID', 1       );
+defined('ACTIVE_USER_CONNECT_AFTER_RECOVERY_PASSWORD') || define('ACTIVE_USER_CONNECT_AFTER_RECOVERY_PASSWORD', false );
 
 // Front client notify
 defined('CLIENT_NOTIFY_ENGINE') || define( 'CLIENT_NOTIFY_ENGINE', "Noty" );
