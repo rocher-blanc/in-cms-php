@@ -641,9 +641,7 @@ checkEditor = function(base) {
         $(base + ' .wysiwyg').each(function() {
             var $textarea = $(this);
 
-            $textarea.summernote({
-                lang: 'fr-FR',
-                toolbar: [
+            /*[
                     ['hx', ['style']],
                     ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
                     ['fontsize', ['fontsize']],
@@ -653,7 +651,20 @@ checkEditor = function(base) {
                     ['view', ['fullscreen', 'codeview']],
                     ['misc', ['print']],
                     ['height', ['height']]
-                ],
+                ]
+             */
+            $textarea.summernote({
+                lang: 'fr-FR',
+                toolbar:
+                    [
+                    ['hx', ['style']],
+                        ['style', ['bold', 'italic', 'underline']],
+                        ['clear', ['clear']],
+                        ['para', ['ul', 'ol']],
+                        ['insert', ['link', 'picture']],
+                        ['view', ['fullscreen', 'codeview']],
+                        ['misc', ['print']],
+                    ],
                 popover: {
                     image: [
                         ['custom', ['imageAttributes']],
