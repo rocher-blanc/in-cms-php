@@ -167,6 +167,27 @@ class Repository extends \App\Kernel\Common\Repository
                 $content = $content->where_date_gte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_start'] )
                     ->where_date_lte( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value_convert_end'] );
             }
+            else if ( $field['type'] == 'checkbox' && ( $field['value'] !== '' && $field['value'] !== NULL ) )
+            {
+				$req = \DB::for_module_assoc( $this->getName() , $field['name'] )
+					->select( \DB::getTableNameAssoc( $this->getName() , $field['name'] ) . '_' . \DB::getIdName( $this->getName() ), 'element_id' )
+					->where_in( \DB::getTableNameAssocValue( $this->getName() , $field['name'] ) , $field['value'] )
+					->find_many();
+
+				if( $req )
+				{
+					$ids = [];
+					foreach( $req as $row )
+					{
+						if( ! in_array( $row->element_id , $ids ) )
+						{
+							$ids[] = $row->element_id;
+						}
+					}
+
+					$content->where_in( $this->getEntity()->get('id')->fieldSql() , $ids );
+				}
+            }
             else if ( $field['type'] == 'select' && ( $field['value'] !== '' && $field['value'] !== NULL ) )
             {
                 $content = $content->where_equal( $this->getEntity()->get( $field['name'] )->fieldSql() , $field['value'] );

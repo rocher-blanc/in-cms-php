@@ -1994,6 +1994,17 @@ class Builder extends Model
     {
         $this->addAction("editor") ;
         $this->field()->setData( "editor" , true ) ;
+        $this->transform(function($v) {
+        	$v = preg_replace_callback( "|<\/?([a-zA-Z]+)([a-zA-Z0-9 ='\"-_?&]*?)>|" , function($matches) {
+        		switch( $matches[1] )
+				{
+					case 'b': return str_replace( $matches[1], 'strong', $matches[0] );
+					case 'i': return str_replace( $matches[1], 'em'    , $matches[0] );
+					default : return $matches[0];
+				}
+			}, $v);
+			return $v;
+		});
         return $this ;
     }
 

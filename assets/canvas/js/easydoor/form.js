@@ -74,6 +74,9 @@ checkBox = function( base ) {
         $(base + ' select[data-plugin-selectPicker]').selectpicker({
             iconBase: '',
             tickIcon: 'icon-line-check',
+            actionsBox: true,
+            selectAllText: 'Tout cocher',
+            deselectAllText: 'Tout décocher',
             countSelectedText: function(num) {
                 if (num === 0) {
                     return 'Aucune sélection';
@@ -638,9 +641,7 @@ checkEditor = function(base) {
         $(base + ' .wysiwyg').each(function() {
             var $textarea = $(this);
 
-            $textarea.summernote({
-                lang: 'fr-FR',
-                toolbar: [
+            /*[
                     ['hx', ['style']],
                     ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
                     ['fontsize', ['fontsize']],
@@ -650,7 +651,20 @@ checkEditor = function(base) {
                     ['view', ['fullscreen', 'codeview']],
                     ['misc', ['print']],
                     ['height', ['height']]
-                ],
+                ]
+             */
+            $textarea.summernote({
+                lang: 'fr-FR',
+                toolbar:
+                    [
+                    ['hx', ['style']],
+                        ['style', ['bold', 'italic', 'underline']],
+                        ['clear', ['clear']],
+                        ['para', ['ul', 'ol']],
+                        ['insert', ['link', 'picture']],
+                        ['view', ['fullscreen', 'codeview']],
+                        ['misc', ['print']],
+                    ],
                 popover: {
                     image: [
                         ['custom', ['imageAttributes']],

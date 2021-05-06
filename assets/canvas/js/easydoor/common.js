@@ -47,7 +47,7 @@ select2MatchStart = function(params, data) {
     if( typeof params.term === "undefined" ) return data;
     if( params.term.trim() === "" )          return data;
 
-    return data.text.indexOf(params.term.trim()) > -1
+    return data.text.toLowerCase().indexOf(params.term.toLowerCase().trim()) > -1
         ? data
         : null;
 };
