@@ -96,7 +96,7 @@ class Repository extends \App\Kernel\Back\Repository
                 $content = $filter( $content );
             }
 
-            return $content->find_many() ;
+            return $content->left_outer_join( 'user_front' , array( 'user_front.user_front_id' , '=', $this->getEntity()->get('user_front_id')->fieldSql() ) )->find_many() ;
         }
         else
         {
