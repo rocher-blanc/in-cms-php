@@ -778,6 +778,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"common_delete_many_msg" => "Supprimer ces éléments",
 		"common_delete_many_info" => "Êtes-vous sûr de vouloir supprimer tous les éléments cochés ?<br />Cette action est irréversible !",
 		"index_easydoor_mode_information" => "Mode de livraison choisi",
-		"delete_many_success" => "Les éléments été supprimés"
+		"delete_many_success" => "Les éléments été supprimés",
+		"mandatory_tax_rate" => "Veuillez renseigner le taux de TVA",
 	];
 }
