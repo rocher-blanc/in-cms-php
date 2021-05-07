@@ -325,6 +325,14 @@ listenFormTable = function( base ) {
         }
 
         /** GESTION DES BOUTONS D'ACTION MASSIVE **/
+        $form.find( "[data-module-table-action-many-checkbox]" ).on("click", function() {
+            if( $("[data-module-table-action-many-checkbox]:checked").length > 0 ) {
+                $(".action-massive").show();
+            }
+            else {
+                $(".action-massive").hide();
+            }
+        });
         $form.find( "[data-module-table-action-many-reverse]" ).on("click", function() {
             revertSelection();
         });

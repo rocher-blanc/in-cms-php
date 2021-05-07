@@ -216,8 +216,8 @@
 
             {# Outils d'actions massif #}
             {% if enableSelect %}
-                <div class="action-massive">
-                    <button class="button button-black button-small"                 type="button" data-module-table-action-many-reverse><span>Inverser la sélection</span></button>
+                <div class="action-massive" style="display:none;">
+                    <button class="button button-black button-small" type="button" data-module-table-action-many-reverse><span>Inverser la sélection</span></button>
                     {% if hasValidation %}
                         <button class="button button-yellow button-rounded button-small" type="button" data-module-table-action-many-disable><span>Désactiver</span></button>
                         <button class="button button-green button-rounded button-small"  type="button" data-module-table-action-many-enable><span>Activer</span></button>
