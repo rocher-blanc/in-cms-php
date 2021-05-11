@@ -80,14 +80,78 @@ $(function() {
         }
     });
 
+    initScrolling();
+
 });
+
+
+var initScrolling = function() {
+    var header = {
+        height: $("#header").height()
+    }
+
+    var $actionBarElement = $("[data-translation-action-bar]");
+    var actionBar = {
+        element  : $actionBarElement,
+        offsetTop: $actionBarElement.offset().top,
+        height   : $actionBarElement.height()
+    }
+
+    var $tableHeaderElement = $("[data-translation-table-header]");
+    var tableHeader = {
+        element  : $tableHeaderElement,
+        offsetTop: $tableHeaderElement.offset().top,
+        height   : $tableHeaderElement.height(),
+        clone    : undefined
+    }
+
+    console.log( header, actionBar, tableHeader );
+
+    $(window).on('scroll', function() {
+        let scrollTop = $(window).scrollTop();
+
+        if( scrollTop + header.height > actionBar.offsetTop ) {
+            actionBar.element
+                .css( 'position', 'fixed' )
+                .css( 'top', header.height )
+                .css( 'padding', '0 50px' )
+                .parent().css( 'paddingTop', actionBar.height );
+        }
+        else {
+            actionBar.element
+                .css( 'position', 'static' )
+                .css( 'padding', '0' )
+                .parent().css( 'paddingTop', 0 );
+        }
+
+        if( scrollTop + header.height + actionBar.height > tableHeader.offsetTop ) {
+            if( tableHeader.clone === undefined )
+            {
+                tableHeader.clone = tableHeader.element.clone()
+                    .appendTo( tableHeader.element.parent() )
+                    .css('position', 'fixed')
+                    .css('top', header.height + actionBar.height )
+                    .css('padding', '0 35px' )
+                    .css('background', '#fff')
+                    .find('th').css('border','none');
+            }
+        }
+        else {
+            if( tableHeader.clone !== undefined )
+            {
+                tableHeader.clone.remove();
+                tableHeader.clone = undefined;
+            }
+        }
+    })
+}
+
 
 
 var addCSRF = function( values ) {
     values['{{ csrf_key }}'] = "{{ csrf_token }}";
     return values;
 };
-
 
 var editCell = function( cell ) {
     var $cell       = $(cell);
@@ -152,7 +216,6 @@ var editCell = function( cell ) {
     }
 };
 
-
 var setToHTML = function( cell ) {
     var $cell       = $(cell);
     var $editor     = $cell.find(".editor");
@@ -174,7 +237,6 @@ var setToText = function( cell ) {
     $textarea.summernote('destroy');
     $textarea.val( stripTag($textarea.val()) );
 };
-
 
 var saveCell = function( cell ) {
     var $cell       = $(cell);
@@ -205,7 +267,6 @@ var saveCell = function( cell ) {
     });
 };
 
-
 var cancelCell = function( cell ) {
     var $cell       = $(cell);
     var $content    = $cell.find(".content");
@@ -214,7 +275,6 @@ var cancelCell = function( cell ) {
     $content.show();
     $editor.html("");
 };
-
 
 var setWysiwyg = function( element ) {
     $(element).summernote({
@@ -230,11 +290,9 @@ var setWysiwyg = function( element ) {
     });
 };
 
-
 var addLang = function( lang_locale ) {
     requestGetLang( lang_locale );
 };
-
 
 var addLangColumn = function( lang_locale, title ) {
     var $table = $("#translate-table");
@@ -258,7 +316,6 @@ var addLangColumn = function( lang_locale, title ) {
     });
 };
 
-
 var addKey = function( key ) {
     $tbody = $("#translate-table tbody");
     var $tr = $("<tr>")
@@ -266,6 +323,7 @@ var addKey = function( key ) {
 
     var $td = $("<td>")
         .addClass( "td-key" )
+        .attr('width', '300px')
         .attr( "data-key", key );
     if( $("meta[name=isadmin]").attr("content") == "1" ) {
         $td.append(
@@ -298,7 +356,6 @@ var addKey = function( key ) {
     }
 };
 
-
 var setTranslate = function( key, lang, content ) {
     var $table = $("#translate-table");
     var $tbody = $table.find("tbody");
@@ -321,7 +378,6 @@ var setTranslate = function( key, lang, content ) {
     }
 };
 
-
 var createCell = function( key, lang, content ) {
     return $("<td>")
         .addClass("translate-cell")
@@ -331,11 +387,9 @@ var createCell = function( key, lang, content ) {
         .dblclick( function() {  editCell(this)  } )
 };
 
-
 var addTranslate = function( key, lang_id ) {
 
 };
-
 
 var requestGetLang = function( lang_locale ) {
     var data = {
@@ -368,7 +422,6 @@ var requestGetLang = function( lang_locale ) {
     });
 };
 
-
 var deleteKey = function( key ) {
     var data = {
         key : key
@@ -397,7 +450,6 @@ var deleteKey = function( key ) {
         }
     });
 };
-
 
 var stripTag = function( text ) {
     return text.replace(/(<([^>]+)>)/ig,"");

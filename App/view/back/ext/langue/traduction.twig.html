@@ -17,9 +17,10 @@
 
         <div class="hot-container">
             <div id="handsontable">
-                <div>
-                    <div class="col_three_fourth">
-                        {% if user.admin == 1 %}
+                <div class="container-fluid bottommargin">
+                    <div class="row" data-translation-action-bar style="background:#fff; left:0; width:100%; z-index:1;">
+                        <div class="col_three_fourth nobottommargin">
+                            {% if user.admin == 1 %}
                             <div class="form-inline">
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
@@ -27,24 +28,25 @@
                                 <button class="button add-key">{{ _('langue_traduction_add')}}</button>
                                 <button class="button show-new-keys">{{ _('langue_traduction_show_uncompleted')}}</button>
                             </div>
-                        {% else %}
+                            {% else %}
                             &nbsp;
-                        {% endif %}
-                    </div>
-                    <div class="col_one_fourth col_last">
-                        <select class="form-control translate-lang-select">
-                            <option value="">{{ _('langue_traduction_show')}}</option>
-                            {% for row in contentRows %}
+                            {% endif %}
+                        </div>
+                        <div class="col_one_fourth col_last nobottommargin">
+                            <select class="form-control translate-lang-select">
+                                <option value="">{{ _('langue_traduction_show')}}</option>
+                                {% for row in contentRows %}
                                 <option value="{{ row.locale }}">{{ row.name }}</option>
-                            {% endfor %}
-                        </select>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <table class="table table-striped table-hover table-border" id="translate-table">
                     <thead>
-                    <tr>
-                        <th width="300px">
+                    <tr data-translation-table-header style="background:#fff; left:0; width:100%; z-index:1;">
+                        <th>
                             <input type="text" id="search-key" class="form-control" placeholder="{{ _('rechercher')}}" />
                         </th>
                     </tr>
@@ -73,6 +75,11 @@
     <link rel="stylesheet" href="{{ asset('css/handsontable.css') }}" />
     <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/wysiwyg/summernote.css') }}" />
     <link rel="stylesheet" href="{{ vendor('cmsmedias/canvas/css/src/easydoor/traduction.css') }}" />
+    <style>
+        #translate-table tr td:first-child, #translate-table tr th:first-child {
+            width: 300px;
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
