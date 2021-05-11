@@ -5,6 +5,7 @@ namespace App\Kernel\Front;
 use App\Kernel\Back\User;
 use App\Kernel\CMS;
 use App\Kernel\Exception;
+use App\Kernel\Factory;
 use App\Kernel\Lang;
 
 class Translate
@@ -147,5 +148,59 @@ class Translate
 	/* *****************   FUNCTION   ******************* */
 	/* ************************************************** */
 
+	public static function getLangFilePath( $locale )
+	{
+		return LANG_PATH . "/" . strtoupper( $locale ) . ".php" ;
+	}
+
+	public static function getLangClassName( $locale )
+	{
+		return "\\Project\\Lang\\" . strtoupper( $locale ) ;
+	}
+
+	public static function getLangClassInstance( $locale )
+	{
+		$className = self::getLangClassName( $locale );
+		return new $className ;
+	}
+
+	public static function getTranslations( $locale )
+	{
+		$filename = self::getLangFilePath( $locale );
+
+		if ( file_exists( $filename ) )
+		{
+			$class = self::getLangClassInstance( $locale );
+			return $class->getVar();
+		}
+		else
+		{
+			return [];
+		}
+	}
+
+	public static function generateLangFile( $locale , $translations = [] )
+	{
+		ksort( $translations );
+
+		$src  = "<"."?php\n";
+		$src .= "namespace Project\Lang;\n";
+		$src .= "class " . strtoupper( $locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+		$src .= "\tprotected $"."a = [\n";
+		foreach( $translations as $key => $value )
+		{
+			$value = trim( $value );
+			$value = str_replace( '"', '\"', $value );
+			if ( ! empty( $key ) )
+			{
+				$src .= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+			}
+		}
+		$src .= "\t];\n";
+		$src .= "}\n";
+
+		$filename = self::getLangFilePath( $locale );
+		return Factory::getInstance()->File()->create( $filename , $src );
+	}
 
 }

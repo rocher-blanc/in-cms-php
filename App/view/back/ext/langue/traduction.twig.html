@@ -25,8 +25,20 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="nom_de_la_cle" style="height:40px; margin-top:-3px;">
                                 </div>
-                                <button class="button add-key">{{ _('langue_traduction_add')}}</button>
-                                <button class="button show-new-keys">{{ _('langue_traduction_show_uncompleted')}}</button>
+                                <button class="button add-key">
+                                    <i class="icon icon-plus"></i>
+                                    {{ _('langue_traduction_add')}}
+                                </button>
+                                <button class="button show-new-keys">
+                                    <i class="icon icon-pen"></i>
+                                    {{ _('langue_traduction_show_uncompleted')}}
+                                </button>
+                                {% if admin_buttons.user %}
+                                    <a href="{{ siteUrl('/ext/langue/traduction/default-users') }}" class="button">
+                                        <i class="icon icon-users"></i>
+                                        {{ _('language_translate_create_default_users')}}
+                                    </a>
+                                {% endif %}
                             </div>
                             {% else %}
                             &nbsp;

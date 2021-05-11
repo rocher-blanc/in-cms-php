@@ -2,6 +2,7 @@
 
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
+use App\Kernel\Param;
 
 $app->group('/langue', function () use ($app)
 {
@@ -416,10 +417,14 @@ $app->group('/langue', function () use ($app)
 
     $app->get('/traduction', function () use ($app) {
 
+    	$param       = new Param();
         $contentRows = \App\Kernel\Lang::getInstance()->getAll();
 
         $app->render('ext/langue/traduction.twig.html', [
-            "contentRows" => $contentRows
+            'contentRows' => $contentRows,
+			'admin_buttons' => [
+				'user' => ACTIVE_USER && $param->get('translate_front_user') != 1
+			]
         ]);
 
     })->name('langue_traduction');
@@ -587,4 +592,171 @@ $app->group('/langue', function () use ($app)
             'msg'    => Translate::getInstance()->getText( 'msg_key_suppr' ),
         ]);
     });
+
+	$app->get('/traduction/default-users', function() use ($app) {
+
+		$translations = [
+			// Connection
+			'user_login_failed' => [
+				'fr' => "Connexion échouée. Informations érronées."
+			],
+			'user_login_field_empty' => [
+				'fr' => "Veuillez renseigner votre adresse e-mail."
+			],
+			'user_login_successful' => [
+				'fr' => "Connexion réussi. Vous êtes à présent identifié sur le site."
+			],
+			// Registration
+			'user_register_confirm_password_empty' => [
+				'fr' => "Veuillez confirmer votre mot de passe."
+			],
+			'user_register_logged' => [
+				'fr' => "Vous êtes déjà connecté."
+			],
+			'user_register_login_empty' => [
+				'fr' => "Veuillez renseigner votre adresse e-mail."
+			],
+			'user_register_login_not_uniq' => [
+				'fr' => "L'adresse e-mail renseignée est déjà utilisée."
+			],
+			'user_register_login_not_valid' => [
+				'fr' => "Veuillez renseigner une adresse e-mail valide."
+			],
+			'user_register_password_different' => [
+				'fr' => "Les deux mot de passe saisi sont différent."
+			],
+			'user_register_password_empty' => [
+				'fr' => "Veuillez saisir un mot de passe."
+			],
+			'user_register_password_invalid_format' => [
+				'fr' => "Le format du mot de passe saisi n'est pas correct."
+			],
+			'user_register_send_mail_error' => [
+				'fr' => "Votre compte a bien été créé, mais l'e-mail de confirmation n'a pas pu être envoyé."
+			],
+			'user_register_send_mail_successful' => [
+				'fr' => "Votre compte a bien été créé. Un e-mail de confirmation vous a été envoyé."
+			],
+			'user_register_successful' => [
+				'fr' => "Votre compte a bien été créé."
+			],
+			// Updating
+			'user_update_login_empty' => [
+				'fr' => "Veuillez renseigner votre adresse e-mail."
+			],
+			'user_update_login_not_valid' => [
+				'fr' => "Veuillez renseigner une adresse e-mail valide."
+			],
+			'user_update_login_not_uniq' => [
+				'fr' => "L'adresse e-mail renseignée est déjà utilisée."
+			],
+			'user_update_not_logged' => [
+				'fr' => "Vous n'êtes pas connecté."
+			],
+			'user_update_successful' => [
+				'fr' => "Vos informations ont été mises à jour."
+			],
+			// Updating password
+			'user_update_password_empty' => [
+				'fr' => "Veuillez saisir votre mot de passe actuel."
+			],
+			'user_update_new_password_empty' => [
+				'fr' => "Veuillez saisir votre nouveau mot de passe."
+			],
+			'user_update_new_password_invalid_format' => [
+				'fr' => "Le format du nouveau mot de passe n'est pas valide."
+			],
+			'user_update_new_password_confirm_empty' => [
+				'fr' => "Veuillez confirmer votre nouveau mot de passe."
+			],
+			'user_update_new_password_different' => [
+				'fr' => "Le nouveau mot de passe et sa confirmation sont différent."
+			],
+			'user_update_last_password_invalid' => [
+				'fr' => "Le mot de passe actuel est éronné."
+			],
+			'user_update_password_successful' => [
+				'fr' => "Votre mot de passe a été mis à jour."
+			],
+			// Account validation
+			'user_validation_successful' => [
+				'fr' => "Votre compte a été validé !"
+			],
+			'user_connect_facebook_error' => [
+				'fr' => "Impossible de se connecter à votre compte facebook."
+			],
+			'user_validation_failed' => [
+				'fr' => "Le lien de vérification est érroné."
+			],
+			// Forget password
+			'user_lost_password_login_empty' => [
+				'fr' => "Veuillez renseigner votre adresse e-mail."
+			],
+			'user_lost_password_send_mail_error' => [
+				'fr' => "Une erreur est survenue lors de l'envoie de l'e-mail. Veuillez réesayer ultérieurement."
+			],
+			'user_lost_password_send_mail_successful' => [
+				'fr' => "Un e-mail vous a été envoyé avec votre nouveau mot de passe"
+			],
+			'user_lost_password_failed' => [
+				'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
+			],
+			// Recouvrement du mot de passe
+			'user_recovery_password_logged' => [
+				'fr' => "Vous êtes déjà connecté."
+			],
+			'user_recovery_password_login_empty' => [
+				'fr' => "Veuillez renseigner votre adresse e-mail."
+			],
+			'user_recovery_password_failed' => [
+				'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
+			],
+			'user_recovery_new_password_empty' => [
+				'fr' => "Veuiller saisir votre nouveau mot de passe."
+			],
+			'user_recovery_new_password_invalid_format' => [
+				'fr' => "Le formation du nouveau mot de passe est invalide."
+			],
+			'user_recovery_new_password_confirm_empty' => [
+				'fr' => "Veuillez confirmer votre nouveau mot de passe."
+			],
+			'user_recovery_new_password_different' => [
+				'fr' => "Le nouveau mot de passe et sa saisie sont différent."
+			],
+			'user_recovery_password_successful' => [
+				'fr' => "Votre mot de passe a été mis à jour."
+			],
+		];
+
+		$langs = \App\Kernel\Lang::getInstance()->getAll();
+
+		foreach( $langs as $lang )
+		{
+			$l         = $lang->locale;
+			$langTrans = Translate::getTranslations( $l );
+
+			foreach( $translations as $key => $t )
+			{
+				if( array_key_exists( $l, $t ) )
+				{
+					$value = trim( $t[$l] );
+
+					if( ! array_key_exists($key, $langTrans)
+						|| strlen(trim($langTrans[$key])) == 0
+						|| $langTrans[$key] == "##{$key}##"
+					)
+					{
+						$langTrans[$key] = $value;
+					}
+				}
+			}
+
+			Translate::generateLangFile( $l , $langTrans );
+		}
+
+		$param = new Param();
+		$param->set( 'translate_front_user' , 1 );
+
+		$app->redirect( $app->config('admin.url') . '/ext/langue/traduction' );
+	});
 });
