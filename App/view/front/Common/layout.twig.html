@@ -19,41 +19,6 @@
 
     {{ block('meta') -}}
 
-    {%- if rgpd.enabled == 1 -%}
-        <script type="text/javascript" src="{{ asset('libs/tarteaucitron/tarteaucitron.js') }}"></script>
-        <script type="text/javascript">
-            tarteaucitron.init({
-                "privacyUrl": "", /* Privacy policy url */
-                "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
-                "cookieName": "tarteaucitron", /* Cookie name */
-                "orientation": "middle", /* Banner position (top - bottom) */
-                "showAlertSmall": false, /* Show the small banner on bottom right */
-                "cookieslist": false, /* Show the cookie list */
-                "closePopup": false, /* Show a close X on the banner */
-                "showIcon": true, /* Show cookie icon to manage cookies */
-                "iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
-                "adblocker": false, /* Show a Warning if an adblocker is detected */
-                "DenyAllCta" : true, /* Show the deny all button */
-                "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
-                "highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
-                "handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
-                "removeCredit": true, /* Remove credit link */
-                "moreInfoLink": true, /* Show more info link */
-                "useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
-                "useExternalJs": false, /* If false, the tarteaucitron.js file will be loaded */
-                //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
-                "readmoreLink": "", /* Change the default readmore link */
-                "mandatory": true, /* Show a message about mandatory cookies */
-            });
-            {% if env() != 'dev' and tracking.gtm != '' %}
-                tarteaucitron.user.gtagUa = '{{ tracking.gtm }}';
-                tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
-                (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
-            {% endif -%}
-            {{- block('tarteaucitron') -}}
-        </script>
-    {% endif -%}
-
     {% block stylesheets -%}
         {{ css()|trim }}
     {% endblock -%}
@@ -116,37 +81,6 @@
 <script type="text/javascript">Notify( "{{ address_error.msg }}" , {{ address_error.result ? 'true' : 'false' }} );</script>
 {% endif %}
 
-
-{% if rgpd.enabled == 1 or true %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
-<script>
-    window.addEventListener("load", function(){
-        window.cookieconsent.initialise({
-            "palette": {
-                "popup": {
-                    "background": "{{ rgpd.popup_background }}",
-                    "text": "{{ rgpd.popup_color }}"
-                },
-                "button": {
-                    "background": "{{ rgpd.button_background }}",
-                    "text": "{{ rgpd.button_color }}"
-                }
-            },
-        {% if rgpd.position == 'top-static' %}
-        "position": "{{ rgpd.position }}",
-            "static": true,
-        {% elseif rgpd.position != 'bottom' %}
-        "position": "{{ rgpd.position }}",
-        {% endif %}
-        "content": {
-            "message": "{{ rgpd.text }}",
-                "dismiss": "{{ rgpd.text_button }}",
-                "link": "{{ rgpd.text_link }}",
-                "href": "{{ rgpd.link }}"
-        }
-    })});
-</script>
-{% endif %}
 {{- tracking.footer -}}
 
 {% if __debug_twig__ | length > 0 %}

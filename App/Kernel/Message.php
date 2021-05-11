@@ -87,9 +87,6 @@ class Message
             /* MICRODATA */
             "microdata_success" => "Les microdatas ont bien été mis à jour",
 
-            /* RGPD */
-            "rgpd_success" 		=> "Les informations concernant la RGPD ont bien été mise à jour",
-
             /* BIBLIOTHEQUE */
             "lib_upload_error" => "Une erreur est survenue lors de l'upload",
             "lib_upload_msg" => "Cliquez dans la zone ou glisser vos photos pour les uploader",
