@@ -25,7 +25,7 @@ class Easyletter
     {
         if ( $version == null )
         {
-            $verion = EL_VERSION;
+            $version = EL_VERSION;
         }
 
         if ( $version == 'v2' )
