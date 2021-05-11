@@ -151,10 +151,6 @@ class Meta
                 'zip'            => $this->exist( "md_zip" , $md ),
                 'town'           => $this->exist( "md_town" , $md )
             ],
-            'webmaster_tools' => [
-                'google'    => $tab['seo_google_webmaster_tools'],
-                'bing'      => $tab['seo_bing_webmaster_tools']
-            ],
             'analytics' => [
                 'google'    => $tab['seo_google_analytics']
             ],

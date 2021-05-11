@@ -160,8 +160,6 @@ INSERT INTO `param` (`param_key`, `param_value`) VALUES
 ('seo_geo_placename', NULL),
 ('seo_geo_position', NULL),
 ('seo_geo_icbm', NULL),
-('seo_google_webmaster_tools', NULL),
-('seo_bing_webmaster_tools', NULL),
 ('seo_google_analytics', NULL),
 ('seo_robots', '0'),
 ('seo_divers_header', NULL),
