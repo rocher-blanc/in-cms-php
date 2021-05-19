@@ -14,6 +14,7 @@ class EdEmail extends Controller
         $this->setRender('idtopol' , $this->getId() + ( 100000 * $this->getEntityId() ) );
         $this->setRender('apiKey' , TOPOL_API_KEY);
         $this->setRender('userId' , TOPOL_USER_ID);
+        $this->setRender( 'entity_id' , $this->getEntityId() );
         $this->setRender('uri_id_parent' , $this->getUriParent() ) ;
 
         $select = $this->getElementForAssociation(NULL, "array");

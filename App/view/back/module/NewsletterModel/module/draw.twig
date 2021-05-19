@@ -55,7 +55,7 @@
                 urlFileManager: '{{ route( mod.name , 'topolFileManager' , uri_id_parent ) }}',
                 urlUpload: '{{ route( mod.name , 'topolFileUpload' , uri_id_parent ) }}'
             });
-            duplicateTemplate({{ id }}, '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}');
+            duplicateTemplate('{{ entity_id }}-{{ id }}', '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}');
         });
     </script>
 

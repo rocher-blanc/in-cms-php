@@ -43,7 +43,7 @@ class NewsletterModel extends Controller
         }
 
         $this->setRender( 'select' , $tab );
-
+        $this->setRender( 'entity_id' , $this->getEntityId() );
 
         $this->render('draw.twig');
     }
@@ -75,7 +75,10 @@ class NewsletterModel extends Controller
             'id' => $id
         ]);
 
-        echo $data->get('json');
+        if ( $data )
+        {
+            echo $data->get('json');
+        }
     }
 
     protected function sendMailAction()
