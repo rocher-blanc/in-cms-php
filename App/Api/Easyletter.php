@@ -117,7 +117,16 @@ class Easyletter
         return $this->error ;
     }
 
-    public function automotion( string $keyAutomation , string $email , array $data = [] , $idSender = NULL , $subject = null )
+    /**
+     * @param string $keyAutomation
+     * @param string $email
+     * @param array $data
+     * @param null $idSender
+     * @param null $subject
+     * @param array $attachments
+     * @return false
+     */
+    public function automotion(string $keyAutomation , string $email , array $data = [] , $idSender = NULL , $subject = null , $attachments = [] )
     {
         if ( $idSender !== NULL )
         {
@@ -175,6 +184,15 @@ class Easyletter
 
                     $this->phpmailer->AltBody = strip_tags( $html ) ;
                     $this->phpmailer->Body = $html ;
+
+                    if ( ! empty( $attachments ) )
+                    {
+                        foreach ( $attachments as $attachment )
+                        {
+                            $this->phpmailer->addAttachment($attachment);
+                        }
+                    }
+
                     $this->phpmailer->send();
 
                 }
