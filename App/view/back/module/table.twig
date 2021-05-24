@@ -238,7 +238,16 @@
                 <div style="float: right;">
                     <ul class="pagination">
                         {% for pages in paginator %}
-                            <li class="page-item{{ pages.num == '...' ? ' disabled' : '' }}{{ pages.num == page ? ' active' : '' }}"><a class="page-link" href="javascript:;" data-page="{{ pages.num }}">{{ pages.num }}</a></li>
+                            {{ dump(pages) }}
+                            {% if pages.num == '...' %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">{{ pages.num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item{{ pages.num == page ? ' active' : '' }}">
+                                    <a class="page-link" href="javascript:;" data-page="{{ pages.num }}">{{ pages.num }}</a>
+                                </li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 </div>
