@@ -1568,7 +1568,7 @@ class Controller extends ControllerCommon
 		}
     }
 
-	public function duplicateElement( $originalElementId )
+	public function duplicateElement( $originalElementId , $showCopyFrom = true )
 	{
 		$content = $this->getRepository()->findOne( $originalElementId );
 
@@ -1622,7 +1622,9 @@ class Controller extends ControllerCommon
 
 					if ( $this->getEntity()->get( $field )->getType() == 'text' )
 					{
-						$data->set( $field , "Copie de " . $content->get( $this->getEntity()->get( $field )->getColumn() ) );
+						$title = ( $showCopyFrom ? 'Copie de ' : '' )
+							. $content->get( $this->getEntity()->get( $field )->getColumn() );
+						$data->set( $field , $title );
 					}
 				}
 			}
@@ -1669,7 +1671,7 @@ class Controller extends ControllerCommon
 							// Exctraction de l'id de l'élément de dépendance à dupliquer
 							$originalDependencyId = $originalDependencyElement->get( $dependency->getEntity()->get('id')->getColumn() );
 							// Duplication de la dépendance
-							$dataNewDependency = $dependency->getController(true)->duplicateElement( $originalDependencyId );
+							$dataNewDependency = $dependency->getController(true)->duplicateElement( $originalDependencyId , false );
 							// Si l'élément a bien été duppliqué
 
 							if( $dataNewDependency instanceof Data )

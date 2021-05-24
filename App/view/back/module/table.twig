@@ -238,7 +238,6 @@
                 <div style="float: right;">
                     <ul class="pagination">
                         {% for pages in paginator %}
-                            {{ dump(pages) }}
                             {% if pages.num == '...' %}
                                 <li class="page-item disabled">
                                     <span class="page-link">{{ pages.num }}</span>
