@@ -76,10 +76,13 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                     foreach( $rstRec as $email )
                     {
                         $mail = trim( $email->get( $r->getEntity()->get('email')->getColumn() ) ) ;
-                        $tab[ $mail ] = [
-                            'Email' => $mail,
-                            'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                        ] ;
+                        if ( filter_var( $mail , FILTER_VALIDATE_EMAIL) )
+                        {
+                            $tab[ $mail ] = [
+                                'Email' => $mail,
+                                'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                            ] ;
+                        }
                     }
                 }
             }
@@ -101,10 +104,14 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                 if ( $records[$i][4] == 0 )
                 {
                     $mail = $records[$i][1] ;
-                    $tab[ $mail ] = [
-                        'Email' => $mail,
-                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                    ] ;
+
+                    if ( filter_var( $mail , FILTER_VALIDATE_EMAIL) )
+                    {
+                        $tab[ $mail ] = [
+                            'Email' => $mail,
+                            'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                        ] ;
+                    }
                 }
             }
         }
@@ -125,10 +132,13 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
                 if ( $records[$i][9] == 0 )
                 {
                     $mail = $records[$i][1] ;
-                    $tab[ $mail ] = [
-                        'Email' => $mail,
-                        'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
-                    ] ;
+                    if ( filter_var( $mail , FILTER_VALIDATE_EMAIL) )
+                    {
+                        $tab[ $mail ] = [
+                            'Email' => $mail,
+                            'lien_desinscription' => Http::getInstance()->getUrl() . "/newsletter/unsubscribe/" . $Newsletter->get('element_module_parent_id') . "/" . $mail
+                        ] ;
+                    }
                 }
             }
         }
