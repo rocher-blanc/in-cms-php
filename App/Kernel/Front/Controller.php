@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Kernel\Back\Seo;
+use App\Kernel\Container;
 use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
 use App\Kernel\Front\Alt;
@@ -11,6 +12,7 @@ use App\Kernel\Front\Media;
 use App\Kernel\Http;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
+use Slim\Slim;
 
 class Controller extends \App\Kernel\Common\Controller
 {
@@ -965,6 +967,10 @@ class Controller extends \App\Kernel\Common\Controller
         $count   = $this->getCustomPaginationCount( $callablePreparedRequest );
         $pageMin = 1;
         $pageMax = ceil( $count / $perPage );
+
+		$currentUrl = Http::getInstance()->getUrl() . $this->getApp()->request()->getPath();
+		$get        = $this->getApp()->Request()->get();
+
         if( $page > $pageMax )
         {
             $page = $pageMax;
@@ -975,7 +981,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $offset = ( $page - 1 ) * $perPage;
-        $to     =  $offset + $perPage;
+//        $to     =  $offset + $perPage;
 
         if( $count > 0 )
         {
@@ -989,17 +995,37 @@ class Controller extends \App\Kernel\Common\Controller
             $rst = [];
         }
 
+        $all      = [];
+        $previous = null;
+        $next     = null;
+		for( $i = $pageMin ; $i <= $pageMax ; $i++ )
+		{
+			$get['p'] = $i;
+			$url = $currentUrl . '?' . http_build_query( $get );
+			// Ajout pour la page actuelle de son numéro, son url et son catactère "actuel"
+			$all[] = [
+				'num'       => $i,
+				'url'       => $url,
+				'isCurrent' => $page == $i,
+			];
+
+			if( $page - 1 == $i )  $previous = $url;
+			if( $page + 1 == $i )  $next     = $url;
+		}
+
         return [
             'pagination' => [
-                'page'     => (int)( $page ),
-                'page_min' => (int)( $pageMin ),
-                'page_max' => (int)( $pageMax ),
-                'prev'     => $pageMin < $page,
-                'next'     => $pageMax > $page,
-                'per_page' => $perPage,
-                'from'     => $offset + 1,
-                'to'       => $to > $count ? $count : $to,
-                'total'    => $count
+            	'all' => count($all) > 1 ? $all : [],
+				'url' => [
+					'previous' => $previous,
+					'next'     => $next,
+				],
+				'total'    => $count,
+				'first'    => $page <= $pageMin,
+				'last'     => $page >= $pageMax,
+//                'per_page' => $perPage,
+//                'from'     => $offset + 1,
+//                'to'       => $to > $count ? $count : $to,
             ],
             'results'    => $rst
         ];
