@@ -121,7 +121,9 @@ class Translate
 
     public function getText( $key , $var = [] )
     {
-        $str = ( $this->language !== NULL ? nl2br( $this->language->get( $key ) ) : '##' . $key . '##' ) ;
+        $str = $this->language !== NULL
+			? nl2br( $this->language->get( $key ) )
+			: "##$key##" ;
 
         if ( !empty( $var ) )
         {

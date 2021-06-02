@@ -6,6 +6,10 @@ use App\Kernel\Factory;
 
 abstract class LanguageModel
 {
+	private static $autoAddingExcluded = [
+		'on_line'
+	];
+
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
     /* ************************************************** */
@@ -18,24 +22,29 @@ abstract class LanguageModel
 
     public function get( $key )
     {
-        $key = strtolower( $key );
+        $key = strtolower( trim( $key ) );
 
+        // Si la clé est présente dans les tranductions
         if ( array_key_exists( $key , $this->getVar() ) )
         {
             return html_entity_decode( $this->a[ $key ] );
         }
-        else if( empty( trim( $key ) ) )
+        // Sinon, si la clé est vide
+        else if( empty( $key ) )
         {
             return "";
         }
-        else if( DEBUG_CMS === true )
-        {
-            $this->addKey( $key , "##$key##" );
-            return '##' . $key . '##' ;
-        }
+        // Sinon
         else
         {
-            return '' ;
+        	// Si la clé n'est pas dans les la liste des clés à ignorer, on l'ajoute dans le fichier de traductions
+        	if( ! array_key_exists( $key , self::$autoAddingExcluded ) )
+			{
+				$this->addKey( $key , "##$key##" );
+			}
+        	return DEBUG_CMS === true
+				? '##' . $key . '##'
+				: '' ;
         }
     }
 
