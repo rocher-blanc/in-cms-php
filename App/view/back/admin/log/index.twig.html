@@ -21,8 +21,13 @@
                 <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
 
                 <div class="form-group">
-                    <label class="control-label">{{ _('date')}}</label>
-                    <input data-plugin-datepicker id="date" name="date" class="form-control" type="text" value="{{ get.date ? get.date : "now" | date('d/m/Y') }}" />
+                    <label class="control-label">{{ _('date_start')}}</label>
+                    <input data-plugin-datepicker id="date" name="date[start]" class="form-control" type="text" value="{{ date.start ? date.start : "now" | date('d/m/Y') }}" />
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">{{ _('date_end')}}</label>
+                    <input data-plugin-datepicker id="date" name="date[end]" class="form-control" type="text" value="{{ date.end ? date.end : "now" | date('d/m/Y') }}" />
                 </div>
 
                 <div class="form-group">

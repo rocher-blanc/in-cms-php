@@ -47,21 +47,20 @@ $app->group('/log', function () use ($app)
         {
             $tabType = [];
 
-            if ( $app->request->post('info') == NULL ) $info = false ;
-            else                                            $tabType[] = 1;
+            if ( $app->request->post('info') == NULL )   $info = false ;
+            else                                         $tabType[] = 1;
 
-             if ( $app->request->post('danger') == NULL )   $danger = false ;
-            else                                                $tabType[] = 2;
+            if ( $app->request->post('danger') == NULL ) $danger = false ;
+            else                                         $tabType[] = 2;
 
-             if ( $app->request->post('alerte') == NULL ) $alerte = false ;
-            else                                                $tabType[] = 3;
+            if ( $app->request->post('alerte') == NULL ) $alerte = false ;
+            else                                         $tabType[] = 3;
 
             if ( $app->request->post('date') != '' )
             {
-                list( $start , $end ) = explode( ' - ' , $app->request->post('date') );
-
-                $date_start = \App\Kernel\Factory::getInstance()->Date()->convertUs( $start ) . " 00:00:00";
-                $date_end   = \App\Kernel\Factory::getInstance()->Date()->convertUs( $end ) . " 23:59:59";
+            	$dates = $app->request->post('date');
+                $date_start = \App\Kernel\Factory::getInstance()->Date()->convertUs( $dates['start'] ) . " 00:00:00";
+                $date_end   = \App\Kernel\Factory::getInstance()->Date()->convertUs( $dates['end'] ) . " 23:59:59";
             }
         }
 
@@ -84,10 +83,10 @@ $app->group('/log', function () use ($app)
 
         $app->render('admin/log/index.twig.html' , [
             "logRows" => $rows,
-            "info" => $info,
-            "alerte" => $alerte,
-            "danger" => $danger,
-            "date" => $app->request->post('date'),
+            "info"    => $info,
+            "alerte"  => $alerte,
+            "danger"  => $danger,
+            "date"    => $app->request->post('date'),
         ]);
 
     })->via('GET', 'POST');
