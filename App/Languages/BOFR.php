@@ -759,6 +759,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"index_easydoor_mode_information" => "Mode de livraison choisi",
 		"delete_many_success" => "Les éléments été supprimés",
 		"mandatory_tax_rate" => "Veuillez renseigner le taux de TVA",
-		"language_translate_create_default_users" => "Créer les clés utilisateur",
+		"language_translate_create_default_users" => "Utilisateurs",
+		"language_translate_create_default_cart" => "Panier",
 	];
 }

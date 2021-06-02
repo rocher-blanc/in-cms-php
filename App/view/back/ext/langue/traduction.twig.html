@@ -33,12 +33,11 @@
                                     <i class="icon icon-pen"></i>
                                     {{ _('langue_traduction_show_uncompleted')}}
                                 </button>
-                                {% if admin_buttons.user %}
-                                    <a href="{{ siteUrl('/ext/langue/traduction/default-users') }}" class="button">
-                                        <i class="icon icon-users"></i>
-                                        {{ _('language_translate_create_default_users')}}
+                                {% for btn in admin_buttons %}
+                                    <a href="{{ btn.url }}" class="button">
+                                        <i class="{{ btn.icon }}"></i> {{ btn.key }}
                                     </a>
-                                {% endif %}
+                                {% endfor %}
                             </div>
                             {% else %}
                             &nbsp;

@@ -414,349 +414,410 @@ $app->group('/langue', function () use ($app)
         Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_disactive');
 
+	$app->group('/traduction', function () use ($app)
+	{
+		$app->get('/', function () use ($app) {
 
-    $app->get('/traduction', function () use ($app) {
+			$param       = new Param();
+			$contentRows = \App\Kernel\Lang::getInstance()->getAll();
 
-    	$param       = new Param();
-        $contentRows = \App\Kernel\Lang::getInstance()->getAll();
-
-        $app->render('ext/langue/traduction.twig.html', [
-            'contentRows' => $contentRows,
-			'admin_buttons' => [
-				'user' => ACTIVE_USER && $param->get('translate_front_user') != 1
-			]
-        ]);
-
-    })->name('langue_traduction');
-
-    $app->get('/traduction/get-lang', function() use ($app) {
-        header('Content-Type: application/json;charset=utf-8');
-
-        $lang_abbr = $this->getApp()->request->get('lang_locale');
-        $className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
-        $class     = new $className ;
-        $arrayTrad = $class->getVar();
-
-        ksort( $arrayTrad );
-        $keys = [];
-
-        foreach( $arrayTrad as $key => $value ) {
-            if( !empty($key) )
-            {
-                $keys[$key] = [
-                    'type'  => "text", //html
-                    'value' => $value
-                ];
-            }
-        }
-
-        $req = \DB::for_table("lang")
-			->where_equal("lang_url", $lang_abbr)
-			->find_one();
-
-		$lang = [
-			'id' => $req ? $req->lang_id : 0,
-			'locale' => $lang_abbr,
-			'title' => $req ? $req->lang_display : "Langue"
-		];
-
-        echo json_encode([
-            'result' => true,
-            'msg'    => "",
-            'lang'   => $lang,
-            'keys'   => $keys,
-        ]);
-    });
-
-    $app->post('/traduction/update-translate', function() use ($app) {
-        $key   = $app->request->post('key');
-        $lang  = $this->getApp()->request->post('lang');
-        $type  = $app->request->post('type');
-        $value = $app->request->post('value');
-
-        $className = "\Project\Lang\\" . strtoupper( $lang ) ;
-        $class     = new $className ;
-        $arrayTrad = $class->getVar();
-
-        ksort( $arrayTrad );
-
-        $arrayTrad[$key] = $value;
-
-        $src = "<"."?php\n";
-        $src.= "namespace Project\Lang;\n";
-        $src.= "class " . strtoupper( $lang ) . " extends \App\Kernel\Front\LanguageModel {\n";
-        $src.= "\tprotected $"."a = [\n";
-        foreach( $arrayTrad as $key => $value )
-        {
-            $value = trim( $value );
-            $value = str_replace( '"', '\"', $value );
-            if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
-        }
-        $src.= "\t];\n";
-        $src.= "}\n";
-
-        if ( ! empty( $lang ) )
-        {
-            Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
-        }
-
-        echo json_encode([
-            'result' => true,
-            'msg'    => Translate::getInstance()->getText( 'msg_text_maj' ),
-        ]);
-    });
-
-    $app->post('/traduction/add-key', function() use ($app) {
-        $new_key = $app->request->post('new_key');
-
-        $langs = \App\Kernel\Lang::getInstance()->getAll();
-        foreach( $langs as $lang )
-        {
-            $filename = LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" ;
-
-            if ( file_exists( $filename ) )
-            {
-                $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
-                $class     = new $className ;
-                $arrayTrad = $class->getVar();
-            }
-            else
-            {
-                $arrayTrad = [];
-            }
-
-            $arrayTrad[$new_key] = "";
-
-            ksort( $arrayTrad );
-
-            $src = "<"."?php\n";
-            $src.= "namespace Project\Lang;\n";
-            $src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
-            $src.= "\tprotected $"."a = [\n";
-            foreach( $arrayTrad as $key => $value )
-            {
-                $value = trim( $value );
-                $value = str_replace( '"', '\"', $value );
-                if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
-            }
-            $src.= "\t];\n";
-            $src.= "}\n";
-
-            if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( $filename , $src );
-        }
-
-        echo json_encode([
-            'result' => true,
-            'msg'    => Translate::getInstance()->getText( 'msg_key_add' ),
-        ]);
-    });
-
-    $app->get('/traduction/remove-key/:key', function( $key ) use ($app) {
-        $app->render('ext/langue/delete-key.twig.html', [
-            'key' => $key
-        ]);
-    });
-
-    $app->post('/traduction/remove-key-action', function() use ($app) {
-        $key_name = $app->request->post('key');
-
-        $langs = \App\Kernel\Lang::getInstance()->getAll();
-        foreach( $langs as $lang )
-        {
-            $className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
-            $class     = new $className ;
-            $arrayTrad = $class->getVar();
-
-            unset( $arrayTrad[$key_name] );
-
-            ksort( $arrayTrad );
-
-            $src = "<"."?php\n";
-            $src.= "namespace Project\Lang;\n";
-            $src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
-            $src.= "\tprotected $"."a = [\n";
-            foreach( $arrayTrad as $key => $value )
-            {
-                $value = trim( $value );
-                $value = str_replace( '"', '\"', $value );
-                if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
-            }
-            $src.= "\t];\n";
-            $src.= "}\n";
-
-            if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
-        }
-
-        echo json_encode([
-            'result' => true,
-            'msg'    => Translate::getInstance()->getText( 'msg_key_suppr' ),
-        ]);
-    });
-
-	$app->get('/traduction/default-users', function() use ($app) {
-
-		$translations = [
-			// Connection
-			'user_login_failed' => [
-				'fr' => "Connexion échouée. Informations érronées."
-			],
-			'user_login_field_empty' => [
-				'fr' => "Veuillez renseigner votre adresse e-mail."
-			],
-			'user_login_successful' => [
-				'fr' => "Connexion réussi. Vous êtes à présent identifié sur le site."
-			],
-			// Registration
-			'user_register_confirm_password_empty' => [
-				'fr' => "Veuillez confirmer votre mot de passe."
-			],
-			'user_register_logged' => [
-				'fr' => "Vous êtes déjà connecté."
-			],
-			'user_register_login_empty' => [
-				'fr' => "Veuillez renseigner votre adresse e-mail."
-			],
-			'user_register_login_not_uniq' => [
-				'fr' => "L'adresse e-mail renseignée est déjà utilisée."
-			],
-			'user_register_login_not_valid' => [
-				'fr' => "Veuillez renseigner une adresse e-mail valide."
-			],
-			'user_register_password_different' => [
-				'fr' => "Les deux mot de passe saisi sont différent."
-			],
-			'user_register_password_empty' => [
-				'fr' => "Veuillez saisir un mot de passe."
-			],
-			'user_register_password_invalid_format' => [
-				'fr' => "Le format du mot de passe saisi n'est pas correct."
-			],
-			'user_register_send_mail_error' => [
-				'fr' => "Votre compte a bien été créé, mais l'e-mail de confirmation n'a pas pu être envoyé."
-			],
-			'user_register_send_mail_successful' => [
-				'fr' => "Votre compte a bien été créé. Un e-mail de confirmation vous a été envoyé."
-			],
-			'user_register_successful' => [
-				'fr' => "Votre compte a bien été créé."
-			],
-			// Updating
-			'user_update_login_empty' => [
-				'fr' => "Veuillez renseigner votre adresse e-mail."
-			],
-			'user_update_login_not_valid' => [
-				'fr' => "Veuillez renseigner une adresse e-mail valide."
-			],
-			'user_update_login_not_uniq' => [
-				'fr' => "L'adresse e-mail renseignée est déjà utilisée."
-			],
-			'user_update_not_logged' => [
-				'fr' => "Vous n'êtes pas connecté."
-			],
-			'user_update_successful' => [
-				'fr' => "Vos informations ont été mises à jour."
-			],
-			// Updating password
-			'user_update_password_empty' => [
-				'fr' => "Veuillez saisir votre mot de passe actuel."
-			],
-			'user_update_new_password_empty' => [
-				'fr' => "Veuillez saisir votre nouveau mot de passe."
-			],
-			'user_update_new_password_invalid_format' => [
-				'fr' => "Le format du nouveau mot de passe n'est pas valide."
-			],
-			'user_update_new_password_confirm_empty' => [
-				'fr' => "Veuillez confirmer votre nouveau mot de passe."
-			],
-			'user_update_new_password_different' => [
-				'fr' => "Le nouveau mot de passe et sa confirmation sont différent."
-			],
-			'user_update_last_password_invalid' => [
-				'fr' => "Le mot de passe actuel est éronné."
-			],
-			'user_update_password_successful' => [
-				'fr' => "Votre mot de passe a été mis à jour."
-			],
-			// Account validation
-			'user_validation_successful' => [
-				'fr' => "Votre compte a été validé !"
-			],
-			'user_connect_facebook_error' => [
-				'fr' => "Impossible de se connecter à votre compte facebook."
-			],
-			'user_validation_failed' => [
-				'fr' => "Le lien de vérification est érroné."
-			],
-			// Forget password
-			'user_lost_password_login_empty' => [
-				'fr' => "Veuillez renseigner votre adresse e-mail."
-			],
-			'user_lost_password_send_mail_error' => [
-				'fr' => "Une erreur est survenue lors de l'envoie de l'e-mail. Veuillez réesayer ultérieurement."
-			],
-			'user_lost_password_send_mail_successful' => [
-				'fr' => "Un e-mail vous a été envoyé avec votre nouveau mot de passe"
-			],
-			'user_lost_password_failed' => [
-				'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
-			],
-			// Recouvrement du mot de passe
-			'user_recovery_password_logged' => [
-				'fr' => "Vous êtes déjà connecté."
-			],
-			'user_recovery_password_login_empty' => [
-				'fr' => "Veuillez renseigner votre adresse e-mail."
-			],
-			'user_recovery_password_failed' => [
-				'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
-			],
-			'user_recovery_new_password_empty' => [
-				'fr' => "Veuiller saisir votre nouveau mot de passe."
-			],
-			'user_recovery_new_password_invalid_format' => [
-				'fr' => "Le formation du nouveau mot de passe est invalide."
-			],
-			'user_recovery_new_password_confirm_empty' => [
-				'fr' => "Veuillez confirmer votre nouveau mot de passe."
-			],
-			'user_recovery_new_password_different' => [
-				'fr' => "Le nouveau mot de passe et sa saisie sont différent."
-			],
-			'user_recovery_password_successful' => [
-				'fr' => "Votre mot de passe a été mis à jour."
-			],
-		];
-
-		$langs = \App\Kernel\Lang::getInstance()->getAll();
-
-		foreach( $langs as $lang )
-		{
-			$l         = $lang->locale;
-			$langTrans = Translate::getTranslations( $l );
-
-			foreach( $translations as $key => $t )
+			$adminButtons = [];
+			if( ACTIVE_USER && $param->get('translate_front_user') != 1 )
 			{
-				if( array_key_exists( $l, $t ) )
-				{
-					$value = trim( $t[$l] );
+				$adminButtons[] = [
+					'icon' => "icon icon-users",
+					'url' => $app->config('admin.url') . '/ext/langue/traduction/default-user',
+					'key' => Translate::getInstance()->getText( 'language_translate_create_default_users' )
+				];
+			}
+			if( defined('SHOP_PATH') && $param->get('translate_front_cart') != 1 ) {
+				$adminButtons[] = [
+					'icon' => "icon icon-cart",
+					'url' => $app->config('admin.url') . '/ext/langue/traduction/default-cart',
+					'key' => Translate::getInstance()->getText( 'language_translate_create_default_cart' )
+				];
+			}
 
-					if( ! array_key_exists($key, $langTrans)
-						|| strlen(trim($langTrans[$key])) == 0
-						|| $langTrans[$key] == "##{$key}##"
-					)
-					{
-						$langTrans[$key] = $value;
-					}
+			$app->render('ext/langue/traduction.twig.html', [
+				'contentRows' => $contentRows,
+				'admin_buttons' => $adminButtons
+			]);
+
+		})->name('langue_traduction');
+
+		$app->get('/get-lang', function() use ($app) {
+			header('Content-Type: application/json;charset=utf-8');
+
+			$lang_abbr = $this->getApp()->request->get('lang_locale');
+			$className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
+			$class     = new $className ;
+			$arrayTrad = $class->getVar();
+
+			ksort( $arrayTrad );
+			$keys = [];
+
+			foreach( $arrayTrad as $key => $value ) {
+				if( !empty($key) )
+				{
+					$keys[$key] = [
+						'type'  => "text", //html
+						'value' => $value
+					];
 				}
 			}
 
-			Translate::generateLangFile( $l , $langTrans );
+			$req = \DB::for_table("lang")
+				->where_equal("lang_url", $lang_abbr)
+				->find_one();
+
+			$lang = [
+				'id' => $req ? $req->lang_id : 0,
+				'locale' => $lang_abbr,
+				'title' => $req ? $req->lang_display : "Langue"
+			];
+
+			echo json_encode([
+				'result' => true,
+				'msg'    => "",
+				'lang'   => $lang,
+				'keys'   => $keys,
+			]);
+		});
+
+		$app->post('/update-translate', function() use ($app) {
+			$key   = $app->request->post('key');
+			$lang  = $this->getApp()->request->post('lang');
+			$type  = $app->request->post('type');
+			$value = $app->request->post('value');
+
+			$className = "\Project\Lang\\" . strtoupper( $lang ) ;
+			$class     = new $className ;
+			$arrayTrad = $class->getVar();
+
+			ksort( $arrayTrad );
+
+			$arrayTrad[$key] = $value;
+
+			$src = "<"."?php\n";
+			$src.= "namespace Project\Lang;\n";
+			$src.= "class " . strtoupper( $lang ) . " extends \App\Kernel\Front\LanguageModel {\n";
+			$src.= "\tprotected $"."a = [\n";
+			foreach( $arrayTrad as $key => $value )
+			{
+				$value = trim( $value );
+				$value = str_replace( '"', '\"', $value );
+				if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+			}
+			$src.= "\t];\n";
+			$src.= "}\n";
+
+			if ( ! empty( $lang ) )
+			{
+				Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
+			}
+
+			echo json_encode([
+				'result' => true,
+				'msg'    => Translate::getInstance()->getText( 'msg_text_maj' ),
+			]);
+		});
+
+		$app->post('/add-key', function() use ($app) {
+			$new_key = $app->request->post('new_key');
+
+			$langs = \App\Kernel\Lang::getInstance()->getAll();
+			foreach( $langs as $lang )
+			{
+				$filename = LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" ;
+
+				if ( file_exists( $filename ) )
+				{
+					$className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
+					$class     = new $className ;
+					$arrayTrad = $class->getVar();
+				}
+				else
+				{
+					$arrayTrad = [];
+				}
+
+				$arrayTrad[$new_key] = "";
+
+				ksort( $arrayTrad );
+
+				$src = "<"."?php\n";
+				$src.= "namespace Project\Lang;\n";
+				$src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+				$src.= "\tprotected $"."a = [\n";
+				foreach( $arrayTrad as $key => $value )
+				{
+					$value = trim( $value );
+					$value = str_replace( '"', '\"', $value );
+					if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+				}
+				$src.= "\t];\n";
+				$src.= "}\n";
+
+				if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( $filename , $src );
+			}
+
+			echo json_encode([
+				'result' => true,
+				'msg'    => Translate::getInstance()->getText( 'msg_key_add' ),
+			]);
+		});
+
+		$app->get('/remove-key/:key', function( $key ) use ($app) {
+			$app->render('ext/langue/delete-key.twig.html', [
+				'key' => $key
+			]);
+		});
+
+		$app->post('/remove-key-action', function() use ($app) {
+			$key_name = $app->request->post('key');
+
+			$langs = \App\Kernel\Lang::getInstance()->getAll();
+			foreach( $langs as $lang )
+			{
+				$className = "\Project\Lang\\" . strtoupper( $lang->locale ) ;
+				$class     = new $className ;
+				$arrayTrad = $class->getVar();
+
+				unset( $arrayTrad[$key_name] );
+
+				ksort( $arrayTrad );
+
+				$src = "<"."?php\n";
+				$src.= "namespace Project\Lang;\n";
+				$src.= "class " . strtoupper( $lang->locale ) . " extends \App\Kernel\Front\LanguageModel {\n";
+				$src.= "\tprotected $"."a = [\n";
+				foreach( $arrayTrad as $key => $value )
+				{
+					$value = trim( $value );
+					$value = str_replace( '"', '\"', $value );
+					if ( ! empty( $key ) ) $src.= "\t\t\"" . trim( $key ) . "\" => \"" . $value . "\",\n";
+				}
+				$src.= "\t];\n";
+				$src.= "}\n";
+
+				if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang->locale ) . ".php" , $src );
+			}
+
+			echo json_encode([
+				'result' => true,
+				'msg'    => Translate::getInstance()->getText( 'msg_key_suppr' ),
+			]);
+		});
+
+		$app->get('/default-user', function() use ($app) {
+			translation_createDefaultTranslations(
+				'translate_front_user',
+				[
+					// Connection
+					'user_login_failed' => [
+						'fr' => "Connexion échouée. Informations érronées."
+					],
+					'user_login_field_empty' => [
+						'fr' => "Veuillez renseigner votre adresse e-mail."
+					],
+					'user_login_successful' => [
+						'fr' => "Connexion réussi. Vous êtes à présent identifié sur le site."
+					],
+					// Registration
+					'user_register_confirm_password_empty' => [
+						'fr' => "Veuillez confirmer votre mot de passe."
+					],
+					'user_register_logged' => [
+						'fr' => "Vous êtes déjà connecté."
+					],
+					'user_register_login_empty' => [
+						'fr' => "Veuillez renseigner votre adresse e-mail."
+					],
+					'user_register_login_not_uniq' => [
+						'fr' => "L'adresse e-mail renseignée est déjà utilisée."
+					],
+					'user_register_login_not_valid' => [
+						'fr' => "Veuillez renseigner une adresse e-mail valide."
+					],
+					'user_register_password_different' => [
+						'fr' => "Les deux mot de passe saisi sont différent."
+					],
+					'user_register_password_empty' => [
+						'fr' => "Veuillez saisir un mot de passe."
+					],
+					'user_register_password_invalid_format' => [
+						'fr' => "Le format du mot de passe saisi n'est pas correct."
+					],
+					'user_register_send_mail_error' => [
+						'fr' => "Votre compte a bien été créé, mais l'e-mail de confirmation n'a pas pu être envoyé."
+					],
+					'user_register_send_mail_successful' => [
+						'fr' => "Votre compte a bien été créé. Un e-mail de confirmation vous a été envoyé."
+					],
+					'user_register_successful' => [
+						'fr' => "Votre compte a bien été créé."
+					],
+					// Updating
+					'user_update_login_empty' => [
+						'fr' => "Veuillez renseigner votre adresse e-mail."
+					],
+					'user_update_login_not_valid' => [
+						'fr' => "Veuillez renseigner une adresse e-mail valide."
+					],
+					'user_update_login_not_uniq' => [
+						'fr' => "L'adresse e-mail renseignée est déjà utilisée."
+					],
+					'user_update_not_logged' => [
+						'fr' => "Vous n'êtes pas connecté."
+					],
+					'user_update_successful' => [
+						'fr' => "Vos informations ont été mises à jour."
+					],
+					// Updating password
+					'user_update_password_empty' => [
+						'fr' => "Veuillez saisir votre mot de passe actuel."
+					],
+					'user_update_new_password_empty' => [
+						'fr' => "Veuillez saisir votre nouveau mot de passe."
+					],
+					'user_update_new_password_invalid_format' => [
+						'fr' => "Le format du nouveau mot de passe n'est pas valide."
+					],
+					'user_update_new_password_confirm_empty' => [
+						'fr' => "Veuillez confirmer votre nouveau mot de passe."
+					],
+					'user_update_new_password_different' => [
+						'fr' => "Le nouveau mot de passe et sa confirmation sont différent."
+					],
+					'user_update_last_password_invalid' => [
+						'fr' => "Le mot de passe actuel est éronné."
+					],
+					'user_update_password_successful' => [
+						'fr' => "Votre mot de passe a été mis à jour."
+					],
+					// Account validation
+					'user_validation_successful' => [
+						'fr' => "Votre compte a été validé !"
+					],
+					'user_connect_facebook_error' => [
+						'fr' => "Impossible de se connecter à votre compte facebook."
+					],
+					'user_validation_failed' => [
+						'fr' => "Le lien de vérification est érroné."
+					],
+					// Forget password
+					'user_lost_password_login_empty' => [
+						'fr' => "Veuillez renseigner votre adresse e-mail."
+					],
+					'user_lost_password_send_mail_error' => [
+						'fr' => "Une erreur est survenue lors de l'envoie de l'e-mail. Veuillez réesayer ultérieurement."
+					],
+					'user_lost_password_send_mail_successful' => [
+						'fr' => "Un e-mail vous a été envoyé avec votre nouveau mot de passe"
+					],
+					'user_lost_password_failed' => [
+						'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
+					],
+					// Recouvrement du mot de passe
+					'user_recovery_password_logged' => [
+						'fr' => "Vous êtes déjà connecté."
+					],
+					'user_recovery_password_login_empty' => [
+						'fr' => "Veuillez renseigner votre adresse e-mail."
+					],
+					'user_recovery_password_failed' => [
+						'fr' => "Une erreur est survenue. Veuillez réessayer ultérieurement."
+					],
+					'user_recovery_new_password_empty' => [
+						'fr' => "Veuiller saisir votre nouveau mot de passe."
+					],
+					'user_recovery_new_password_invalid_format' => [
+						'fr' => "Le formation du nouveau mot de passe est invalide."
+					],
+					'user_recovery_new_password_confirm_empty' => [
+						'fr' => "Veuillez confirmer votre nouveau mot de passe."
+					],
+					'user_recovery_new_password_different' => [
+						'fr' => "Le nouveau mot de passe et sa saisie sont différent."
+					],
+					'user_recovery_password_successful' => [
+						'fr' => "Votre mot de passe a été mis à jour."
+					],
+				]
+			);
+		});
+
+		$app->get('/default-cart', function() use ($app) {
+			translation_createDefaultTranslations(
+				'translate_front_cart',
+				[
+					'cart_out_of_stock' => [
+						'fr' => "Plus assez de stock disponible."
+					],
+					'cart_update_delivery_mode_successful' => [
+						'fr' => "Moyen de livraison validé."
+					],
+					'cart_update_delivery_not_found' => [
+						'fr' => "Moyen de livraison non trouvé."
+					],
+					'cart_up_product_successful' => [
+						'fr' => "Produit(s) ajouté(s) au panier."
+					],
+					'cart_up_product_no_stock' => [
+						'fr' => "Plus assez de stock disponible."
+					],
+					'cart_down_product_successful' => [
+						'fr' => "Produit(s) retiré(s) du panier."
+					],
+					'cart_add_product_successful' => [
+						'fr' => "Produit(s) ajouté(s) au panier."
+					],
+					'cart_add_product_no_stock' => [
+						'fr' => "Plus assez de stock disponible."
+					],
+					'cart_remove_product_successful' => [
+						'fr' => "Produit(s) retiré(s) du panier."
+					]
+				]
+			);
+		});
+	});
+
+});
+
+
+function translation_createDefaultTranslations( String $paramKey , Array $translations ) : void
+{
+	$langs = \App\Kernel\Lang::getInstance()->getAll();
+
+	foreach( $langs as $lang )
+	{
+		$l         = $lang->locale;
+		$langTrans = Translate::getTranslations( $l );
+
+		foreach( $translations as $key => $t )
+		{
+			if( array_key_exists( $l, $t ) )
+			{
+				$value = trim( $t[$l] );
+
+				if( ! array_key_exists($key, $langTrans)
+					|| strlen(trim($langTrans[$key])) == 0
+					|| $langTrans[$key] == "##{$key}##"
+				)
+				{
+					$langTrans[$key] = $value;
+				}
+			}
 		}
 
-		$param = new Param();
-		$param->set( 'translate_front_user' , 1 );
+		Translate::generateLangFile( $l , $langTrans );
+	}
 
-		$app->redirect( $app->config('admin.url') . '/ext/langue/traduction' );
-	});
-});
+	$param = new Param();
+	$param->set( $paramKey , 1 );
+
+	\Slim\Slim::getInstance()->redirect(
+		\Slim\Slim::getInstance()->config('admin.url') . '/ext/langue/traduction'
+	);
+}
