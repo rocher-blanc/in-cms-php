@@ -4,6 +4,7 @@ use App\Kernel\Container;
 use App\Kernel\Factory;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Front\Translate;
+use App\Kernel\Lang;
 
 function installModule( $name )
 {
@@ -14,6 +15,29 @@ function installModule( $name )
     $contentRow->module_active 		= 1 ;
     $contentRow->save() ;
 
+	if( Container::getInstance()->module( $name )->getEntity()->hasUrl() )
+	{
+		$moduleId = $contentRow->module_id;
+		foreach( Lang::getInstance()->getAll() as $lang )
+		{
+			$req = \DB::for_table('module_lang')
+				->where_equal( 'module_lang_lang_id' , $lang->id )
+				->where_equal( 'module_lang_module_id' , $moduleId )
+				->find_one();
+
+			if( ! $req )
+			{
+				$url = Factory::getInstance()->Url()->encode( $name );
+				$url = Factory::getInstance()->Url()->uniq($url, $lang->id);
+
+				$req = \DB::for_table('module_lang')->create();
+				$req->module_lang_lang_id   = $lang->id;
+				$req->module_lang_module_id = $moduleId;
+				$req->module_lang_url       = $url;
+				$req->save();
+			}
+		}
+	}
 
     // On génère le webservice
     $php = '' ;
@@ -326,7 +350,6 @@ $app->group('/moduleadmin', function () use ($app)
 			{
                 installModule( ucfirst($name) );
 				Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( 'msg_module_installed' ) , true , '/admin/moduleadmin' );
-
 			}
 			else
 			{
