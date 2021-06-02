@@ -15,9 +15,10 @@ function installModule( $name )
     $contentRow->module_active 		= 1 ;
     $contentRow->save() ;
 
+	$moduleId = $contentRow->module_id;
+
 	if( Container::getInstance()->module( $name )->getEntity()->hasUrl() )
 	{
-		$moduleId = $contentRow->module_id;
 		foreach( Lang::getInstance()->getAll() as $lang )
 		{
 			$req = \DB::for_table('module_lang')
@@ -82,6 +83,8 @@ function installModule( $name )
 
     Container::getInstance()->module( $name )->getRepository( true )->checkDatabase();
     Container::getInstance()->param()->set('key_module_' . $contentRow->module_id , md5_file( ENTITY_PATH . "/" . $contentRow->module_class_name . ".php" ) );
+
+    return $moduleId;
 }
 
 $app->group('/moduleadmin', function () use ($app)
@@ -348,8 +351,12 @@ $app->group('/moduleadmin', function () use ($app)
 
 			if ( ! $contentRow )
 			{
-                installModule( ucfirst($name) );
-				Factory::getInstance()->Response()->flashAndRedirect( Translate::getInstance()->getText( 'msg_module_installed' ) , true , '/admin/moduleadmin' );
+                $moduleId = installModule( ucfirst($name) );
+				Factory::getInstance()->Response()->flashAndRedirect(
+					Translate::getInstance()->getText( 'msg_module_installed' ) ,
+					true ,
+					'/admin/moduleadmin/edit/' . $moduleId
+				);
 			}
 			else
 			{
