@@ -125,6 +125,12 @@ class Builder extends Model
     public $_reCAPTCHA = false;
 
     /*
+     * @boolean
+     * Définit si on active la récupération automatique des éléments précédents et suivant
+     */
+    protected $_hasPrevNext = false;
+
+    /*
      * @array
      * Variable contenant tous les messages d'erreurs par défaut
      */
@@ -930,6 +936,20 @@ class Builder extends Model
 	public function isShowDateCreation()
 	{
 		return $this->_show_date_created;
+	}
+
+    /* ************************************************** */
+    /* *****************   PREV & NEXT   **************** */
+    /* ************************************************** */
+
+	protected function enablePrevNext()
+	{
+		$this->_hasPrevNext = true;
+	}
+
+	public function isEnabledPrevNext()
+	{
+		return $this->_hasPrevNext;
 	}
 
     /* ************************************************** */

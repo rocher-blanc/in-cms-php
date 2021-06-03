@@ -11,6 +11,7 @@ use App\Kernel\Front\Alt;
 use App\Kernel\Front\Gallery;
 use App\Kernel\Front\Media;
 use App\Kernel\Http;
+use App\Kernel\Lang;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
 use Slim\Slim;
@@ -569,6 +570,8 @@ class Controller extends \App\Kernel\Common\Controller
         {
             return false ;
         }
+
+        $elementId = $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
         
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
@@ -577,6 +580,7 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $result ) $this->setId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
         }
 
+        // Gestion des champs
         $arrayElement = [];
         foreach( $this->getEntity()->getField() as $row )
         {
@@ -732,18 +736,18 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $row->isUrl() == true )
             {
-                $Seo = new \App\Kernel\Front\Seo;
-                $Seo->setElementId( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) ) ;
-                $Seo->setModuleId( $this->getEntityId() ) ;
-                $arrayElement['url'] = Http::getInstance()->getUrl() . '/' ;
-                if ( $this->Lang()->count() > 1 )
-                {
-                    $arrayElement['url'].= \App\Kernel\Lang::getInstance()->getActive()->url . "/" ;
-                }
-                $arrayElement['url'].= $this->getModuleUrl() . $Seo->getUrl() ;
+				$arrayElement['url'] = $this->getElementUrl( $elementId );
             }
         }
 
+        // Récupération des éléments précédents et suivants
+		if( $this->getEntity()->isEnabledPrevNext() )
+		{
+			$arrayElement['prev'] = $this->getPrevElement();
+			$arrayElement['next'] = $this->getNextElement();
+		}
+
+        // Si le champ est une dépendance, on récupère les informations du parent
         if ( $this->getEntity()->itsDepedency() )
         {
             $module = \DB::for_table('module')
@@ -756,6 +760,53 @@ class Controller extends \App\Kernel\Common\Controller
 
         return $arrayElement ;
     }
+
+    protected function getElementUrl( $elementId ) : String
+	{
+		$Seo = new \App\Kernel\Front\Seo;
+		$Seo->setElementId( $elementId ) ;
+		$Seo->setModuleId( $this->getEntityId() ) ;
+		$rst = Http::getInstance()->getUrl() . '/' ;
+		if ( $this->Lang()->count() > 1 )
+		{
+			$rst .= Lang::getInstance()->getActive()->url . "/" ;
+		}
+		$rst .= $this->getModuleUrl() . $Seo->getUrl() ;
+		return $rst;
+	}
+
+	public function getNextElement()
+	{
+		$one = $this->getRepository()->findNextElement( $this->getId() );
+		return $one
+			? $this->parsePrevNextElement( $one )
+			: null ;
+	}
+
+	public function getPrevElement()
+	{
+		$one = $this->getRepository()->findPrevElement( $this->getId() );
+		return $one
+			? $this->parsePrevNextElement( $one )
+			: null ;
+	}
+
+	protected function parsePrevNextElement( $row )
+	{
+		$elementId = $row->get( $this->getEntity()->get('id')->getColumn() );
+		$title = [];
+
+		foreach( $this->getEntity()->getFieldReference() as $i )
+		{
+			$title[] = $row->get( $this->getEntity()->get($i)->getColumn() );
+		}
+
+		return [
+			'id'    => $elementId,
+			'url'   => $this->getElementUrl( $elementId ),
+			'title' => implode( " " , $title )
+		];
+	}
 
     public function parseAll( $rows, $callback = NULL )
     {

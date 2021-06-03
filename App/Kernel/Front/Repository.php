@@ -85,6 +85,25 @@ class Repository extends \App\Kernel\Common\Repository
     #################################################################################################################################
     #################################################################################################################################
 
+	public function findNextElement( $currentId )
+	{
+		return $this->getKit()
+			->where_gte( $this->getEntity()->get('id')->getColumn() , $currentId )
+			->find_one();
+	}
+
+	public function findPrevElement( $currentId )
+	{
+		return $this->getKit()
+			->where_lte( $this->getEntity()->get('id')->getColumn() , $currentId )
+			->order_by_desc( $this->getEntity()->get('id')->getColumn() )
+			->find_one();
+	}
+
+    #################################################################################################################################
+    #################################################################################################################################
+    #################################################################################################################################
+
     public function findSiteMap( $field , $id )
     {
         $table 	= \DB::getTableName( $this->getName() ) ;
