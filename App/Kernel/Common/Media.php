@@ -369,7 +369,7 @@ class Media
 	{
 		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
 			$tmpImg->best_fit( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+			$destImg = new SimpleImage(null, $width, $height, $tmpImg->get_original_info()['mime'] == "image/png" ? BACKGROUND_COLOR_THB : NULL );
 			$destImg->overlay($tmpImg)->save($file);
 		});
 	}
@@ -378,7 +378,7 @@ class Media
 	{
 		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
 			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
+			$destImg = new SimpleImage(null, $width, $height );
 			$destImg->overlay($tmpImg)->save($file);
 		});
 	}
