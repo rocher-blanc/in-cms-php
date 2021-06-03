@@ -488,10 +488,18 @@ class Controller
         return $View->fetch( 'module/form.twig' , $values );
     }
 
-    protected function parseFieldData( $row , $form , $show ) {
+    protected function parseFieldData( $row , $form , $show )
+	{
+
+    	$value = $row->getValue();
+    	if( $value == NULL )
+		{
+			$value = $row->getDefault();
+		}
+
 		return [
 			"name"      => $row->getName(),
-			"value"     => $row->getValue(),
+			"value"     => $value,
 			"fieldname" => $row->getColumn(),
 			"Form_HTML" => $form->genHTML( $row ),
 			"title" 	=> $this->getTitleField( $row ),

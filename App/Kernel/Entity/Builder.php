@@ -5,6 +5,7 @@ namespace App\Kernel\Entity;
 use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
 use App\Kernel\Front\Translate;
+use App\Kernel\Front\User;
 
 class Builder extends Model
 {
@@ -1124,7 +1125,7 @@ class Builder extends Model
                     ->isHidden("INT" , 11)
                     ->user()
                     ->defaut(function() {
-                        return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+                        return ( User::getInstance()->isLogged() ? User::getInstance()->getId() : User::getInstance()->getTmpId() ) ;
                     } , true  );
             }
         }
@@ -1132,7 +1133,7 @@ class Builder extends Model
 
     protected function getUserAction()
     {
-        return ( \App\Kernel\Front\User::getInstance()->isLogged() ? 'update' : 'register' ) ;
+        return ( User::getInstance()->isLogged() ? 'update' : 'register' ) ;
     }
 
     protected function enableUserModule()
@@ -1146,7 +1147,7 @@ class Builder extends Model
             $this->build('user_front_id' , true )
                 ->isHidden("INT" , 11)
                 ->defaut(function() {
-                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getId() : \App\Kernel\Front\User::getInstance()->getTmpId() ) ;
+                    return ( User::getInstance()->isLogged() ? User::getInstance()->getId() : User::getInstance()->getTmpId() ) ;
                 } , true  );
 
             $this->build('user_action' , true )
@@ -1167,7 +1168,7 @@ class Builder extends Model
                     return filter_var( $c, FILTER_VALIDATE_EMAIL ) ;
                 }, "user_login_not_valid" , "L'adresse email est invalide" )
                 ->setData('fieldSql' , 'user_front.user_front_login')
-                ->defaut( ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getLogin() : '' ) , true )
+                ->defaut( ( User::getInstance()->isLogged() ? User::getInstance()->getLogin() : '' ) , true )
                 ->name('Email');
 
             $this->build('user_front_user_front_group_id' , true )
@@ -1180,13 +1181,13 @@ class Builder extends Model
                 ->noRename()
                 ->setData('fieldSql' , 'user_front.user_front_user_front_group_id')
                 ->defaut(function() {
-                    return ( \App\Kernel\Front\User::getInstance()->isLogged() ? \App\Kernel\Front\User::getInstance()->getGroup() : \App\Kernel\Front\User::getInstance()->getDefaultGroup() ) ;
+                    return ( User::getInstance()->isLogged() ? User::getInstance()->getGroup() : User::getInstance()->getDefaultGroup() ) ;
                 } , true  )
                 ->name("Groupe d'utilisateurs");
 
             if ( $this->getApp()->config('config') == 'front' )
             {
-                if ( ! \App\Kernel\Front\User::getInstance()->isLogged() )
+                if ( ! User::getInstance()->isLogged() )
                 {
                     $this->build('user_password' , true )
                         ->isPassword()
