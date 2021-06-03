@@ -6,10 +6,7 @@ use App\Kernel\Factory;
 
 abstract class LanguageModel
 {
-	private static $autoAddingExcluded = [
-		'on_line',
-		'content'
-	];
+	private static $autoAddingExcluded = null;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -39,7 +36,7 @@ abstract class LanguageModel
         else
         {
         	// Si la clé n'est pas dans les la liste des clés à ignorer, on l'ajoute dans le fichier de traductions
-			if( ! in_array( $key , self::$autoAddingExcluded ) )
+			if( $this->canAutoAddKey($key) )
 			{
 				$this->addKey( $key , "##$key##" );
 			}
@@ -48,6 +45,15 @@ abstract class LanguageModel
 				: '' ;
         }
     }
+
+    private function canAutoAddKey( $key )
+	{
+		if( self::$autoAddingExcluded == NULL )
+		{
+			self::$autoAddingExcluded = ( new \Project\Lang\BOFR() )->a;
+		}
+		return ! in_array( $key , self::$autoAddingExcluded );
+	}
 
     public function exist( $key )
     {
