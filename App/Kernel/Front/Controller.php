@@ -3,6 +3,7 @@
 namespace App\Kernel\Front;
 
 use App\Kernel\Back\Seo;
+use App\Kernel\Common\ImageGenerator;
 use App\Kernel\Container;
 use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
@@ -550,10 +551,13 @@ class Controller extends \App\Kernel\Common\Controller
 		{
 			switch( $type )
 			{
-				case "t" : $media->genThumb( $w , $h ); break;
-				case "w" : $media->genWidth( $w ); break;
-				case "h" : $media->genHeight( $h ); break;
+				case "t" : $fullType = "cover" ; break;
+				case "w" : $fullType = "width" ; break;
+				case "h" : $fullType = "height"; break;
+				default  : $fullType = "cover" ; break;
 			}
+			$generator = new ImageGenerator( $media->getFolder() , $media->getImageName() );
+			$generator->genImage( $type , $w , $h , $fullType ) ;
 		}
 
 		return $mini ;

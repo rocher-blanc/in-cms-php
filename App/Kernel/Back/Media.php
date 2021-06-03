@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Common\ImageGenerator;
+
 class Media extends \App\Kernel\Common\Media
 {
     /* ************************************************** */
@@ -227,7 +229,9 @@ class Media extends \App\Kernel\Common\Media
             $rst->caption = $source;
             $rst->mini = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
-            $this->genImages($field);
+            $generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
+			$generator->genImages( $field );
+//            $this->genImages($field);
         }
 
         return $rst ;
@@ -303,30 +307,6 @@ class Media extends \App\Kernel\Common\Media
 		}
 		
 		return false ;
-	}
-
-	public function genCropDefaut( $width , $height )
-	{
-		return $this->genThumb( $width , $height , true ) ;
-	}
-	
-	public function crop()
-	{
-		$x  = $this->getApp()->request->post('crop_x') ;
-		$y  = $this->getApp()->request->post('crop_y') ;
-		$x2 = $this->getApp()->request->post('crop_x2') ;
-		$y2 = $this->getApp()->request->post('crop_y2') ;
-		
-		$imageName  = $this->getApp()->request->post('imageName') ;
-		$image  	= $this->getApp()->request->post('image') ;
-		$width  	= $this->getApp()->request->post('crop_width') ;
-		$height  	= $this->getApp()->request->post('crop_height') ;
-		
-		$img = new \abeautifulsite\SimpleImage( $this->getFolder() . '/' . $imageName );
-		$img
-            ->crop($x, $y, $x2, $y2)
-            ->resize( $width , $height )
-            ->save( $this->getFolder() . '/c/' . $this->updateName( $imageName , $width . "x" . $height ) );
 	}
 
 

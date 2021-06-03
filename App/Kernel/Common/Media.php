@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Common;
 
-use abeautifulsite\SimpleImage;
+use claviska\SimpleImage;
 use App\Kernel\Back\Image;
 use App\Kernel\Exception;
 
@@ -184,7 +184,7 @@ class Media
 
         if ( file_exists( $img ) )
         {
-            $name = $this->updateName( $this->getImageName() ) ;
+            $name = ImageGenerator::updateName( $this->getImageName() ) ;
 
             if ( file_exists( $path . $name ) ) $exist = true ;
             else							    		 $exist = false ;
@@ -238,7 +238,8 @@ class Media
                 $this->setImageName( $name ) ;
             }
 
-            return $this->genThumb( 100 , 100 ) ;
+			$generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
+            return $generator->genImage( "t" , 100 , 100 , "thumb" ) ;
         }
     }
 
@@ -288,6 +289,7 @@ class Media
 	/*----------                                                  ----------*/
 	/*----------------------------------------------------------------------*/
 
+	/*
 	protected function beforeSaveImage( $basePath, $dir , $name )
 	{
 		$currentPath = "/" . trim( $basePath , "/" );
@@ -355,9 +357,11 @@ class Media
 			$img  = $path . $name ;
 			$miniName = $this->updateName( $name , $newNameSuffix ) ;
 			$file     = $path . trim($dir, "/") . "/" . trim($miniName, "/") ;
-			$tmpImg   = new SimpleImage( $img );
 			$this->beforeSaveImage( $path , $dir , $miniName );
-			$callable( $tmpImg , $file );
+
+			$tmpImg = new SimpleImage( $img );
+			$tmpImg = $callable( $tmpImg , $file );
+			$tmpImg->toFile($file);
 			return $miniName ;
 
 		} catch( Exception $e ) {
@@ -367,46 +371,58 @@ class Media
 
 	public function genThumb( $width , $height , $crop = false )
 	{
-		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
-			$tmpImg->best_fit( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, $tmpImg->get_original_info()['mime'] == "image/png" ? BACKGROUND_COLOR_THB : NULL );
-			$destImg->overlay($tmpImg)->save($file);
-		});
+		return $this->genImage(
+			$crop ? "c" : "t" ,
+			"{$width}x{$height}" ,
+			function( $tmpImg , $file ) use ($width, $height) {
+				return $tmpImg
+					->bestFit( $width , $height , "center" )
+					->overlay($tmpImg);
+			}
+		);
 	}
 
 	public function genCover( $width , $height , $crop = false )
 	{
-		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
-			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height );
-			$destImg->overlay($tmpImg)->save($file);
-		});
+		return $this->genImage(
+			$crop ? "c" : "t" ,
+			"{$width}x{$height}" ,
+			function( $tmpImg , $file ) use ($width, $height) {
+				return $tmpImg
+					->thumbnail( $width , $height , "center" )
+					->overlay($tmpImg);
+			}
+		);
 	}
 
 	public function genWidth( $width )
 	{
 		return $this->genImage( "w" , "$width" , function( $tmpImg , $file ) use ($width) {
-			$oldW   = $tmpImg->get_width();
-			$oldH   = $tmpImg->get_height();
+			$oldW   = $tmpImg->getWidth();
+			$oldH   = $tmpImg->getHeight();
 			$height = round( $width * $oldH / $oldW , 0 );
 
-			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
+			return $tmpImg
+				->thumbnail( $width , $height , "center" )
+				->overlay($tmpImg);
 		});
 	}
 
 	public function genHeight( $height )
 	{
-		return $this->genImage( "h" , "$height" , function( $tmpImg , $file ) use($height) {
-			$oldW  = $tmpImg->get_width();
-			$oldH  = $tmpImg->get_height();
-			$width = round( $height * $oldW / $oldH , 0 );
+		return $this->genImage(
+			"h" ,
+			"$height" ,
+			function( $tmpImg , $file ) use($height) {
+				$oldW   = $tmpImg->getWidth();
+				$oldH   = $tmpImg->getHeight();
+				$width = round( $height * $oldW / $oldH , 0 );
 
-			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
-		});
+				return $tmpImg
+					->thumbnail( $width , $height , "center" )
+					->overlay($tmpImg);
+			}
+		);
 	}
 
     protected function getExtension( $name )
@@ -414,4 +430,5 @@ class Media
         $exp = explode( "." , $name ) ;
         return '.' . end( $exp ) ;
     }
+	*/
 }
