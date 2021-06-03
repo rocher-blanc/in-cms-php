@@ -2,7 +2,6 @@
 
 namespace App\Kernel\Common;
 
-use abeautifulsite\SimpleImage;
 use App\Kernel\Exception;
 
 class Gallery
@@ -106,6 +105,7 @@ class Gallery
     /*----------                                                  ----------*/
     /*----------------------------------------------------------------------*/
 
+	/*
     protected function beforeSaveImage( $basePath, $dir , $name )
 	{
 		$currentPath = "/" . trim( $basePath , "/" );
@@ -193,6 +193,7 @@ class Gallery
 			$destImg->overlay($tmpImg)->save($file);
 		}, $name );
 	}
+	*/
 
 
 	/*----------------------------------------------------------------------*/
@@ -201,6 +202,7 @@ class Gallery
 	/*----------                                                  ----------*/
 	/*----------------------------------------------------------------------*/
 
+	/*
 	protected function updateName( $name , $addStr = "" )
 	{
 		$exp 	= explode( "." , $name ) ;
@@ -213,6 +215,7 @@ class Gallery
 
 		return $name ;
 	}
+	*/
 
 	public function getMini( $name , $width , $height = false , $type = "t" )
 	{

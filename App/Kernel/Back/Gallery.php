@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\Common\ImageGenerator;
+
 class Gallery extends \App\Kernel\Common\Gallery
 {
     /* ************************************************** */
@@ -167,8 +169,11 @@ class Gallery extends \App\Kernel\Common\Gallery
             $this->setImageName( $this->getNewFilename( $_FILES[ $this->post('field') ]["name"][$i] ) );
             if ( $this->move( $_FILES[ $this->post('field') ]["tmp_name"][$i]) )
             {
-                $this->genThumb( 100 , 100 );
-                $this->genImages();
+				$generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
+				$generator->genImage( "t" , 100 , 100 , "thumb" ) ;
+				$generator->genImages( $this );
+//                $this->genThumb( 100 , 100 );
+//                $this->genImages();
 
                 $gallery = \DB::for_table('gallery')->create();
                 $gallery->gallery_name = $this->getImageName();
@@ -369,7 +374,7 @@ class Gallery extends \App\Kernel\Common\Gallery
 
     protected function getNewFilename( $name )
     {
-        $filename = $this->updateName( $name ) ;
+        $filename = ImageGenerator::updateName( $name ) ;
         $path     = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
         $img      = $path . $filename ;
 

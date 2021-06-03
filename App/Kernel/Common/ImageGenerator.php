@@ -19,31 +19,41 @@ class ImageGenerator
 
 	public function genImages( $field )
 	{
-		if ( $field->hasThumb() )
+		if ( ! empty( $field->getThumb() ) )
 		{
 			foreach( $field->getThumb() as $i )
 			{
+				$i = array_values($i);
 				$this->genImage( "t" , $i[0], $i[1] , "thumb" );
 			}
 		}
-		if ( $field->hasCover() )
+		if ( ! empty( $field->getCover() ) )
 		{
 			foreach( $field->getCover() as $i )
 			{
+				$i = array_values($i);
 				$this->genImage( "t" , $i[0], $i[1] , "cover" );
 			}
 		}
-		if ( $field->hasWidth() )
+		if ( ! empty( $field->getWidth() ) )
 		{
 			foreach( $field->getWidth() as $i )
 			{
+				if( is_array($i) )
+				{
+					$i = array_values($i)[0];
+				}
 				$this->genImage( "w" , $i , null , "width" );
 			}
 		}
-		if ( $field->hasHeight() )
+		if ( ! empty( $field->getHeight() ) )
 		{
 			foreach( $field->getHeight() as $i )
 			{
+				if( is_array($i) )
+				{
+					$i = array_values($i)[0];
+				}
 				$this->genImage( "h" , null , $i , "height" );
 			}
 		}
