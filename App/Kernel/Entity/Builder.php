@@ -6,6 +6,7 @@ use App\Kernel\Entity\Field;
 use App\Kernel\Exception;
 use App\Kernel\Front\Translate;
 use App\Kernel\Front\User;
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 
 class Builder extends Model
 {
@@ -202,6 +203,18 @@ class Builder extends Model
      * Variable contenant le ou les champs de références quand un autre module appel celui ci
      */
     protected $_field_reference = ["id"] ;
+
+    /*
+     * @boolean|string
+     * Variable content le nom du champ servant à gérer l'ordre d'affichage des éléments du module
+     */
+    protected $_field_order_field = false ;
+
+    /*
+     * @string
+     * Variable contenant l'ordre d'affichage des éléments du module
+     */
+    protected $_field_order_type = 'asc' ;
 
     /*
      * @int
@@ -620,6 +633,23 @@ class Builder extends Model
         $this->_module_parent_id_name = $name;
     }
 
+	protected function setFieldOrder( $fieldName , $type = 'asc' )
+	{
+		if( $this->hasOrder() ) {
+			$this->error('The module is already ordered by a custom elements positions');
+		}
+		else if( $type != 'asc' && $type != 'desc' ) {
+			$this->error('Order field type must be "asc" or "desc".');
+		}
+		$this->_field_order_field = $fieldName ;
+		$this->_field_order_type  = $type ;
+	}
+
+	protected function error( $msg )
+	{
+		throw new Exception( "Error module {$this->getModuleName()}: $msg" );
+	}
+
     /**
      * @param null $pagination
      */
@@ -672,6 +702,12 @@ class Builder extends Model
         return $this->_pagination;
     }
 
+    public function getModuleName()
+	{
+		$tmp = explode( "\\", get_class($this) );
+		return end($tmp);
+	}
+
     /*
      *
      */
@@ -691,6 +727,22 @@ class Builder extends Model
     public function getFieldReference():array
     {
         return $this->_field_reference;
+    }
+
+    /**
+     * @return boolean|string
+     */
+    public function getFieldOrderField()
+    {
+        return $this->_field_order_field;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldOrderType():string
+    {
+        return $this->_field_order_type;
     }
 
     /**
@@ -1096,6 +1148,9 @@ class Builder extends Model
     /* ORDER */
     protected function enableOrder()
     {
+		if( $this->getFieldOrderField() ) {
+			$this->error('The module is already ordered by a field');
+		}
         $this->build('order' , true )->isOrder();
     }
 

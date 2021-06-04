@@ -195,8 +195,22 @@ class Repository extends \App\Kernel\Common\Repository
 
         if ( $order )
         {
-            if ( $this->getEntity()->hasOrder() ) 	$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
-            else									$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+        	// Il existe un champ avec un ordre par défaut
+        	if( $this->getEntity()->getFieldOrderField() )
+			{
+				$method = 'order_by_' . strtolower( $this->getEntity()->getFieldOrderType() );
+				$all = $all->$method( $this->getEntity()->get( $this->getEntity()->getFieldOrderField() )->fieldSql() );
+			}
+        	// L'ordre est activé sur les modules
+            else if ( $this->getEntity()->hasOrder() )
+			{
+				$all = $all->order_by_asc( $this->getEntity()->get( $this->getEntity()->getOrderName() )->fieldSql() );
+			}
+            // Aucun ordre n'est défini
+            else
+			{
+				$all = $all->order_by_desc( $this->getEntity()->get( $this->getEntity()->getIdName() )->fieldSql() );
+			}
         }
 
         return $all;
