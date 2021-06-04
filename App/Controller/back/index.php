@@ -117,7 +117,7 @@ function index_getCampaigns()
 	$now    = new \DateTime();
 
 	$req = \DB::for_table('mod_newslettercampaign')
-		->where_null( 'mod_newslettercampaign_statut' )
+		->where_null( 'mod_newslettercampaign_status_str' )
 		->where_gte( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
 		->order_by_desc( 'mod_newslettercampaign_date' )
 		->find_many();
@@ -131,7 +131,7 @@ function index_getCampaigns()
 	}
 
 	$req = \DB::for_table('mod_newslettercampaign')
-		->where_null( 'mod_newslettercampaign_statut_str' )
+		->where_null( 'mod_newslettercampaign_status_str' )
 		->where_lt( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
 		->order_by_asc( 'mod_newslettercampaign_date' )
 		->find_many();
