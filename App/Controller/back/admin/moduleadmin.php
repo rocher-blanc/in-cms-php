@@ -406,9 +406,10 @@ $app->group('/moduleadmin', function () use ($app)
 										$Media->setImageId( $row->get('value') );
 										$Media->setFolder( $entity->getFolder() ) ;
 										$Media->getNameById() ;
-										$Media->genThumb( 100 , 100 ) ;
 
-										$Media->genImages( $field );
+										$generator = new \App\Kernel\Common\ImageGenerator( $Media->getFolder() , $Media->getImageName() );
+										$generator->genImage( "t" , 100 , 100 , "thumb" ) ;
+										$generator->genImages( $field );
 									}
 								}
 							}
