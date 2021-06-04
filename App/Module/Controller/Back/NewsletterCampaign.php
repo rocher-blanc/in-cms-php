@@ -17,7 +17,7 @@ class NewsletterCampaign extends Controller
 
         foreach( $content as $row )
         {
-            if ( ! empty( $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ) )
+            if ( ! empty( $row->get( $this->getEntity()->get('id_easyletter')->getColumn() ) ) && empty( $row->get( $this->getEntity()->get('status_str')->getColumn() ) ) )
             {
                 if ( $row->get( $this->getEntity()->get('version')->getColumn() ) == 'v2' )
                 {
@@ -61,6 +61,25 @@ class NewsletterCampaign extends Controller
     {
         if ( $content )
         {
+            $content->stats = $this->resultStats[ $content->id_easyletter ] ;
+
+            if ( empty( $content->status_str ) )
+            {
+                $data = new Data('NewsletterCampaign');
+                $rst = $data->find( $content->id );
+
+                if ( $rst )
+                {
+                    switch( $content->stats['state'] )
+                    {
+                        case 9 : $data->set('status_str' , 'suspend'); break; // Suspendu
+                        case 10 : $data->set('status_str' , 'sent'); break; // envoyée
+                        case 11 : $data->set('status_str' , 'cancel'); break; // annulee
+                    }
+
+                    $data->save();
+                }
+            }
             $content->stats = $this->resultStats[ $content->id_easyletter ] ;
         }
 
