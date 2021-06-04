@@ -198,6 +198,7 @@ class Url
             $alias = str_replace( '--' , '-' , $alias ) ;
         }
 
+        $alias = preg_replace( '/[^A-Za-z0-9\-]/', '', $alias );
 		return $alias;
 	}
 
