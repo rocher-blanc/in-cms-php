@@ -116,7 +116,9 @@
                     <tr class="tr1" data-parent-id="none" id="{{ content.id }}">
                         {% if enableSelect %}
                             <td class="text-center">
-                                <input type="checkbox" name="select[{{ content.id }}]" data-id="{{ content.id }}" data-module-table-action-many-checkbox />
+                                {% if right.delete == true and mod.canDelete == true and content.delete == true %}
+                                    <input type="checkbox" name="select[{{ content.id }}]" data-id="{{ content.id }}" data-module-table-action-many-checkbox />
+                                {% endif %}
                             </td>
                         {% endif %}
                         {% if hasOrder and right.edit == true %}
