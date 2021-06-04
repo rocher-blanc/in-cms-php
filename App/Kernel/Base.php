@@ -32,10 +32,17 @@ class Base
     public function getModule()
     {
         return [
-            'NewsletterSender' => [
-                'name' => 'Expéditeurs',
-                'icon' => "icon-line2-users",
-            ],
+        	// Commun
+			'EdAutomationHistory' => [
+				'name' => 'Tableau de bord - Emails transactionnels',
+				'icon' => "icon-line-clock",
+			],
+			'NewsletterSender' => [
+				'name' => 'Gestion des expéditeurs',
+				'icon' => "icon-line2-users",
+			],
+
+			// Colonne "Newsletter"
             'NewsletterGroup' => [
                 'name' => 'Groupes d\'abonnés',
                 'icon' => "icon-users",
@@ -45,45 +52,49 @@ class Base
                 'icon' => "icon-user",
             ],
             'NewsletterCampaignGroup' => [
-                'name' => 'Newsletters',
+                'name' => 'Catégories de newsletters',
                 'icon' => "icon-folder",
             ],
+			'NewsletterModel' => [
+				'name' => 'Gestion des gabarits',
+				'icon' => "icon-picture",
+			],
             'NewsletterCampaign' => [
                 'name' => 'Planification des campagnes',
                 'icon' => "icon-time",
             ],
-            'NewsletterModel' => [
-                'name' => 'Gabarits',
-                'icon' => "icon-picture",
-            ],
+
+			// Colonne "Transactionnels"
+			'EdAutomationModelGroup' => [
+				'name' => 'Catégproes d\'emails transactionnels',
+				'icon' => "icon-stack",
+			],
             'EdAutomation' => [
-                'name' => 'Automations',
+                'name' => 'Emails transactionnels',
                 'icon' => "icon-picture",
             ],
-            'EdAutomationVarGroup' => [
-                'name' => 'Groupes de variables',
-                'icon' => "icon-stack2",
-            ],
-            'EdAutomationVar' => [
-                'name' => 'Variables d\'environnement',
-                'icon' => "icon-atom",
-            ],
-            'EdAutomationModelGroup' => [
-                'name' => 'Groupe d\'emails',
-                'icon' => "icon-stack",
-            ],
-            'EdAutomationModel' => [
-                'name' => 'Modèle d\'emails',
-                'icon' => "icon-vcard",
-            ],
-            'EdEmail' => [
-                'name' => 'Modèles',
-                'icon' => "icon-news",
-            ],
-            'EdAutomationHistory' => [
-                'name' => 'Historique',
-                'icon' => "icon-line-clock",
-            ],
+
+			// Paramètres
+			'EdEmail' => [
+				'name' => 'Gestion des modèles personnalisés',
+				'icon' => "icon-news",
+			],
+
+			// Développeurs
+			'EdAutomationVarGroup' => [
+				'name' => 'Groupes de variables',
+				'icon' => "icon-stack2",
+			],
+			'EdAutomationVar' => [
+				'name' => 'Variables d\'environnement',
+				'icon' => "icon-atom",
+			],
+			'EdAutomationModel' => [
+				'name' => 'Paramétrage des emails transactionnels',
+				'icon' => "icon-vcard",
+			],
+
+			// Autres
             'NewsletterCampaignGroupUnsubscribe' => [
                 'name' => 'Désinscriptions',
                 'icon' => "icon-enter",

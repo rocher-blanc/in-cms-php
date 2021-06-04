@@ -46,44 +46,25 @@ class Menu
 
     public function loadEasyletter()
     {
-        if ( NEWSLETTER_ACTIVE )
-        {
-            $firstColumn = [
-                'id'     => 1 ,
-                'group'  => 1 ,
-                'blocks' => [
-                    1 => [
-                        'id'           => 1 ,
-                        'column'       => 1 ,
-                        'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
-                        'modules'      => [] ,
-                        'modules_list' => [ 'NewsletterCampaignGroup' , 'NewsletterGroup' , 'NewsletterSubscriber' , 'NewsletterSender' , 'NewsletterCampaign' , 'NewsletterModel'] ,
-                    ]
-                ]
-            ];
-        }
-        else
-        {
-            $firstColumn = [
-                'id'     => 1 ,
-                'group'  => 1 ,
-                'blocks' => [
-                    1 => [
-                        'id'           => 1 ,
-                        'column'       => 1 ,
-                        'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
-                        'modules'      => [] ,
-                        'modules_list' => [ 'NewsletterSender'] ,
-                    ]
-                ]
-            ];
-        }
-
         $groups    = [];
         $groups[1] = [
             'name'    => Translate::getInstance()->getText( "easyletter" ),
             'columns' => [
-                1 => $firstColumn,
+                1 => [
+					'id'     => 1 ,
+					'group'  => 1 ,
+					'blocks' => [
+						1 => [
+							'id'           => 1 ,
+							'column'       => 1 ,
+							'title'        => Translate::getInstance()->getText( "easyletter_col_newsletter" ) ,
+							'modules'      => [] ,
+							'modules_list' => NEWSLETTER_ACTIVE
+								? [ 'NewsletterCampaignGroup' , 'NewsletterGroup' , 'NewsletterSubscriber' , 'NewsletterSender' , 'NewsletterCampaign' , 'NewsletterModel' ]
+								: [ 'NewsletterSender']
+						]
+					]
+				],
                 2 => [
                     'id'     => 2 ,
                     'group'  => 1 ,
@@ -93,20 +74,33 @@ class Menu
                             'column'       => 2 ,
                             'title'        => Translate::getInstance()->getText( "easyletter_col_automation" ) ,
                             'modules'      => [] ,
-                            'modules_list' => [ 'NewsletterSender' , 'EdAutomationModelGroup' , 'EdAutomationModel' , 'EdAutomation' , 'EdAutomationVarGroup' , 'EdAutomationVar' , 'EdAutomationHistory'] ,
+                            'modules_list' => [ 'EdAutomationHistory', 'NewsletterSender' , 'EdAutomationModelGroup' , 'EdAutomationModel' , 'EdAutomation' , 'EdAutomationVarGroup' , 'EdAutomationVar' , ] ,
                         ],
                     ]
                 ],
-                3 => [
-                    'id'     => 3 ,
+				3 => [
+					'id'    => 3 ,
+					'group' => 1 ,
+					'blocks' => [
+						3 => [
+							'id'     => 3,
+							'column' => 3,
+							'title'  => Translate::getInstance()->getText( "easyletter_col_config" ),
+							'modules'      => [] ,
+							'modules_list' => [ 'EdEmail' ] ,
+						]
+					]
+				],
+                4 => [
+                    'id'     => 4 ,
                     'group'  => 1 ,
                     'blocks' => [
-                        3 => [
-                            'id'           => 3 ,
-                            'column'       => 3 ,
-                            'title'        => Translate::getInstance()->getText( "easyletter_col_email" ) ,
-                            'modules'      => [] ,
-                            'modules_list' => [ 'EdEmail' ] ,
+                        4 => [
+                            'id'           => 4 ,
+                            'column'       => 4 ,
+                            'title'        => Translate::getInstance()->getText( "easyletter_col_developer" ) ,
+							'modules'      => [] ,
+							'modules_list' => [ 'EdAutomationVarGroup', 'EdAutomationVar', 'EdAutomationModel' ] ,
                         ]
                     ]
                 ]
