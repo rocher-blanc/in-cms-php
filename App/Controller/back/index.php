@@ -91,7 +91,7 @@ $app->get('/', function () use ( $app ) {
         $seo_module = [];
     }
 
-    $app->render('index/index.twig.html' , [
+    $app->render('index/index.twig' , [
         "version" => $json->version,
         "debug" => DEBUG_CMS,
         "maintenance" => \App\Kernel\Container::getInstance()->param()->get('maintenance_active'),
@@ -100,7 +100,62 @@ $app->get('/', function () use ( $app ) {
             "module" => $seo_module,
             "elt_module" => $module
         ],
+        'campaigns' => index_getCampaigns(),
         "cdn" => $cdn,
         "date_update" => filemtime( VENDOR_PATH . '/autoload.php' ),
     ]) ;
 })->name('index');
+
+
+function index_getCampaigns()
+{
+	$rst = [
+		'enabled'   => true,
+		'campaigns' => [],
+	];
+
+	$now    = new \DateTime();
+
+	$req = \DB::for_table('mod_newslettercampaign')
+		->where_null( 'mod_newslettercampaign_statut' )
+		->where_gte( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
+		->order_by_desc( 'mod_newslettercampaign_date' )
+		->find_many();
+
+	if( $req )
+	{
+		foreach( $req as $row )
+		{
+			$rst['compaigns'][] = index_parseCampaign( $row );
+		}
+	}
+
+	$req = \DB::for_table('mod_newslettercampaign')
+		->where_null( 'mod_newslettercampaign_statut_str' )
+		->where_lt( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
+		->order_by_asc( 'mod_newslettercampaign_date' )
+		->find_many();
+
+	if( $req )
+	{
+		foreach( $req as $row )
+		{
+			$rst['compaigns'][] = index_parseCampaign( $row );
+		}
+	}
+
+	return $rst;
+}
+
+function index_parseCampaign( $row )
+{
+	$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $row->mod_newslettercampaign_date);
+	return [
+		'on_error' => true,
+		'subject'  => $row->mod_newslettercampaign_subject,
+		'date'     => $dt,
+		'color'    => $dt->format('U') > time()
+			? 'danger'
+			: ( $dt->format('U') > time() - 3600  ? 'warning' : 'default' )
+	];
+}

@@ -1,0 +1,266 @@
+{% extends 'module.twig.html' %}
+
+{% block title_page %}{{ _('index_title') }}{% endblock %}
+
+{% block content %}
+
+    <!-- Support technique -->
+    <div class="col_one_third">
+        <div class="title-block">
+            <h3><span>{{ _('index_support') }}</span></h3>
+            <span>{{ _('index_support_detail') }}</span>
+        </div>
+
+        <div class="text-center">
+            <a href="mailto:support@29ter.fr"
+               class="button button-rounded button-reveal button-large">{{ _('button_contact') }}</a>
+        </div>
+    </div>
+
+    <!-- easyDoor -->
+    <div class="col_one_third">
+        <div class="title-block" style="margin-bottom: 10px;">
+            <h3><span>easyDOOR</span></h3>
+            <span>{{ _('index_easydoor_subtitle') }}</span>
+        </div>
+
+        {% set items = [
+            {
+                icon : debug ? 'icon-lab' : 'icon-line2-check',
+                label: _('index_easydoor_mode_title'),
+                value: debug ? _('index_easydoor_mode_true') : _('index_easydoor_mode_true'),
+                color: debug ? 'danger' : 'success'
+            },
+            {
+                icon : maintenance ? 'icon-warning-sign' : 'icon-line2-check',
+                label: _('maintenance'),
+                value: maintenance ? _('activated_m') : _('disable_m'),
+                color: maintenance ? 'danger' : 'success'
+            },
+            {
+                icon : cdn == ''
+                ? 'icon-line-server'
+                : ( debug ? 'icon-line-server' : 'icon-line2-check' ),
+                label: _('index_easydoor_host_title'),
+                value: cdn == ''
+                ? _('index_easydoor_host_none')
+                : ( debug ? _('disable_m') : _('activated_m') ),
+                color: cdn == ''
+                ? 'danger'
+                : ( debug ? 'danger' : 'success' )
+            },
+            {
+                icon : 'icon-screen',
+                label: _('index_easydoor_version'),
+                value: version
+            },
+            {
+                icon : 'icon-line2-arrow-up',
+                label: _('index_easydoor_update_title'),
+                value: date_update|date("d/m/Y")
+            },
+            {
+                icon : 'icon-sitemap',
+                label: _('index_easydoor_sitemap_title'),
+                value: siteUrl('/',false) ~ '/sitemap.xml',
+                link : siteUrl('/',false) ~ '/sitemap.xml',
+                blank: true
+            },
+        ] %}
+        <div class="row" style="padding-left: 30px;">
+            {% for item in items %}
+                {% if loop.index == 1 %}
+                    <div class="col-md-4">
+                {% elseif loop.index == 4 %}
+                    </div>
+                    <div class="col-md-8">
+                {% endif %}
+                <div class="row" style="{% if not loop.last and loop.index != 3 and false %}border-bottom:1px #E5E5E5 solid; {% endif %}padding:3px 0 5px;">
+                    <div class="col-xs-12">
+                        <div style="margin-bottom:-3px !important;">
+                            {{ item.label }}
+                        </div>
+                        {% if item.link %}<a href="{{ item.link }}" {{ item.blank ? 'target="_blank"' }}>{% endif %}
+                        <span class="label label-{{ item.color ? item.color : 'default' }}">
+                            {% if item.icon and item.icon | length > 0 %}
+                                <i class="{{ item.icon }}"></i>
+                            {% endif %}
+                            &nbsp;
+                            {{ item.value }}
+                        </span>
+                        {% if item.link %}</a>{% endif %}
+                    </div>
+                </div>
+                {% if loop.last %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="divider"><i class="icon-circle"></i></div>
+
+    <div class="row">
+        <div class="col-md-6 title-alone">
+
+            <div class="title-block">
+                <h3><span>{{ _('index_sea_title') }}</span></h3>
+                <span>easyDOOR {{ _('index_sea_detail') }}</span>
+            </div>
+            <div class="row">
+                {% if seo.module|length > 0 or seo.page|length > 0 or seo.elt_module|length > 0 %}
+                    {% if seo.page|length > 0 %}
+                        <div class="col-md-6">
+                            <div class="fancy-title title-border">
+                                <h3>{{ _('pages') }}</h3>
+                            </div>
+                            <div class="tab-content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-none">
+                                        <tbody>
+                                        {% for row in seo.page %}
+                                            <tr class="tr1">
+                                                <td>
+                                                    <a href="{{ siteUrl('ext/page/edit/' ~  row.page_id) }}">{{ row.page_name }}</a>
+                                                </td>
+                                                <td class="defaut">
+                                                    {#
+                                                    {% if row.page_lang_title == '' %}
+                                                        <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
+                                                    {% endif %}
+                                                    {% if row.page_lang_description == '' %}
+                                                        <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metadesc') }}</span>
+                                                    {% endif %}
+                                                    #}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if seo.module|length > 0 %}
+                        <div class="col-md-6">
+                            <div class="fancy-title title-border">
+                                <h3>{{ _('modules') }}</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover mb-none">
+                                    <tbody>
+                                    {% for row in seo.module %}
+                                        <tr class="tr1">
+                                            <td>
+                                                <a href="{{ siteUrl('ext/parammodule/edit/' ~  row.module_id) }}">{{ row.module_name }}</a>
+                                            </td>
+                                            <td class="defaut">
+                                                {#
+                                                {% if row.page_lang_title == '' %}
+                                                <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
+                                                {% endif %}
+                                                {% if row.page_lang_description == '' %}
+                                                <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metadesc') }}</span>
+                                                {% endif %}
+                                                #}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if seo.elt_module|length > 0 %}
+                        {% for module in seo.elt_module %}
+                            <div class="col-md-4">
+                                <section class="panel table">
+                                    <header class="panel-heading">
+                                        <h2 class="panel-title"><i class="fa fa-{{ module.icon }}"></i> {{ module.name }}</h2>
+                                    </header>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active panel-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-hover mb-none">
+                                                    <thead>
+                                                    <tr>
+                                                        <th><strong>{{ module.title }}</strong></th>
+                                                        <th><strong>{{ _('default') }}</strong></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for row in module.tab %}
+                                                        <tr class="tr1">
+                                                            <td>
+                                                                <a href="{{ siteUrl('module/' ~ module.class ~ '/seo/' ~  row.id) }}">{{ row.value }}</a>
+                                                            </td>
+                                                            <td class="defaut">
+                                                                {#
+                                                                {% if row.seo_title == '' %}
+                                                                    <span class="label label-danger"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_metatitle') }}</span>
+                                                                {% endif %}
+                                                                {% if row.seo_description == '' %}
+                                                                    <span class="label label-warning"><i class="icon-warning-sign" style="font-size: 10px"></i> {{ _('index_sea_desc') }}</span>
+                                                                {% endif %}
+                                                                #}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                    <div class="col-md-12">
+                        <div class="alert alert-success col-md-12">
+                            <i class="fa fa-check"></i> {{ _('index_sea_success') }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="col-md-6 title-alone">
+
+            <div class="title-block">
+                <h3><span>{{ _('index_campaigns_title') }}</span></h3>
+                <span>{{ _('index_campaigns_detail') }}</span>
+            </div>
+
+            {% if campaigns.campaigns | length > 0 %}
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <td>Sujet</td>
+                        <td class="text-center" style="width:150px;">Programmation</td>
+                        <td style="width:50px;"></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in 1..5 %}
+                    {% for item in campaigns.campaigns %}
+                        <tr>
+                            <td>{{ item.subject }}</td>
+                            <td class="text-center">
+                                <span class="label label-{{ item.color }}">{{ item.schedule }}</span>
+                            </td>
+                            <td class="text-right"></td>
+                        </tr>
+                    {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                Tout a été envoyé
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}
