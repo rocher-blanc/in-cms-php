@@ -63,7 +63,7 @@ class NewsletterCampaign extends Builder
             ->name(Translate::getInstance()->getText('subject') );
 
         $this->build('version')
-            ->defaut('v3')
+            ->defaut('v2')
             ->isVarchar(2)
             ->noFront()
             ->noBack();
@@ -131,67 +131,79 @@ class NewsletterCampaign extends Builder
                 }
             })
             ->updateValue(function($c) {
-                if ( $c->version == 'v2' )
+                if ( ! empty( $c->status_str ) )
                 {
-                    if ( is_array( $c->stats ) )
+                    switch( $c->status_str )
+                    {
+                        case 'sent' : return '<span class="badge badge-success" style="font-size: 14px;">Envoyée</span>'; break;
+                        case 'cancel' : return '<span class="badge badge-danger" style="font-size: 14px;">Annulée</span>'; break;
+                        case 'suspend' : return '<span class="badge badge-warning" style="font-size: 14px;">Suspendu</span>'; break;
+                    }
+                }
+                else
+                {
+                    if ( $c->version == 'v2' )
+                    {
+                        if ( is_array( $c->stats ) )
+                        {
+                            switch( $c->stats['state'] )
+                            {
+                                case 0 : $class = 'info'; break; // pret
+                                case 1 : $class = 'primary'; break; // en cours
+                                case 9 : $class = 'warning'; break; // Suspendu
+                                case 10 : $class = 'success'; break; // envoyée
+                                case 11 : $class = 'danger'; break; // annulee
+                                default : $class = 'default'; break; // en attente
+                            }
+
+                            switch( $c->stats['state'] )
+                            {
+                                case 0 :
+                                case 9 :
+                                case 10 :
+                                case 11 : $txt = $c->stats['state_str']; break; // annulee
+                                case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
+                                default : $txt = 'En attente'; break; // en attente
+                            }
+
+                            return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
+                        }
+                        else
+                        {
+                            $date = (new \DateTime($c->date_created))->format('U') + 120;
+                            if ( time() > $date )
+                            {
+                                return '<span class="badge badge-danger" style="font-size: 14px;">' . Translate::getInstance()->getText('error') . '</span>';
+                            }
+                            else
+                            {
+                                return '<span class="badge badge-info" style="font-size: 14px;">' . Translate::getInstance()->getText('attente') . '</span>';
+                            }
+                        }
+                    }
+                    else
                     {
                         switch( $c->stats['state'] )
                         {
-                            case 0 : $class = 'info'; break; // pret
-                            case 1 : $class = 'primary'; break; // en cours
-                            case 9 : $class = 'warning'; break; // Suspendu
-                            case 10 : $class = 'success'; break; // envoyée
-                            case 11 : $class = 'danger'; break; // annulee
+                            case 'queued' : // programmée
+                            case 'pending' : $class = 'info'; break; // pret
+                            case 'in_progress' :
+                            case 'doing' : $class = 'primary'; break; // en cours
+                            case 'suspended' : $class = 'warning'; break; // Suspendu
+                            case 'sent' : $class = 'success'; break; // envoyée
+                            case 'error' :
+                            case 'deleted' : $class = 'danger'; break; // annulee
                             default : $class = 'default'; break; // en attente
                         }
 
                         switch( $c->stats['state'] )
                         {
-                            case 0 :
-                            case 9 :
-                            case 10 :
-                            case 11 : $txt = $c->stats['state_str']; break; // annulee
-                            case 1 : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
-                            default : $txt = 'En attente'; break; // en attente
+                            case 'doing' : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
+                            default : $txt = $c->stats['state_str']; break; // en attente
                         }
 
                         return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
                     }
-                    else
-                    {
-                        $date = (new \DateTime($c->date_created))->format('U') + 120;
-                        if ( time() > $date )
-                        {
-                            return '<span class="badge badge-danger" style="font-size: 14px;">' . Translate::getInstance()->getText('error') . '</span>';
-                        }
-                        else
-                        {
-                            return '<span class="badge badge-info" style="font-size: 14px;">' . Translate::getInstance()->getText('attente') . '</span>';
-                        }
-                    }
-                }
-                else
-                {
-                    switch( $c->stats['state'] )
-                    {
-                        case 'queued' : // programmée
-                        case 'pending' : $class = 'info'; break; // pret
-                        case 'in_progress' :
-                        case 'doing' : $class = 'primary'; break; // en cours
-                        case 'suspended' : $class = 'warning'; break; // Suspendu
-                        case 'sent' : $class = 'success'; break; // envoyée
-                        case 'error' :
-                        case 'deleted' : $class = 'danger'; break; // annulee
-                        default : $class = 'default'; break; // en attente
-                    }
-
-                    switch( $c->stats['state'] )
-                    {
-                        case 'doing' : $txt = $c->stats['state_str'] . ' (' . $c->stats['sent'] . "/" . $c->stats['to_send'] . ")"; break; // en cours
-                        default : $txt = $c->stats['state_str']; break; // en attente
-                    }
-
-                    return '<span class="badge badge-'.$class.'" style="font-size: 14px;">' . $txt . '</span>';
                 }
             })
             ->name( Translate::getInstance()->getText('status') );
@@ -201,5 +213,11 @@ class NewsletterCampaign extends Builder
             ->noFront()
             ->noBack()
             ->name("ID Easyletter");
+
+        $this->build('status_str')
+            ->isVarchar(10)
+            ->noFront()
+            ->noBack()
+            ->name("Envoyé");
     }
 }
