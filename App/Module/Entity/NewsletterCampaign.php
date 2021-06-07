@@ -242,4 +242,5 @@ class NewsletterCampaign extends Builder
 
 		return $result;
 	}
+
 }

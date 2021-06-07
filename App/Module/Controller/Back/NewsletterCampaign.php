@@ -70,13 +70,7 @@ class NewsletterCampaign extends Controller
 
                 if ( $rst )
                 {
-                    switch( $content->stats['state'] )
-                    {
-                        case 9 : $data->set('status_str' , 'suspend'); break; // Suspendu
-                        case 10 : $data->set('status_str' , 'sent'); break; // envoyée
-                        case 11 : $data->set('status_str' , 'cancel'); break; // annulee
-                    }
-
+                	$data->set( 'status_str' , $this->getStateValue($content->stats['state']) );
                     $data->save();
                 }
             }
@@ -356,4 +350,16 @@ class NewsletterCampaign extends Controller
             die('error');
         }
     }
+
+
+    public function getStateValue( $state )
+	{
+		switch( $state )
+		{
+			case 9  : return 'suspend'; // Suspendu
+			case 10 : return 'sent'   ; // envoyée
+			case 11 : return 'cancel' ; // annulee
+			default : return null;
+		}
+	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 // INDEX
+use App\Api\Easyletter;
 use App\Kernel\Container;
 
 $app->get('/', function () use ( $app ) {
@@ -116,7 +117,13 @@ function index_getCampaigns()
 		'campaigns' => [],
 	];
 
-	$now    = new \DateTime();
+	$v = [
+		'v2' => [],
+		'v3' => [],
+	];
+	$campaigns = [];
+
+	$now = new \DateTime();
 
 	$req = \DB::for_table('mod_newslettercampaign')
 		->where_null( 'mod_newslettercampaign_status_str' )
@@ -128,7 +135,11 @@ function index_getCampaigns()
 	{
 		foreach( $req as $row )
 		{
-			$rst['campaigns'][] = index_parseCampaign( $row );
+			if( ! empty( $row->mod_newslettercampaign_version ) )
+			{
+				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+			}
+			$campaigns[] = $row;
 		}
 	}
 
@@ -142,7 +153,11 @@ function index_getCampaigns()
 	{
 		foreach( $req as $row )
 		{
-			$rst['campaigns'][] = index_parseCampaign( $row );
+			if( ! empty( $row->mod_newslettercampaign_version ) )
+			{
+				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+			}
+			$campaigns[] = $row;
 		}
 	}
 
@@ -160,9 +175,12 @@ function index_parseCampaign( $row )
 
 	if( $c->version == EL_VERSION || $c->version == NULL )
 	{
-		$el = new \App\Api\Easyletter( EL_VERSION );
-		$c->stats = $el->stats( $c->id_easyletter );
+		$el = new Easyletter( EL_VERSION );
+		$c->stats = $el->stats( [ $c->id_easyletter ] );
 	}
+
+	dump( $c );
+	dump( get_class(Container::getInstance()->module("NewsletterCampaign")->getController(true)) );
 
 	$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $c->date);
 	return [
