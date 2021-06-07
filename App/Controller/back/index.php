@@ -1,6 +1,8 @@
 <?php
 
 // INDEX
+use App\Kernel\Container;
+
 $app->get('/', function () use ( $app ) {
     $json = \App\Kernel\Factory::getInstance()->File()->read( APPLICATION_PATH . '/../composer.json');
     $json = json_decode( $json ) ;
@@ -34,7 +36,7 @@ $app->get('/', function () use ( $app ) {
     {
         foreach( $contentRows as $row )
         {
-            $entity = \App\Kernel\Container::getInstance()->module( $row->module_class_name )->getEntity();
+            $entity = Container::getInstance()->module( $row->module_class_name )->getEntity();
             if ( $entity )
             {
                 if ( $entity->hasUrl() == true )
@@ -94,10 +96,10 @@ $app->get('/', function () use ( $app ) {
     $app->render('index/index.twig' , [
         "version" => $json->version,
         "debug" => DEBUG_CMS,
-        "maintenance" => \App\Kernel\Container::getInstance()->param()->get('maintenance_active'),
+        "maintenance" => Container::getInstance()->param()->get('maintenance_active'),
         "seo" => [
-            "page" => $seo_page,
-            "module" => $seo_module,
+            "page"       => $seo_page,
+            "module"     => $seo_module,
             "elt_module" => $module
         ],
         'campaigns' => index_getCampaigns(),
@@ -126,7 +128,7 @@ function index_getCampaigns()
 	{
 		foreach( $req as $row )
 		{
-			$rst['compaigns'][] = index_parseCampaign( $row );
+			$rst['campaigns'][] = index_parseCampaign( $row );
 		}
 	}
 
@@ -140,7 +142,7 @@ function index_getCampaigns()
 	{
 		foreach( $req as $row )
 		{
-			$rst['compaigns'][] = index_parseCampaign( $row );
+			$rst['campaigns'][] = index_parseCampaign( $row );
 		}
 	}
 
@@ -149,13 +151,58 @@ function index_getCampaigns()
 
 function index_parseCampaign( $row )
 {
-	$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $row->mod_newslettercampaign_date);
+	$c = (object) [];
+	foreach( $row->asArray() as $k => $v )
+	{
+		$key = str_replace( "mod_newslettercampaign_" , '' , $k );
+		$c->$key = $v ;
+	}
+
+	if( $c->version == EL_VERSION || $c->version == NULL )
+	{
+		$el = new \App\Api\Easyletter( EL_VERSION );
+		$c->stats = $el->stats( $c->id_easyletter );
+	}
+
+	$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $c->date);
 	return [
 		'on_error' => true,
-		'subject'  => $row->mod_newslettercampaign_subject,
+		'subject'  => $c->subject,
 		'date'     => $dt,
-		'color'    => $dt->format('U') > time()
+		'color'    => $dt->format('U') < time()
 			? 'danger'
-			: ( $dt->format('U') > time() - 3600  ? 'warning' : 'default' )
+			: ( $dt->format('U') < time() - 3600  ? 'warning' : 'success' ),
+		'status'   => Container::getInstance()->module("NewsletterCampaign")->getEntity()->parseStat($c)
 	];
+}
+
+function index_parseStatus( $status ) {
+	switch( $status )
+	{
+
+		case 'sent';
+			return [
+				'color' => 'success',
+				'icon'  => 'icon-line2-check',
+				'label' => "Envoyé"
+			];
+
+		case 'cancel';
+			return [
+				'color' => 'success',
+				'icon'  => 'icon-line2-cross',
+				'label' => "Annulé"
+			];
+
+		case 'suspend';
+			return [
+				'color' => 'success',
+				'icon'  => 'icon-line2-check',
+				'label' => "Envoyé"
+			];
+
+		default :
+			return [];
+
+	}
 }
