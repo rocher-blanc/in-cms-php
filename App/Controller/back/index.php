@@ -139,7 +139,7 @@ function index_getCampaigns()
 			{
 				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
 			}
-			$campaigns[] = $row;
+			$campaigns[] = index_parseCampaign($row);
 		}
 	}
 
@@ -157,9 +157,27 @@ function index_getCampaigns()
 			{
 				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
 			}
-			$campaigns[] = $row;
+			$campaigns[] = index_parseCampaign($row);
 		}
 	}
+
+	if( $_GET['test'] == 1 ) {
+		$easyletterModule = Container::getInstance()->module("NewsletterCampaign");
+		$easyletterController = $easyletterModule->getController(true);
+
+		$stats = $easyletterController->getV2Stats( $v['v2'] )
+			+ $easyletterController->getV3Stats( $v['v3'] );
+
+		foreach( $campaigns as $k => $content ) {
+			$content->stats = $stats[ $content->id_easyletter ];
+			$content = $easyletterController->updateStatus($content);
+			$content->status = $easyletterModule->getEntity()->parseStat( $content );
+			$campaigns[$k] = $content;
+		}
+
+		$rst['campaigns'] = $campaigns;
+	}
+
 
 	return $rst;
 }
@@ -173,25 +191,15 @@ function index_parseCampaign( $row )
 		$c->$key = $v ;
 	}
 
-	if( $c->version == EL_VERSION || $c->version == NULL )
-	{
-		$el = new Easyletter( EL_VERSION );
-		$c->stats = $el->stats( [ $c->id_easyletter ] );
-	}
-
-	dump( $c );
-	dump( get_class(Container::getInstance()->module("NewsletterCampaign")->getController(true)) );
-
 	$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $c->date);
-	return [
-		'on_error' => true,
-		'subject'  => $c->subject,
-		'date'     => $dt,
-		'color'    => $dt->format('U') < time()
-			? 'danger'
-			: ( $dt->format('U') < time() - 3600  ? 'warning' : 'success' ),
-		'status'   => Container::getInstance()->module("NewsletterCampaign")->getEntity()->parseStat($c)
-	];
+
+	$c->date   = $dt;
+	$c->color  = $dt->format('U') < time()
+		? 'danger'
+		: ( $dt->format('U') < time() - 3600  ? 'warning' : 'success' );
+	$c->status = Container::getInstance()->module("NewsletterCampaign")->getEntity()->parseStat($c);
+
+	return $c;
 }
 
 function index_parseStatus( $status ) {

@@ -13,7 +13,6 @@ class NewsletterCampaign extends Controller
     {
         $v2  = [];
         $v3  = [];
-        $tab = [];
 
         foreach( $content as $row )
         {
@@ -30,29 +29,7 @@ class NewsletterCampaign extends Controller
             }
         }
 
-        if ( ! empty( $v2 ) && ( EL_VERSION == 'v2' or ( EL_VERSION == 'v3' && defined('EL_TOKEN') && defined('EL_TOKEN_V3') ) ) )
-        {
-            sort( $v2 , SORT_NUMERIC );
-
-            $elv2 = new Easyletter('v2');
-            $tab = $elv2->stats($v2);
-        }
-
-        if ( ! empty( $v3 ) )
-        {
-            $elv3 = new Easyletter('v3');
-            $statsV3 = $elv3->stats( $v3 );
-
-            if ( $statsV3 )
-            {
-                foreach ( $statsV3 as $id => $stats )
-                {
-                    $tab[ $id ] = $stats;
-                }
-            }
-        }
-
-        $this->resultStats = $tab ;
+        $this->resultStats = $this->getV2Stats( $v2 ) + $this->getV3Stats( $v3 );
 
         return $content ;
     }
@@ -62,19 +39,7 @@ class NewsletterCampaign extends Controller
         if ( $content )
         {
             $content->stats = $this->resultStats[ $content->id_easyletter ] ;
-
-            if ( empty( $content->status_str ) )
-            {
-                $data = new Data('NewsletterCampaign');
-                $rst = $data->find( $content->id );
-
-                if ( $rst )
-                {
-                	$data->set( 'status_str' , $this->getStateValue($content->stats['state']) );
-                    $data->save();
-                }
-            }
-            $content->stats = $this->resultStats[ $content->id_easyletter ] ;
+            $content = $this->updateStatus($content);
         }
 
         return $content ;
@@ -361,5 +326,59 @@ class NewsletterCampaign extends Controller
 			case 11 : return 'cancel' ; // annulee
 			default : return null;
 		}
+	}
+
+	public function updateStatus( $content )
+	{
+		if ( empty( $content->status_str ) )
+		{
+			$data = new \App\Kernel\Common\Data('NewsletterCampaign');
+			$rst = $data->find( $content->id );
+
+			if ( $rst )
+			{
+				$data->set( 'status_str' , $this->getStateValue($content->stats['state']) );
+				$data->save();
+				$content->status_str = $data->get('status_str');
+			}
+		}
+
+		return $content;
+	}
+
+	public function getV2Stats( $list )
+	{
+		$rst = [];
+		if ( ! empty( $list ) && ( EL_VERSION == 'v2' or ( EL_VERSION == 'v3' && defined('EL_TOKEN') && defined('EL_TOKEN_V3') ) ) )
+		{
+			sort( $list , SORT_NUMERIC );
+
+			$elv2 = new Easyletter('v2');
+			$rst = $elv2->stats($list);
+		}
+
+		return is_array($rst)
+			? $rst
+			: [];
+	}
+
+	public function getV3Stats( $list )
+	{
+		$rst = [];
+		if ( ! empty( $list ) )
+		{
+			$elv3 = new Easyletter('v3');
+			$statsV3 = $elv3->stats( $list );
+
+			if ( $statsV3 )
+			{
+				foreach ( $statsV3 as $id => $stats )
+				{
+					$rst[ $id ] = $stats;
+				}
+			}
+		}
+
+		return $rst;
 	}
 }
