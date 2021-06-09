@@ -161,23 +161,20 @@ function index_getCampaigns()
 		}
 	}
 
-	if( $_GET['test'] == 1 ) {
-		$easyletterModule = Container::getInstance()->module("NewsletterCampaign");
-		$easyletterController = $easyletterModule->getController(true);
+	$easyletterModule = Container::getInstance()->module("NewsletterCampaign");
+	$easyletterController = $easyletterModule->getController(true);
 
-		$stats = $easyletterController->getV2Stats( $v['v2'] )
-			+ $easyletterController->getV3Stats( $v['v3'] );
+	$stats = $easyletterController->getV2Stats( $v['v2'] )
+		+ $easyletterController->getV3Stats( $v['v3'] );
 
-		foreach( $campaigns as $k => $content ) {
-			$content->stats = $stats[ $content->id_easyletter ];
-			$content = $easyletterController->updateStatus($content);
-			$content->status = $easyletterModule->getEntity()->parseStat( $content );
-			$campaigns[$k] = $content;
-		}
-
-		$rst['campaigns'] = $campaigns;
+	foreach( $campaigns as $k => $content ) {
+		$content->stats = $stats[ $content->id_easyletter ];
+		$content = $easyletterController->updateStatus($content);
+		$content->status = $easyletterModule->getEntity()->parseStat( $content );
+		$campaigns[$k] = $content;
 	}
 
+	$rst['campaigns'] = $campaigns;
 
 	return $rst;
 }
