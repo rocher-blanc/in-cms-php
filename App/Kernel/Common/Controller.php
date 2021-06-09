@@ -713,6 +713,7 @@ class Controller
 
         return [
             'condition'  => $condition,
+			'module'     => $this->getEntity()->getModuleName(),
             'field'      => $arrayField,
             'tabs'       => $shows['tabs'],
             'route_type' => ( $valueF == false ? 'add' : 'edit' ),
