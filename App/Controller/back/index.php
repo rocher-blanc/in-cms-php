@@ -49,10 +49,10 @@ $app->get('/', function () use ( $app ) {
                     {
                         $a = [
                             'title' => $entity->get( $entity->getUrlName() )->getTitle(),
-                            'name' => $row->module_name,
-                            'icon' => $row->module_icon,
+                            'name'  => $row->module_name,
+                            'icon'  => $row->module_icon,
                             'class' => $row->module_class_name,
-                            'tab' => $seo_module_one,
+                            'tab'   => $seo_module_one,
                         ];
 
                         $module[] = $a;
@@ -113,8 +113,9 @@ $app->get('/', function () use ( $app ) {
 function index_getCampaigns()
 {
 	$rst = [
-		'enabled'   => true,
+		'enabled'   => defined('EL_TOKEN') && strlen( trim( EL_TOKEN) ) > 0,
 		'campaigns' => [],
+		'credits'   => Container::getInstance()->param()->get('el_credits')
 	];
 
 	$v = [

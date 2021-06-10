@@ -762,5 +762,11 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"mandatory_tax_rate" => "Veuillez renseigner le taux de TVA",
 		"language_translate_create_default_users" => "Utilisateurs",
 		"language_translate_create_default_cart" => "Panier",
+		"index_campaigns_title" => "Campagnes easyletter planifiées",
+		"index_campaigns_detail" => "Récapitulatif de toutes nos campagnes de newsletter programmées ou présentant des erreurs d'envoi.",
+		"index_easydoor_credit_title" => "Crédits Easyletter",
+		"index_easydoor_credit_subtitle" => "Consultez le nombre de crédit easyletter qu'il vous reste",
+		"index_easydoor_credit_button" => "Demander des crédits",
+		"index_easydoor_credit_remain" => "crédits restant",
 	];
 }
