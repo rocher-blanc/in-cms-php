@@ -118,64 +118,66 @@ function index_getCampaigns()
 		'credits'   => Container::getInstance()->param()->get('el_credits')
 	];
 
-	$v = [
-		'v2' => [],
-		'v3' => [],
-	];
-	$campaigns = [];
+	if( defined('EL_TOKEN') && strlen( trim( EL_TOKEN) ) > 0 ) {
+		$v = [
+			'v2' => [],
+			'v3' => [],
+		];
+		$campaigns = [];
 
-	$now = new \DateTime();
+		$now = new \DateTime();
 
-	$req = \DB::for_table('mod_newslettercampaign')
-		->where_null( 'mod_newslettercampaign_status_str' )
-		->where_gte( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
-		->order_by_desc( 'mod_newslettercampaign_date' )
-		->find_many();
+		$req = \DB::for_table('mod_newslettercampaign')
+			->where_null( 'mod_newslettercampaign_status_str' )
+			->where_gte( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
+			->order_by_desc( 'mod_newslettercampaign_date' )
+			->find_many();
 
-	if( $req )
-	{
-		foreach( $req as $row )
+		if( $req )
 		{
-			if( ! empty( $row->mod_newslettercampaign_version ) )
+			foreach( $req as $row )
 			{
-				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+				if( ! empty( $row->mod_newslettercampaign_version ) )
+				{
+					$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+				}
+				$campaigns[] = index_parseCampaign($row);
 			}
-			$campaigns[] = index_parseCampaign($row);
 		}
-	}
 
-	$req = \DB::for_table('mod_newslettercampaign')
-		->where_null( 'mod_newslettercampaign_status_str' )
-		->where_lt( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
-		->order_by_asc( 'mod_newslettercampaign_date' )
-		->find_many();
+		$req = \DB::for_table('mod_newslettercampaign')
+			->where_null( 'mod_newslettercampaign_status_str' )
+			->where_lt( 'mod_newslettercampaign_date' , $now->format('Y-m-d H:i:s') )
+			->order_by_asc( 'mod_newslettercampaign_date' )
+			->find_many();
 
-	if( $req )
-	{
-		foreach( $req as $row )
+		if( $req )
 		{
-			if( ! empty( $row->mod_newslettercampaign_version ) )
+			foreach( $req as $row )
 			{
-				$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+				if( ! empty( $row->mod_newslettercampaign_version ) )
+				{
+					$v[$row->mod_newslettercampaign_version][] = $row->mod_newslettercampaign_id_easyletter;
+				}
+				$campaigns[] = index_parseCampaign($row);
 			}
-			$campaigns[] = index_parseCampaign($row);
 		}
+
+		$easyletterModule = Container::getInstance()->module("NewsletterCampaign");
+		$easyletterController = $easyletterModule->getController(true);
+
+		$stats = $easyletterController->getV2Stats( $v['v2'] )
+			+ $easyletterController->getV3Stats( $v['v3'] );
+
+		foreach( $campaigns as $k => $content ) {
+			$content->stats = $stats[ $content->id_easyletter ];
+			$content = $easyletterController->updateStatus($content);
+			$content->status = $easyletterModule->getEntity()->parseStat( $content );
+			$campaigns[$k] = $content;
+		}
+
+		$rst['campaigns'] = $campaigns;
 	}
-
-	$easyletterModule = Container::getInstance()->module("NewsletterCampaign");
-	$easyletterController = $easyletterModule->getController(true);
-
-	$stats = $easyletterController->getV2Stats( $v['v2'] )
-		+ $easyletterController->getV3Stats( $v['v3'] );
-
-	foreach( $campaigns as $k => $content ) {
-		$content->stats = $stats[ $content->id_easyletter ];
-		$content = $easyletterController->updateStatus($content);
-		$content->status = $easyletterModule->getEntity()->parseStat( $content );
-		$campaigns[$k] = $content;
-	}
-
-	$rst['campaigns'] = $campaigns;
 
 	return $rst;
 }
