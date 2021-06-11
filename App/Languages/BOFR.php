@@ -768,5 +768,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"index_easydoor_credit_subtitle" => "Consultez le nombre de crédit easyletter qu'il vous reste",
 		"index_easydoor_credit_button" => "Demander des crédits",
 		"index_easydoor_credit_remain" => "crédits restant",
+		"export_product" => "Export produits",
+		"export_turnover" => "Export CA",
 	];
 }
