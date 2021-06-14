@@ -31,11 +31,11 @@ class NewsletterCampaign extends Builder
         }
 
         $this->addIcon( 'icon-bar-chart' , 'stats' , function($c) {
-            return $c->id_easyletter !== NULL && ( ( $c->version == 'v2' && $c->stats['state'] == 10 ) or ( $c->version == 'v3' && $c->stats['state'] == 'sent' ) ) ? true : false ;
+        	return $c->status_str == 'sent';
         });
 
         $this->addIcon( 'icon-line-square-cross' , 'cancel' , function($c) {
-            return $c->id_easyletter !== NULL && ( ( $c->version == 'v2' && $c->stats['state'] < 9 ) or ( $c->version == 'v3' && $c->stats['state'] == 'queued' ) ) ? true : false ;
+			return $c->status_str != 'sent';
         } , 'ajax');
 
         $this->addIcon( 'icon-reload' , 'reload' , function($c) {
