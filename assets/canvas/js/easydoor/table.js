@@ -1,5 +1,7 @@
 $(function() {
     tableCustomization();
+
+    initExportButton();
 });
 
 tableCustomization = function() {
@@ -467,3 +469,28 @@ reloadTable = function( $form , base ) {
         });
     }
 };
+
+initExportButton = function() {
+    $("[data-export-btn]").on("click", function() {
+        var $btn = $("[data-export-btn]");
+
+        var filters = $('.tableFormSearch').serializeArray();
+        for( let i in filters ) {
+            switch( filters[i].name ) {
+                case "elmt_per_page" :
+                    filters[i].value = 'all';
+            }
+        }
+
+        var url = $btn.attr('href').split('?')[0] + '?' + $.param(filters);
+
+        var a   = document.createElement('a');
+        a.href = url;
+        document.body.append(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        return false;
+    });
+}
