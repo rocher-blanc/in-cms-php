@@ -726,21 +726,53 @@ checkEditor = function(base) {
             });
         });
 
-        $(window).on("scroll", function() {
-            $(".note-editor").each(function(index, el) {
-                var $field      = $(el);
-                var fieldTop    = $field.offset().top;
-                var fieldBottom = fieldTop + $field.outerHeight();
-                var scrollTop   = $(window).scrollTop();
+        var isModal         = $(base).parent().hasClass('mfp-content') ;
 
-                if( scrollTop > fieldTop && scrollTop < fieldBottom ) {
-                    if( ! $field.hasClass("fixed") ) $field.addClass("fixed");
-                }
-                else {
-                    if( $field.hasClass("fixed") ) $field.removeClass("fixed");
-                }
+        if( isModal ) {
+            $( $('.mfp-wrap') ).on("scroll", function() {
+                $(".mfp-wrap .note-editor").each(function(index, el) {
+                    var $field      = $(el);
+                    var fieldTop    = $field.offset().top;
+                    var fieldBottom = fieldTop + $field.outerHeight();
+
+                    if( fieldTop <= 0 && fieldBottom >= 0 ) {
+                        if( ! $field.hasClass("fixed") )
+                            $field
+                                .addClass("fixed")
+                                .find('.note-toolbar')
+                                .css('top', 0)
+                                .css('left', $field.offset().left)
+                                .css('width', $field.width());
+                    }
+                    else {
+                        if( $field.hasClass("fixed") ) $field.removeClass("fixed");
+                    }
+                });
             });
-        });
+        }
+        else {
+            $( window ).on("scroll", function() {
+                $(".note-editor").each(function(index, el) {
+                    var $field      = $(el);
+                    var fieldTop    = $field.offset().top;
+                    var fieldBottom = fieldTop + $field.outerHeight();
+                    var scrollTop   = $(window).scrollTop();
+
+                    if( scrollTop > fieldTop && scrollTop < fieldBottom ) {
+                        if( ! $field.hasClass("fixed") )
+                            $field
+                                .addClass("fixed")
+                                .find('.note-toolbar')
+                                .css('left', $field.offset().left)
+                                .css('width', $field.width());
+                    }
+                    else {
+                        if( $field.hasClass("fixed") ) $field.removeClass("fixed");
+                    }
+                });
+            });
+        }
+
     }
 };
 
