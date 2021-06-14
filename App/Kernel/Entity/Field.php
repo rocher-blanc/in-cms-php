@@ -554,7 +554,7 @@ class Field
 
 		if ( is_callable( $rst ) )
 		{
-			$this->setValue( $rst( $this->getValue( $idlang ) ) );
+			$this->setValue( $rst( $this->getValue( $idlang ) ) , $idlang );
 		}
 	}
 
@@ -763,7 +763,7 @@ class Field
 				}
 				else
 				{
-					$this->transform( $lang->id );
+					$this->transform( $lang->locale );
 				}
 			}
 		}
