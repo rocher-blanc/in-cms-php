@@ -26,7 +26,7 @@
     {% if hasOrder and right.edit == true %}<script src="{{ asset('libs/jquery.tablednd.js') }}"></script>{% endif %}
     <script>
         $(function() {
-            listenFormTable("table-content-{{ mod.name }}");
+            listenFormTable("table-content-{{ mod.name }}", true);
         });
     </script>
 {% endblock %}
