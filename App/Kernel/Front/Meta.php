@@ -146,6 +146,7 @@ class Meta
                 'linkedin'       => $this->exist( "md_linkedin" , $md ),
                 'pinterest'      => $this->exist( "md_pinterest" , $md ),
                 'sameAs'         => $sameAs,
+                'email'          => $this->exist( "md_email" , $md ),
                 'phone'          => $this->exist( "md_phone" , $md ),
                 'address'        => $this->exist( "md_address" , $md ),
                 'zip'            => $this->exist( "md_zip" , $md ),

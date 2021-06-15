@@ -89,11 +89,15 @@
 
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="ed_field col_one_fourth">
+            <div class="ed_field col_half">
+                <label>{{ _('email')}}</label>
+                <input type="email" name="md_email" class="form-control" value="{{ post.md_email }}" />
+            </div>
+            <div class="ed_field col_half col_last">
                 <label>{{ _('phone')}}</label>
                 <input type="text" name="md_phone" class="form-control" value="{{ post.md_phone }}" />
             </div>
-            <div class="ed_field col_one_fourth">
+            <div class="ed_field col_half">
                 <label>{{ _('address')}}</label>
                 <input type="text" name="md_address" class="form-control" value="{{ post.md_address }}" />
             </div>
