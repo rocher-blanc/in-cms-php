@@ -658,7 +658,7 @@ checkEditor = function(base) {
                 toolbar:
                     [
                     ['hx', ['style']],
-                        ['style', ['bold', 'italic', 'underline']],
+                        ['style', ['bold', 'italic', 'underline', 'color']],
                         ['fontsize', ['fontsize']],
                         ['clear', ['clear']],
                         ['para', ['ul', 'ol', 'paragraph']],
