@@ -309,7 +309,7 @@ class Easyletter
         return false ;
     }
 
-    public function newsletter( int $idNewsletter )
+    public function newsletter( int $idNewsletter , $url_recipient = null , $url_content = null )
     {
         $NL = new Data('NewsletterCampaign');
         $NL->find( $idNewsletter );
@@ -336,8 +336,8 @@ class Easyletter
             'senderEmail' => $Sender->get('email'),
             'returnPathEmail' => $Sender->get('email_response'),
 
-            'recipient' => Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id'),
-            'content' => Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template'),
+            'recipient' => ( $url_recipient === null ? Http::getInstance()->getUrl() . "/email/newsletter/recipient/" . $NL->get('id') : $url_recipient ),
+            'content' => ( $url_content === null ? Http::getInstance()->getUrl() . "/email/newsletter/template/" . $NL->get('template') : $url_content ),
         ];
 
         $response = $this->request( $params );
