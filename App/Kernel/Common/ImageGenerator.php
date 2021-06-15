@@ -101,20 +101,25 @@ class ImageGenerator
 			$path         = IMAGE_PATH . '/' . $this->folder . '/' ;
 			$originalPath = $path . $this->originalName ;
 
-			$oldImg = ( new SimpleImage() )->fromFile( $originalPath );
+			if( file_exists($originalPath) )
+			{
+				$oldImg = ( new SimpleImage() )->fromFile( $originalPath );
 
-			list( $outputSuffix , $img ) = $this->dispatchProcessing( $type , $oldImg , $width , $height );
+				list( $outputSuffix , $img ) = $this->dispatchProcessing( $type , $oldImg , $width , $height );
 
-			$output     = $this->updateName( $this->originalName , $outputSuffix ) ;
-			$outputPath = $path . trim($dir, "/") . "/" . trim($output, "/") ;
-			$this->beforeSaveImage( $path , $dir , $outputPath );
-			$img->toFile($outputPath);
+				$output     = $this->updateName( $this->originalName , $outputSuffix ) ;
+				$outputPath = $path . trim($dir, "/") . "/" . trim($output, "/") ;
+				$this->beforeSaveImage( $path , $dir , $outputPath );
+				$img->toFile($outputPath);
 
-			return $output ;
-
-		} catch( Exception $e ) {
+				return $output ;
+			}
+		}
+		catch( Exception $e ) {
 			echo 'Error: ' . $e->getMessage();
 		}
+
+		return false;
 	}
 
 	private function dispatchProcessing( $type , $oldImg , $width , $height ) {
