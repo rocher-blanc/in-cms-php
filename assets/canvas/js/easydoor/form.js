@@ -659,8 +659,9 @@ checkEditor = function(base) {
                     [
                     ['hx', ['style']],
                         ['style', ['bold', 'italic', 'underline']],
+                        ['fontsize', ['fontsize']],
                         ['clear', ['clear']],
-                        ['para', ['ul', 'ol']],
+                        ['para', ['ul', 'ol', 'paragraph']],
                         ['insert', ['link', 'picture']],
                         ['view', ['fullscreen', 'codeview']],
                         ['misc', ['print']],
