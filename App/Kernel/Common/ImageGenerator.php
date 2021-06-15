@@ -90,7 +90,7 @@ class ImageGenerator
 		if ( $addStr != "" ) $addStr = "-" . $addStr ;
 
 		$name = substr( $name , 0 , $extlen ) ;
-		$name = Factory::getInstance()->Url()->encode( $name . $addStr ) . "." . $ext ;
+		$name = $name . $addStr . "." . $ext ;
 
 		return $name ;
 	}
