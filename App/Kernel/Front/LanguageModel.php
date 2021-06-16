@@ -6,7 +6,11 @@ use App\Kernel\Factory;
 
 abstract class LanguageModel
 {
-	private static $autoAddingExcluded = null;
+	private static $autoAddingExcluded = [
+		'content',
+		'email',
+		'on_line'
+	];
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
