@@ -769,8 +769,8 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"index_easydoor_credit_button" => "Demander des crédits",
 		"index_easydoor_credit_remain" => "crédit(s) restant(s)",
 		"index_easydoor_indexed" => "Indexation",
-		"index_easydoor_www" => "Forçage WWW",
-		"index_easydoor_https" => "Forçage HTTPS",
+		"index_easydoor_www" => "Forcer WWW",
+		"index_easydoor_https" => "Forcer HTTPS",
 		"export_product" => "Export produits",
 		"export_turnover" => "Export CA",
 	];
