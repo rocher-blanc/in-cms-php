@@ -4,17 +4,21 @@ namespace App\Kernel\Common;
 
 use App\Kernel\Exception;
 use App\Kernel\Factory;
+use App\Kernel\Http;
 use claviska\SimpleImage;
+use Slim\Slim;
 
 class ImageGenerator
 {
 	private $folder;
 	private $originalName;
+	private $isGallery;
 
-	public function __construct( $folder , $originalName )
+	public function __construct( $folder , $originalName , $isGallery = false )
 	{
 		$this->folder       = $folder;
 		$this->originalName = $originalName;
+		$this->isGallery    = $isGallery;
 	}
 
 	public function genImages( $field )
@@ -93,6 +97,97 @@ class ImageGenerator
 		$name = $name . $addStr . "." . $ext ;
 
 		return $name ;
+	}
+
+	public function getImages( $field, $path )
+	{
+		$rst  = [];
+		$path = trim( $path , "/" );
+
+		$rst['source']  = $path . '/' . $this->originalName;
+		$rst['100x100'] = $path . '/' . $this->getThumbnailName( 100 , 100 , "t" );
+
+		if ( $field->hasThumb() )
+		{
+			$rst['thumb'] = [];
+			foreach( $field->getThumb() as $thumb )
+			{
+				$img = $this->getImagePath( "t" , $thumb[0] , $thumb[1] );
+				if( $this->isGallery )  $rst[$thumb[0].'x'.$thumb[1]]          = $img;
+				else                    $rst['thumb'][$thumb[0].'x'.$thumb[1]] = $img;
+			}
+		}
+
+		if ( $field->hasCover() )
+		{
+			foreach( $field->getCover() as $cover )
+			{
+				$img = $this->getImagePath( "t" , $cover[0] , $cover[1] );
+				if( $this->isGallery )  $rst[$cover[0].'x'.$cover[1]]          = $img ;
+				else                    $rst['thumb'][$cover[0].'x'.$cover[1]] = $img ;
+			}
+		}
+
+		if ( $field->hasWidth() )
+		{
+			foreach( $field->getWidth() as $width )
+			{
+				$img = $this->getImagePath( "w" , $width , NULL );
+				if( $this->isGallery )  $rst['w'.$width]      = $img ;
+				else                    $rst['width'][$width] = $img ;
+			}
+		}
+
+		if ( $field->hasHeight() )
+		{
+			foreach( $field->getHeight() as $height )
+			{
+				$img = $this->getImagePath( "h" , NULL , $height );
+				if( $this->isGallery )  $rst['h'.$height]       = $img ;
+				else                    $rst['height'][$height] = $img ;
+			}
+		}
+
+		return $rst;
+	}
+
+	protected function getThumbnailName( $width , $height = false , $folder = "t" )
+	{
+		$exp 	= explode( "." , $this->originalName ) ;
+		$ext 	= end( $exp ) ;
+		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
+		$name   = substr( $this->originalName , 0 , $extlen ) ;
+
+		if ( empty( $name ) ) return false ;
+
+		return $height
+			? $folder . '/' . $name . "-" . $width . "x" . $height . "." . $ext
+			: $folder . '/' . $name . "-" . $width . "." . $ext ;
+	}
+
+	protected function getImagePath( $type , $w , $h )
+	{
+		$mini = $this->getThumbnailName( $w , $h , $type );
+		if ( $mini !== false )
+		{
+			$img  = trim( $this->folder . '/' . $mini , "/" );
+			$mini = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . "/" . $img ;
+		}
+
+		$path = WEB_PATH . "/" . $img;
+		if( ! file_exists($path) )
+		{
+			switch( $type )
+			{
+				case "t" : $fullType = "cover" ; break;
+				case "w" : $fullType = "width" ; break;
+				case "h" : $fullType = "height"; break;
+				default  : $fullType = "cover" ; break;
+			}
+			$this->genImage( $type , $w , $h , $fullType ) ;
+		}
+
+		return $mini ;
 	}
 
 	public function genImage( $dir , $width , $height , $type )
