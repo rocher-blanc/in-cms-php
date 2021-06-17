@@ -39,15 +39,33 @@
             },
             {
                 icon : cdn == ''
-                ? 'icon-line-server'
-                : ( debug ? 'icon-line-server' : 'icon-line2-check' ),
+                    ? 'icon-line-server'
+                    : ( debug ? 'icon-line-server' : 'icon-line2-check' ),
                 label: _('index_easydoor_host_title'),
                 value: cdn == ''
-                ? _('index_easydoor_host_none')
-                : ( debug ? _('disable_m') : _('activated_m') ),
+                    ? _('index_easydoor_host_none')
+                    : ( debug ? _('disable_m') : _('activated_m') ),
                 color: cdn == ''
-                ? 'danger'
-                : ( debug ? 'danger' : 'success' )
+                    ? 'danger'
+                    : ( debug ? 'danger' : 'success' )
+            },
+            {
+                icon : params.robots ? 'icon-line2-check' : 'icon-line-cross',
+                label: _('index_easydoor_indexed'),
+                value: params.robots ? 'Oui' : 'Non',
+                color: params.robots ? 'success' : 'danger'
+            },
+            {
+                icon : params.www ? 'icon-globe' : 'icon-line-cross',
+                label: _('index_easydoor_www'),
+                value: params.www ? 'Oui' : 'Non',
+                color: params.www ? 'success' : 'danger'
+            },
+            {
+                icon : params.ssl ? 'icon-lock' : 'icon-line-cross',
+                label: _('index_easydoor_https'),
+                value: params.ssl ? 'Oui' : 'Non',
+                color: params.ssl ? 'success' : 'danger'
             },
             {
                 icon : 'icon-screen',
@@ -70,10 +88,13 @@
         <div class="row" style="padding-left: 30px;">
             {% for item in items %}
                 {% if loop.index == 1 %}
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                 {% elseif loop.index == 4 %}
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-3">
+                {% elseif loop.index == 7 %}
+                    </div>
+                    <div class="col-md-6">
                 {% endif %}
                 <div class="row" style="{% if not loop.last and loop.index != 3 and false %}border-bottom:1px #E5E5E5 solid; {% endif %}padding:3px 0 5px;">
                     <div class="col-xs-12">
@@ -110,7 +131,6 @@
                 <div style="font-size:32px;font-weight:900;color:#235784;margin-top:30px;">{{ campaigns.credits | number_format(0, ',', ' ')}}</div>
                 <div style="font-size:17px;font-weight:700;color:#235784;margin-top:-6px;margin-bottom:20px;">{{ _('index_easydoor_credit_remain') }}</div>
 
-
                 <a href="mailto:support@29ter.fr?subject=Demande crédits easyletter"
                    class="button button-rounded button-reveal button-large"
                 >
@@ -123,6 +143,7 @@
     <div class="divider"><i class="icon-circle"></i></div>
 
     <div class="row">
+
         <div class="col-md-6 title-alone">
 
             <div class="title-block">
@@ -248,6 +269,7 @@
             </div>
 
         </div>
+
         {% if campaigns.enabled %}
             <div class="col-md-6 title-alone">
 
@@ -285,6 +307,7 @@
 
             </div>
         {% endif %}
+
     </div>
 
 {% endblock %}

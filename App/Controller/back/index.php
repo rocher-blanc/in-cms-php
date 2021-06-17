@@ -5,6 +5,9 @@ use App\Api\Easyletter;
 use App\Kernel\Container;
 
 $app->get('/', function () use ( $app ) {
+
+	$param = new \App\Kernel\Param();
+
     $json = \App\Kernel\Factory::getInstance()->File()->read( APPLICATION_PATH . '/../composer.json');
     $json = json_decode( $json ) ;
 
@@ -98,6 +101,11 @@ $app->get('/', function () use ( $app ) {
         "version" => $json->version,
         "debug" => DEBUG_CMS,
         "maintenance" => Container::getInstance()->param()->get('maintenance_active'),
+        'params' => [
+        	'www'    => $param->get('seo_www'),
+        	'ssl'    => $param->get('seo_ssl'),
+        	'robots' => $param->get('seo_robots'),
+		],
         "seo" => [
             "page"       => $seo_page,
             "module"     => $seo_module,
