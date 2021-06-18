@@ -1610,7 +1610,7 @@ class Builder extends Model
         $this->field()->setData( "SQL_TYPE" , "DATE" . ( $hour ? "TIME" : "" ) ) ;
         $this->field()->setData( "type" , "date" ) ;
         $this->field()->setData( "hour" , $hour ) ;
-        $this->field()->setData( "old" , $old ) ;
+//        $this->field()->setData( "old" , $old ) ;
         return $this ;
     }
 
