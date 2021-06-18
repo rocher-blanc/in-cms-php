@@ -88,14 +88,14 @@ class Repository extends \App\Kernel\Common\Repository
 	public function findNextElement( $currentId )
 	{
 		return $this->getKit()
-			->where_gte( $this->getEntity()->get('id')->getColumn() , $currentId )
+			->where_gt( $this->getEntity()->get('id')->getColumn() , $currentId )
 			->find_one();
 	}
 
 	public function findPrevElement( $currentId )
 	{
 		return $this->getKit()
-			->where_lte( $this->getEntity()->get('id')->getColumn() , $currentId )
+			->where_lt( $this->getEntity()->get('id')->getColumn() , $currentId )
 			->order_by_desc( $this->getEntity()->get('id')->getColumn() )
 			->find_one();
 	}
