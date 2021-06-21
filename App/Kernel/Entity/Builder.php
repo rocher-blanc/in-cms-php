@@ -1926,6 +1926,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function uniq()
+	{
+		$this->field()->setData( "uniq" , true );
+		return $this;
+	}
+
     protected function showIf( callable $result )
     {
         $this->field()->setData( "showIf" , $result ) ;

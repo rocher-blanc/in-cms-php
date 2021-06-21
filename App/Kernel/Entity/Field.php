@@ -240,6 +240,11 @@ class Field
 		}
 	}
 
+	public function isUniq()
+	{
+		return (bool)( $this->getData('uniq') );
+	}
+
 	public function isFormated( $lang = NULL )
 	{
 		if ( is_callable( $this->getData('formated') ) )

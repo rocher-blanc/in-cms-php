@@ -776,6 +776,11 @@ class Controller
             {
                 if ( ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' ) && $this->checkCustomField( $row ) )
                 {
+//                	if( $row->isUniq() )
+//					{
+//						$this->checkUniq( $row );
+//					}
+
                     if ( $row->getType() == 'gallery' )
                     {
                         $this->field( $row->getName() )->setData( "id" , $this->getId() ) ;
@@ -806,6 +811,24 @@ class Controller
     {
         return $this->getEntity()->build( $name )->field() ;
     }
+
+//    protected function checkUniq( $field )
+//	{
+//		if( $this->getEntity()->hasMultilang() )
+//		{
+//			$data = new \App\Kernel\Common\Data( $this->getEntity()->getModuleName() );
+//
+//			if ( $field->hasLang() )
+//			{
+//				foreach( $this->Lang()->getAll() as $lang )
+//				{
+//					$value = $this->getApp()->request->post( $field->getColumn() . "_" . $lang->url );
+//					$data->find( [ $field->getName() => $value ] , $lang->url );
+//					dd( $data );
+//				}
+//			}
+//		}
+//	}
 
     /* ***************************************************** */
     /* ******************     HOOK      ******************** */
