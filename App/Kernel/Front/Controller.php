@@ -537,7 +537,6 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-
     protected function getImagePath( $media , $path , $type , $w , $h )
 	{
 		$mini = $media->getMini( $media->getImageName() , $type , $w , $h ) ;
