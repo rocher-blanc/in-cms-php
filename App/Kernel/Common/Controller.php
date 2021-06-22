@@ -776,10 +776,10 @@ class Controller
             {
                 if ( ( $arrayShow['fields'][ $row->getName() ]['show'] == true or $row->getType() == 'hidden' ) && $this->checkCustomField( $row ) )
                 {
-//                	if( $row->isUniq() )
-//					{
-//						$this->checkUniq( $row );
-//					}
+                	if( $row->isUniq() )
+					{
+						$this->checkUniq( $row );
+					}
 
                     if ( $row->getType() == 'gallery' )
                     {
@@ -812,23 +812,45 @@ class Controller
         return $this->getEntity()->build( $name )->field() ;
     }
 
-//    protected function checkUniq( $field )
-//	{
-//		if( $this->getEntity()->hasMultilang() )
-//		{
-//			$data = new \App\Kernel\Common\Data( $this->getEntity()->getModuleName() );
-//
-//			if ( $field->hasLang() )
-//			{
-//				foreach( $this->Lang()->getAll() as $lang )
-//				{
-//					$value = $this->getApp()->request->post( $field->getColumn() . "_" . $lang->url );
-//					$data->find( [ $field->getName() => $value ] , $lang->url );
-//					dd( $data );
-//				}
-//			}
-//		}
-//	}
+    protected function checkUniq( $field )
+	{
+		$elementId  = $this->getApp()->request->post('id_element');
+		$moduleName = $this->getEntity()->getModuleName();
+
+		if( $this->getEntity()->hasMultilang() )
+		{
+			if ( $field->hasLang() )
+			{
+				foreach( $this->Lang()->getAll() as $lang )
+				{
+					// Récupération de la valeur du champ
+					$value = trim( $this->getApp()->request->post( $field->getColumn() . "_" . $lang->url ) );
+
+					// Préparation de la requête qui vérifie le doublon
+					$prep = \DB::for_module_lang( $moduleName )
+						->where_equal( $field->fieldSql() , $value )						//
+						->where_equal( \DB::getLangIdLangName( $moduleName ) , $lang->id );
+
+					if( $elementId > 0 )
+					{
+						$prep->where_not_equal( \DB::getIdName( $moduleName ) , $elementId );
+					}
+
+					$req = $prep->count();
+					if( $req > 0 )
+					{
+						return true;
+					}
+				}
+			}
+			else
+			{
+				$value = trim( $this->getApp()->request->post( $field->getColumn() ) );
+
+				// TODO : finir
+			}
+		}
+	}
 
     /* ***************************************************** */
     /* ******************     HOOK      ******************** */
