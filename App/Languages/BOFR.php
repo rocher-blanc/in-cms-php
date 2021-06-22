@@ -773,5 +773,6 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"index_easydoor_https" => "Forcer HTTPS",
 		"export_product" => "Export produits",
 		"export_turnover" => "Export CA",
+		"not_uniq_email" => "L'adresse e-mail est déjà enregistrée",
 	];
 }

@@ -938,6 +938,30 @@ class Controller extends ControllerCommon
             if ( $noCheck ) $check = true ;
             else			$check = $this->checkForm() ;
 
+			if( $noCheck )
+			{
+				// TODO : gestion des listes
+				foreach( $this->getEntity()->getField() as $field )
+				{
+					if( $field->isUniq() )
+					{
+						if( $field->hasLang() )
+						{
+							// TODO : Langues
+//							foreach( $this->Lang()->getAll() as $lang )
+//							{
+//								$result = $this->checkUniq_Lang( $field , $field->getValue() , $lang );
+//								if( ! $result ) $check = $result;
+//							}
+						}
+						else
+						{
+							$check = $this->checkUniq_Common( $field , $field->getValue() );
+						}
+					}
+				}
+			}
+
             if ( $check )
             {
                 if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
@@ -1918,7 +1942,7 @@ class Controller extends ControllerCommon
                             $a[ $field->getName() ] = $field->getValue();
                         }
 
-                        $this->pushData(true , true );
+                        $this->pushData( true , true );
                         $this->setId(NULL);
 
 						foreach( $this->getEntity()->getField() as $field )
