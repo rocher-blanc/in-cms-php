@@ -778,7 +778,11 @@ class Controller
                 {
                 	if( $row->isUniq() )
 					{
-						$this->checkUniq( $row );
+						if( ! $this->checkUniq( $row ) )
+						{
+							$row->setError( $row->getData('notUniq_msg') ) ;
+							$this->_return = false ;
+						}
 					}
 
                     if ( $row->getType() == 'gallery' )
@@ -828,27 +832,47 @@ class Controller
 
 					// Préparation de la requête qui vérifie le doublon
 					$prep = \DB::for_module_lang( $moduleName )
-						->where_equal( $field->fieldSql() , $value )						//
-						->where_equal( \DB::getLangIdLangName( $moduleName ) , $lang->id );
+						->where_equal( $field->fieldSql() , $value )						// Recherche du champ
+						->where_equal( \DB::getLangIdLangName( $moduleName ) , $lang->id ); // Langue
 
+					// Si édition : exclusion du champ actuel
 					if( $elementId > 0 )
 					{
-						$prep->where_not_equal( \DB::getIdName( $moduleName ) , $elementId );
+						$prep->where_not_equal( \DB::getTableNameLang( $moduleName ) . '_' . \DB::getIdName( $moduleName ) , $elementId );
 					}
 
+					// Comptage du nombre d'éléments identiques
 					$req = $prep->count();
 					if( $req > 0 )
 					{
-						return true;
+						return false;
 					}
 				}
 			}
 			else
 			{
+				// Récupération de la valeur du champ
 				$value = trim( $this->getApp()->request->post( $field->getColumn() ) );
 
-				// TODO : finir
+				// Préparation de la requête qui vérifie le doublon
+				$prep = \DB::for_module_lang( $moduleName )
+					->where_equal( $field->fieldSql() , $value ); // Recherche du champ
+
+				// Si édition : exclusion du champ actuel
+				if( $elementId > 0 )
+				{
+					$prep->where_not_equal( \DB::getIdName( $moduleName ) , $elementId );
+				}
+
+				// Comptage du nombre d'éléments identiques
+				$req = $prep->count();
+				if( $req > 0 )
+				{
+					return false;
+				}
 			}
+
+			return true;
 		}
 	}
 

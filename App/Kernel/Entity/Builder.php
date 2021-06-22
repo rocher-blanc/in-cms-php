@@ -1926,12 +1926,6 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function uniq()
-	{
-		$this->field()->setData( "uniq" , true );
-		return $this;
-	}
-
     protected function showIf( callable $result )
     {
         $this->field()->setData( "showIf" , $result ) ;
@@ -2065,12 +2059,19 @@ class Builder extends Model
         return $this ;
     }
 
-    protected function notEmpty( $t = "" , $traduction = false )
+    protected function notEmpty( $t = "" , $translation = false )
     {
-        $this->field()->setData( "notEmpty_msg" , $traduction ? \App\Kernel\Front\Translate::getInstance()->getText( $t ) : $t ) ;
+        $this->field()->setData( "notEmpty_msg" , $translation ? \App\Kernel\Front\Translate::getInstance()->getText( $t ) : $t ) ;
         $this->field()->setData( "notEmpty" , true ) ;
         return $this ;
     }
+
+	protected function uniq( $t = "" , $translation = false )
+	{
+		$this->field()->setData( "notUniq_msg" , $translation ? \App\Kernel\Front\Translate::getInstance()->getText( $t ) : $t ) ;
+		$this->field()->setData( "uniq" , true );
+		return $this;
+	}
 
     protected function editor()
     {
