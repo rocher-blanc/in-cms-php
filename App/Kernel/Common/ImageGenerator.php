@@ -122,6 +122,7 @@ class ImageGenerator
 		{
 			foreach( $field->getCover() as $cover )
 			{
+
 				$img = $this->getImagePath( "t" , $cover[0] , $cover[1] );
 				if( $this->isGallery )  $rst[$cover[0].'x'.$cover[1]]          = $img ;
 				else                    $rst['thumb'][$cover[0].'x'.$cover[1]] = $img ;
@@ -174,7 +175,7 @@ class ImageGenerator
 			$mini = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . "/" . $img ;
 		}
 
-		$path = WEB_PATH . "/" . $img;
+		$path = IMAGE_PATH . "/" . $img;
 		if( ! file_exists($path) )
 		{
 			switch( $type )

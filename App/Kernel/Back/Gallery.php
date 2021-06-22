@@ -172,8 +172,6 @@ class Gallery extends \App\Kernel\Common\Gallery
 				$generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
 				$generator->genImage( "t" , 100 , 100 , "thumb" ) ;
 				$generator->genImages( $this );
-//                $this->genThumb( 100 , 100 );
-//                $this->genImages();
 
                 $gallery = \DB::for_table('gallery')->create();
                 $gallery->gallery_name = $this->getImageName();
@@ -204,39 +202,9 @@ class Gallery extends \App\Kernel\Common\Gallery
 
     public function genImages()
 	{
-		$this->genThumb( 100 , 100 );
-
-		if ( ! empty( $this->getThumb() ) )
-		{
-			foreach( $this->getThumb() as $thb )
-			{
-				$this->genThumb( $thb['w'] , $thb['h'] );
-			}
-		}
-
-		if ( ! empty( $this->getCover() ) )
-		{
-			foreach( $this->getCover() as $cover )
-			{
-				$this->genCover( $cover['w'] , $cover['h'] );
-			}
-		}
-
-		if ( ! empty( $this->getWidth() ) )
-		{
-			foreach( $this->getWidth() as $width )
-			{
-				$this->genWidth( $width['w'] );
-			}
-		}
-
-		if ( ! empty( $this->getHeight() ) )
-		{
-			foreach( $this->getHeight() as $height )
-			{
-				$this->genHeight( $height['h'] );
-			}
-		}
+		$generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
+		$generator->genImage( "t" , 100 , 100 , "thumb" ) ;
+		$generator->genImages( $this );
 	}
 
     public function duplicate( $id )

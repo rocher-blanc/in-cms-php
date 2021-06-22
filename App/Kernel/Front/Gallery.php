@@ -38,11 +38,11 @@ class Gallery extends \App\Kernel\Common\Gallery
 
         $tab = [];
 
-        $field = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity()->get( $this->getField() );
-        $path  = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' ;
-
         if ( $rst )
         {
+			$field = \App\Kernel\Container::getInstance()->module( $this->getModuleName() )->getEntity()->get( $this->getField() );
+			$path  = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . '/' . $this->getFolder() . '/' ;
+
             foreach( $rst as $row )
             {
             	$generator = new ImageGenerator( $field->getEntityName() , $row->gallery_name , true );
