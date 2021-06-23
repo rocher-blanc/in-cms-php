@@ -837,7 +837,7 @@ class Controller
 		return true;
 	}
 
-	protected function checkUniq_Common( $field , $value )
+	protected function checkUniq_PrepareRequest( $field , $value)
 	{
 		$elementId  = $this->getApp()->request->post('id_element');
 		$moduleName = $this->getEntity()->getModuleName();
@@ -852,29 +852,33 @@ class Controller
 			$prep->where_not_equal( \DB::getIdName( $moduleName ) , $elementId );
 		}
 
-		// Comptage du nombre d'éléments identiques
-		$req = $prep->count();
+		// Parents
+		if( count( $this->getIdParent() ) > 0 )
+		{
+			$prep->where_equal( \DB::getColumnName('element_module_parent_id', $moduleName) , end( $this->getIdParent() ) );
+		}
+
+		// TODO : Gestion unique pour les dépendances
+
+		return $prep;
+	}
+
+	protected function checkUniq_Common( $field , $value )
+	{
+		$req = $this->checkUniq_PrepareRequest( $field , $value )
+			->count();
+
 		return $req == 0 ;
 	}
 
 	protected function checkUniq_Lang( $field , $value , $lang )
 	{
-		$elementId  = $this->getApp()->request->post('id_element');
 		$moduleName = $this->getEntity()->getModuleName();
 
-		// Préparation de la requête qui vérifie le doublon
-		$prep = \DB::for_module_lang( $moduleName )
-			->where_equal( $field->fieldSql() , $value )						// Recherche du champ
-			->where_equal( \DB::getLangIdLangName( $moduleName ) , $lang->id ); // Langue
+		$req = $this->checkUniq_PrepareRequest( $field , $value )
+			->where_equal( \DB::getLangIdLangName( $moduleName ) , $lang->id ) // Langue
+			->count();
 
-		// Si édition : exclusion du champ actuel
-		if( $elementId > 0 )
-		{
-			$prep->where_not_equal( \DB::getTableNameLang( $moduleName ) . '_' . \DB::getIdName( $moduleName ) , $elementId );
-		}
-
-		// Comptage du nombre d'éléments identiques
-		$req = $prep->count();
 		return $req == 0 ;
 	}
 
