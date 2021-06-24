@@ -92,6 +92,8 @@ class Meta
         if ( ! empty( $md['md_instagram'] ) ) $sameAs[] = $md['md_instagram'];
         if ( ! empty( $md['md_linkedin'] ) )  $sameAs[] = $md['md_linkedin'];
         if ( ! empty( $md['md_pinterest'] ) ) $sameAs[] = $md['md_pinterest'];
+        if ( ! empty( $md['md_youtube'] ) )   $sameAs[] = $md['md_youtube'];
+        if ( ! empty( $md['md_vimeo'] ) )     $sameAs[] = $md['md_vimeo'];
 
         $this->CMS()->view()->appendData([
             'site' => [
@@ -145,6 +147,8 @@ class Meta
                 'instagram'      => $this->exist( "md_instagram" , $md ),
                 'linkedin'       => $this->exist( "md_linkedin" , $md ),
                 'pinterest'      => $this->exist( "md_pinterest" , $md ),
+                'youtube'        => $this->exist( "md_youtube" , $md ),
+                'vimeo'          => $this->exist( "md_vimeo" , $md ),
                 'sameAs'         => $sameAs,
                 'email'          => $this->exist( "md_email" , $md ),
                 'phone'          => $this->exist( "md_phone" , $md ),

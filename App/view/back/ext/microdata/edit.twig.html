@@ -58,32 +58,24 @@
         <h3>{{ _('social_media')}}</h3>
     </div>
 
+    {% set fields = {
+        email    : 'E-mail',
+        facebook : 'Facebook',
+        twitter  : 'Twitter',
+        linkedin : 'LinkedIn',
+        instagram: 'Instagram',
+        pinterest: 'Pinterest',
+        youtube  : 'Youtube',
+        vimeo    : 'Vimeo',
+    } %}
     <div class="tab-content">
         <div class="tab-pane active panel-body">
-            <div class="ed_field col_one_fifth">
-                <label>Facebook</label>
-                <input type="text" name="md_facebook" class="form-control" value="{{ post.md_facebook }}" />
-            </div>
-            <div class="ed_field col_one_fifth">
-                <label>Twitter</label>
-                <input type="text" name="md_twitter" class="form-control" value="{{ post.md_twitter }}" />
-            </div>
-            <div class="ed_field col_one_fifth">
-                <label>LinkedIn</label>
-                <input type="text" name="md_linkedin" class="form-control" value="{{ post.md_linkedin }}" />
-            </div>
-            <div class="ed_field col_one_fifth">
-                <label>Instagram</label>
-                <input type="text" name="md_instagram" class="form-control" value="{{ post.md_instagram }}" />
-            </div>
-            <div class="ed_field col_one_fifth col_last">
-                <label>Pinterest</label>
-                <input type="text" name="md_pinterest" class="form-control" value="{{ post.md_pinterest }}" />
-            </div>
-            <div class="ed_field col_full">
-                <label>{{ _('email')}}</label>
-                <input type="email" name="md_email" class="form-control" value="{{ post.md_email }}" />
-            </div>
+            {% for name,label in fields %}
+                <div class="ed_field col_one_fifth{% if loop.index == 5 %} col_last{% endif %}">
+                    <label>{{ label }}</label>
+                    <input type="{{ name == 'email' ? 'email' : 'text' }}" name="md_{{ name }}" class="form-control" value="{{ post['md_'~name] }}" />
+                </div>
+            {% endfor %}
         </div>
     </div>
 
