@@ -2073,10 +2073,11 @@ class Builder extends Model
 		return $this;
 	}
 
-    protected function editor()
+    protected function editor( $editorConfig = NULL )
     {
         $this->addAction("editor") ;
         $this->field()->setData( "editor" , true ) ;
+        $this->field()->setData( "editorConfig" , $editorConfig ) ;
         $this->transform(function($v) {
         	$v = preg_replace_callback( "|<\/?([a-zA-Z]+)([a-zA-Z0-9 ='\"-_?&]*?)>|" , function($matches) {
         		switch( $matches[1] )

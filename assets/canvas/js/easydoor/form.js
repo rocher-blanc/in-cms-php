@@ -635,37 +635,45 @@ initCounterString = function(base) {
 };
 
 checkEditor = function(base) {
+    var defaultConfig = 'min'
+    var configs = {
+        min: [
+            ['style', ['bold', 'italic']],
+            ['clear', ['clear']],
+            ['para', ['ul', 'ol']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview']],
+        ],
+        med: [
+            ['hx', ['style']],
+            ['style', ['bold', 'italic']],
+            ['clear', ['clear']],
+            ['para', ['ul', 'ol']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview']],
+        ],
+        full: [
+            ['hx', ['style']],
+            ['style', ['bold', 'italic', 'color']],
+            ['fontsize', ['fontsize']],
+            ['clear', ['clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture']],
+            ['view', ['fullscreen', 'codeview']],
+            ['misc', ['print']],
+        ]
+    };
+
     if ( $(base + ' .wysiwyg').length ) {
         var token = $("meta[name=token]").attr("content") ;
 
         $(base + ' .wysiwyg').each(function() {
             var $textarea = $(this);
-
-            /*[
-                    ['hx', ['style']],
-                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
-                    ['fontsize', ['fontsize']],
-                    ['clear', ['clear']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview']],
-                    ['misc', ['print']],
-                    ['height', ['height']]
-                ]
-             */
             $textarea.summernote({
                 lang: 'fr-FR',
-                toolbar:
-                    [
-                    ['hx', ['style']],
-                        ['style', ['bold', 'italic', 'underline', 'color']],
-                        ['fontsize', ['fontsize']],
-                        ['clear', ['clear']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link', 'picture']],
-                        ['view', ['fullscreen', 'codeview']],
-                        ['misc', ['print']],
-                    ],
+                toolbar: configs[ $(this).data('editor-config') ] !== undefined
+                    ? configs[ $(this).data('editor-config') ]
+                    : configs[ defaultConfig ],
                 popover: {
                     image: [
                         ['custom', ['imageAttributes']],

@@ -6,7 +6,15 @@
         </span>
     </span>
 {% endif %}
-    <textarea class="form-control{{ editor ? ' wysiwyg' : '' }}"{{ editor ? ' data-url="' ~ route( mod.name , 'editor' ) ~ '"' : '' }} name="{{ name }}" id="id_{{ column }}">{{ value }}</textarea>
+    <textarea
+            class="form-control{{ editor ? ' wysiwyg' : '' }}"
+            {% if editor %}
+                data-url="{{ route( mod.name , 'editor' ) }}"
+                data-editor-config="{{ editor_config }}"
+            {% endif %}
+            name="{{ name }}"
+            id="id_{{ column }}"
+    >{{ value }}</textarea>
 {% if hasFlag %}
 </div>
 {% endif %}

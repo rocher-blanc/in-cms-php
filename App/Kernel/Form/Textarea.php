@@ -10,6 +10,7 @@ class Textarea extends \App\Kernel\Back\Form
             'name' => $name,
             'value' => $value,
             'editor' => $field->getData('editor'),
+            'editor_config' => $field->getData('editorConfig'),
             'column' => $field->getColumn(),
             'hasFlag' => $field->hasLang(),
             'flag' => $field->getData('flag'),
