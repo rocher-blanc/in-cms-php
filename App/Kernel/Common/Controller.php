@@ -6,6 +6,7 @@ use App\Kernel\Back\Alt;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
 use App\Kernel\Container;
+use App\Kernel\Form\Select;
 use App\Kernel\Front\Translate;
 use Slim\Slim;
 
@@ -644,6 +645,11 @@ class Controller
                         $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
                     }
                 }
+                else if( $row->isListing() )
+				{
+					$key = $row->getData('listingKey');
+					$this->getEntity()->get( $row->getName() )->setData( 'option' , SelectListing::findAllByKey( $key ) );
+				}
                 else if ( $row->getName() == $this->getEntity()->getElementIdName() )
                 {
                     $this->getEntity()->build( $row->getName() )->field()->setValue( $this->getDepedencyElement() ) ;

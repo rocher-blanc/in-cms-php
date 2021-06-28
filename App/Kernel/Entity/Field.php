@@ -216,6 +216,11 @@ class Field
 		}
 	}
 
+	public function isListing()
+	{
+		return $this->getData('listing');
+	}
+
 	public function isEmpty( $lang = NULL )
 	{
         if ( $this->getData('isBoolean') == true )

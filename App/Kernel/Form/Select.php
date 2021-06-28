@@ -29,6 +29,7 @@ class Select extends \App\Kernel\Back\Form
         }
         else
         {
+//        	dump( $field );
 			if ( !empty( $field->getData('option') ) )
 			{
 				foreach( $field->getData('option') as $key => $opt )

@@ -418,6 +418,17 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "redirect_301_newurl" => $this->infoColumn( "VARCHAR" , "255" ),
                 "redirect_301_oldurl" => $this->infoColumn( "VARCHAR" , "255" )
             ],
+            "select_listing" => [
+                "select_listing_id"  => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+                "select_listing_key" => $this->infoColumn( "VARCHAR" , "255" ),
+                "select_listing_order" => $this->infoColumn( "INT" , "11" )
+            ],
+            "select_listing_lang" => [
+				"select_listing_lang_id"                => $this->infoColumn( "INT" , "11" , NULL , false , true ),
+				"select_listing_lang_lang_id"           => $this->infoColumn( "INT" , "11" ),
+				"select_listing_lang_select_listing_id" => $this->infoColumn( "INT" , "11" ),
+				"select_listing_lang_value"             => $this->infoColumn( "VARCHAR" , "300" , NULL , true )
+            ],
             "seo" => [
                 "seo_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
                 "seo_module_id" => $this->infoColumn( "INT" , "11" ),

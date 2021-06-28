@@ -1899,6 +1899,17 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function listing( $key = NULL )
+	{
+		if( $key == NULL )
+		{
+			$key = $this->getModuleName() . "__" . $this->field()->getName();
+		}
+		$this->field()->setData( "listing"    , true ) ;
+		$this->field()->setData( "listingKey" , $key ) ;
+		return $this;
+	}
+
     /* OPTIONS DES CHAMPS */
     protected function isLang()
     {
