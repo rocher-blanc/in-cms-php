@@ -123,31 +123,42 @@ checkImage = function(base) {
                 removeClass: "button button-mini button-rounded delete-img-" + $this.data('fieldname') + " button-red",
                 removeLabel: "Supprimer",
                 removeIcon: "<i class=\"icon-trash\"></i> "
-            }).on("filebatchselected", function(event, files) {
-                myForm.find('.form-process').fadeIn();
-                $this.fileinput("upload");
-            }).on("fileuploaded", function(event, files) {
-                $("#" + $this.data('fieldname')).val(files.response.id);
-                $("#" + $this.data('imgname')).attr('src', files.response.mini);
-                myForm.find('.form-process').fadeOut();
-                myForm.find('.kv-upload-progress').hide();
+            })
+                .on("filebatchselected", function(event, files) {
+                    myForm.find('.form-process').fadeIn();
+                    $this.fileinput("upload");
+                })
+                .on("fileuploaded", function(event, files) {
+                    $("#" + $this.data('fieldname')).val(files.response.id);
+                    $("#" + $this.data('imgname')).attr('src', files.response.mini);
+                    myForm.find('.form-process').fadeOut();
+                    myForm.find('.kv-upload-progress').hide();
 
-                $('.delete-img-' + $this.data('fieldname') ).click(function() {
-                    $("#" + $this.data('fieldname')).val('');
-                    $("#" + $this.data('imgname')).attr('src', $("#" + $this.data('imgname')).data('empty') );
+                    if( ! files.response.result ) {
+                        Notify( files.response.msg , false );
+                    }
+
+                    $('.delete-img-' + $this.data('fieldname') ).click(function() {
+                        $("#" + $this.data('fieldname')).val('');
+                        $("#" + $this.data('imgname')).attr('src', $("#" + $this.data('imgname')).data('empty') );
+                    });
+                })
+                .on('fileclear', function(event, id, index) {
+                    $($this.attr('data-bdd')).val('');
+                    myForm.find('.form-process').fadeOut();
+                })
+                .on('fileerror', function(event, id, index) {
+                    myForm.find('.form-process').fadeOut();
+                })
+                .on('filebatchuploaderror', function(event, id, index) {
+                    myForm.find('.form-process').fadeOut();
+                })
+                .on('filebeforedelete', function() {
+                    console.log('test filebeforedelete');
+                })
+                .on('filedeleted', function() {
+                    console.log('test filedeleted');
                 });
-            }).on('fileclear', function(event, id, index) {
-                $($this.attr('data-bdd')).val('');
-                myForm.find('.form-process').fadeOut();
-            }).on('fileerror', function(event, id, index) {
-                myForm.find('.form-process').fadeOut();
-            }).on('filebatchuploaderror', function(event, id, index) {
-                myForm.find('.form-process').fadeOut();
-            }).on('filebeforedelete', function() {
-                console.log('test filebeforedelete');
-            }).on('filedeleted', function() {
-                console.log('test filedeleted');
-            });
         });
     }
 };

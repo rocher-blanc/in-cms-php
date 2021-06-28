@@ -2294,9 +2294,25 @@ class Controller extends ControllerCommon
 
     protected function uploadAction()
     {
-        $Media = new Media;
-        $Media->setModuleId( $this->getEntityId() ) ;
-        $Media->setModuleName( $this->getEntityName() ) ;
+		$field = $this->field( $this->post( 'field' ) );
+		$acceptMimeType = $field->getData('acceptMimeType');
+    	if( is_array( $acceptMimeType ) )
+		{
+			$mimeType = $_FILES['file_data']['type'];
+			if( ! in_array( $mimeType , $acceptMimeType ) )
+			{
+				echo json_encode([
+					'result' => false,
+					'field'  => $field->getName(),
+					'msg'    => Translate::getInstance()->getText( 'image_unaccepted_format' )
+				]);
+				return false;
+			}
+		}
+
+		$Media = new Media;
+		$Media->setModuleId( $this->getEntityId() ) ;
+		$Media->setModuleName( $this->getEntityName() ) ;
 		$Media->setFolder( $this->getEntity()->getFolder() ) ;
 		$rst = $Media->upload( UPLOAD_PATH ) ;
 

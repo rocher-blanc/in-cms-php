@@ -1847,6 +1847,12 @@ class Builder extends Model
         return $this ;
     }
 
+    protected function acceptMimeType( Array $list )
+    {
+        $this->field()->setData( "acceptMimeType" , $list ) ;
+        return $this ;
+    }
+
     protected function full()
     {
         $this->column( 1 , 1 ) ;

@@ -774,5 +774,6 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"export_product" => "Export produits",
 		"export_turnover" => "Export CA",
 		"not_uniq_email" => "L'adresse e-mail est déjà enregistrée",
+		"image_unaccepted_format" => "Le format de l'image n'est pas supporté",
 	];
 }
