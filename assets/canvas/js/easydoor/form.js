@@ -134,7 +134,7 @@ checkImage = function(base) {
                     myForm.find('.form-process').fadeOut();
                     myForm.find('.kv-upload-progress').hide();
 
-                    if( ! files.response.result ) {
+                    if( files.response.result !== undefined && ! files.response.result ) {
                         Notify( files.response.msg , false );
                     }
 
