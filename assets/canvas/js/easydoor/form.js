@@ -23,6 +23,7 @@ init = function( base ) {
     tableDepedency( base );
     formDepedency( base );
     checkVideo( base );
+    initSelectListing( base );
 };
 
 modalDepedency = function ( base ) {
@@ -1046,6 +1047,15 @@ checkVideo = function( base ) {
             {
                 $(this).trigger("change");
             }
+        });
+    }
+};
+
+initSelectListing = function( base ) {
+    if ( $( base ).find("[data-select-listing]").length ) {
+        $( base ).find('[data-select-listing]').click(function() {
+            rightPanel.load( $(this).data('select-listing') );
+            return false;
         });
     }
 };

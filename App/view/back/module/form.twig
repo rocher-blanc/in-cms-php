@@ -2,7 +2,16 @@
     <div class="ed_field {{ c.class }}{{ counter == width ? ' col_last' : '' }}{% if c.error != '' %} error{% endif %}{% if c.show == false %} {% if c.visible == false %}hide{% else %}hidden{% endif %}{% endif %}" data-show="{% if c.visible == true %}hidden{% else %}hide{% endif %}" id="field-{{ c.name }}" data-field="{{ c.fieldname }}">
 
         {% for action in c.actions %}
-            <a href="{{ action.url }}" style="float:right;" title="{{ action.label }}"{% if action.blank %} target="_blank"{% endif %}><i class="{{ action.icon }}"></i></a>
+            <a href="{{ action.url }}"
+               style="float:right;"
+               title="{{ action.label }}"
+               {% if action.blank %}target="_blank"{% endif %}
+               {% if action.extra is defined and action.extra is iterable %}
+                   {% for key,value in action.extra -%} {{ key }}="{{ value }}"{%- endfor %}
+               {% endif %}
+            >
+                <i class="{{ action.icon }}"></i>
+            </a>
         {% endfor %}
 
         <label>{{ c.title }}{% if c.required != '' %} <span class="icon-asterisk"></span>{% endif %}</label>

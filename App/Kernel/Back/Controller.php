@@ -212,19 +212,27 @@ class Controller extends ControllerCommon
 	{
 		$rst = parent::parseFieldData( $row , $form , $show );
 
-		if( $row->getName() === "service" )
-		{
-			$rst['actions'] = [];
+		$rst['actions'] = [];
 
-			if( $row->getData('manyToMany') )
-			{
-				$rst['actions'][] = [
-					'icon'  => "icon-pencil",
-					'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
-					'label' => "Mettre à jour la liste",
-					'blank' => true
-				];
-			}
+		if( $row->getData('manyToMany') )
+		{
+			$rst['actions'][] = [
+				'icon'  => "icon-pencil",
+				'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
+				'label' => "Mettre à jour la liste",
+				'blank' => true
+			];
+		}
+		else if( $row->getData('listing') )
+		{
+			$rst['actions'][] = [
+				'icon'  => "icon-list",
+				'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
+				'label' => "Modifier la liste",
+				'extra' => [
+					'data-select-listing' => $row->getData('listingKey')
+				]
+			];
 		}
 
 		return $rst;
