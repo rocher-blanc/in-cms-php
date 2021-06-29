@@ -32,7 +32,7 @@
         {{ block('contenu') }}
 
         <div class="right-panel">
-            <span>i.</span>
+<!--            <span>i.</span>-->
             <div class="right-panel-loader" style="display:none;">Chargement</div>
             <div class="right-panel-content" style="display:none;">Test</div>
         </div>
@@ -66,6 +66,7 @@
                 background: white;
                 z-index: 8001;
                 box-shadow: 0 0 5px 0 #000a;
+                overflow: auto;
                 transition: all .2s;
             }
             .right-panel.open {

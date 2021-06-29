@@ -8,10 +8,13 @@ use App\Kernel\Back\Document;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Media;
 use App\Kernel\Back\Seo;
+use App\Kernel\CMS;
 use App\Kernel\Common\Controller as ControllerCommon;
+use App\Kernel\Common\SelectListing;
 use App\Kernel\Container;
 use App\Kernel\Front\Translate;
 use App\Kernel\Http;
+use App\Kernel\Lang;
 use JasonGrimes\Paginator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -227,10 +230,11 @@ class Controller extends ControllerCommon
 		{
 			$rst['actions'][] = [
 				'icon'  => "icon-list",
-				'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
 				'label' => "Modifier la liste",
 				'extra' => [
-					'data-select-listing' => $row->getData('listingKey')
+					'data-select-listing' =>
+						$this->Factory()->Url()->route( $this->getEntityName() , 'selectListing' , NULL , $this->getId() )
+						. "?key=" . $row->getData('listingKey')
 				]
 			];
 		}
@@ -2288,7 +2292,7 @@ class Controller extends ControllerCommon
 
     protected function libimagesgalleryAction()
     {
-    	$gallery_id = \App\Kernel\CMS::getInstance()->Request()->get('gallery_id');
+    	$gallery_id = CMS::getInstance()->Request()->get('gallery_id');
 
 		$Media = new Media;
 		$Media->setGalleryId( $gallery_id );
@@ -2363,6 +2367,135 @@ class Controller extends ControllerCommon
             $this->Factory()->Response()->returnJSON( $this->m("deletemedia_no_ressource") ) ;
         }
     }
+
+    /* ************************************************** */
+    /* ******************    SELECT    ****************** */
+    /* ************************************************** */
+
+//    protected function libimagesupdateAction()
+//    {
+//        $tab = [];
+//
+//        if ( $this->getEntity()->getImageField() )
+//        {
+//            foreach( $this->getEntity()->getImageField() as $row )
+//            {
+//                foreach( $this->getEntity()->getField() as $field )
+//                {
+//                    if ( $row == $field->getColumn() )
+//                    {
+//                        $Media = new Media;
+//                        $Media->setModuleId( $this->getEntityId() ) ;
+//                        $Media->setModuleName( $this->getEntityName() ) ;
+//                        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+//                        $Media->setField( $field->getName() ) ;
+//
+//                        $tab[ $field->getName() ]['title']  = $field->getTitle();
+//                        $tab[ $field->getName() ]['images'] = $Media->getAllModel();
+//                    }
+//                }
+//            }
+//        }
+//
+//        $this->getGlobalVar() ;
+//        $this->setRender( 'fields' , $tab );
+//
+//        $this->render('libimages_update.twig') ;
+//    }
+
+    protected function selectListingAction()
+    {
+    	$lang = Lang::getInstance()->getAll();
+		$langFlags = [];
+		foreach( $lang as $l )
+		{
+			$langFlags[ $l->id ] = $l->flag;
+		}
+
+    	$key = CMS::getInstance()->Request()->get('key') ;
+    	$all = SelectListing::findAllWithMultiLangByKey( $key ) ;
+		$this->setRender( 'elements' , $all );
+		$this->setRender( 'flags' , $langFlags );
+		$this->render('selectListing.twig') ;
+    }
+
+//    protected function libimagesgalleryAction()
+//    {
+//    	$gallery_id = \App\Kernel\CMS::getInstance()->Request()->get('gallery_id');
+//
+//		$Media = new Media;
+//		$Media->setGalleryId( $gallery_id );
+//		$Media->setFolder( "_lib" );
+//
+//		$this->setRender( 'images' , $Media->getAllByGallery() );
+//        $this->setRender( 'name' , $_GET['name'] );
+//        $this->setRender( 'field_name' , $_GET['field_name'] );
+//        $this->render('libimages_gallery.twig') ;
+//    }
+//
+//    protected function uploadAction()
+//    {
+//		$field = $this->field( $this->post( 'field' ) );
+//		$acceptMimeType = $field->getData('acceptMimeType');
+//    	if( is_array( $acceptMimeType ) )
+//		{
+//			$mimeType = $_FILES['file_data']['type'];
+//			if( ! in_array( $mimeType , $acceptMimeType ) )
+//			{
+//				echo json_encode([
+//					'result' => false,
+//					'field'  => $field->getName(),
+//					'msg'    => Translate::getInstance()->getText( 'image_unaccepted_format' )
+//				]);
+//				return false;
+//			}
+//		}
+//
+//		$Media = new Media;
+//		$Media->setModuleId( $this->getEntityId() ) ;
+//		$Media->setModuleName( $this->getEntityName() ) ;
+//		$Media->setFolder( $this->getEntity()->getFolder() ) ;
+//		$rst = $Media->upload( UPLOAD_PATH ) ;
+//
+//		return $this->Factory()->Response()->printJSON( $rst ) ;
+//    }
+//
+//    protected function deletemediaAction()
+//    {
+//        $this->checkToken() ;
+//
+//        $Media = new Media;
+//        $Media->setModuleId( $this->getEntityId() ) ;
+//        $Media->setImageId( $this->getId() );
+//        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+//        $images = $Media->getAll() ;
+//
+//        if ( $images )
+//        {
+//            if ( array_key_exists( $this->getId() , $images ) )
+//            {
+//                if ( $images[ $this->getId() ]->media_delete == true )
+//                {
+//                    $rst = $Media->delete();
+//
+//                    if ( $rst ) $this->Factory()->Response()->returnJSON( $this->m("deletemedia_success") , true ) ;
+//                    else		$this->Factory()->Response()->returnJSON( $this->m("deletemedia_failed") ) ;
+//                }
+//                else
+//                {
+//                    $this->Factory()->Response()->returnJSON( $this->m("deletemedia_delete_is_impossible") ) ;
+//                }
+//            }
+//            else
+//            {
+//                $this->Factory()->Response()->returnJSON( $this->m("deletemedia_media_not_found") ) ;
+//            }
+//        }
+//        else
+//        {
+//            $this->Factory()->Response()->returnJSON( $this->m("deletemedia_no_ressource") ) ;
+//        }
+//    }
 
     /* ************************************************** */
     /* *****************   DOCUMENT   ******************* */

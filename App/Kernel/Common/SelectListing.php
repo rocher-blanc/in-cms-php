@@ -28,7 +28,6 @@ class SelectListing
 			$id = $row->get( self::getColumn( 'id' ) );
 			if( ! array_key_exists( $id , $rst ) )
 			{
-				$rst[ $id ] = [];
 				foreach( $lang as $l )
 				{
 					$rst[ $id ][ $l->id ] = NULL;

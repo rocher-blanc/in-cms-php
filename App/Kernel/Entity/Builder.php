@@ -1907,6 +1907,9 @@ class Builder extends Model
 		}
 		$this->field()->setData( "listing"    , true ) ;
 		$this->field()->setData( "listingKey" , $key ) ;
+
+		$this->addAction("selectListing") ;
+
 		return $this;
 	}
 
