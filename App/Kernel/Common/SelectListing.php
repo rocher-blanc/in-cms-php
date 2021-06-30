@@ -9,19 +9,30 @@ class SelectListing
 
 	public static function findAllByKey( $key )
 	{
-		$req = self::prepareRequest( $key )
+		return self::prepareRequest( $key )
 			->find_many();
+	}
 
+	public static function findValue( $elementId , $langId )
+	{
+		return \DB::for_table( 'select_listing_lang' )
+			->where_equal( self::getColumn( 'select_listing_id', true ) , $elementId )
+			->where_equal( self::getColumn( 'lang_id', true ) , $langId )
+			->find_one();
+	}
+
+	public static function getAllByKey( $key )
+	{
+		$req = self::findAllByKey( $key );
 		return self::parseAll( $req );
 	}
 
-	public static function findAllWithMultiLangByKey( $key )
+	public static function getAllWithMultiLangByKey( $key )
 	{
 		$lang = Lang::getInstance()->getAll();
 		$rst  = [];
 
-		$req = self::prepareRequest( $key )
-			->find_many();
+		$req = self::findAllByKey( $key );
 
 		foreach( $req as $row )
 		{
@@ -40,18 +51,66 @@ class SelectListing
 		return $rst;
 	}
 
-
-	private static function prepareRequest( $key )
+	public static function removeEntry( $id )
 	{
-		return \DB::for_table( 'select_listing' )
-			->join( 'select_listing_lang' , [ self::getColumn('select_listing_id', true ) , '=' , self::getColumn('id') ] )
-			->where_equal( self::getColumn('key') , $key )
-			->order_by_asc( self::getColumn('order') );
+		// Lang
+		$req = \DB::for_table('select_listing_lang')
+			->where_equal( self::getColumn('select_listing_id', true ) , $id )
+			->find_many();
+		if( $req )
+		{
+			foreach( $req as $row )
+			{
+				$row->delete();
+			}
+		}
+
+		// Common
+		$req = \DB::for_table('select_listing')
+			->where_equal( self::getColumn('id' ) , $id )
+			->find_one();
+		if( $req )
+		{
+			$req->delete();
+		}
 	}
 
-	private static function getColumn( $name , $lang = false )
+	public static function add( $key )
+	{
+		$prep = \DB::for_table( 'select_listing' )->create();
+		$prep->set( self::getColumn( 'key' )   , $key );
+		$prep->set( self::getColumn( 'order' ) , 0    );
+		$prep->save();
+		return $prep->get( self::getColumn('id') );
+	}
+
+	public static function addLang( $elementId , $langId , $value )
+	{
+		$prep = \DB::for_table( 'select_listing_lang' )->create();
+		$prep->set( self::getColumn( 'select_listing_id', true )   , $elementId );
+		$prep->set( self::getColumn( 'lang_id'          , true )   , $langId    );
+		$prep->set( self::getColumn( 'value'            , true )   , $value     );
+		$prep->save();
+		return $prep->get( self::getColumn('id') );
+	}
+
+	public static function getColumn( $name , $lang = false )
 	{
 		return "select_listing_" . ( $lang ? 'lang_' : '' ) . $name ;
+	}
+
+	private static function prepareRequest( $key = NULL )
+	{
+		$prep = \DB::for_table( 'select_listing' )
+			->join( 'select_listing_lang' , [ self::getColumn('select_listing_id', true ) , '=' , self::getColumn('id') ] )
+			->order_by_asc( self::getColumn('order') );
+
+		if( $key != NULL )
+		{
+			$prep->where_equal( self::getColumn('key') , $key );
+		}
+
+		return $prep;
 	}
 
 	private static function parseAll( $rows )

@@ -12,6 +12,7 @@ use App\Kernel\CMS;
 use App\Kernel\Common\Controller as ControllerCommon;
 use App\Kernel\Common\SelectListing;
 use App\Kernel\Container;
+use App\Kernel\Form\Select;
 use App\Kernel\Front\Translate;
 use App\Kernel\Http;
 use App\Kernel\Lang;
@@ -2413,10 +2414,84 @@ class Controller extends ControllerCommon
 		}
 
     	$key = CMS::getInstance()->Request()->get('key') ;
-    	$all = SelectListing::findAllWithMultiLangByKey( $key ) ;
-		$this->setRender( 'elements' , $all );
-		$this->setRender( 'flags' , $langFlags );
+    	$all = SelectListing::getAllWithMultiLangByKey( $key ) ;
+
+		$this->setRender( 'key'      , $key       );
+		$this->setRender( 'elements' , $all       );
+		$this->setRender( 'flags'    , $langFlags );
 		$this->render('selectListing.twig') ;
+    }
+
+    protected function selectListingSaveAction()
+    {
+    	$post      = CMS::getInstance()->Request()->post();
+		$key       = CMS::getInstance()->Request()->post('key') ;
+		$colValue  = SelectListing::getColumn( 'value', true );
+		$colId     = SelectListing::getColumn( 'id', true );
+		$processed = [];
+
+		if( isset($post['item']) && is_array($post['item']) && count($post['item']) > 0 )
+		{
+			// Modification des éléments existant
+			foreach( $post['item'] as $id => $item )
+			{
+				if( $id !== 'new' )
+				{
+					foreach( $item as $langId => $value )
+					{
+						$value = trim( $value );
+						$req = SelectListing::findValue($id, $langId);
+						if( $value != $req->get( $colValue ) )
+						{
+							$req->set( $colValue , $value );
+							$req->save();
+						}
+					}
+					$processed[] = $id;
+				}
+			}
+
+			// Suppression des éléments inexistant
+			$req = SelectListing::findAllByKey( $key );
+			if( $req )
+			{
+				foreach( $req as $row )
+				{
+					$id = $row->get( $colId );
+					if( ! in_array( $id , $processed ) )
+					{
+						SelectListing::removeEntry( $id );
+					}
+				}
+			}
+
+			// Ajout des nouveau
+			if( isset($post['item']['new']) && is_array($post['item']['new']) && count($post['item']['new']) > 0 )
+			{
+				foreach( $post['item']['new'] as $item )
+				{
+					$add = false;
+					foreach( $item as $langId => $value )
+					{
+						if( strlen( trim( $value ) ) > 0 )
+						{
+							$add = true;
+						}
+					}
+					if( $add )
+					{
+						$id = SelectListing::add( $key );
+						foreach( $item as $langId => $value )
+						{
+							if( strlen( trim( $value ) ) > 0 )
+							{
+								SelectListing::addLang( $id , $langId , trim( $value ) );
+							}
+						}
+					}
+				}
+			}
+		}
     }
 
 //    protected function libimagesgalleryAction()
@@ -2543,6 +2618,7 @@ class Controller extends ControllerCommon
             }
             else
             {
+                $this->Factory()->Response()->returnJSON( $this->m("deletedocument_media_not_found") ) ;
                 $this->Factory()->Response()->returnJSON( $this->m("deletedocument_media_not_found") ) ;
             }
         }

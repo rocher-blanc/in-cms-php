@@ -648,7 +648,7 @@ class Controller
                 else if( $row->isListing() )
 				{
 					$key = $row->getData('listingKey');
-					$this->getEntity()->get( $row->getName() )->setData( 'option' , SelectListing::findAllByKey( $key ) );
+					$this->getEntity()->get( $row->getName() )->setData( 'option' , SelectListing::getAllByKey( $key ) );
 				}
                 else if ( $row->getName() == $this->getEntity()->getElementIdName() )
                 {
