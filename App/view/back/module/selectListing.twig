@@ -8,51 +8,54 @@
             <div class="col-xs-12">
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover" data-select-listing-table>
-                        <thead>
-{#                        <tr>#}
-{#                            <th style="width: 50px;"></th>#}
-{#                            <th>#}
-{#                                <span></span><br>#}
-{#                            </th>#}
-{#                            <th>#}
-{#                                <span>Nom</span><br>#}
-{#                            </th>#}
-{#                            <th>#}
-{#                                <span>E-mail</span><br>#}
-{#                            </th>#}
-{#                            <th>#}
-{#                                <span>Téléphone</span><br>#}
-{#                            </th>#}
-{#                            <th>#}
-{#                                <span>Sujet</span><br>#}
-{#                            </th>#}
-{#                            <th>#}
-{#                                <span>Service</span><br>#}
-{#                            </th>#}
-{#                            <th class="text-right" style="width: 220px;">#}
-{#                                Afficher<select class="form-control for   m-control-sm inline" name="elmt_per_page" style="width: 75px; margin: 0 5px;">#}
-{#                                    <option value="10">10</option>#}
-{#                                    <option value="25" selected="">25</option>#}
-{#                                    <option value="50">50</option>#}
-{#                                    <option value="100">100</option>#}
-{#                                    <option value="all">Tous</option>#}
-{#                                </select>éléments#}
-{#                            </th>#}
-{#                        </tr>#}
-                        </thead>
-                        <tbody>
-                        {% for itemId, item in elements %}
-                            <tr class="tr1" data-parent-id="none">
-                                <td style="vertical-align: middle;">
-                                    {% for langId, langValue in item %}
-                                        <div class="input-group input-group-icon" style="margin-bottom: 5px;">
+                    <form data-select-listing-form>
+                        <table class="table table-striped table-hover" data-select-listing-table style="margin-bottom:0;">
+                            <thead>
+                            <tr>
+                                <th style="width: 40px;"></th>
+                                <th>
+                                    <span>Intitulé</span><br>
+                                </th>
+                                <th class="text-right" style="width: 40px;">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for itemId, item in elements %}
+                                <tr class="tr1" data-parent-id="none">
+                                    <td class="tr1" data-parent-id="none">
+                                        <a href="javascript:;" class="color-theme orderTable"><i class="icon-move" style="margin:0"></i></a>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        {% for langId, langValue in item %}
+                                            <div class="input-group input-group-icon" style="margin-bottom: 5px;">
                                             <span class="input-group-addon">
                                                 <span class="icon">
                                                     <i class="flag-icon flag-icon-{{ flags[langId] }}" style="margin:0;"></i>
                                                 </span>
                                             </span>
-                                            <input type="text" value="{{ langValue }}" class="form-control" name="item[{{ itemId }}][{{ langId }}]" maxlength="255" />
+                                                <input type="text" value="{{ langValue }}" class="form-control" name="item[{{ itemId }}][{{ langId }}]" maxlength="255" />
+                                            </div>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="text-right actionLink" style="vertical-align: middle;">
+                                        <a href="#" data-select-listing-remove-btn><i class="icon-trash2"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr class="tr1" style="display: none;" data-select-listing-row-empty>
+                                <td class="tr1" data-parent-id="none">
+                                    <a href="javascript:;" class="color-theme orderTable"><i class="icon-move" style="margin:0"></i></a>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    {% for langId,flag in flags %}
+                                        <div class="input-group input-group-icon" style="margin-bottom: 5px;">
+                                        <span class="input-group-addon">
+                                            <span class="icon">
+                                                <i class="flag-icon flag-icon-{{ flag }}" style="margin:0;"></i>
+                                            </span>
+                                        </span>
+                                            <input type="text" value="" class="form-control" name="item[new][][{{ langId }}]" maxlength="255">
                                         </div>
                                     {% endfor %}
                                 </td>
@@ -60,38 +63,26 @@
                                     <a href="#" data-select-listing-remove-btn><i class="icon-trash2"></i></a>
                                 </td>
                             </tr>
-                        {% endfor %}
-                        <tr class="tr1" data-parent-id="none">
-                            <td style="vertical-align: middle;"></td>
-                            <td class="text-right actionLink" style="vertical-align: middle;">
-                                <a href="#" data-select-listing-new-btn><i class="icon-line-plus"></i></a>
-                            </td>
-                        </tr>
-                        <tr class="tr1" style="display: none;" data-select-listing-row-empty>
-                            <td style="vertical-align: middle;">
-                                {% for langId,flag in flags %}
-                                    <div class="input-group input-group-icon" style="margin-bottom: 5px;">
-                                        <span class="input-group-addon">
-                                            <span class="icon">
-                                                <i class="flag-icon flag-icon-{{ flag }}" style="margin:0;"></i>
-                                            </span>
-                                        </span>
-                                        <input type="text" value="" class="form-control" name="item[new][][{{ langId }}]" maxlength="255">
-                                    </div>
-                                {% endfor %}
-                            </td>
-                            <td class="text-right actionLink" style="vertical-align: middle;">
-                                <a href="#" data-select-listing-remove-btn><i class="icon-trash2"></i></a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+
+                <div style="padding-right:15px;">
+                    <a href="#" class="pull-right" data-select-listing-new-btn>
+                        <i class="icon-line-plus" style="font-size:24px;"></i>
+                    </a>
+                    <button type="submit" name="submitbutton" value="redirect" class="ed-button button button-small button-rounded button-reveal">
+                        <i class="icon-save"></i><span>Enregistrer</span>
+                    </button>
+
                 </div>
 
             </div>
         </div>
     </div>
 
+    <script src="{{ asset('libs/jquery.tablednd.js') }}"></script>
     <script>
 
         initAddButton = function( base ) {
@@ -101,9 +92,10 @@
                 $copy
                     .show()
                     .removeAttr('data-select-listing-row-empty')
-                    .insertBefore( trs[ trs.length - 2 ] );
+                    .insertBefore( trs[ trs.length - 1 ] );
 
                 initRemoveButton($copy);
+                initMovable()
 
                 return false;
             });
@@ -116,10 +108,32 @@
             });
         }
 
+        initMovable = function() {
+            $("[data-select-listing-table]").tableDnD({
+                onDragStart: function(table, row) {
+                    var parent = $(row).parent().parent().data('parent');
+                    $("#" + $(row).data('tr')).addClass('myDragClass');
+                    $('.table-parent').find('tr').each(function () {
+                        if ($(this).data('parent') != parent) {
+                            $(this).hide();
+                        }
+                    });
+                },
+                dragHandle: '.orderTable',
+                onDragClass: 'myDragClass',
+                // onDrop: function (table, row) {}
+            });
+        }
+
+        getData = function() {
+            console.log( $("[data-select-listing-table]").serialize() );
+        }
+
         $(function () {
             var base = '.right-panel-content';
             initAddButton( base );
             initRemoveButton( base );
+            initMovable( base );
         });
     </script>
 {% endblock %}

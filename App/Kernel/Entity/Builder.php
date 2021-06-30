@@ -1909,6 +1909,7 @@ class Builder extends Model
 		$this->field()->setData( "listingKey" , $key ) ;
 
 		$this->addAction("selectListing") ;
+		$this->addAction("selectListingSave") ;
 
 		return $this;
 	}
