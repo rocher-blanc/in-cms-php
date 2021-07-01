@@ -230,12 +230,22 @@ class Controller extends ControllerCommon
 		else if( $row->getData('listing') )
 		{
 			$rst['actions'][] = [
-				'icon'  => "icon-list",
+				'icon'  => "icon-list-ul",
 				'label' => "Modifier la liste",
 				'extra' => [
 					'data-select-listing' =>
 						$this->Factory()->Url()->route( $this->getEntityName() , 'selectListing' , NULL , $this->getId() )
 						. "?key=" . $row->getData('listingKey')
+				]
+			];
+			$rst['actions'][] = [
+				'icon'  => "icon-reload",
+				'label' => "Recharger la liste",
+				'extra' => [
+					'data-select-reload' =>
+						$this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
+						. "?key=" . $row->getData('listingKey')
+						. "&field=" . $row->getName()
 				]
 			];
 		}
@@ -2493,6 +2503,12 @@ class Controller extends ControllerCommon
 			}
 		}
     }
+
+    protected function selectReloadAction()
+	{
+		$get = CMS::getInstance()->Request()->get();
+		dd( $get );
+	}
 
 //    protected function libimagesgalleryAction()
 //    {

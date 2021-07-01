@@ -24,6 +24,7 @@ init = function( base ) {
     formDepedency( base );
     checkVideo( base );
     initSelectListing( base );
+    initSelectReload( base );
 };
 
 modalDepedency = function ( base ) {
@@ -1051,6 +1052,12 @@ checkVideo = function( base ) {
     }
 };
 
+/*
+#####################################################################################################################################
+#####################################################        SELECT         #########################################################
+#####################################################################################################################################
+*/
+
 initSelectListing = function( base ) {
     if ( $( base ).find("[data-select-listing]").length ) {
         $( base ).find('[data-select-listing]').click(function() {
@@ -1059,3 +1066,18 @@ initSelectListing = function( base ) {
         });
     }
 };
+
+initSelectReload = function( base ) {
+    if ( $( base ).find("[data-select-reload]").length ) {
+        $( base ).find('[data-select-reload]').click(function() {
+            $.ajax({
+                url    : $(this).attr('data-select-reload'),
+                method : 'GET',
+                success: function( response ) {
+                    console.log( response );
+                }
+            });
+            return false;
+        });
+    }
+}

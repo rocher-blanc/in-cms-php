@@ -3,7 +3,7 @@
 
         {% for action in c.actions %}
             <a href="{{ action.url }}"
-               style="float:right;"
+               style="float:right; margin-left:6px;"
                title="{{ action.label }}"
                {% if action.blank %}target="_blank"{% endif %}
                {% if action.extra is defined and action.extra is iterable %}

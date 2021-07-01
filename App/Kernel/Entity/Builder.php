@@ -1910,6 +1910,7 @@ class Builder extends Model
 
 		$this->addAction("selectListing") ;
 		$this->addAction("selectListingSave") ;
+		$this->addAction("selectReload") ;
 
 		return $this;
 	}
