@@ -630,34 +630,7 @@ class Controller
         {
             foreach( $this->getEntity()->getField() as $row )
             {
-                if ( $row->isParent() == true )
-                {
-                    $opt = $this->getParent();
-                    $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
-                }
-                else if ( $row->isAssociated() == true )
-                {
-                    $opt = $this->getValueAssociated( $row , "array" , true );
-                    $this->getEntity()->get( $row->getName() )->setData( 'option' , $opt );
-
-                    if ( $row->isParentModule() )
-                    {
-                        $this->getEntity()->build( $row->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
-                    }
-                }
-                else if( $row->isListing() )
-				{
-					$key = $row->getData('listingKey');
-					$this->getEntity()->get( $row->getName() )->setData( 'option' , SelectListing::getAllByKey( $key ) );
-				}
-                else if ( $row->getName() == $this->getEntity()->getElementIdName() )
-                {
-                    $this->getEntity()->build( $row->getName() )->field()->setValue( $this->getDepedencyElement() ) ;
-                }
-                else if ( $row->getName() == $this->getEntity()->getModuleIdName() )
-                {
-                    $this->getEntity()->build( $row->getName() )->field()->setValue( $this->getDepedencyModule() ) ;
-                }
+                $this->generateForm_processField($row);
             }
         }
 
@@ -730,6 +703,38 @@ class Controller
             'js'         => $form->getLibJS()
         ];
     }
+
+	protected function generateForm_processField( $field )
+	{
+		if ( $field->isParent() == true )
+		{
+			$opt = $this->getParent();
+			$this->getEntity()->get( $field->getName() )->setData( 'option' , $opt );
+		}
+		else if ( $field->isAssociated() == true )
+		{
+			$opt = $this->getValueAssociated( $field , "array" , true );
+			$this->getEntity()->get( $field->getName() )->setData( 'option' , $opt );
+
+			if ( $field->isParentModule() )
+			{
+				$this->getEntity()->build( $field->getName() )->field()->setValue( end( $this->getIdParent() ) ) ;
+			}
+		}
+		else if( $field->isListing() )
+		{
+			$key = $field->getData('listingKey');
+			$this->getEntity()->get( $field->getName() )->setData( 'option' , SelectListing::getAllByKey( $key ) );
+		}
+		else if ( $field->getName() == $this->getEntity()->getElementIdName() )
+		{
+			$this->getEntity()->build( $field->getName() )->field()->setValue( $this->getDepedencyElement() ) ;
+		}
+		else if ( $field->getName() == $this->getEntity()->getModuleIdName() )
+		{
+			$this->getEntity()->build( $field->getName() )->field()->setValue( $this->getDepedencyModule() ) ;
+		}
+	}
 
     protected function checkCustomField( $field )
     {

@@ -2506,8 +2506,21 @@ class Controller extends ControllerCommon
 
     protected function selectReloadAction()
 	{
-		$get = CMS::getInstance()->Request()->get();
-		dd( $get );
+		$get   = CMS::getInstance()->Request()->get();
+		$rst   = [];
+		$field = $this->getEntity()->get( $get['field'] );
+
+		$this->generateForm_processField( $field );
+
+//		foreach( $field->getOptions() as $id => $text )
+//		{
+//			$rst[] = [
+//				'id'   => $id,
+//				'text' => $text
+//			];
+//		}
+
+		echo json_encode( $field->getOptions() );
 	}
 
 //    protected function libimagesgalleryAction()

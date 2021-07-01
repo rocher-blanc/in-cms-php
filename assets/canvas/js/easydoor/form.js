@@ -1070,14 +1070,29 @@ initSelectListing = function( base ) {
 initSelectReload = function( base ) {
     if ( $( base ).find("[data-select-reload]").length ) {
         $( base ).find('[data-select-reload]').click(function() {
-            $.ajax({
-                url    : $(this).attr('data-select-reload'),
-                method : 'GET',
-                success: function( response ) {
-                    console.log( response );
-                }
-            });
+            reloadSelect( $(this).parents(".ed_field").find("select[data-plugin-selecttwo]") );
             return false;
         });
     }
+}
+
+reloadSelect = function( select ) {
+    var $select = $(select);
+    var val     = $select.val().toString();
+    $select.html('');
+    $.ajax({
+        url     : $(select).parents('.ed_field').find('[data-select-reload]').attr('data-select-reload'),
+        method  : 'GET',
+        dataType: "json",
+        success : function( response ) {
+            for( var id in response )
+            {
+                var selected = val === id.toString();
+                var newOption = new Option( response[id] , id , selected , selected );
+                $select.append(newOption);
+            }
+
+            $select.find('option[value="'+ val +'"]').trigger('change');
+        }
+    });
 }
