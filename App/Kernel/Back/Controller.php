@@ -226,6 +226,15 @@ class Controller extends ControllerCommon
 				'label' => "Mettre à jour la liste",
 				'blank' => true
 			];
+			$rst['actions'][] = [
+				'icon'  => "icon-reload",
+				'label' => "Recharger la liste",
+				'extra' => [
+					'data-select-reload' =>
+						$this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
+						. "?field=" . $row->getName()
+				]
+			];
 		}
 		else if( $row->getData('listing') )
 		{
@@ -236,6 +245,7 @@ class Controller extends ControllerCommon
 					'data-select-listing' =>
 						$this->Factory()->Url()->route( $this->getEntityName() , 'selectListing' , NULL , $this->getId() )
 						. "?key=" . $row->getData('listingKey')
+						. "&field_id=id_" . $row->getColumn()
 				]
 			];
 			$rst['actions'][] = [
@@ -2416,19 +2426,21 @@ class Controller extends ControllerCommon
 
     protected function selectListingAction()
     {
-    	$lang = Lang::getInstance()->getAll();
+		$get  = CMS::getInstance()->Request()->get();
+		$lang = Lang::getInstance()->getAll();
 		$langFlags = [];
 		foreach( $lang as $l )
 		{
 			$langFlags[ $l->id ] = $l->flag;
 		}
 
-    	$key = CMS::getInstance()->Request()->get('key') ;
-    	$all = SelectListing::getAllWithMultiLangByKey( $key ) ;
+		$key = CMS::getInstance()->Request()->get('key') ;
+		$all = SelectListing::getAllWithMultiLangByKey( $key ) ;
 
-		$this->setRender( 'key'      , $key       );
-		$this->setRender( 'elements' , $all       );
-		$this->setRender( 'flags'    , $langFlags );
+		$this->setRender( 'key'      , $key             );
+		$this->setRender( 'elements' , $all             );
+		$this->setRender( 'flags'    , $langFlags       );
+		$this->setRender( 'field_id' , $get['field_id'] );
 		$this->render('selectListing.twig') ;
     }
 

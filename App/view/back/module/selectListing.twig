@@ -127,10 +127,16 @@
                 e.stopPropagation();
 
                 $.ajax({
-                    url   : $(this).attr('action'),
-                    method: $(this).attr('method'),
-                    data  : $("[data-select-listing-form]").serialize()
+                    url    : $(this).attr('action'),
+                    method : $(this).attr('method'),
+                    data   : $("[data-select-listing-form]").serialize(),
+                    success: function(response) {
+                        reloadSelect( '#{{ field_id }}' );
+                        rightPanel.close();
+                    }
                 });
+
+
 
                 return false;
             });
