@@ -2448,67 +2448,88 @@ class Controller extends ControllerCommon
     {
     	$post      = CMS::getInstance()->Request()->post();
 		$key       = CMS::getInstance()->Request()->post('key') ;
-		$colValue  = SelectListing::getColumn( 'value', true );
+		$colOrder  = SelectListing::getColumn( 'order' );
 		$colId     = SelectListing::getColumn( 'id', true );
+		$colValue  = SelectListing::getColumn( 'value', true );
+		$order     = json_decode( $post['order'] , true );
 		$processed = [];
+		$position  = 1;
 
 		if( isset($post['item']) && is_array($post['item']) && count($post['item']) > 0 )
 		{
-			// Modification des éléments existant
-			foreach( $post['item'] as $id => $item )
+			if( is_array($order) && count($order) > 0 )
 			{
-				if( $id !== 'new' )
+				// Modification des éléments existant
+				foreach( $order as $o )
 				{
-					foreach( $item as $langId => $value )
+					// Modification d'un élément
+					if( $o['type'] === 'update' )
 					{
-						$value = trim( $value );
-						$req = SelectListing::findValue($id, $langId);
-						if( $value != $req->get( $colValue ) )
+						$id   = $o['id'];
+						// Récupération de l'élément
+						$item = $post['item'][ $id ];
+						// Gestion des langues
+						foreach( $item as $langId => $value )
 						{
-							$req->set( $colValue , $value );
+							$value = trim( $value );
+							$req   = SelectListing::findValue( $id , $langId );
+							if( $value != $req->get( $colValue ) )
+							{
+								$req->set( $colValue , $value );
+								$req->save();
+							}
+						}
+						// Gestion de la position
+						$req = SelectListing::findElement( $id );
+						if( $req->get( $colOrder ) != $position )
+						{
+							$req->set( $colOrder , $position );
 							$req->save();
 						}
+						// Autres gestions
+						$position++;
+						$processed[] = $id;
 					}
-					$processed[] = $id;
-				}
-			}
-
-			// Suppression des éléments inexistant
-			$req = SelectListing::findAllByKey( $key );
-			if( $req )
-			{
-				foreach( $req as $row )
-				{
-					$id = $row->get( $colId );
-					if( ! in_array( $id , $processed ) )
+					else if( $o['type'] === 'add' )
 					{
-						SelectListing::removeEntry( $id );
-					}
-				}
-			}
-
-			// Ajout des nouveau
-			if( isset($post['item']['new']) && is_array($post['item']['new']) && count($post['item']['new']) > 0 )
-			{
-				foreach( $post['item']['new'] as $item )
-				{
-					$add = false;
-					foreach( $item as $langId => $value )
-					{
-						if( strlen( trim( $value ) ) > 0 )
-						{
-							$add = true;
-						}
-					}
-					if( $add )
-					{
-						$id = SelectListing::add( $key );
+						$id   = $o['id'];
+						$item = $post['item']['new'][ $id ];
+						// Vérifications du contenu
+						$add = false;
 						foreach( $item as $langId => $value )
 						{
 							if( strlen( trim( $value ) ) > 0 )
 							{
-								SelectListing::addLang( $id , $langId , trim( $value ) );
+								$add = true;
 							}
+						}
+						// Ajout
+						if( $add )
+						{
+							$id = SelectListing::add( $key , $position );
+							foreach( $item as $langId => $value )
+							{
+								if( strlen( trim( $value ) ) > 0 )
+								{
+									SelectListing::addLang( $id , $langId , trim( $value ) );
+								}
+							}
+							$position++;
+							$processed[] = $id;
+						}
+					}
+				}
+
+				// Suppression des éléments inexistant
+				$req = SelectListing::findAllByKey( $key );
+				if( $req )
+				{
+					foreach( $req as $row )
+					{
+						$id = $row->get( $colId );
+						if( ! in_array( $id , $processed ) )
+						{
+							SelectListing::removeEntry( $id );
 						}
 					}
 				}

@@ -13,6 +13,13 @@ class SelectListing
 			->find_many();
 	}
 
+	public static function findElement( $id )
+	{
+		return self::prepareRequest()
+			->where_equal( self::getColumn('id') , $id )
+			->find_one();
+	}
+
 	public static function findValue( $elementId , $langId )
 	{
 		return \DB::for_table( 'select_listing_lang' )
@@ -67,7 +74,7 @@ class SelectListing
 
 		// Common
 		$req = \DB::for_table('select_listing')
-			->where_equal( self::getColumn('id' ) , $id )
+			->where_equal( self::getColumn('id') , $id )
 			->find_one();
 		if( $req )
 		{
@@ -75,11 +82,11 @@ class SelectListing
 		}
 	}
 
-	public static function add( $key )
+	public static function add( $key , $position = 0 )
 	{
 		$prep = \DB::for_table( 'select_listing' )->create();
-		$prep->set( self::getColumn( 'key' )   , $key );
-		$prep->set( self::getColumn( 'order' ) , 0    );
+		$prep->set( self::getColumn( 'key' )   , $key      );
+		$prep->set( self::getColumn( 'order' ) , $position );
 		$prep->save();
 		return $prep->get( self::getColumn('id') );
 	}

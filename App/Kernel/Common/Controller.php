@@ -585,7 +585,10 @@ class Controller
                         }
                         else if ( $row->getType() == 'date' )
                         {
-                            $date  = new \DateTime( $content->get( $row->getColumn() ) ) ;
+                        	$date = $content->get( $row->getColumn() ) == NULL && $row->getData('defaut') !== NULL
+								? \DateTime::createFromFormat( 'd/m/Y', $row->getData('defaut') )
+								: new \DateTime( $content->get( $row->getColumn() ) ) ;
+
                             if ( $row->getData('hour') === true )
                             {
                                 $value = $date->format('d/m/Y - H:i');

@@ -238,8 +238,8 @@ class Form
         }
         else
         {
-            $value = $field->getDefault() ;
-        }
+			$value = $field->getDefault() ;
+		}
 
         $className = ucfirst( $field->getType() ) ;
         $classExist = false ;

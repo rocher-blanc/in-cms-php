@@ -8,6 +8,7 @@
         <form action="{{ route( mod.name , 'selectListingSave' ) }}" method="POST" data-select-listing-form style="margin-bottom:0;">
             <input type="hidden" name="{{csrf_key}}" value="{{csrf_token}}" />
             <input type="hidden" name="key" value="{{ key }}" />
+            <input type="hidden" name="order" value="" data-select-listing-order />
 
             <table class="table table-striped table-hover" data-select-listing-table style="margin-bottom:0;">
                 <thead>
@@ -22,18 +23,20 @@
                 </thead>
                 <tbody>
                 {% for itemId, item in elements %}
-                    <tr class="tr1" data-parent-id="none">
-                        <td class="tr1" data-parent-id="none">
+                    <tr class="tr1" id="tr{{ loop.index }}" data-parent-id="none">
+                        <td class="tr1" id="tr{{ loop.index }}" data-parent-id="none">
                             <a href="javascript:;" class="color-theme orderTable"><i class="icon-move" style="margin:0"></i></a>
                         </td>
                         <td style="vertical-align: middle;">
                             {% for langId, langValue in item %}
-                                <div class="input-group input-group-icon" style="margin-bottom: 5px;">
-                                <span class="input-group-addon">
-                                    <span class="icon">
-                                        <i class="flag-icon flag-icon-{{ flags[langId] }}" style="margin:0;"></i>
-                                    </span>
-                                </span>
+                                <div {% if item | length > 1 %}class="input-group input-group-icon"{% endif %} style="margin-bottom:0;">
+                                    {% if item | length > 1 %}
+                                        <span class="input-group-addon">
+                                            <span class="icon">
+                                                <i class="flag-icon flag-icon-{{ flags[langId] }}" style="margin:0;"></i>
+                                            </span>
+                                        </span>
+                                    {% endif %}
                                     <input type="text" value="{{ langValue }}" class="form-control" name="item[{{ itemId }}][{{ langId }}]" maxlength="255" />
                                 </div>
                             {% endfor %}
@@ -49,12 +52,14 @@
                     </td>
                     <td style="vertical-align: middle;">
                         {% for langId,flag in flags %}
-                            <div class="input-group input-group-icon" style="margin-bottom: 5px;">
-                            <span class="input-group-addon">
-                                <span class="icon">
-                                    <i class="flag-icon flag-icon-{{ flag }}" style="margin:0;"></i>
-                                </span>
-                            </span>
+                            <div {% if item | length > 1 %}class="input-group input-group-icon"{% endif %} style="margin-bottom:0;">
+                                {% if item | length > 1 %}
+                                    <span class="input-group-addon">
+                                        <span class="icon">
+                                            <i class="flag-icon flag-icon-{{ flag }}" style="margin:0;"></i>
+                                        </span>
+                                    </span>
+                                {% endif %}
                                 <input type="text" value="" class="form-control" name="item[new][][{{ langId }}]" maxlength="255">
                             </div>
                         {% endfor %}
@@ -88,10 +93,12 @@
                 $copy
                     .show()
                     .removeAttr('data-select-listing-row-empty')
+                    .attr( 'id' , 'tr' + $(base).find('[data-select-listing-table] tbody tr').length )
                     .insertBefore( trs[ trs.length - 1 ] );
 
                 initRemoveButton($copy);
-                initMovable( base )
+                initMovable( base );
+                updateOrder( base );
 
                 return false;
             });
@@ -100,12 +107,15 @@
         initRemoveButton = function( base ) {
             $(base).find("[data-select-listing-remove-btn]").on('click', function() {
                 $(this).parents('tr').remove();
+                updateOrder( base );
                 return false;
             });
         }
 
         initMovable = function( base ) {
             $(base).find("[data-select-listing-table]").tableDnD({
+                dragHandle: '.orderTable',
+                onDragClass: 'myDragClass',
                 onDragStart: function(table, row) {
                     var parent = $(row).parent().parent().data('parent');
                     $("#" + $(row).data('tr')).addClass('myDragClass');
@@ -115,9 +125,9 @@
                         }
                     });
                 },
-                dragHandle: '.orderTable',
-                onDragClass: 'myDragClass',
-                // onDrop: function (table, row) {}
+                onDrop: function (table, row) {
+                    updateOrder( base );
+                }
             });
         }
 
@@ -136,10 +146,34 @@
                     }
                 });
 
-
-
                 return false;
             });
+        }
+
+        updateOrder = function( base ) {
+            var order      = [];
+            var newCounter = 0;
+
+            $(base).find("[data-select-listing-table]").find('tbody tr').each(function() {
+                var $input = $(this).find('input').first();
+                var name = $input
+                    .attr('name')
+                    .replace('item','');
+
+                name = name
+                    .substr( 1 , name.length - 2 )
+                    .split('][');
+
+                if( name[0] === 'new' ) {
+                    order.push({ type:'add', 'id':newCounter });
+                    newCounter++;
+                }
+                else {
+                    order.push({ type:'update', 'id':name[0] });
+                }
+            });
+
+            $(base).find("[data-select-listing-order]").val( JSON.stringify(order) );
         }
 
         $(function () {
@@ -148,6 +182,7 @@
             initRemoveButton( base );
             initMovable( base );
             initSave( base );
+            updateOrder( base );
         });
     </script>
 {% endblock %}
