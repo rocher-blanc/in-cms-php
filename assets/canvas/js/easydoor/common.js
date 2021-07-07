@@ -180,3 +180,66 @@ modalConfig = function( onglet ) {
         }
     };
 };
+
+
+var rightPanel = {
+    panel    : $('.right-panel'),
+    loader   : $('.right-panel-loader'),
+    closeBtn : $('.right-panel-close'),
+    content  : $('.right-panel-content'),
+    init: function() {
+        var self = this;
+        this.closeBtn.on('click', function() {
+            self.close();
+        });
+    },
+    open: function() {
+        if( ! this.panel.hasClass('open') ) {
+            this.panel.addClass('open');
+        }
+        return this;
+    },
+    close: function() {
+        if( this.panel.hasClass('open') ) {
+            this.panel.removeClass('open');
+        }
+        return this;
+    },
+    showLoader: function() {
+        this.loader.slideDown( 0 );
+        return this;
+    },
+    hideLoader: function() {
+        this.loader.slideUp( 0 );
+        return this;
+    },
+    showContent: function() {
+        this.content.fadeIn( 800 );
+        return this;
+    },
+    hideContent: function() {
+        this.content.fadeOut( 0 );
+        return this;
+    },
+    setContent: function(html) {
+        this.content.html( html );
+        return this;
+    },
+    load: function( url ) {
+        var self = this;
+
+        this.open()
+            .hideContent()
+            .showLoader();
+
+        $.ajax({
+            url: url,
+            success: function( response ) {
+                self.hideLoader()
+                    .setContent(response)
+                    .showContent();
+            }
+        });
+    }
+}
+rightPanel.init();

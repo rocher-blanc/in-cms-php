@@ -32,9 +32,11 @@
         {{ block('contenu') }}
 
         <div class="right-panel">
-<!--            <span>i.</span>-->
-            <div class="right-panel-loader" style="display:none;">Chargement</div>
-            <div class="right-panel-content" style="display:none;">Test</div>
+            <span class="fa fa-times right-panel-close"></span>
+            <div class="right-panel-loader" style="display:none;">
+                <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+            </div>
+            <div class="right-panel-content" style="display:none;"></div>
         </div>
 
         <div id="gotoTop" class="icon-angle-up"></div>
@@ -53,95 +55,5 @@
         {% endif %}
         {{ block('javascripts') }}
         {{ block('javascripts_end') }}
-
-        <style>
-            .right-panel {
-                position: fixed;
-                top: 0;
-                right: -640px;
-                width: 90%;
-                max-width: 640px;
-                height: 100%;
-                padding: 20px;
-                background: white;
-                z-index: 8001;
-                box-shadow: 0 0 5px 0 #000a;
-                overflow: auto;
-                transition: all .2s;
-            }
-            .right-panel.open {
-                transform: translateX( -100% );
-                transition: all .6s;
-            }
-            .right-panel-loader {
-                text-align: center;
-                padding: 50px 0;
-            }
-            .right-panel-content {
-            }
-        </style>
-        <script>
-            var rightPanel = {
-                panel  : $('.right-panel'),
-                loader : $('.right-panel-loader'),
-                content: $('.right-panel-content'),
-
-                open: function() {
-                    if( ! this.panel.hasClass('open') ) {
-                        this.panel.addClass('open');
-                    }
-                    return this;
-                },
-
-                close: function() {
-                    if( this.panel.hasClass('open') ) {
-                        this.panel.removeClass('open');
-                    }
-                    return this;
-                },
-
-                showLoader: function() {
-                    this.loader.slideDown( 200 );
-                    return this;
-                },
-
-                hideLoader: function() {
-                    this.loader.slideUp( 500 );
-                    return this;
-                },
-
-                showContent: function() {
-                    this.content.slideDown( 500 );
-                    return this;
-                },
-
-                hideContent: function() {
-                    this.content.slideUp( 0 );
-                    return this;
-                },
-
-                setContent: function(html) {
-                    this.content.html( html );
-                    return this;
-                },
-
-                load: function( url ) {
-                    var self = this;
-
-                    this.open()
-                        .hideContent()
-                        .showLoader();
-
-                    $.ajax({
-                        url: url,
-                        success: function( response ) {
-                            self.hideLoader()
-                                .setContent(response)
-                                .showContent();
-                        }
-                    });
-                }
-            }
-        </script>
     </body>
 </html>
