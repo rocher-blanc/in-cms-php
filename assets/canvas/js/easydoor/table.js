@@ -37,7 +37,6 @@ listenFormTable = function( base , firstCall ) {
     $( '#' + base ).find('form.tableFormSearch').each(function() {
         var $form = $(this);
 
-        console.log( firstCall );
         if( firstCall === true && localStorage.getItem( $form.data('container') ) !== null ) {
 
             // Retrait de la page conservée
@@ -254,12 +253,25 @@ listenFormTable = function( base , firstCall ) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                localStorage.setItem( $form.data('container') , $form.serialize() );
+                var data  = $form.serializeArray();
+                var query = [];
+                for( var i=0 ; i<data.length ; i++ ) {
+                    if( data[i].name !== 'active' ) {
+                        query.push( data[i].name + '=' + data[i].value );
+                    }
+                    else
+                    {
+                        data.splice( i , 1 );
+                        i--;
+                    }
+                }
+
+                localStorage.setItem( $form.data('container') , query.join('&') );
 
                 $.ajax({
                     type: $form.attr('method'),
                     url: $form.attr('action'),
-                    data: $form.serialize(),
+                    data: data,
                     success: function(html) {
                         $( '#' + $form.data('container') ).html( html ) ;
                         listenFormTable( base ) ;
@@ -300,7 +312,6 @@ listenFormTable = function( base , firstCall ) {
                         dragHandle: '.orderTable',
                         onDragClass: 'myDragClass',
                         onDrop: function (table, row) {
-                            console.log($.tableDnD.serialize());
                             $.ajax({
                                 type: 'POST',
                                 data: $("meta[name=tokename]").attr("content") + '=' + $("meta[name=token]").attr("content") + '&' + $.tableDnD.serialize(),
@@ -409,8 +420,6 @@ deleteManyElement = function( url , base ) {
     $("[data-module-table-action-many-checkbox]:checked").each(function(index, el) {
         data.listIds.push( $(el).attr('data-id') );
     });
-
-    console.log( data );
 
     $.ajax({
         type: "POST",
