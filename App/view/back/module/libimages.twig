@@ -1,76 +1,67 @@
-{% extends 'modal.twig' %}
+{% extends 'right-panel.twig' %}
 
 {% block title_page %}<h3>{{ _('picture_biblio')}}</h3>{% endblock %}
 {% block module %}
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-8">
+    <div class="tabs side-tabs nobottommargin clearfix" id="lib-images">
+        <ul class="tab-nav tab-nav2 clearfix">
+            {% for gallery in galleries %}
+                <li><a href="#gallery-{{ gallery.id }}">{{ gallery.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <div class="tab-container">
+            {% for gallery in galleries %}
+                <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
 
-                <div class="tabs side-tabs nobottommargin clearfix" id="lib-images">
-                    <ul class="tab-nav tab-nav2 clearfix">
-                        {% for gallery in galleries %}
-                            <li><a href="#gallery-{{ gallery.id }}">{{ gallery.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                    <div class="tab-container">
-                        {% for gallery in galleries %}
-                            <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
-
-                                <div class="bottommargin-sm" style="position:relative;">
-                                    <input type="search" class="form-control" id="gallery-search" placeholder="Rechercher..." />
-                                    <i class="icon-line-cross" id="gallery-search-reset"></i>
-                                </div>
-
-                                {% if gallery.comment | length > 0 %}
-                                    <div style="margin-bottom: 10px;">
-                                        <em>{{ gallery.comment }}</em>
-                                    </div>
-                                {% endif %}
-
-                                {% if loop.first %}
-                                    {% for img in images %}
-                                        <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
-                                            <img src="{{ img.media_mini_name }}" data-full="{{ img.media_mini_name | split("/t") | first }}/{{ img.media_name }}"  class="" />
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-
-                            </div>
-                        {% endfor %}
+                    <div class="bottommargin-sm">
+                        <input type="search" class="form-control gallery-search" placeholder="Rechercher..." />
+                        <i class="icon-line-cross gallery-search-reset"></i>
                     </div>
-                </div>
 
-            </div>
-            <div class="col-xs-4">
-                <div id="lib-images-zoom"></div>
-            </div>
+                    {% if gallery.comment | length > 0 %}
+                        <div style="margin-bottom: 10px;">
+                            <em>{{ gallery.comment }}</em>
+                        </div>
+                    {% endif %}
+
+                    <div class="gallery-content">
+                        {% if loop.first %}
+                            {% for img in images %}
+                                <a href="javascript:;" class="select-picture" data-id="{{ img.media_id }}">
+                                    <img src="{{ img.media_mini_name }}" data-full="{{ img.media_mini_name | split("/t") | first }}/{{ img.media_name }}"  class="" />
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
         </div>
     </div>
 
+    <div id="lib-images-zoom"></div>
+
     <style>
-        #gallery-search {
+        .gallery-search {
+            position: relative;
             padding-right: 32px;
         }
-        #gallery-search-reset {
+        .gallery-search-reset {
             position: absolute;
-            top: 7px;
+            top: 21px;
             right: 10px;
             cursor: pointer;
         }
-
         .select-picture img {
             border: 1px #d6d6d6 solid;
-            margin-right: 3px;
+            margin: 0 3px 7px 0;
         }
-
         #lib-images-zoom {
             position: relative;
             border: 1px #d6d6d6 solid;
             text-align: center;
             height:400px;
         }
-
         #lib-images-zoom img {
             position: absolute;
             top: 50%;
@@ -83,14 +74,18 @@
         }
     </style>
 
-
     <script>
         var initSelectPicture = function (base) {
             $(base).find('.select-picture').click(function (e) {
                 e.preventDefault();
+                e.stopPropagation();
+
                 $('#id_{{ name }}').val($(this).data('id'));
                 $('#source_{{ field_name }}').attr('src', $(this).find('img').attr('src'));
-                $.magnificPopup.close();
+
+                rightPanel.close();
+
+                return false;
             });
 
             $(base).find("img").on("mouseenter", function() {
@@ -115,29 +110,38 @@
                 });
             });
 
-            $(base).find("#gallery-search-reset").on("click", function() {
-                $(this).prev().val("");
-                $(this).parents(".tab-content").find(".select-picture").show();
-            });
+            // $(base).find("#gallery-search-reset").on("click", function() {
+            //     $(this).prev().val("");
+            //     $(this).parents(".tab-content").find(".select-picture").show();
+            // });
         };
 
         $(function () {
             initSelectPicture( "#lib-images" );
             initLibSearch( "#lib-images" );
 
+            $tabs = $('#lib-images .tab-nav');
+            $('#lib-images-zoom')
+                .css( 'position', 'absolute' )
+                .css( 'top' , $tabs.offset().top + $tabs.outerHeight() )
+                .css( 'left' , 0 )
+                .css( 'width' , $tabs.width() )
+                .css( 'height' , $tabs.width() );
+
             $("#lib-images").tabs({
                 active: 0,
                 activate: function (event, ui) {
-                    var $panel = $(ui.newPanel).eq(0);
+                    var $panel   = $(ui.newPanel).eq(0);
+                    var $content = $panel.find(".gallery-content");
                     if ($panel.attr("data-loaded") === "0") {
 
-                        $panel.html( '<div class="text-center"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>' );
+                        $content.html( '<div class="text-center"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>' );
 
                         $.ajax({
                             url: $panel.attr('data-url'),
                             method: "GET",
                             success: function (response) {
-                                $panel.html(response);
+                                $content.html(response);
                                 $panel.attr("data-loaded", 1);
 
                                 initSelectPicture( $panel );

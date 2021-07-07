@@ -25,6 +25,7 @@ init = function( base ) {
     checkVideo( base );
     initSelectListing( base );
     initSelectReload( base );
+    initLibPicture( base );
 };
 
 modalDepedency = function ( base ) {
@@ -1096,3 +1097,19 @@ reloadSelect = function( select ) {
         }
     });
 }
+
+/*
+#####################################################################################################################################
+#####################################################        SELECT         #########################################################
+#####################################################################################################################################
+*/
+
+initLibPicture = function( base ) {
+    if ( $( base ).find("[data-lib-picture]").length ) {
+        $( base ).find('[data-lib-picture]').click(function() {
+            console.log(  $(this).attr('href') );
+            rightPanel.load( $(this).attr('href') );
+            return false;
+        });
+    }
+};
