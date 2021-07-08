@@ -156,6 +156,7 @@ modalConfig = function( onglet ) {
     return {
         type: 'ajax', 
         closeBtnInside: false,
+        focus: 'input',
         callbacks: {
             ajaxContentAdded: function(mfpResponse) {
                 SEMICOLON.widget.loadFlexSlider();
