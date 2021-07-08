@@ -13,8 +13,8 @@
             {% for gallery in galleries %}
                 <div class="tab-content clearfix" id="gallery-{{ gallery.id }}" data-id="{{ gallery.id }}" data-loaded="{{ loop.first ? 1 : 0 }}" data-url="{{ route( mod.name , 'libimagesgallery' ) }}?gallery_id={{ gallery.id }}">
 
-                    <div class="bottommargin-sm">
-                        <input type="search" class="form-control gallery-search" placeholder="Rechercher..." />
+                    <div class="bottommargin-sm gallery-search">
+                        <input type="text" class="form-control" placeholder="Rechercher..." />
                         <i class="icon-line-cross gallery-search-reset"></i>
                     </div>
 
@@ -42,13 +42,22 @@
     <div id="lib-images-zoom"></div>
 
     <style>
+        .right-panel .side-tabs ul.tab-nav {
+            padding: 10px 0;
+        }
+
+        .right-panel .tab-container {
+            padding: 10px 0 0 15px;
+        }
         .gallery-search {
             position: relative;
+        }
+        .gallery-search input {
             padding-right: 32px;
         }
         .gallery-search-reset {
             position: absolute;
-            top: 21px;
+            top: 7px;
             right: 10px;
             cursor: pointer;
         }
@@ -101,7 +110,7 @@
         };
 
         var initLibSearch = function (base) {
-            $(base).find("#gallery-search").on("input" , function () {
+            $(base).find(".gallery-search input").on("input" , function () {
                 var key = $(this).val().trim();
                 $(this).parents(".tab-content").find(".select-picture").each(function() {
                     let split = $(this).find("img").data("full").split("/");
@@ -110,10 +119,10 @@
                 });
             });
 
-            // $(base).find("#gallery-search-reset").on("click", function() {
-            //     $(this).prev().val("");
-            //     $(this).parents(".tab-content").find(".select-picture").show();
-            // });
+            $(base).find(".gallery-search-reset").on("click", function() {
+                $(this).prev().val("");
+                $(this).parents(".tab-content").find(".select-picture").show();
+            });
         };
 
         $(function () {
