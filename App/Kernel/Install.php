@@ -16,7 +16,7 @@ class Install
 
     public static function postUpdate( Event $event )
     {
-        $vendorName = 'JWebCreation/cms' ;
+        $vendorName = 'jwebcreation/cms' ;
 
         defined('VENDOR_PATH') || define("VENDOR_PATH", $event->getComposer()->getConfig()->get('vendor-dir'));
         defined('_PATH_') || define('_PATH_', substr( VENDOR_PATH, 0 , ( strlen( "/vendor" ) * -1 ) ) );
@@ -342,7 +342,7 @@ class Install
             if ( ! is_dir( _PATH_ . "/" . $folder ) ) mkdir( _PATH_ . "/" . $folder ) ;
         }
 
-        self::copyr( VENDOR_PATH . '/JWebCreation/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
+        self::copyr( VENDOR_PATH . '/jwebcreation/cms/assets' , _PATH_ . "/web/assets/vendor/cmsmedias" );
     }
 
     protected static function copyTranslationFiles()

@@ -24,8 +24,8 @@ class Repository extends \App\Kernel\Common\Repository
     {
         $class = $this->Container()->module( $this->getName() )->getEntityClassName() ;
         $files[] = _PATH_ . "" . str_replace( "\\" , "/" , $class ) ;
-        $files[] = VENDOR_PATH . '/JWebCreation/cms' . str_replace( "\\" , "/" , $class ) ;
-        $files[] = VENDOR_PATH . '/JWebCreation/jshop' . str_replace( "\\" , "/" , $class ) ;
+        $files[] = VENDOR_PATH . '/jwebcreation/cms' . str_replace( "\\" , "/" , $class ) ;
+        $files[] = VENDOR_PATH . '/jwebcreation/jshop' . str_replace( "\\" , "/" , $class ) ;
 
         foreach( $files as $fileforeach )
         {
