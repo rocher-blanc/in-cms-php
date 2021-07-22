@@ -1358,7 +1358,7 @@ class Builder extends Model
     }
 
     /* PARENTS */
-    protected function enableParent( $target )
+    protected function enableParent( $target, $limit = null )
     {
         $this->build('parent_id' , true )
             ->isSelect()
@@ -1367,6 +1367,7 @@ class Builder extends Model
         $this->setParent() ;
         $this->setParentName( $this->field()->getName() ) ;
         $this->setParentTarget( $target ) ;
+        if ( $limit ) $this->field()->setData( "limit", $limit );
         $this->field()->setData( "parent" , true ) ;
         $this->field()->setData( "target" , $target ) ;
     }
