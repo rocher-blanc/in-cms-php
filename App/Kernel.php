@@ -63,7 +63,7 @@ class Kernel
 
     public function load()
     {
-        defined('APPLICATION_PATH') || define('APPLICATION_PATH', VENDOR_PATH . '/JWebCreation/cms/App');
+        defined('APPLICATION_PATH') || define('APPLICATION_PATH', VENDOR_PATH . '/jwebcreation/cms/App');
 
         require APPLICATION_PATH . '/config/config.php';
         require APPLICATION_PATH . '/config/config.' . $this->config('config') . '.php';
