@@ -25,7 +25,7 @@ class Select extends \App\Kernel\Back\Form
         {
             if ( ! $field->getData('noEmptyValue') ) $select = '<option value=""' . ( $value === NULL ? ' selected' : '' ) . '>---</option>' ;
 //            $select.= $this->chieldParent( $field->getData('option') , $field->getData('target') , $value , "" ) ;
-            $select.= $this->chieldParent( $field->getData('option') , "titre" , $value , "" ) ;
+            $select.= $this->chieldParent( $field->getData('option') , "titre" , $value , "", $field->getData('limit') ) ;
         }
         else
         {
@@ -57,7 +57,7 @@ class Select extends \App\Kernel\Back\Form
 		</select>' ;
 	}
 
-    private function chieldParent( $chield , $target , $value , $hierarchy )
+    private function chieldParent( $chield , $target , $value , $hierarchy, $limit = null )
     {
         $select = '';
         $index  = 1;
@@ -65,17 +65,20 @@ class Select extends \App\Kernel\Back\Form
         {
             if ( $row->noview != true )
             {
-                $select .= '<option value="' . $row->id . '"' . ( $row->id == $value ? ' selected' : '' ) . '>' ;
-                for( $i = 0; $i < $row->level; $i++ )
+                if($row->level < $limit or $limit === null)
                 {
-                    $select .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ;
-                }
-                $select .= '<span style="font-weight: bold;">' . $hierarchy . $index .'.</span> ' ;
-                $select .= $row->$target . '</option>' ;
+                    $select .= '<option value="' . $row->id . '"' . ( $row->id == $value ? ' selected' : '' ) . '>' ;
+                    for( $i = 0; $i < $row->level; $i++ )
+                    {
+                        $select .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ;
+                    }
+                    $select .= '<span style="font-weight: bold;">' . $hierarchy . $index .'.</span> ' ;
+                    $select .= $row->$target . '</option>' ;
 
-                if ( !empty( $row->subpages ) )
-                {
-                    $select .= $this->chieldParent( $row->subpages , $target , $value , $hierarchy . $index . "." ) ;
+                    if ( !empty( $row->subpages ) )
+                    {
+                        $select .= $this->chieldParent( $row->subpages , $target , $value , $hierarchy . $index . ".", $limit ) ;
+                    }
                 }
             }
             $index++;
