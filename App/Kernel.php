@@ -395,9 +395,12 @@ class Kernel
             }
         }
 
-        if ( $pass == false ) $this->viewTemplateError('chmod' , [
-            'folderTab' => $folders
-        ]) ;
+        if ( $pass == false )
+        {
+            $this->viewTemplateError('chmod' , [
+                'folderTab' => $folders
+            ]) ;
+        }
     }
 
     protected function viewTemplateError( $tpl , $arg = [] )
