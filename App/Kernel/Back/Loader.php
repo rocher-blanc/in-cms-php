@@ -38,19 +38,17 @@ class Loader
         /* ************* General Configuration *************** */
         #########################################################
 
-        $admin = $this->getAdminFolder() ;
-
         CMS::getInstance()->setConfig([
-            'admin.url' 	=> $admin,
+            'admin.url' 	=> $this->getAdminFolder(),
             'token' 		=> 'csrf_token',
             'config' 		=> 'back',
             'session' 		=> 'auth_user',
             'session_name' 	=> 'Admin_' . md5( $_SERVER['SERVER_NAME'] ),
             'auth_username' => 'username',
             'auth_password' => 'password',
-            'login.url' 	=> $admin . '/secured/login',
-            'logout.url' 	=> $admin . '/secured/logout',
-            'forbidden.url' => $admin . '/secured/forbidden'
+            'login.url' 	=> $this->getAdminFolder() . '/secured/login',
+            'logout.url' 	=> $this->getAdminFolder() . '/secured/logout',
+            'forbidden.url' => $this->getAdminFolder() . '/secured/forbidden'
         ]);
 
         $this->kernel->config(CMS::getInstance()->getConfig());
@@ -88,7 +86,6 @@ class Loader
 
     public function index( $run = true )
     {
-
         $this->preload();
         $this->kernel->run( $run );
     }
