@@ -473,8 +473,18 @@ class Router
 
         if ( $element == false )
         {
-            $file = VIEW_PROJECT_PATH . '/module/' . $result->module_class_name . '/getall.twig' ;
-            if ( ! file_exists( $file ) )
+            $fileExist = false;
+
+            foreach( $this->getApp()->view()->twigTemplateDirs as $folder )
+            {
+                $file = $folder . '/module/' . $result->module_class_name . '/getall.twig' ;
+                if ( file_exists( $file ) )
+                {
+                    $fileExist = true;
+                }
+            }
+
+            if ( ! $fileExist )
             {
                 $this->noRoute();
                 return false ;
