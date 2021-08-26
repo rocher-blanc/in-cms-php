@@ -632,7 +632,14 @@ class Router
                         }
                     }
 
-                    $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
+                    if ( file_exists( CONTROLLER_PROJECT_PATH . "/Page" . $page->page_id . ".php" ) )
+                    {
+                        $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
+                    }
+                    else
+                    {
+                        $ControllerClass = 'DefaultPage' ;
+                    }
 
                     $pageClass = new $ControllerClass;
                     $pageClass->setId( $page->page_id );
