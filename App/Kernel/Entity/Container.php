@@ -115,6 +115,8 @@ class Container
 
     public function getRepository( $admin = false )
     {
+        $name = '' ;
+
         if ( ( $admin == true and $this->repositoryBack === NULL ) or ( $admin == false and $this->repositoryFront === NULL )  )
         {
             foreach( $this->namespace as $namespace )
@@ -123,6 +125,11 @@ class Container
                 {
                     $name = "\\" . $namespace . "\Module\Repository\\" . ( $admin ? 'Back' : 'Front') . "\\" . $this->getName() ;
                 }
+            }
+
+            if ( empty( $name ) )
+            {
+                $name = "\App\Kernel\\" . ( $admin ? 'Back' : 'Front') . "\\Base\Repository" ;
             }
 
             if ( $admin )   $this->setRepositoryBack( new $name( $this->getName() ) );
@@ -135,6 +142,8 @@ class Container
 
     public function getWebservice()
     {
+        $name = '' ;
+
         if ( $this->webservice === NULL )
         {
             foreach( $this->namespace as $namespace )
@@ -143,6 +152,11 @@ class Container
                 {
                     $name = "\\" . $namespace . "\Module\Webservice\\" . $this->getName() ;
                 }
+            }
+
+            if ( empty( $name ) )
+            {
+                $name = "\App\Kernel\Front\Base\Webservice" ;
             }
 
             $this->setWebservice( new $name( $this->getName() ) );
@@ -167,7 +181,7 @@ class Container
 
             if ( empty( $ControllerClass ) )
             {
-                throw new Exception("Class for module \"" . $this->getName() . "\" is not find") ;
+                $ControllerClass = "\App\Kernel\\" . ( $admin ? 'Back' : 'Front') . "\\Base\Controller" ;
             }
             
             $Controller = new $ControllerClass;

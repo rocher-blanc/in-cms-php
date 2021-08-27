@@ -88,7 +88,7 @@ class Install
         {
             foreach( $files as $file )
             {
-                if ( strpos( $file , 'vps1') !== false )
+                if ( strpos( $file , '.dev.') !== false )
                 {
                     $monfichier = str_replace( PROJECT_PATH . "/config/config." , "" , $file );
                     $url = str_replace( ".php" , "" , $monfichier );
