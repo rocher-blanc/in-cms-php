@@ -1628,7 +1628,6 @@ class Controller extends ControllerCommon
 	public function duplicateElement( $originalElementId , $showCopyFrom = true )
 	{
 		$content = $this->getRepository()->findOne( $originalElementId );
-
 		if( $this->getEntity()->hasMultilang() )
 		{
 			$contentLang = [];
@@ -1650,22 +1649,25 @@ class Controller extends ControllerCommon
 			$data->create();
 			foreach( $this->getEntity()->getField() as $row )
 			{
-				if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
-				{
-					if ( $row->hasLang()  )
-					{
-						foreach( $contentLang as $langId => $lang )
-						{
-							$data->set( $row->getName() , $lang->get( $row->getColumn() ) , $langId );
-						}
-					}
-					else
-					{
-						$data->set( $row->getName() , $content->get( $row->getColumn() ) );
-					}
-				}
+                if (!explode("-", $row->getName())[1] )
+                {
+                    if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
+                    {
+                        if ( $row->hasLang()  )
+                        {
+                            foreach( $contentLang as $langId => $lang )
+                            {
+                                $data->set( $row->getName() , $lang->get( $row->getColumn() ) , $langId );
+                            }
+                        }
+                        else
+                        {
+                            $data->set( $row->getName() , $content->get( $row->getColumn() ) );
+                        }
+                    }
+                }
 			}
-
+            
 			if ( $this->getEntity()->hasValidation() )
 			{
 				$data->set( $this->getEntity()->getValidationName() , 0 );
