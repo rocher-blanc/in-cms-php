@@ -1649,7 +1649,7 @@ class Controller extends ControllerCommon
 			$data->create();
 			foreach( $this->getEntity()->getField() as $row )
 			{
-                if (!explode("-", $row->getName())[1] )
+                if (explode("-", $row->getName())[1] !== "no" )
                 {
                     if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
                     {
@@ -1667,7 +1667,7 @@ class Controller extends ControllerCommon
                     }
                 }
 			}
-            
+
 			if ( $this->getEntity()->hasValidation() )
 			{
 				$data->set( $this->getEntity()->getValidationName() , 0 );
