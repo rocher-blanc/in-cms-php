@@ -22,6 +22,7 @@ class Repository extends \App\Kernel\Common\Repository
 
     public function checkIfPatchTable( $id )
     {
+        $file = null ;
         $class = $this->Container()->module( $this->getName() )->getEntityClassName() ;
         $files[] = _PATH_ . "" . str_replace( "\\" , "/" , $class ) ;
         $files[] = VENDOR_PATH . '/jwebcreation/cms' . str_replace( "\\" , "/" , $class ) ;
@@ -35,10 +36,13 @@ class Repository extends \App\Kernel\Common\Repository
             }
         }
 
-        if ( $this->Container()->param()->get('key_module_' . $id ) != md5_file( $file ) )
+        if ( $file !== null )
         {
-            \DB::patchModuleTable( $this->getName() ) ;
-            $this->Container()->param()->set('key_module_' . $id , md5_file( $file ) );
+            if ( $this->Container()->param()->get('key_module_' . $id ) != md5_file( $file ) )
+            {
+                \DB::patchModuleTable( $this->getName() ) ;
+                $this->Container()->param()->set('key_module_' . $id , md5_file( $file ) );
+            }
         }
     }
 
