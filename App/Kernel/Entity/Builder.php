@@ -1896,16 +1896,20 @@ class Builder extends Model
     protected function isRegion()
     {
         $this->build('region' , true )
+            ->column(1,2)
+            ->group("profile")
             ->isSelect(false, 255)
-            ->option($this->department)
+            ->option($this->region)
             ->name('Région');
     }
 
     protected function isDepartment ()
     {
         $this->build('department' , true )
+            ->column(1,2)
+            ->group("profile")
             ->isSelect(false, 255)
-            ->option($this->region)
+            ->option($this->department)
             ->name('Département');
     }
 
