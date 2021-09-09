@@ -107,7 +107,7 @@ let drawTopol = function( config ) {
 
                 setTimeout(function(){
                     duplicateTemplate(config.duplicate.id, config.duplicate.route);
-                }, 3000);
+                }, 1000);
             },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
