@@ -27,6 +27,8 @@ let duplicateTemplate = function( idt , url_ajax ) {
             Notify(errorThrown, false);
         }
     });
+    console.log('duplicateTemplate is call');
+
 };
 
 let sendTest = function( url_send , email ) {
@@ -100,6 +102,7 @@ let drawTopol = function( config ) {
             },
             onInit() {
                 duplicateTemplate(config.duplicate.id, config.duplicate.route);
+                console.log('test onInit');
             },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
