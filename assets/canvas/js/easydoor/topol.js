@@ -103,8 +103,11 @@ let drawTopol = function( config ) {
                 sendTest( config.urlSend , email);
             },
             onInit() {
-                duplicateTemplate(config.duplicate.id, config.duplicate.route);
                 console.log('test onInit');
+
+                setTimeout(function(){
+                    duplicateTemplate(config.duplicate.id, config.duplicate.route);
+                }, 3000);
             },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
