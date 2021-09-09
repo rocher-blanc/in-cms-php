@@ -15,6 +15,8 @@ let saveTemplate = function( url_post , url_redirect , html , json , redirect ) 
 };
 
 let duplicateTemplate = function( idt , url_ajax ) {
+    console.log('duplicateTemplate is call');
+
     $.ajax({
         type: "POST",
         url: url_ajax,
@@ -22,12 +24,12 @@ let duplicateTemplate = function( idt , url_ajax ) {
         success: function(data){
             const json = JSON.parse(JSON.stringify(data));
             TopolPlugin.load(json);
+            console.log(json);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             Notify(errorThrown, false);
         }
     });
-    console.log('duplicateTemplate is call');
 
 };
 
