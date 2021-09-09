@@ -98,6 +98,9 @@ let drawTopol = function( config ) {
             onTestSend: function (email, json, html) {
                 sendTest( config.urlSend , email);
             },
+            onInit() {
+                duplicateTemplate(config.duplicate.id, config.duplicate.route);
+            },
             onOpenFileManager: function () {
                 fileManager( config.urlFileManager , config.urlUpload );
             },

@@ -44,6 +44,10 @@
                 id: "#topolcontent",
                 duplicateId: "#loadDupication",
                 duplicateSelect: "#duplicate-model",
+                duplicate: {
+                    id: '{{ entity_id }}-{{ id }}',
+                    route: '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}'
+                },
                 apiKey: "{{ apiKey }}",
                 userId: "{{ userId }}",
                 idTopol: {{ idtopol }},
@@ -55,7 +59,6 @@
                 urlFileManager: '{{ route( mod.name , 'topolFileManager' , uri_id_parent ) }}',
                 urlUpload: '{{ route( mod.name , 'topolFileUpload' , uri_id_parent ) }}'
             });
-            duplicateTemplate('{{ entity_id }}-{{ id }}', '{{ route( mod.name , 'duplicate' , uri_id_parent , id ) }}');
         });
     </script>
 
