@@ -11,7 +11,16 @@ class Loader
 
     public function __construct()
     {
-        $this->kernel = new Kernel();
+        $this->kernel = new Kernel( $this->getConfig() );
+    }
+
+    protected function getConfig(): array
+    {
+        return [
+            'session' 		=> 'auth_user',
+            'config' 		=> 'front',
+            'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
+        ];
     }
 
     protected function preload()
@@ -20,11 +29,7 @@ class Loader
         /* ************* General Configuration *************** */
         #########################################################
 
-        CMS::getInstance()->setConfig([
-            'session' 		=> 'auth_user',
-            'config' 		=> 'front',
-            'session_name' 	=> 'Front_' . md5( $_SERVER['SERVER_NAME'] )
-        ]);
+        CMS::getInstance()->setConfig( $this->getConfig() );
 
         $this->kernel->config(CMS::getInstance()->getConfig());
         $this->kernel->load();

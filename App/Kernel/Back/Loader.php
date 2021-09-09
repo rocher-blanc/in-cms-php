@@ -19,12 +19,28 @@ class Loader
 
     public function __construct()
     {
-        $this->kernel = new Kernel();
+        $this->kernel = new Kernel( $this->getConfig() );
     }
 
     protected function getAdminFolder()
     {
         return "/" . Install::getAdminFolder() ;
+    }
+
+    protected function getConfig(): array
+    {
+        return [
+            'admin.url' 	=> $this->getAdminFolder(),
+            'token' 		=> 'csrf_token',
+            'config' 		=> 'back',
+            'session' 		=> 'auth_user',
+            'session_name' 	=> 'Admin_' . md5( $_SERVER['SERVER_NAME'] ),
+            'auth_username' => 'username',
+            'auth_password' => 'password',
+            'login.url' 	=> $this->getAdminFolder() . '/secured/login',
+            'logout.url' 	=> $this->getAdminFolder() . '/secured/logout',
+            'forbidden.url' => $this->getAdminFolder() . '/secured/forbidden'
+        ];
     }
 
     protected function getRouterFolder()
@@ -38,18 +54,7 @@ class Loader
         /* ************* General Configuration *************** */
         #########################################################
 
-        CMS::getInstance()->setConfig([
-            'admin.url' 	=> $this->getAdminFolder(),
-            'token' 		=> 'csrf_token',
-            'config' 		=> 'back',
-            'session' 		=> 'auth_user',
-            'session_name' 	=> 'Admin_' . md5( $_SERVER['SERVER_NAME'] ),
-            'auth_username' => 'username',
-            'auth_password' => 'password',
-            'login.url' 	=> $this->getAdminFolder() . '/secured/login',
-            'logout.url' 	=> $this->getAdminFolder() . '/secured/logout',
-            'forbidden.url' => $this->getAdminFolder() . '/secured/forbidden'
-        ]);
+        CMS::getInstance()->setConfig( $this->getConfig() );
 
         $this->kernel->config(CMS::getInstance()->getConfig());
         $this->kernel->load();
