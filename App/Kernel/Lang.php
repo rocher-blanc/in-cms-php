@@ -122,7 +122,7 @@ class Lang
         {
             $rows = $rows->where_equal('lang_front', 1);
         }
-        
+
         $rows = $rows->find_many();
         /*
         if ( $front == true )
