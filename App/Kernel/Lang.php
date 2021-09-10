@@ -116,9 +116,14 @@ class Lang
     {
         $rows = \DB::for_table('lang')
             ->where_gt('lang_status', '0')
-            ->where_equal('lang_front', 1)
-            ->order_by_desc('lang_status')
-            ->find_many();
+            ->order_by_desc('lang_status');
+
+        if ( $front )
+        {
+            $rows = $rows->where_equal('lang_front', 1);
+        }
+        
+        $rows = $rows->find_many();
         /*
         if ( $front == true )
         {
