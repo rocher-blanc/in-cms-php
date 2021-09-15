@@ -6,6 +6,9 @@ use App\Kernel\Front\User;
 
 class Controller extends \App\Kernel\Front\Controller
 {
+    /**
+     * @return User
+     */
     protected function User()
     {
         return User::getInstance();

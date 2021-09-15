@@ -2817,4 +2817,12 @@ class Controller extends ControllerCommon
     {
         $this->render('topol-upload.twig') ;
     }
+
+    /**
+     * @return bool
+     */
+    protected function checkReCAPTCHA(): bool
+    {
+        return true;
+    }
 }

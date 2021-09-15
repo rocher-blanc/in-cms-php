@@ -31,12 +31,22 @@ class Controller
 
     protected $_module = NULL ;
 
+    /**
+     * @var array
+     */
     protected $_renderArray = [] ;
 
     protected $_depedency_module = NULL ;
     protected $_depedency_element = NULL ;
 
+    /**
+     * @var array
+     */
     protected $_msg 		= [] ;
+    /**
+     * @var string
+     */
+    private $_error;
 
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
@@ -93,6 +103,11 @@ class Controller
         $this->_entity = $var ;
     }
 
+    private function setError(string $var)
+    {
+        $this->_error = $var ;
+    }
+
     public function setActionName( $var )
     {
         $this->_action_name = $var ;
@@ -118,6 +133,14 @@ class Controller
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+    /**
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->_error;
+    }
 
     /**
      * @return null
@@ -815,6 +838,17 @@ class Controller
 
             if ( $this->_return == true )
             {
+                $recaptcha = $this->checkReCAPTCHA() ;
+
+                if ( $recaptcha !== true )
+                {
+                    $this->setError( $this->getRecaptchaMessage() ) ;
+                    $this->_return = false ;
+                }
+            }
+
+            if ( $this->_return == true )
+            {
                 foreach( $this->getEntity()->getField() as $row )
                 {
                     $this->field( $row->getName() )->getFormatValue() ;
@@ -1304,6 +1338,7 @@ class Controller
 
         return $result ;
     }
+
     protected function getAssocValueForm( $nameField , $id = NULL )
     {
         $content = \DB::for_module_assoc( $this->getEntityName() , $nameField )

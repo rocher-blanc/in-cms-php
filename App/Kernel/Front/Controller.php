@@ -25,6 +25,10 @@ class Controller extends \App\Kernel\Common\Controller
     protected $_url = [] ;
     protected $_elm = false ;
     protected $_component_name = '' ;
+    /**
+     * @var bool
+     */
+    private $check_google = false;
 
     /* ************************************************** */
     /* ****************   CONSTRUCT   ******************* */
@@ -1256,153 +1260,143 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $this->checkForm() )
             {
-                $recaptcha = $this->checkReCAPTCHA() ;
+                if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
+                else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
 
-                if ( $recaptcha === true )
+                $resultHook = $this->$hookAfterCheck();
+
+                if ( $resultHook === true )
                 {
-                    if ( $add ) $hookAfterCheck = 'hookAddCheckAfter' ;
-                    else        $hookAfterCheck = 'hookUpdateCheckAfter' ;
-
-                    $resultHook = $this->$hookAfterCheck();
-
-                    if ( $resultHook === true )
+                    if ( ! empty( $this->getEntity()->getField() ) )
                     {
-                        if ( ! empty( $this->getEntity()->getField() ) )
+                        if ( $this->getId() !== NULL )
                         {
-                            if ( $this->getId() !== NULL )
+                            $content = $this->getRepository()->findOne($this->getId());
+                            if ( ! $content )
                             {
-                                $content = $this->getRepository()->findOne($this->getId());
-                                if ( ! $content )
+                                $result['msg'] = $this->m("have_no_content");
+                            }
+                        }
+                        else
+                        {
+                            $content = $this->getRepository()->create();
+                        }
+
+                        /**
+                         * @var Field $row
+                         */
+                        foreach( $this->getEntity()->getField() as $row )
+                        {
+                            if ( $this->checkCustomField( $row ) == true )
+                            {
+                                if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
                                 {
-                                    $result['msg'] = $this->m("have_no_content");
-                                }
-                            }
-                            else
-                            {
-                                $content = $this->getRepository()->create();
-                            }
+                                    $Media = new Media;
+                                    $Media->setModuleId( $this->getEntityId() ) ;
+                                    $Media->setModuleName( $this->getEntityName() ) ;
+                                    $Media->setFolder( $this->getEntity()->getFolder() ) ;
+                                    $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
 
-                            /**
-                             * @var Field $row
-                             */
-                            foreach( $this->getEntity()->getField() as $row )
-                            {
-                                if ( $this->checkCustomField( $row ) == true )
+                                    $content->set($row->getColumn(), $Media->getImageId() );
+                                }
+                                else if ( $row->getType() == "document" && !empty( $_FILES[ $row->getColumn() ]['name'] ) )
                                 {
-                                    if ( $row->getType() == "image" && !empty( $_FILES[ "upload_" . $row->getColumn() ]['name'] ) )
-                                    {
-                                        $Media = new Media;
-                                        $Media->setModuleId( $this->getEntityId() ) ;
-                                        $Media->setModuleName( $this->getEntityName() ) ;
-                                        $Media->setFolder( $this->getEntity()->getFolder() ) ;
-                                        $Media->upload( "upload_" . $row->getColumn() , $row->getName() ) ;
+                                    $Doc = new Document;
+                                    $Doc->setModuleId( $this->getEntityId() ) ;
+                                    $Doc->setModuleName( $this->getEntityName() ) ;
+                                    $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+                                    $Doc->upload( $row->getColumn() ) ;
 
-                                        $content->set($row->getColumn(), $Media->getImageId() );
-                                    }
-                                    else if ( $row->getType() == "document" && !empty( $_FILES[ $row->getColumn() ]['name'] ) )
-                                    {
-                                        $Doc = new Document;
-                                        $Doc->setModuleId( $this->getEntityId() ) ;
-                                        $Doc->setModuleName( $this->getEntityName() ) ;
-                                        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
-                                        $Doc->upload( $row->getColumn() ) ;
-
-                                        $content->set($row->getColumn(), $Doc->getDocumentId() );
-                                    }
-                                    else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
-                                    {
-                                        $content->set($row->getColumn(), $row->getDefault());
-                                    }
-                                    else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
-                                    {
-                                        $content->set($row->getColumn(), $row->getValue());
-                                    }
+                                    $content->set($row->getColumn(), $Doc->getDocumentId() );
                                 }
-                            }
-
-                            $date = new \DateTime();
-
-                            if ( $add == true )
-                            {
-                                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
-                                $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') );
-                            }
-                            else
-                            {
-                                $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get($this->getEntity()->get('date_updated')->getColumn() ) );
-                            }
-                            $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
-
-                            // On ajoute les infos sans multi-langue
-                            $content->save();
-
-                            if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
-
-                            /**
-                             * @var Field $field
-                             */
-                            foreach( $this->getEntity()->getField() as $nameField => $field )
-                            {
-                                if ( $field->getType() == "checkbox" && $field->front() !== false )
+                                else if ( $row->getType() != "image" && $row->save() == true && ( $row->isOrder() == true or ( $row->getDefault() !== NULL && $row->front() == false ) or ( $row->getDefault() !== NULL && $row->force() == true ) ) && $add == true )
                                 {
-                                    $this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
+                                    $content->set($row->getColumn(), $row->getDefault());
                                 }
-                                else if ( $field->getType() == "gallery" && $add == true )
+                                else if ( $row->getType() != "image" && $row->save() == true && $row->getType() != "checkbox" && $row->canUpdate() == true && $row->isOrder() == false && $row->front() == true )
                                 {
-                                    // On met a jour les 0
-                                    $Gallery = new \App\Kernel\Back\Gallery;
-                                    $Gallery->setElementId($this->getId());
-                                    $Gallery->setField($field->getName());
-                                    $Gallery->setModuleId($this->getEntityId());
-                                    $Gallery->updateZero();
+                                    $content->set($row->getColumn(), $row->getValue());
                                 }
-                            }
-
-                            if ( $this->getEntity()->hasUrl() && $add == true )
-                            {
-                                $seo = new Seo;
-                                $seo->setElementId($this->getId());
-                                $seo->setModuleId($this->getEntityId());
-                                $seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());
-                                $seo->setLangId($this->Lang()->getDefault()->id);
-                                $seo->save();
                             }
                         }
 
-                        if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
-                        else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
+                        $date = new \DateTime();
 
-                        $this->$hookAfterCheck( $content );
-
-                        foreach ($this->getEntity()->getField() as $nameField => $field)
+                        if ( $add == true )
                         {
-                            $this->field( $field->getname() )->clearValue();
+                            $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
+                            $content->set( $this->getEntity()->get('date_created')->getColumn() , $date->format('Y-m-d H:i:s') );
+                        }
+                        else
+                        {
+                            $content->set( $this->getEntity()->get('date_last_updated')->getColumn() , $content->get($this->getEntity()->get('date_updated')->getColumn() ) );
+                        }
+                        $content->set( $this->getEntity()->get('date_updated')->getColumn() , $date->format('Y-m-d H:i:s') );
+
+                        // On ajoute les infos sans multi-langue
+                        $content->save();
+
+                        if ( $this->getId() === NULL ) $this->setId( $content->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) );
+
+                        /**
+                         * @var Field $field
+                         */
+                        foreach( $this->getEntity()->getField() as $nameField => $field )
+                        {
+                            if ( $field->getType() == "checkbox" && $field->front() !== false )
+                            {
+                                $this->getRepository()->pushDataAssoc($nameField, $field, $this->getId());
+                            }
+                            else if ( $field->getType() == "gallery" && $add == true )
+                            {
+                                // On met a jour les 0
+                                $Gallery = new \App\Kernel\Back\Gallery;
+                                $Gallery->setElementId($this->getId());
+                                $Gallery->setField($field->getName());
+                                $Gallery->setModuleId($this->getEntityId());
+                                $Gallery->updateZero();
+                            }
                         }
 
-                        //$this->Factory()->Response()->flash( $result['msg'] , true );
-
-                        $result['result'] = true;
-                        $result['msg']    = ( $add ? $this->getAddSuccessMessage() : $this->getUpdateSuccessMessage() );
-
-                        if ( $this->post('redirect') != '' )
+                        if ( $this->getEntity()->hasUrl() && $add == true )
                         {
-                            $result['url'] = $this->getUrlRedirect();
-                        }
-
-                        if ( $this->post('timer') != '' )
-                        {
-                            $result['timer'] = $this->post('timer');
+                            $seo = new Seo;
+                            $seo->setElementId($this->getId());
+                            $seo->setModuleId($this->getEntityId());
+                            $seo->setTitle($this->getEntity()->build($this->getEntity()->getUrlName())->field()->getValue());
+                            $seo->setLangId($this->Lang()->getDefault()->id);
+                            $seo->save();
                         }
                     }
-                    else
+
+                    if ( $add ) $hookAfterCheck = 'hookAddSaveAfter' ;
+                    else        $hookAfterCheck = 'hookUpdateSaveAfter' ;
+
+                    $this->$hookAfterCheck( $content );
+
+                    foreach ($this->getEntity()->getField() as $nameField => $field)
                     {
-                        $result = $resultHook ;
+                        $this->field( $field->getname() )->clearValue();
+                    }
+
+                    //$this->Factory()->Response()->flash( $result['msg'] , true );
+
+                    $result['result'] = true;
+                    $result['msg']    = ( $add ? $this->getAddSuccessMessage() : $this->getUpdateSuccessMessage() );
+
+                    if ( $this->post('redirect') != '' )
+                    {
+                        $result['url'] = $this->getUrlRedirect();
+                    }
+
+                    if ( $this->post('timer') != '' )
+                    {
+                        $result['timer'] = $this->post('timer');
                     }
                 }
                 else
                 {
-                    $result['result'] = false;
-                    $result['msg']    = $this->getRecaptchaMessage();
+                    $result = $resultHook ;
                 }
             }
             else
@@ -1431,6 +1425,12 @@ class Controller extends \App\Kernel\Common\Controller
                     }
                 }
 
+                if ( $first )
+                {
+                    $result['result'] = false;
+                    $result['msg']    = $this->getError();
+                }
+
                 $result['fields'] = $tab;
             }
         }
@@ -1440,28 +1440,65 @@ class Controller extends \App\Kernel\Common\Controller
         return $result ;
     }
 
-    protected function checkReCAPTCHA()
+    /**
+     * @return bool
+     */
+    protected function checkReCAPTCHA(): bool
     {
-        if ( $this->getEntity()->reCAPTCHA() == true )
+        if ( $this->getEntity()->reCAPTCHA() == true and $this->check_google == false )
         {
-            $reCaptcha = new \ReCaptcha\ReCaptcha( RECAPTCHA_SECRET );
-
-            if ( isset( $_POST["g-recaptcha-response"] ) )
+            if ( RECAPTCHA_VERSION == "v2" )
             {
-                $resp = $reCaptcha->verify( $_POST["g-recaptcha-response"] , $this->CMS()->getIp() );
+                $reCaptcha = new \ReCaptcha\ReCaptcha( RECAPTCHA_SECRET );
 
-                if ( ! $resp->isSuccess() )
+                if ( isset( $_POST["g-recaptcha-response"] ) )
                 {
-                    return false ;
+                    $resp = $reCaptcha->verify( $_POST["g-recaptcha-response"] , $this->CMS()->getIp() );
+
+                    $this->check_google = true ;
+
+                    if ( ! $resp->isSuccess() )
+                    {
+                        return false ;
+                    }
+                    else
+                    {
+                        return true ;
+                    }
                 }
                 else
                 {
-                    return true ;
+                    return false ;
                 }
             }
             else
             {
-                return false ;
+                if ( isset( $_POST["recaptcha_response"] ) )
+                {
+                    $this->check_google = true ;
+                    // Build POST request:
+                    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+                    $recaptcha_secret = RECAPTCHA_SECRET;
+                    $recaptcha_response = $_POST['recaptcha_response'];
+
+                    // Make and decode POST request:
+                    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+                    $recaptcha = json_decode($recaptcha);
+
+                    // Take action based on the score returned:
+                    if ($recaptcha->score >= RECAPTCHA_SCORE)
+                    {
+                        return true ;
+                    }
+                    else
+                    {
+                        return false ;
+                    }
+                }
+                else
+                {
+                    return false ;
+                }
             }
         }
         else
