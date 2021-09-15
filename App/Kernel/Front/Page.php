@@ -28,14 +28,7 @@ abstract class Page
     public function setId( $var )
     {
         $this->id = $var ;
-        if ( file_exists( VIEW_PROJECT_PATH . '/page/page-' . $var . '.twig' ) )
-        {
-            $this->setTemplate( 'page-' . $var . '.twig' );
-        }
-        else
-        {
-            $this->setTemplate( 'page-' . $var . '.twig.html' );
-        }
+        $this->setTemplate( 'page-' . $var . '.twig' );
     }
 
     protected function setTemplate( $var )

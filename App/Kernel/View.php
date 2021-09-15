@@ -93,13 +93,26 @@ class View
 
     public function render( $template , $args = [] )
     {
+        $exist = false ;
+        foreach( CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
+        {
+            if ( file_exists( $folder . '/' . $template ) )
+            {
+                $exist = true ;
+            }
+        }
+
+        if ( $exist === false )
+        {
+            $template.= '.html' ;
+        }
+
     	if( DEBUG_TWIG )
 		{
 			$this->getTwigDebugBar()->merge( $args );
 			$args['__debug_twig__'] = $this->getTwigDebugBar()->getDebugTwig();
 		}
-
-        $this->getApp()->render( $template , $args );
+    	$this->getApp()->render( $template , $args );
     }
 
     public function getTwigDebugBar()
