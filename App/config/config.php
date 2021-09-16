@@ -27,15 +27,6 @@ defined('CLASS_PROJECT_COMMON_PATH') || define('CLASS_PROJECT_COMMON_PATH', PROJ
 defined('VIEW_PROJECT_COMMON_PATH') || define('VIEW_PROJECT_COMMON_PATH', PROJECT_PATH . '/view/common');
 defined('TEMPLATES_COMMON_PATH') || define('TEMPLATES_COMMON_PATH', APPLICATION_PATH . '/view/common');
 
-defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
-defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
-defined('VENDOR_PATH') || define('VENDOR_PATH', ASSET_PATH . '/vendor');
-defined('BOWER_PATH') || define('BOWER_PATH', VENDOR_PATH . '/bower-asset');
-
-defined('IMAGE_PATH') || define('IMAGE_PATH', WEB_PATH . '/images');
-defined('DOCUMENT_PATH') || define('DOCUMENT_PATH', WEB_PATH . '/documents');
-defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
-
 $configFileProject          = PROJECT_PATH . '/config/config.php' ;
 $configFileProjectDomain    = PROJECT_PATH . '/config/config.' . $_SERVER['HTTP_HOST'] . '.php' ;
 $configFileProjectDomainWww = PROJECT_PATH . '/config/config.www.' . $_SERVER['HTTP_HOST'] . '.php' ;
@@ -64,6 +55,15 @@ if ( file_exists( PROJECT_PATH . '/config/config.common.php' ) )
 {
     require PROJECT_PATH . '/config/config.common.php' ;
 }
+
+defined('WEB_PATH') || define('WEB_PATH', _PATH_ . '/web');
+defined('ASSET_PATH') || define('ASSET_PATH', WEB_PATH . '/assets');
+defined('VENDOR_PATH') || define('VENDOR_PATH', ASSET_PATH . '/vendor');
+defined('BOWER_PATH') || define('BOWER_PATH', VENDOR_PATH . '/bower-asset');
+
+defined('IMAGE_PATH') || define('IMAGE_PATH', WEB_PATH . '/images');
+defined('DOCUMENT_PATH') || define('DOCUMENT_PATH', WEB_PATH . '/documents');
+defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
 
 defined('COUNTRY') || define('COUNTRY','fr');
 defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
