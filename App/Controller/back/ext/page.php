@@ -338,7 +338,7 @@ $app->group('/page', function () use ($app)
 			$contentRow->page_name 			= $app->request->post('page_name') ;
 			$contentRow->page_priority 		= $app->request->post('page_priority') ;
 			$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-			$contentRow->page_index 		= ( $app->request->post('page_index') == NULL ? 0 : 1 ) ;
+			$contentRow->page_index 		=  $app->request->post('page_index');
 
 			if ( $forceActive == true ) $contentRow->page_active = 1;
 
@@ -367,9 +367,10 @@ $app->group('/page', function () use ($app)
 				$cLang->page_lang_page_id 		= $id ;
 				$cLang->page_lang_lang_id 		= $l->id ;
 				$cLang->page_lang_url 			= $url ;
-				$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_title_' . $l->url ) ) ;
+				$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? $app->request->post('page_name' ) : $app->request->post('page_lang_title_' . $l->url ) ) ;
+				$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? $app->request->post('page_name' ) : $app->request->post('page_lang_title_' . $l->url ) ) ;
 				$cLang->page_lang_description 	= ( $app->request->post('page_lang_description_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_description_' . $l->url ) ) ;
-				$cLang->save();
+                $cLang->save();
 			}
 
 			if ( $app->request->post('buttonaction') == "stay" ) 	$url = '/ext/page/edit/' . $id ;
