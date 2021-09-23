@@ -23,7 +23,6 @@ class Field
 		$this->setData( "tab" , "contenu" ) ;
 		$this->setData( "front" , true ) ;
 		$this->setData( "back" , true ) ;
-
 	}
 
 	/* ************************************************** */
@@ -474,8 +473,11 @@ class Field
             }
             else
             {
-                list( $d , $m , $y ) = explode( '/' , $this->getValue( $lang ) ) ;
-                $this->setValue("$y-$m-$d") ;
+                if ( strpos( $this->getValue( $lang ) , '/' ) !== false )
+                {
+                    list( $d , $m , $y ) = explode( '/' , $this->getValue( $lang ) ) ;
+                    $this->setValue("$y-$m-$d") ;
+                }
             }
 		}
 		else if ( $this->getType() == 'radio' && $this->getData('isBoolean') == true )
