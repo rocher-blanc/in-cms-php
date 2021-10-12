@@ -983,6 +983,16 @@ class Builder extends Model
         return $this->_folder_name ;
     }
 
+    public function getRegion()
+    {
+        return $this->region;
+    }
+
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
     /* ************************************************** */
     /* *****************    reCAPTCHA    **************** */
     /* ************************************************** */
