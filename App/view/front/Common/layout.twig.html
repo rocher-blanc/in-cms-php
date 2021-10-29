@@ -64,7 +64,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endif %}
 
-{% if env() != 'dev' and tracking.matomo != '' %}
+{% if env() != 'dev' and matomo != '' %}
 <!-- Matomo -->
     <script>
         var _paq = window._paq = window._paq || [];
@@ -74,7 +74,7 @@
         (function() {
             var u="//matomo.29ter.fr/";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
-            _paq.push(['setSiteId', '{{  tracking.matomo }}']);
+            _paq.push(['setSiteId', '{{  matomo }}']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
             g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
         })();
