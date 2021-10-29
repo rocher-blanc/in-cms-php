@@ -64,7 +64,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endif %}
 
-{% if matomo != '' %}
+{% if env() != 'dev' and matomo != '' %}
 <!-- Matomo -->
     <script>
         var _paq = window._paq = window._paq || [];
