@@ -25,3 +25,5 @@ defined('FB_APP_PAGE') || define('FB_APP_PAGE', NULL );
 
 defined('RECAPTCHA_PUBLIC') || define('RECAPTCHA_PUBLIC', NULL );
 defined('RECAPTCHA_SECRET') || define('RECAPTCHA_SECRET', NULL );
+defined('RECAPTCHA_VERSION') || define('RECAPTCHA_VERSION', "v2" );
+defined('RECAPTCHA_SCORE') || define('RECAPTCHA_SCORE', 0.5);

@@ -30,7 +30,7 @@ class Media extends \App\Kernel\Common\Media
             $rst->caption = $source;
             $rst->mini    = $this->Factory()->Url()->get( $entity->getPathImage( false ) . '/t/' . $rst->caption , true );
 
-            $this->genImages( $field );
+//            $this->genImages( $field );
         }
 
         return $rst ;

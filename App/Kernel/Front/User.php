@@ -172,14 +172,14 @@ class User extends \App\Kernel\Common\User
         return $this->_error_msg ;
     }
 
-    protected function returnError( $key , $result = false , $forceView = false )
+    protected function returnError( $key , $result = false , $forceView = false , $traduction = true )
     {
         if ( $result == false ) $this->_error = true ;
 
         $this->_error_msg = [
             'action' => $this->post('user_action'),
             'result' => $result,
-            'msg' => $this->text( $key )
+            'msg' => $traduction ? $this->text( $key ) : $key
         ];
 
         if ( $this->hasSilence() ) return $result ;
@@ -304,6 +304,8 @@ class User extends \App\Kernel\Common\User
                 {
                     if ( $field->getError() !== NULL ) return $this->returnError( $field->getFrontError() , false ) ;
                 }
+
+                return $this->returnError( $Module->getError() , false , false , false  ) ;
             }
             else
             {
