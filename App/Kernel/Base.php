@@ -310,7 +310,9 @@ INSERT INTO `user_front_group` (`user_front_group_id`, `user_front_group_name`) 
                 "log_element_id" => $this->infoColumn( "INT" , "11" , NULL , true ),
                 "log_code" => $this->infoColumn( "TINYINT" , "1" ),
                 "log_type" => $this->infoColumn( "TINYINT" , "1" ),
-                "log_value" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
+                "log_value" => $this->infoColumn( "VARCHAR" , "255" , NULL , true ),
+                "log_addr" => $this->infoColumn( "VARCHAR" , "20" , NULL , true ),
+                "log_host" => $this->infoColumn( "VARCHAR" , "255" , NULL , true )
             ],
             "media" => [
                 "media_id" => $this->infoColumn( "INT" , "11" , NULL , false , true ),
