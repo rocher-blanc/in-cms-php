@@ -163,7 +163,8 @@ class Meta
                 'header'    => $tab['seo_divers_header'],
                 'footer'    => $tab['seo_divers_footer'],
                 'gtm'       => $tab['seo_gtm']
-            ]
+            ],
+            "matomo" => $tab["seo_matomo"]
         ]);
     }
 }

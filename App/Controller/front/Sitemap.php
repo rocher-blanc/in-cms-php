@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Container as ContainerAlias;
+
 $app->get('/sitemap.xml', function () use ( $app )
 {
     $data = \DB::for_table('param')
@@ -36,7 +38,7 @@ $app->get('/sitemap.xml', function () use ( $app )
         ->find_many();
 
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    echo '<?xml-stylesheet type="text/xsl" href="' . \App\Kernel\Http::getInstance()->vendor( VENDOR_CMS . '/xsl/stylesheet.xsl' ) . '"?>' ;
+    echo '<?xml-stylesheet type="text/xsl" href="' . \App\Kernel\Http::getInstance()->vendor( VENDOR_CMS . '/xsl/stylesheet.xsl' ) . '"?>' . "\n";
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n\t" . 'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"> ' . "\n";
 
     if ( $content )
@@ -48,11 +50,28 @@ $app->get('/sitemap.xml', function () use ( $app )
                 $url = $app->request()->getUrl() ;
                 if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
 
-                if ( $module->module_index == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getall.twig' ) )
+                $getAllExist = false ;
+
+                if ( $module->module_index == 1 )
+                {
+                    $file = '/module/' . $module->module_class_name . '/getall.twig' ;
+                    foreach( \App\Kernel\CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
+                    {
+                        if ( file_exists( $folder . $file ) )
+                        {
+                            $getAllExist = true ;
+                        }
+                    }
+                }
+
+                if ( $module->module_index == 1 && $getAllExist == true )
                 {
                     echo "\t" . '<url>' . "\n" ;
                     echo "\t\t" . '<loc>' . $url . '/' . $module->module_lang_url . '</loc>' . "\n";
-                    echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+                    if ( $module->module_priority != 0 )
+                    {
+                        echo "\t\t" . '<priority>' . $module->module_priority . '</priority>' . "\n";
+                    }
                     echo "\t" . '</url>' . "\n" ;
                 }
 
@@ -65,16 +84,23 @@ $app->get('/sitemap.xml', function () use ( $app )
                     $url.= '/' ;
                 }
 
-                if ( $module->module_index_elmt == 1 && file_exists( VIEW_PROJECT_PATH . '/module/' . $module->module_class_name . '/getone.twig' ) )
+                $getOneExist = false ;
+
+                if ( $module->module_index_elmt == 1 )
                 {
-                    if ( file_exists( PROJECT_CONTROLLER_PATH . '/' . ucfirst( $module->module_class_name ) . '.php' )) $ControllerClass = "\Project\Module\Controller\Front\\" . ucfirst( $module->module_class_name );
-                    else																			                    $ControllerClass = '\App\Kernel\Front\Controller' ;
+                    $file = '/module/' . $module->module_class_name . '/getone.twig' ;
+                    foreach( \App\Kernel\CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
+                    {
+                        if ( file_exists( $folder . $file ) )
+                        {
+                            $getOneExist = true ;
+                        }
+                    }
+                }
 
-                    $Controller = new $ControllerClass;
-                    $Controller->setEntityName( $module->module_class_name );
-                    $Controller->loadEntity();
-                    $Controller->init() ;
-
+                if ( $module->module_index_elmt == 1 && $getOneExist == true )
+                {
+                    $Controller = ContainerAlias::getInstance()->module( $module->module_class_name )->getController();
                     $result = $Controller->getSiteMap() ;
 
                     if ( $result )
@@ -130,7 +156,6 @@ $app->get('/sitemap.xml', function () use ( $app )
                                         $Gal->setField( $gallery->getName() );
                                         $Gal->setFolder( $Controller->getEntity()->getFolder() );
                                         $tab = $Gal->getAllByField();
-
 
                                         if ( !empty( $tab ) )
                                         {
