@@ -66,7 +66,7 @@ class Base
 
 			// Colonne "Transactionnels"
 			'EdAutomationModelGroup' => [
-				'name' => 'Catégproes d\'emails transactionnels',
+				'name' => 'Catégories d\'emails transactionnels',
 				'icon' => "icon-stack",
 			],
             'EdAutomation' => [
