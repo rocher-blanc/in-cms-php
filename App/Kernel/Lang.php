@@ -124,41 +124,6 @@ class Lang
         }
 
         $rows = $rows->find_many();
-        /*
-        if ( $front == true )
-        {
-            $rows = \DB::for_table('lang')
-                ->where_gt('lang_status', '0')
-                ->where_equal('lang_front', 1)
-                ->order_by_desc('lang_status')
-                ->find_many();
-        }
-        else
-        {
-            $rows = \DB::for_table('lang')
-                ->order_by_desc('lang_status')
-                ->where_equal('lang_back', 1)
-                ->find_many();
-
-            if ( ! $rows )
-            {
-                $l = \DB::for_table('lang')
-                    ->where_equal('lang_id', 1)
-                    ->find_one();
-
-                if ( $l )
-                {
-                    $l->lang_back = 1 ;
-                    $l->save();
-
-                    $rows = \DB::for_table('lang')
-                        ->order_by_desc('lang_status')
-                        ->where_equal('lang_back', 1)
-                        ->find_many();
-                }
-            }
-        }
-        */
 
         $i = 0;
         foreach( $rows as $r )
