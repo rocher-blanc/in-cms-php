@@ -1356,7 +1356,6 @@ class Builder extends Model
         {
             $this->addGroup('connexion' , 'Informations de connexion');
             $this->setModuleUser() ;
-            //$this->disableCreate() ;
 
             $this->build('user_front_id' , true )
                 ->isHidden("INT" , 11)
@@ -1426,13 +1425,9 @@ class Builder extends Model
                 $this->build('user_password' , true )
                     ->isPassword()
                     ->group('connexion')
-                    //->notEmpty( Translate::getInstance()->getText('mandatory_password') )
                     ->noRename()
                     ->noFront()
-                    ->noindex()/*
-                    ->showIf(function($c) {
-                        return ( $c->user_front_id == '' ? true : false );
-                    })*/
+                    ->noindex()
                     ->formated(function( $c ) {
                         if ( $_POST['id_element'] == '' ) {
                             if ( empty( $_POST['user_password'] ) ) {

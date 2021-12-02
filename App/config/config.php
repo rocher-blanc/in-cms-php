@@ -68,7 +68,6 @@ defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
 defined('COUNTRY') || define('COUNTRY','fr');
 defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 
-//
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 defined('TECHNO') || define('TECHNO','easyDOOR');
 

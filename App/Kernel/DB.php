@@ -320,8 +320,6 @@ class DB extends ORM
             else                     $str.= "NULL" ;
         }
 
-        // if ( $increment ) $str.= ' AUTO_INCREMENT' ;
-
         return $str ;
     }
 
