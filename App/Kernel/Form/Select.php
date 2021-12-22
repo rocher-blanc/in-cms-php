@@ -24,12 +24,10 @@ class Select extends \App\Kernel\Back\Form
         if ( $field->isParent() )
         {
             if ( ! $field->getData('noEmptyValue') ) $select = '<option value=""' . ( $value === NULL ? ' selected' : '' ) . '>---</option>' ;
-//            $select.= $this->chieldParent( $field->getData('option') , $field->getData('target') , $value , "" ) ;
             $select.= $this->chieldParent( $field->getData('option') , "titre" , $value , "", $field->getData('limit') ) ;
         }
         else
         {
-//        	dump( $field );
 			if ( !empty( $field->getData('option') ) )
 			{
 				foreach( $field->getData('option') as $key => $opt )

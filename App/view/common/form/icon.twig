@@ -2,8 +2,6 @@
 
     <input type="text" value="{{ value }}" class="form-control input-value" name="{{ name }}" id="id_{{ name }}"/>
 
-    {#<input type="search" />#}
-
     <div class="list-icon-grid">
         {% for icon in listIcons %}
             <div class="icon{% if icon == value %} active{% endif %}" data-icon="{{ icon }}">
