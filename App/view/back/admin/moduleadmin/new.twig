@@ -674,7 +674,7 @@
                 saveJson: function () {
                     axios.post('{{ siteUrl('admin/moduleadmin/generate') }}', {
                         {{csrf_key}}:'{{csrf_token}}',
-                        tabs: JSON.stringify(this.tabs),
+                        debug_tabs: JSON.stringify(this.tabs),
                         groups: JSON.stringify(this.groups),
                         fields: JSON.stringify(this.fields),
                         global: JSON.stringify(this.globalParams)

@@ -2781,22 +2781,7 @@ class Controller extends ControllerCommon
     protected function formAction()
     {
         $form = parent::generateForm( $this->getId() !== NULL ? true : false );
-/*
-        if ( $form === false )
-        {
-            $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
-        }
-*/
-/*
-        $this->setRender( 'cdn_css' , $form['cdn_css'] ) ;
-        $this->setRender( 'cdn_js' , $form['cdn_js'] ) ;
 
-        $this->setRender( 'css' , $form['css'] ) ;
-        $this->setRender( 'js' , $form['js'] ) ;
-
-        $this->setRender( 'tabs' , $form['tabs'] ) ;
-        $this->setRender( 'condition' , $form['condition'] ) ;
-*/
         echo $this->renderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
