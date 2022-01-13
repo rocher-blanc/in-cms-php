@@ -1122,7 +1122,7 @@ class Controller extends \App\Kernel\Common\Controller
         return array_merge( $form , [
             'form' => $this->renderForm([
                 'field'                 => $form['field'],
-//                'tabs'                  => $form['tabs'],
+                'tabs'                  => $form['tabs'],
                 'condition'             => $form['condition'],
                 'route'                 => Http::getInstance()->getUrl() . $this->Factory()->Url()->getFullUrl(),
                 'id'                    => $form['id'],
