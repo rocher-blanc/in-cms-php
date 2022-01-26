@@ -118,9 +118,13 @@
                 {% endif %}
 
                 {% if recaptcha == true %}
-                    <div class="ed_field">
-                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
-                    </div>
+                    {% if recaptcha_version == 'v2' %}
+                        <div class="ed_field">
+                            <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
+                        </div>
+                    {% else %}
+                        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+                    {% endif %}
                 {% endif %}
 
                 <div class="ed_field col_full">
