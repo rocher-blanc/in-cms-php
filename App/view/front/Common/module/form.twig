@@ -82,6 +82,7 @@
                         </div>
                     {% else %}
                         <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+                        <input type="hidden" name="recaptcha_key" id="recaptchaKey" value="{{ recaptcha_public_key }}">
                     {% endif %}
                 {% endif %}
 

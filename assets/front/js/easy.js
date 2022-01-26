@@ -84,6 +84,16 @@ checkForm = function(base) {
 
         var $form = $(this);
 
+        if ( typeof grecaptcha !== 'undefined' ) {
+            if ( $('#recaptchaResponse').length && $('#recaptchaKey').length ) {
+                grecaptcha.ready(function() {
+                    grecaptcha.execute( $('#recaptchaKey').val(), {action: 'create_comment'}).then(function(token) {
+                        $('#recaptchaResponse').val( token );
+                    });
+                });
+            }
+        }
+
         if( typeof $form.attr("submitting") === 'undefined' ) {
             var mod = $form.data('slug');
             if ( $(base + ' .'+mod+'-form-process').length ) {
