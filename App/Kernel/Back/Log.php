@@ -240,6 +240,8 @@ class Log
         if ( $ct == 0 ) $this->delest() ;
 
         $log = \DB::for_table('log')->create();
+        $log->log_addr 		    = $_SERVER['REMOTE_ADDR'] ;
+        $log->log_host 		    = gethostbyaddr( $_SERVER['REMOTE_ADDR'] ) ;
         $log->log_type 		    = $type ;
         $log->log_code 		    = $code ;
         $log->log_value 	    = $value ;

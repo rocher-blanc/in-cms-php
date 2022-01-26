@@ -189,6 +189,13 @@ $app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $ema
     $unsub = false ;
     if ( $confirm == 1 && $rst == 0 )
     {
+        $unsub = \DB::for_table('mod_newslettersubscriber')
+            ->where("mod_newslettersubscriber_email", $email)
+            ->where("mod_newslettersubscriber_element_module_parent_id", $id)
+            ->find_one();
+
+        $unsub->delete();
+
         $unsub = new Data('NewsletterCampaignGroupUnsubscribe');
         $unsub->findOrCreate([
             'email' => $email,
@@ -196,9 +203,18 @@ $app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $ema
             'element_id' => $id
         ]);
         $unsub->save();
-        
         $unsub = true ;
         $rst   = 1 ;
+    }
+    elseif ( $confirm == 1 and $rst > 0 and $_GET["all"]=="on")
+    {
+        $subs = \DB::for_table('mod_newslettersubscriber')
+            ->where("mod_newslettersubscriber_email", $email)
+            ->find_many();
+        foreach ($subs as $sub)
+        {
+            $sub->delete();
+        }
     }
 
     $app->render('Newsletter/unsubscribe.twig' , [

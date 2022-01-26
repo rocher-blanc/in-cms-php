@@ -52,12 +52,6 @@ class TwigAdmin extends \Twig_Extension
 
     public function asset($url)
     {
-        if ( ! DEBUG_CMS )
-        {
-            // $url = str_replace('.js' , '.min.js' , $url ) ;
-            // $url = str_replace('.css' , '.min.css' , $url ) ;
-        }
-
         return $this->vendor( VENDOR_CMS . '/' . ltrim($url, '/') ) ;
     }
 }

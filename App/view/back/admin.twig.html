@@ -161,7 +161,10 @@
                     <nav id="primary-menu">
                         <ul>
                             {{ menu.treeMenu(menuTree) }}
-                            {{ menu.treeMenu(menuEasyletter) }}
+
+                            {% if hide_newsletter != true %}
+                                {{ menu.treeMenu(menuEasyletter) }}
+                            {% endif %}
 
                             {% include 'menu/header.twig' %}
 

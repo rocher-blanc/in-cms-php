@@ -139,8 +139,6 @@ class EdAutomationHistory extends Builder
                         if ( $c->stats['clicked'] ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Cliqué" class="icon-link" style="color: darkcyan;"></i>' ;
                         else                        $str.= '<i data-toggle="tooltip" data-placement="top" title="Aucun clic" class="icon-link" style="color: #ddd;"></i>' ;
 
-//                        if ( $shield ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Email bloqué : XXXXXXXXXXXXXXXX" class="icon-shield" style="color: darkred;"></i>' ;
-
                         if ( $c->stats['error'] ) $str.= '<i data-toggle="tooltip" data-placement="top" title="Erreur : ' . $c->error . '" class="icon-warning-sign" style="color: darkred;"></i>' ;
                         else                      $str.= '<i data-toggle="tooltip" data-placement="top" title="Aucune erreur" class="icon-warning-sign" style="color: #ddd;"></i>' ;
 

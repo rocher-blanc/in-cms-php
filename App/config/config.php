@@ -68,7 +68,6 @@ defined('UPLOAD_PATH') || define('UPLOAD_PATH', WEB_PATH . '/uploads');
 defined('COUNTRY') || define('COUNTRY','fr');
 defined('TIMEZONE') || define('TIMEZONE','Europe/Paris');
 
-//
 defined('VENDOR_CMS') || define('VENDOR_CMS','cmsmedias');
 defined('TECHNO') || define('TECHNO','easyDOOR');
 
@@ -124,6 +123,7 @@ defined('CLIENT_NOTIFY_ENGINE') || define( 'CLIENT_NOTIFY_ENGINE', "Noty" );
 
 // NEWSLETTER
 defined('NEWSLETTER_ACTIVE') || define('NEWSLETTER_ACTIVE', false );
+defined('HIDE_NEWSLETTER') || define('HIDE_NEWSLETTER', false );
 
 // MAIL
 defined('MAIL_HTML') || define('MAIL_HTML', true );

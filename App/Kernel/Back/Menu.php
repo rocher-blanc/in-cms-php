@@ -275,6 +275,7 @@ class Menu
             'active_user'       => ACTIVE_USER,
             'active_newsletter' => NEWSLETTER_ACTIVE,
             'active_easyletter' => defined('EL_TOKEN'),
+            "hide_newsletter"   => HIDE_NEWSLETTER,
             'el_credits'        => $this->Container()->param()->get('el_credits'),
             'color'             => COLOR,
             'techno'            => TECHNO

@@ -18,7 +18,6 @@
     <div class="ed-menu">
         <a href="{{ route( mod.name , 'index' , uri_id_parent ) }}" class="button button-mini"><i class="icon-th-list"></i>{{ _('button_manage')}}</a>
         {% if mod.canCreate == true %}<a href="{{ route( mod.name , 'add' , uri_id_parent ) }}" class="button button-mini"><i class="icon-plus"></i>{{ _('button_add')}}</a>{% endif %}
-        {#{% if menu != false %}<a href="{{ route( mod.name , 'export' , uri_id_parent ) }}" class="button button-mini"><i class="icon-line-outbox"></i>Exporter</a>{% endif %}#}
         {% if menu != false and mod.canImport == true %}<a href="{{ route( mod.name , 'import' , uri_id_parent ) }}" class="button button-mini"><i class="icon-cloud-upload"></i>{{ _('button_import')}}</a>{% endif %}
         {% if isIndex == true %}
             <a href="{{ route( mod.name , 'export' , uri_id_parent ) }}?elmt_per_page=all" class="button button-mini" data-export-btn><i class="icon-cloud-download"></i>{{ _('button_export')}}</a>

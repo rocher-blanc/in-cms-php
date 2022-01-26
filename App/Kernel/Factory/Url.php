@@ -3,6 +3,7 @@
 namespace App\Kernel\Factory;
 
 use App\Kernel\Http;
+use App\Kernel\Param;
 
 class Url
 {
@@ -231,7 +232,13 @@ class Url
         }
         else
         {
+            $param = new Param();
             $url = Http::getInstance()->getUrl() . "/" ;
+
+            if ( $param->get('seo_ssl') == '1' )
+            {
+                $url = str_replace( 'http:' , 'https:' , $url );
+            }
         }
 
 //        if ( $urlFull ){ dump($url); die; }

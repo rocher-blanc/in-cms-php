@@ -2395,36 +2395,6 @@ class Controller extends ControllerCommon
     /* ******************    SELECT    ****************** */
     /* ************************************************** */
 
-//    protected function libimagesupdateAction()
-//    {
-//        $tab = [];
-//
-//        if ( $this->getEntity()->getImageField() )
-//        {
-//            foreach( $this->getEntity()->getImageField() as $row )
-//            {
-//                foreach( $this->getEntity()->getField() as $field )
-//                {
-//                    if ( $row == $field->getColumn() )
-//                    {
-//                        $Media = new Media;
-//                        $Media->setModuleId( $this->getEntityId() ) ;
-//                        $Media->setModuleName( $this->getEntityName() ) ;
-//                        $Media->setFolder( $this->getEntity()->getFolder() ) ;
-//                        $Media->setField( $field->getName() ) ;
-//
-//                        $tab[ $field->getName() ]['title']  = $field->getTitle();
-//                        $tab[ $field->getName() ]['images'] = $Media->getAllModel();
-//                    }
-//                }
-//            }
-//        }
-//
-//        $this->getGlobalVar() ;
-//        $this->setRender( 'fields' , $tab );
-//
-//        $this->render('libimages_update.twig') ;
-//    }
 
     protected function selectListingAction()
     {
@@ -2547,94 +2517,8 @@ class Controller extends ControllerCommon
 
 		$this->generateForm_processField( $field );
 
-//		foreach( $field->getOptions() as $id => $text )
-//		{
-//			$rst[] = [
-//				'id'   => $id,
-//				'text' => $text
-//			];
-//		}
-
 		echo json_encode( $field->getOptions() );
 	}
-
-//    protected function libimagesgalleryAction()
-//    {
-//    	$gallery_id = \App\Kernel\CMS::getInstance()->Request()->get('gallery_id');
-//
-//		$Media = new Media;
-//		$Media->setGalleryId( $gallery_id );
-//		$Media->setFolder( "_lib" );
-//
-//		$this->setRender( 'images' , $Media->getAllByGallery() );
-//        $this->setRender( 'name' , $_GET['name'] );
-//        $this->setRender( 'field_name' , $_GET['field_name'] );
-//        $this->render('libimages_gallery.twig') ;
-//    }
-//
-//    protected function uploadAction()
-//    {
-//		$field = $this->field( $this->post( 'field' ) );
-//		$acceptMimeType = $field->getData('acceptMimeType');
-//    	if( is_array( $acceptMimeType ) )
-//		{
-//			$mimeType = $_FILES['file_data']['type'];
-//			if( ! in_array( $mimeType , $acceptMimeType ) )
-//			{
-//				echo json_encode([
-//					'result' => false,
-//					'field'  => $field->getName(),
-//					'msg'    => Translate::getInstance()->getText( 'image_unaccepted_format' )
-//				]);
-//				return false;
-//			}
-//		}
-//
-//		$Media = new Media;
-//		$Media->setModuleId( $this->getEntityId() ) ;
-//		$Media->setModuleName( $this->getEntityName() ) ;
-//		$Media->setFolder( $this->getEntity()->getFolder() ) ;
-//		$rst = $Media->upload( UPLOAD_PATH ) ;
-//
-//		return $this->Factory()->Response()->printJSON( $rst ) ;
-//    }
-//
-//    protected function deletemediaAction()
-//    {
-//        $this->checkToken() ;
-//
-//        $Media = new Media;
-//        $Media->setModuleId( $this->getEntityId() ) ;
-//        $Media->setImageId( $this->getId() );
-//        $Media->setFolder( $this->getEntity()->getFolder() ) ;
-//        $images = $Media->getAll() ;
-//
-//        if ( $images )
-//        {
-//            if ( array_key_exists( $this->getId() , $images ) )
-//            {
-//                if ( $images[ $this->getId() ]->media_delete == true )
-//                {
-//                    $rst = $Media->delete();
-//
-//                    if ( $rst ) $this->Factory()->Response()->returnJSON( $this->m("deletemedia_success") , true ) ;
-//                    else		$this->Factory()->Response()->returnJSON( $this->m("deletemedia_failed") ) ;
-//                }
-//                else
-//                {
-//                    $this->Factory()->Response()->returnJSON( $this->m("deletemedia_delete_is_impossible") ) ;
-//                }
-//            }
-//            else
-//            {
-//                $this->Factory()->Response()->returnJSON( $this->m("deletemedia_media_not_found") ) ;
-//            }
-//        }
-//        else
-//        {
-//            $this->Factory()->Response()->returnJSON( $this->m("deletemedia_no_ressource") ) ;
-//        }
-//    }
 
     /* ************************************************** */
     /* *****************   DOCUMENT   ******************* */
@@ -2781,22 +2665,7 @@ class Controller extends ControllerCommon
     protected function formAction()
     {
         $form = parent::generateForm( $this->getId() !== NULL ? true : false );
-/*
-        if ( $form === false )
-        {
-            $this->Factory()->Response()->flashAndRedirect( $this->m("have_no_content") ) ;
-        }
-*/
-/*
-        $this->setRender( 'cdn_css' , $form['cdn_css'] ) ;
-        $this->setRender( 'cdn_js' , $form['cdn_js'] ) ;
 
-        $this->setRender( 'css' , $form['css'] ) ;
-        $this->setRender( 'js' , $form['js'] ) ;
-
-        $this->setRender( 'tabs' , $form['tabs'] ) ;
-        $this->setRender( 'condition' , $form['condition'] ) ;
-*/
         echo $this->renderForm([
             'field' => $form['field'],
             'tabs' => $form['tabs'],
