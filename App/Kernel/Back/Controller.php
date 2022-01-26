@@ -372,6 +372,7 @@ class Controller extends ControllerCommon
 
         if ( $order === NULL && $by === NULL )
         {
+
             if ( $this->getEntity()->hasOrder() )
             {
                 $order = $this->getEntity()->getOrderName() ;
