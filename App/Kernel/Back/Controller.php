@@ -2092,6 +2092,8 @@ class Controller extends ControllerCommon
 
     protected function editAction()
     {
+        $this->Container()->module( $this->getEntityName() )->getEntity()->setId( $this->getId() );
+
         $arrayParent = $this->getParentArray();
 
         if ( $this->getEntity()->isChild() && $arrayParent['empty'] == true )

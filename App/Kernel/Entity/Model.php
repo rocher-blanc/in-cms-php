@@ -18,7 +18,7 @@ class Model
 	/* ******************   SETTER   ******************** */
 	/* ************************************************** */
     
-    protected function setId( $id )
+    public function setId( $id )
 	{
         $this->_id = $id ;
     }
