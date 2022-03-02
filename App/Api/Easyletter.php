@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
-//use \Firebase\JWT\JWT;
 
 class Easyletter
 {

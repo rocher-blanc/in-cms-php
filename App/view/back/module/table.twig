@@ -138,6 +138,7 @@
                                     {% if row.value != '' %}<img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />{% endif %}
                                 </td>
                             {% else %}
+
                                 {% if row.module != '' and row.type != 'checkbox' %}
                                     <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value }}</a></td>
                                 {% elseif row.type == 'checkbox' %}

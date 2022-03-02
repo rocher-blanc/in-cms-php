@@ -114,12 +114,10 @@
             connectWith: ".module-column",
             placeholder: "module-block placeholder",
             start: function(event, ui) {
-//                $( ui.item[0] ).height(40).find(".module-block-content").slideUp(0);
                 $(".module-block-content").hide(0);
                 $(".button-delete").hide(0);
             },
             stop: function(event, ui) {
-//                $( ui.item[0] ).height("auto").find(".module-block-content").slideDown(300);
                 $(".module-block-content").show(0);
                 $(".button-delete").show(0);
             },

@@ -231,7 +231,6 @@ class Media extends \App\Kernel\Common\Media
 
             $generator = new ImageGenerator( $this->getFolder(), $this->getImageName() );
 			$generator->genImages( $field );
-//            $this->genImages($field);
         }
 
         return $rst ;

@@ -105,117 +105,11 @@ class Gallery
     /*----------                                                  ----------*/
     /*----------------------------------------------------------------------*/
 
-	/*
-    protected function beforeSaveImage( $basePath, $dir , $name )
-	{
-		$currentPath = "/" . trim( $basePath , "/" );
-		foreach( explode("/" , $dir) as $currentDir )
-		{
-			if( strlen(trim($currentDir)) > 0 )
-			{
-				$currentPath .= "/" . $currentDir;
-				if( ! is_dir($currentPath) )
-				{
-					mkdir( $currentPath );
-				}
-			}
-		}
-
-		$currentPath .= "/" . trim($name, "/");
-
-		if( file_exists($currentPath) )
-		{
-			unlink( $currentPath );
-		}
-	}
-
-	public function genImage( $dir , $newNameSuffix , $callable , $name = '' )
-	{
-		if ( empty( $name ) )
-		{
-			$name = $this->getImageName() ;
-		}
-		try {
-			$path = IMAGE_PATH . '/' . $this->getFolder() . '/' ;
-			$img  = $path . $name ;
-			$miniName = $this->updateName( $name , $newNameSuffix ) ;
-			$file     = $path . trim($dir, "/") . "/" . trim($miniName, "/") ;
-			$tmpImg   = new SimpleImage( $img );
-			$this->beforeSaveImage( $path , $dir , $miniName );
-			$callable( $tmpImg , $file );
-			return $miniName ;
-
-		} catch( Exception $e ) {
-			echo 'Error: ' . $e->getMessage();
-		}
-	}
-
-	public function genThumb( $width , $height , $crop = false , $name = '' )
-	{
-		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
-			$tmpImg->best_fit( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
-		}, $name );
-	}
-
-	public function genCover( $width , $height , $crop = false , $name = '' )
-	{
-		return $this->genImage( $crop ? "c" : "t" , "{$width}x{$height}" , function( $tmpImg , $file ) use ($width, $height) {
-			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
-		}, $name );
-	}
-
-	public function genWidth( $width , $name = '' )
-	{
-		return $this->genImage( "w" , "$width" , function( $tmpImg , $file ) use ($width) {
-			$oldW   = $tmpImg->get_width();
-			$oldH   = $tmpImg->get_height();
-			$height = round( $width * $oldH / $oldW , 0 );
-
-			$tmpImg->thumbnail( $width , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
-		}, $name );
-	}
-
-	public function genHeight( $height , $name = '' )
-	{
-		return $this->genImage( "h" , "$height" , function( $tmpImg , $file ) use($height) {
-			$oldW  = $tmpImg->get_width();
-			$oldH  = $tmpImg->get_height();
-			$width = round( $height * $oldW / $oldH , 0 );
-
-			$tmpImg->thumbnail( $height , $height , "center" );
-			$destImg = new SimpleImage(null, $width, $height, BACKGROUND_COLOR_THB);
-			$destImg->overlay($tmpImg)->save($file);
-		}, $name );
-	}
-	*/
-
-
 	/*----------------------------------------------------------------------*/
 	/*----------                                                  ----------*/
 	/*----------                       TOOLS                      ----------*/
 	/*----------                                                  ----------*/
 	/*----------------------------------------------------------------------*/
-
-	/*
-	protected function updateName( $name , $addStr = "" )
-	{
-		$exp 	= explode( "." , $name ) ;
-		$ext 	= end( $exp ) ;
-		$extlen = ( strlen( $ext ) + 1 ) * -1 ;
-		if ( $addStr != "" ) $addStr = "-" . $addStr ;
-
-		$name = substr( $name , 0 , $extlen ) ;
-		$name = $this->Factory()->Url()->encode( $name . $addStr ) . "." . $ext ;
-
-		return $name ;
-	}
-	*/
 
 	public function getMini( $name , $width , $height = false , $type = "t" )
 	{

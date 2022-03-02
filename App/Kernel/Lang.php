@@ -24,7 +24,6 @@ class Lang
     public function __construct()
     {
         $this->loadActiveLang() ;
-//        dump( $this );
     }
 
     /* ************************************************** */

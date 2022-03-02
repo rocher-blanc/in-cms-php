@@ -1128,6 +1128,7 @@ class Controller extends \App\Kernel\Common\Controller
                 'id'                    => $form['id'],
                 'module'                => $this->getEntityName(),
                 'recaptcha'             => $this->getEntity()->reCAPTCHA(),
+                'recaptcha_version'     => RECAPTCHA_VERSION,
                 'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
                 'redirect'              => $url,
                 'timer'                 => $timer,
@@ -1185,6 +1186,7 @@ class Controller extends \App\Kernel\Common\Controller
             'result'     => $this->result_form,
 			'recaptcha'             => $this->getEntity()->reCAPTCHA(),
 			'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
+            'recaptcha_version'     => RECAPTCHA_VERSION,
         ]);
 
         $end = $View->fetch( 'module/widget/form/end.twig' );
@@ -1485,10 +1487,16 @@ class Controller extends \App\Kernel\Common\Controller
                     $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
                     $recaptcha = json_decode($recaptcha);
 
-                    // Take action based on the score returned:
-                    if ($recaptcha->score >= RECAPTCHA_SCORE)
+                    if ( $recaptcha->success == true )
                     {
-                        return true ;
+                        if ($recaptcha->score >= RECAPTCHA_SCORE)
+                        {
+                            return true ;
+                        }
+                        else
+                        {
+                            return false ;
+                        }
                     }
                     else
                     {

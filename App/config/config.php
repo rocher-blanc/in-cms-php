@@ -123,6 +123,7 @@ defined('CLIENT_NOTIFY_ENGINE') || define( 'CLIENT_NOTIFY_ENGINE', "Noty" );
 
 // NEWSLETTER
 defined('NEWSLETTER_ACTIVE') || define('NEWSLETTER_ACTIVE', false );
+defined('HIDE_NEWSLETTER') || define('HIDE_NEWSLETTER', false );
 
 // MAIL
 defined('MAIL_HTML') || define('MAIL_HTML', true );

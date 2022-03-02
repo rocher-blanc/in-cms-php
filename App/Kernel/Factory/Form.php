@@ -11,6 +11,7 @@ class Form
     protected $module_id    = NULL ;
     protected $element_id   = NULL ;
     protected $folder       = NULL ;
+    protected $_code_js     = "";
     protected $_lib_js      = [];
     protected $_lib_css     = [];
     protected $_cdn_js      = [];
@@ -157,6 +158,7 @@ class Form
                 if ( !empty( $row ) ) $html.= '<script type="text/javascript" src="' . $this->site( $row ) . '"></script>' . "\n" ;
             }
         }
+        $html.= $this->getCodeJs() ;
         return $html ;
     }
 
@@ -289,11 +291,40 @@ class Form
 
     public function activeRecaptcha()
     {
-        $this->setCdnJS("https://www.google.com/recaptcha/api.js");
+        if ( RECAPTCHA_VERSION == 'v2' )
+        {
+            $this->setCdnJS("https://www.google.com/recaptcha/api.js");
+        }
+        else
+        {
+            $this->setCdnJS("https://www.google.com/recaptcha/api.js?render=" . RECAPTCHA_PUBLIC );
+            $this->setCodeJs("grecaptcha.ready(function () {
+   grecaptcha.execute('" . RECAPTCHA_PUBLIC . "', { action: 'contact' }).then(function (token) {
+      var recaptchaResponse = document.getElementById('recaptchaResponse');
+      recaptchaResponse.value = token;
+   });
+});");
+        }
     }
 
     public function site( $url )
     {
         return $this->getApp()->request()->getUrl() . '/assets/vendor/' . ltrim($url, '/');
+    }
+
+    /**
+     * @return string
+     */
+    public function getCodeJs()
+    {
+        return $this->_code_js;
+    }
+
+    /**
+     * @param string $code_js
+     */
+    public function setCodeJs($code_js)
+    {
+        $this->_code_js.= $code_js;
     }
 }
