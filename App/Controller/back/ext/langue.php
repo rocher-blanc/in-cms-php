@@ -446,9 +446,9 @@ $app->group('/langue', function () use ($app)
 		})->name('langue_traduction');
 
 		$app->get('/get-lang', function() use ($app) {
-			header('Content-Type: application/json;charset=utf-8');
+//			header('Content-Type: application/json;charset=utf-8');
 
-			$lang_abbr = $this->getApp()->request->get('lang_locale');
+			$lang_abbr = $_POST['lang_locale'];
 			$className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
 			$class     = new $className ;
 			$arrayTrad = $class->getVar();
@@ -477,12 +477,13 @@ $app->group('/langue', function () use ($app)
 			];
 
 			echo json_encode([
-				'result' => true,
-				'msg'    => "",
-				'lang'   => $lang,
-				'keys'   => $keys,
-			]);
-		});
+                'result' => true,
+                'msg'    => "",
+                'lang'   => $lang,
+                'keys'   => $keys,
+            ], JSON_PRETTY_PRINT );
+
+		})->via('GET', 'POST');
 
 		$app->post('/update-translate', function() use ($app) {
 			$key   = $app->request->post('key');
