@@ -123,7 +123,7 @@ class Easyletter
      * @param null $idSender
      * @param null $subject
      * @param array $attachments
-     * @return false
+     * @return false|int
      */
     public function automotion(string $keyAutomation , string $email , array $data = [] , $idSender = NULL , $subject = null , $attachments = [] )
     {
@@ -219,7 +219,6 @@ class Easyletter
                         'recipient' => Http::getInstance()->getUrl() . "/email/automation/recipient/" . $AutomationHistory->get('id'),
                         'content' => Http::getInstance()->getUrl() . "/email/automation/template/" . $EdAutomation->get('id') . "/" . $AutomationHistory->get('id'),
                     ]);
-
 
                     if ( $response !== false )
                     {
