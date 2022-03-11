@@ -782,6 +782,6 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"export_turnover" => "Export CA",
 		"not_uniq_email" => "L'adresse e-mail est déjà enregistrée",
 		"image_unaccepted_format" => "Le format de l'image n'est pas supporté",
-        "matomo_tm" => "Id Matomo pour le serveur 29ter",
+        "matomo_tm" => "Id Matomo pour le serveur Rocher BLANC",
 	];
 }
