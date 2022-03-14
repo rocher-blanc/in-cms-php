@@ -16,6 +16,7 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
         "order" => "Commande",
         "nb_products" => "Nb. de produits",
         "return_request" => "Demandes de retours",
+        "date_livraison" => "Date de livraison",
         "msg_message_valide" => "Le message a bien été envoyé au client",
         "msg_message_empty" => "Merci de remplir le message à envoyer au client",
         "softbounces" => "Soft bounces",
