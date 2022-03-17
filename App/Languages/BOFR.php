@@ -784,5 +784,11 @@ class BOFR extends \App\Kernel\Front\LanguageModel {
 		"not_uniq_email" => "L'adresse e-mail est déjà enregistrée",
 		"image_unaccepted_format" => "Le format de l'image n'est pas supporté",
         "matomo_tm" => "Id Matomo pour le serveur Rocher BLANC",
+        "reason_repayment" => "Motif de retour",
+
+        // BOBINE
+        "embroidering" => "En cours de broderie",
+        "cac_available" => "Disponible en boutique",
+        "cac_deliver" => "Retiré en C&C par le client",
 	];
 }
