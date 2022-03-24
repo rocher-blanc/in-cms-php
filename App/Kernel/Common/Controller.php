@@ -6,6 +6,7 @@ use App\Kernel\Back\Alt;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Back\Seo;
 use App\Kernel\Container;
+use App\Kernel\Entity\Builder;
 use App\Kernel\Form\Select;
 use App\Kernel\Front\Translate;
 use Slim\Slim;
@@ -299,7 +300,7 @@ class Controller
         return Container::getInstance() ;
     }
 
-    public function getEntity(): \App\Kernel\Entity\Builder
+    public function getEntity(): Builder
     {
         return $this->Container()->module( $this->getEntityName() )->getEntity() ;
     }

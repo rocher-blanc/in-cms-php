@@ -1,3 +1,18 @@
+{% macro space_select(niv) %}
+    {% if niv >= 1 %}
+        {% for i in 1..niv %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}
+    {% endif %}
+{% endmacro space_select %}
+{% macro select(array, niv, value) %}
+    {% for row in array %}
+        <option value="{{ row.id }}"{{ row.id == value and value is not same as('') and value is not same as(null) ? ' selected' : '' }}>{{ _self.space_select(niv) ~ row.titre }}</option>
+        {% if row.subpages is not empty %}
+            {{ _self.select(row.subpages, (niv + 1), value) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro select %}
+{% import _self as macros %}
+
 {% set enableSelect = hasValidation or mod.canDelete %}
 
 {% if td|length > 0 or search == 1 %}
@@ -76,12 +91,15 @@
                                 {% elseif thvalue.type == 'select' %}
                                     <select name="{{ thvalue.name }}" class="form-control form-control-sm" data-plugin-selectTwo>
                                         <option value=""{{ thvalue.value == '' ? ' selected' : '' }}>----- {{ _('no_select')}} -----</option>
-                                        {% for key,value in thvalue.options %}
-                                            {% if value is iterable %}
-                                            {% else %}
-                                                <option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>
-                                            {% endif %}
-                                        {% endfor %}
+                                        {% if thvalue.parent %}
+                                            {{ macros.select(thvalue.options, 0, thvalue.value) }}
+                                        {% else %}
+                                            {% for key,value in thvalue.options %}
+                                                {% if value is not iterable %}
+                                                    <option value="{{ key }}"{{ key == thvalue.value and thvalue.value is not same as('') and thvalue.value is not same as(null) ? ' selected' : '' }}>{{ value }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                     </select>
                                 {% elseif thvalue.type == 'checkbox' %}
                                     <select name="{{ thvalue.name }}[]" class="form-control" data-plugin-selectPicker data-size="10" multiple title="Sélectionner les options" data-selected-text-format="count>2" data-live-search="true">
@@ -138,9 +156,14 @@
                                     {% if row.value != '' %}<img class="img-responsive" src="{{ row.value }}" style="max-height: 30px; max-width: 30px;" />{% endif %}
                                 </td>
                             {% else %}
-
                                 {% if row.module != '' and row.type != 'checkbox' %}
-                                    <td style="vertical-align: middle;"><a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value }}</a></td>
+                                    <td style="vertical-align: middle;">
+                                        {% if row.has_parent %}
+                                            <a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value.titre }}</a>
+                                        {% else %}
+                                            <a style="display:inline-block;border-bottom:1px dashed #164757;" href="{{ route( row.module , 'edit' , '' , row.id ) }}">{{ row.value }}</a>
+                                        {% endif %}
+                                    </td>
                                 {% elseif row.type == 'checkbox' %}
                                     <td style="vertical-align: middle;">
                                         {% if row.value|length > 0 %}

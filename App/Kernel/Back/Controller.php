@@ -26,8 +26,8 @@ class Controller extends ControllerCommon
     /* ****************   VARIABLES   ******************* */
     /* ************************************************** */
 
-	protected $_token 		= NULL ;
-	protected $_lang 		= NULL ;
+    protected $_token 		= NULL ;
+    protected $_lang 		= NULL ;
     protected $_id_parent 	= [] ;
     protected $_options 	= [] ;
     protected $table     	= [] ;
@@ -100,14 +100,14 @@ class Controller extends ControllerCommon
         return $this->_lang ;
     }
 
-	/* ************************************************** */
-	/* ******************    ISER    ******************** */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* ******************    ISER    ******************** */
+    /* ************************************************** */
 
-	protected function isDepedency()
-	{
-		return ( $this->getDepedencyModule() !== NULL ? true : false );
-	}
+    protected function isDepedency()
+    {
+        return ( $this->getDepedencyModule() !== NULL ? true : false );
+    }
 
     /* ***************************************************** */
     /* ******************   CONTAINER   ******************** */
@@ -146,7 +146,7 @@ class Controller extends ControllerCommon
 
             if ( $this->isValidAction() == true )
             {
-            	$method = $this->getMethodName() ;
+                $method = $this->getMethodName() ;
                 $this->$method();
             }
         }
@@ -178,22 +178,22 @@ class Controller extends ControllerCommon
         $tree = [];
 
         if( $rows )
-		{
-			foreach( $rows as $key => $row )
-			{
-				if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
-				{
-					$obj = new \stdClass();
-					$obj->id 		= $row->get('id');
-					$obj->$alias	= $row->get( $alias );
-					$obj->level	    = $level;
-					if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
-					unset( $rows[ $key ]);
-					$obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
-					$tree[] = $obj;
-				}
-			}
-		}
+        {
+            foreach( $rows as $key => $row )
+            {
+                if ( $row->get( $this->getEntity()->getParentName() ) == $parent_id or ( $row->get( $this->getEntity()->getParentName() ) === NULL && $parent_id == -1 ) )
+                {
+                    $obj = new \stdClass();
+                    $obj->id 		= $row->get('id');
+                    $obj->$alias	= $row->get( $alias );
+                    $obj->level	    = $level;
+                    if ( $row->get('id') == $this->getId() ) $obj->noview = true ;
+                    unset( $rows[ $key ]);
+                    $obj->subpages 	= ( $row->get('id') != $this->getId() ? $this->getTreeParent($rows, $alias, $row->get('id'), $level + 1 ) : [] );
+                    $tree[] = $obj;
+                }
+            }
+        }
 
         return $tree;
     }
@@ -213,55 +213,55 @@ class Controller extends ControllerCommon
     }
 
     protected function parseFieldData( $row , $form , $show )
-	{
-		$rst = parent::parseFieldData( $row , $form , $show );
+    {
+        $rst = parent::parseFieldData( $row , $form , $show );
 
-		$rst['actions'] = [];
+        $rst['actions'] = [];
 
-		if( $row->getData('manyToMany') )
-		{
-			$rst['actions'][] = [
-				'icon'  => "icon-pencil",
-				'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
-				'label' => "Mettre à jour la liste",
-				'blank' => true
-			];
-			$rst['actions'][] = [
-				'icon'  => "icon-reload",
-				'label' => "Recharger la liste",
-				'extra' => [
-					'data-select-reload' =>
-						$this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
-						. "?field=" . $row->getName()
-				]
-			];
-		}
-		else if( $row->getData('listing') )
-		{
-			$rst['actions'][] = [
-				'icon'  => "icon-list-ul",
-				'label' => "Modifier la liste",
-				'extra' => [
-					'data-select-listing' =>
-						$this->Factory()->Url()->route( $this->getEntityName() , 'selectListing' , NULL , $this->getId() )
-						. "?key=" . $row->getData('listingKey')
-						. "&field_id=id_" . $row->getColumn()
-				]
-			];
-			$rst['actions'][] = [
-				'icon'  => "icon-reload",
-				'label' => "Recharger la liste",
-				'extra' => [
-					'data-select-reload' =>
-						$this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
-						. "?key=" . $row->getData('listingKey')
-						. "&field=" . $row->getName()
-				]
-			];
-		}
+        if( $row->getData('manyToMany') )
+        {
+            $rst['actions'][] = [
+                'icon'  => "icon-pencil",
+                'url'   => $this->Factory()->Url()->route( $row->getData('object') ),
+                'label' => "Mettre à jour la liste",
+                'blank' => true
+            ];
+            $rst['actions'][] = [
+                'icon'  => "icon-reload",
+                'label' => "Recharger la liste",
+                'extra' => [
+                    'data-select-reload' =>
+                        $this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
+                        . "?field=" . $row->getName()
+                ]
+            ];
+        }
+        else if( $row->getData('listing') )
+        {
+            $rst['actions'][] = [
+                'icon'  => "icon-list-ul",
+                'label' => "Modifier la liste",
+                'extra' => [
+                    'data-select-listing' =>
+                        $this->Factory()->Url()->route( $this->getEntityName() , 'selectListing' , NULL , $this->getId() )
+                        . "?key=" . $row->getData('listingKey')
+                        . "&field_id=id_" . $row->getColumn()
+                ]
+            ];
+            $rst['actions'][] = [
+                'icon'  => "icon-reload",
+                'label' => "Recharger la liste",
+                'extra' => [
+                    'data-select-reload' =>
+                        $this->Factory()->Url()->route( $this->getEntityName() , 'selectReload' , NULL , $this->getId() )
+                        . "?key=" . $row->getData('listingKey')
+                        . "&field=" . $row->getName()
+                ]
+            ];
+        }
 
-		return $rst;
-	}
+        return $rst;
+    }
 
     protected function generateForm( $value = false , $data = [] )
     {
@@ -276,7 +276,7 @@ class Controller extends ControllerCommon
         $this->setRender( 'cdn_js' , $form['cdn_js'] ) ;
 
         $this->setRender( 'css' , $form['css'] ) ;
-		$this->setRender( 'js' , $form['js'] ) ;
+        $this->setRender( 'js' , $form['js'] ) ;
 
         $this->setRender( 'tabs' , $form['tabs'] ) ;
         $this->setRender( 'condition' , $form['condition'] ) ;
@@ -332,13 +332,13 @@ class Controller extends ControllerCommon
             foreach( $rst as $row )
             {
                 $tab[ $row->module_table_field ] = $row->module_table_field ;
-			}
+            }
 
             if( $this->getEntity()->isShowDateCreation() )
-			{
-				$tab['date_created'] = "date_created" ;
-			}
-		}
+            {
+                $tab['date_created'] = "date_created" ;
+            }
+        }
 
         return $tab ;
     }
@@ -407,7 +407,7 @@ class Controller extends ControllerCommon
             {
                 if ( in_array( $field->getName() , $indexTable ) )
                 {
-                    $arrayDate = [];
+                    $arrayMoreInfos = [];
 
                     if ( $field->getType() == 'date' )
                     {
@@ -423,7 +423,7 @@ class Controller extends ControllerCommon
                             $value_convert_end   = $this->Factory()->Date()->convertUs( $end );
                         }
 
-                        $arrayDate = [
+                        $arrayMoreInfos = [
                             'value_convert_start' => $value_convert_start,
                             'value_convert_end' => $value_convert_end,
                         ];
@@ -433,7 +433,16 @@ class Controller extends ControllerCommon
                     if ( $field->isAssociated() )
                     {
                         $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) , true );
-						$this->getEntity()->get( $field->getName() )->setData('option',$option);
+                        $this->getEntity()->get( $field->getName() )->setData('option',$option);
+
+                        if ( $this->Container()->module( $field->getData('object') )->getEntity()->hasParent() )
+                        {
+                            $arrayMoreInfos['parent'] = true ;
+                        }
+                        else
+                        {
+                            $arrayMoreInfos['parent'] = false ;
+                        }
                     }
                     else if ( $field->hasOption() )
                     {
@@ -451,7 +460,9 @@ class Controller extends ControllerCommon
                         'type'        => $field->getType(),
                         'boolean'     => $field->getData('isBoolean'),
                         'options'     => $option
-                    ], $arrayDate);
+                    ], $arrayMoreInfos);
+
+
                 }
             }
 
@@ -463,14 +474,14 @@ class Controller extends ControllerCommon
                 $offset = 0;
             }
 
-			if ( $this->getEntity()->hasParent() )
-			{
-				$content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , 0 , $count , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
-			}
-			else
-			{
-				$content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
-			}
+            if ( $this->getEntity()->hasParent() )
+            {
+                $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , 0 , $count , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
+            }
+            else
+            {
+                $content = $this->getRepository()->getAllTableIndex( $order , $by , $thArray , ( $this->getEntity()->isChild() ? end( $this->getIdParent() ) : NULL ) , $offset , $elmtPerPage , $this->getDepedencyModule() , $this->getDepedencyElement() ) ;
+            }
 
             if ( $content )
             {
@@ -637,12 +648,12 @@ class Controller extends ControllerCommon
                                 }
                             }
                             // Date de création
-							elseif( $typeField == null && $field->getName() == "date_created" )
-							{
-								$date  = $row->get( $field->getColumn() );
-								$dt    = \DateTime::createFromFormat("Y-m-d H:i:s" , $date);
-								$value = $dt->format( "d/m/Y H:i:s");
-							}
+                            elseif( $typeField == null && $field->getName() == "date_created" )
+                            {
+                                $date  = $row->get( $field->getColumn() );
+                                $dt    = \DateTime::createFromFormat("Y-m-d H:i:s" , $date);
+                                $value = $dt->format( "d/m/Y H:i:s");
+                            }
                             // Autre types non renseignés
                             else
                             {
@@ -709,10 +720,17 @@ class Controller extends ControllerCommon
                             }
 
                             $typeArray[ $field->getName() ] = $field->getType() ;
+
+                            if ( $field->getData('object') != null )
+                            {
+                                $parent = $this->Container()->module( $field->getData('object') )->getEntity()->hasParent() ;
+                            }
+
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
                                 'style'      => $style,
                                 'javascript' => $js,
                                 'value'      => $value,
+                                'has_parent' => $parent,
                                 'module'     => $field->getData('object'),
                                 'subtype'    => $field->getData('subtype'),
                                 'id'         => $idTd,
@@ -903,16 +921,16 @@ class Controller extends ControllerCommon
                     'name'  	    => $this->getEntityName(),
                     'title' 	    => $rst->module_name,
                     'icon'  	    => $rst->module_icon,
-					'canCreate'     => $this->canCreate(),
-					'canImport'     => $this->getEntity()->canImport(),
-					'canDelete'     => $this->getEntity()->canDelete(),
-					'canUpdate'     => $this->getEntity()->canUpdate(),
-					'canDuplicate'  => $this->getEntity()->canDuplicate()
-				],
+                    'canCreate'     => $this->canCreate(),
+                    'canImport'     => $this->getEntity()->canImport(),
+                    'canDelete'     => $this->getEntity()->canDelete(),
+                    'canUpdate'     => $this->getEntity()->canUpdate(),
+                    'canDuplicate'  => $this->getEntity()->canDuplicate()
+                ],
                 'action'    => $this->getActionName(),
                 'fields'    => $this->getImportFiled(),
                 'depedency' => $this->isDepedency()
-			]);
+            ]);
         }
 
         $this->setEntityId( $rst->module_id ) ;
@@ -954,7 +972,7 @@ class Controller extends ControllerCommon
     /* Fonction appelée par "add" & "update" */
     protected function pushData( $add = true , $noCheck = false )
     {
-		if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
+        if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
         else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
 
         $result = $this->$hookBeforeCheck();
@@ -972,29 +990,29 @@ class Controller extends ControllerCommon
             if ( $noCheck ) $check = true ;
             else			$check = $this->checkForm() ;
 
-			if( $noCheck )
-			{
-				// TODO : gestion des listes
-				foreach( $this->getEntity()->getField() as $field )
-				{
-					if( $field->isUniq() )
-					{
-						if( $field->hasLang() )
-						{
-							// TODO : Langues
+            if( $noCheck )
+            {
+                // TODO : gestion des listes
+                foreach( $this->getEntity()->getField() as $field )
+                {
+                    if( $field->isUniq() )
+                    {
+                        if( $field->hasLang() )
+                        {
+                            // TODO : Langues
 //							foreach( $this->Lang()->getAll() as $lang )
 //							{
 //								$result = $this->checkUniq_Lang( $field , $field->getValue() , $lang );
 //								if( ! $result ) $check = $result;
 //							}
-						}
-						else
-						{
-							$check = $this->checkUniq_Common( $field , $field->getValue() );
-						}
-					}
-				}
-			}
+                        }
+                        else
+                        {
+                            $check = $this->checkUniq_Common( $field , $field->getValue() );
+                        }
+                    }
+                }
+            }
 
             if ( $check )
             {
@@ -1184,14 +1202,14 @@ class Controller extends ControllerCommon
                     }
 
                     if ( $this->getEntity()->hasMultilang() )
-					{
-						// On ajoute les infos avec multi-langue
-						foreach( $this->Lang()->getAll() as $lang )
-						{
-							$contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
-							$contentLang[ $lang->url ]->save() ;
-						}
-					}
+                    {
+                        // On ajoute les infos avec multi-langue
+                        foreach( $this->Lang()->getAll() as $lang )
+                        {
+                            $contentLang[ $lang->url ]->set( \DB::getIdNameInLang( $this->getEntityName() ) , $this->getId() ) ;
+                            $contentLang[ $lang->url ]->save() ;
+                        }
+                    }
 
                     if ( $this->getEntity()->itsDepedency() )
                     {
@@ -1610,46 +1628,46 @@ class Controller extends ControllerCommon
 
     protected function duplicate()
     {
-		$result = $this->duplicateElement( $this->getId() );
+        $result = $this->duplicateElement( $this->getId() );
 
-		if( is_array($result) && ! $result['result'] )
-		{
-			return $result;
-		}
-		else
-		{
-			return [
-				'result' => true,
-				'id'     => $result->get('id'),
-				'msg'    => Translate::getInstance()->getText('contents_duplicate' ),
-			];
-		}
+        if( is_array($result) && ! $result['result'] )
+        {
+            return $result;
+        }
+        else
+        {
+            return [
+                'result' => true,
+                'id'     => $result->get('id'),
+                'msg'    => Translate::getInstance()->getText('contents_duplicate' ),
+            ];
+        }
     }
 
-	public function duplicateElement( $originalElementId , $showCopyFrom = true )
-	{
-		$content = $this->getRepository()->findOne( $originalElementId );
-		if( $this->getEntity()->hasMultilang() )
-		{
-			$contentLang = [];
-			foreach( $this->Lang()->getAll() as $lang )
-			{
-				$contentLang[ $lang->id ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
-			}
-		}
-		if( ! $content )
-		{
-			return [
-				'result' => false,
-				'msg' => Translate::getInstance()->getText( 'contents_unavailable' ),
-			];
-		}
-		else
-		{
-			$data = new Data( $this->getEntityName() );
-			$data->create();
-			foreach( $this->getEntity()->getField() as $row )
-			{
+    public function duplicateElement( $originalElementId , $showCopyFrom = true )
+    {
+        $content = $this->getRepository()->findOne( $originalElementId );
+        if( $this->getEntity()->hasMultilang() )
+        {
+            $contentLang = [];
+            foreach( $this->Lang()->getAll() as $lang )
+            {
+                $contentLang[ $lang->id ] = \DB::for_module_lang( $this->getEntityName() , $this->getId() , $lang->id )->find_one();
+            }
+        }
+        if( ! $content )
+        {
+            return [
+                'result' => false,
+                'msg' => Translate::getInstance()->getText( 'contents_unavailable' ),
+            ];
+        }
+        else
+        {
+            $data = new Data( $this->getEntityName() );
+            $data->create();
+            foreach( $this->getEntity()->getField() as $row )
+            {
                 if (explode("-", $row->getName())[1] !== "no" )
                 {
                     if( $row->getType() != "checkbox" && $row->save() == true && $row->canUpdate() == true && $row->isOrder() == false )
@@ -1667,88 +1685,88 @@ class Controller extends ControllerCommon
                         }
                     }
                 }
-			}
+            }
 
-			if ( $this->getEntity()->hasValidation() )
-			{
-				$data->set( $this->getEntity()->getValidationName() , 0 );
-			}
+            if ( $this->getEntity()->hasValidation() )
+            {
+                $data->set( $this->getEntity()->getValidationName() , 0 );
+            }
 
-			if ( ! empty( $this->getEntity()->getFieldReference() ) && ! $this->getEntity()->hasMultilang() )
-			{
-				if ( count( $this->getEntity()->getFieldReference() ) == 1 )
-				{
-					$field =  $this->getEntity()->getFieldReference()[0] ;
+            if ( ! empty( $this->getEntity()->getFieldReference() ) && ! $this->getEntity()->hasMultilang() )
+            {
+                if ( count( $this->getEntity()->getFieldReference() ) == 1 )
+                {
+                    $field =  $this->getEntity()->getFieldReference()[0] ;
 
-					if ( $this->getEntity()->get( $field )->getType() == 'text' )
-					{
-						$title = ( $showCopyFrom ? 'Copie de ' : '' )
-							. $content->get( $this->getEntity()->get( $field )->getColumn() );
-						$data->set( $field , $title );
-					}
-				}
-			}
+                    if ( $this->getEntity()->get( $field )->getType() == 'text' )
+                    {
+                        $title = ( $showCopyFrom ? 'Copie de ' : '' )
+                            . $content->get( $this->getEntity()->get( $field )->getColumn() );
+                        $data->set( $field , $title );
+                    }
+                }
+            }
 
-			$data->save();
+            $data->save();
 
-			foreach( $this->getEntity()->getField() as $row )
-			{
-				if ( $row->getType() == "checkbox" )
-				{
-					$this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
-				}
-				else if ( $row->getType() == "gallery" )
-				{
-					$Gallery = new Gallery;
-					$Gallery->setElementId( $this->getId() );
-					$Gallery->setModuleId( $this->getEntityId() );
-					$Gallery->setField( $row->getName() );
-					$Gallery->duplicate( $data->get('id' ) );
-				}
-			}
+            foreach( $this->getEntity()->getField() as $row )
+            {
+                if ( $row->getType() == "checkbox" )
+                {
+                    $this->getRepository()->duplicateCheckbox( $row->getName() , $this->getId() , $data->get('id') );
+                }
+                else if ( $row->getType() == "gallery" )
+                {
+                    $Gallery = new Gallery;
+                    $Gallery->setElementId( $this->getId() );
+                    $Gallery->setModuleId( $this->getEntityId() );
+                    $Gallery->setField( $row->getName() );
+                    $Gallery->duplicate( $data->get('id' ) );
+                }
+            }
 
-			// Pour chaque dépendance
-			foreach( $this->getEntity()->getDependency() as $dependencyData )
-			{
-				// Récupération du module de dépendance
-				$dependency = Container::getInstance()->module( $dependencyData['class'] );
-				// Si le module a bien été trouvé
-				if( $dependency )
-				{
-					// Récupération de tous les éléments contenu dans la dépendance
-					$reqDependencies = $dependency->getRepository(false)->getKit()
-						->select( $dependency->getEntity()->get('id')->getColumn() )
-						->where_equal( $dependency->getEntity()->get('module_id')->getColumn() , $this->getEntityId() )
-						->where_equal( $dependency->getEntity()->get('element_id')->getColumn() , $originalElementId )
-						->find_many();
+            // Pour chaque dépendance
+            foreach( $this->getEntity()->getDependency() as $dependencyData )
+            {
+                // Récupération du module de dépendance
+                $dependency = Container::getInstance()->module( $dependencyData['class'] );
+                // Si le module a bien été trouvé
+                if( $dependency )
+                {
+                    // Récupération de tous les éléments contenu dans la dépendance
+                    $reqDependencies = $dependency->getRepository(false)->getKit()
+                        ->select( $dependency->getEntity()->get('id')->getColumn() )
+                        ->where_equal( $dependency->getEntity()->get('module_id')->getColumn() , $this->getEntityId() )
+                        ->where_equal( $dependency->getEntity()->get('element_id')->getColumn() , $originalElementId )
+                        ->find_many();
 
-					// Si des résultats ont été trouvés
-					if( $reqDependencies )
-					{
-						// Pour chaque résultat
-						foreach( $reqDependencies as $originalDependencyElement )
-						{
-							// Exctraction de l'id de l'élément de dépendance à dupliquer
-							$originalDependencyId = $originalDependencyElement->get( $dependency->getEntity()->get('id')->getColumn() );
-							// Duplication de la dépendance
-							$dataNewDependency = $dependency->getController(true)->duplicateElement( $originalDependencyId , false );
-							// Si l'élément a bien été duppliqué
+                    // Si des résultats ont été trouvés
+                    if( $reqDependencies )
+                    {
+                        // Pour chaque résultat
+                        foreach( $reqDependencies as $originalDependencyElement )
+                        {
+                            // Exctraction de l'id de l'élément de dépendance à dupliquer
+                            $originalDependencyId = $originalDependencyElement->get( $dependency->getEntity()->get('id')->getColumn() );
+                            // Duplication de la dépendance
+                            $dataNewDependency = $dependency->getController(true)->duplicateElement( $originalDependencyId , false );
+                            // Si l'élément a bien été duppliqué
 
-							if( $dataNewDependency instanceof Data )
-							{
-								// Modification de l'id du parent
-								$dataNewDependency->set('element_id', $data->get('id'));
-								// Mise à jour de la dépendance copiée
-								$dataNewDependency->save();
-							}
-						}
-					}
-				}
-			}
+                            if( $dataNewDependency instanceof Data )
+                            {
+                                // Modification de l'id du parent
+                                $dataNewDependency->set('element_id', $data->get('id'));
+                                // Mise à jour de la dépendance copiée
+                                $dataNewDependency->save();
+                            }
+                        }
+                    }
+                }
+            }
 
-			return $data;
-		}
-	}
+            return $data;
+        }
+    }
 
     /* ************************************************** */
     /* ******************    TABLE    ******************* */
@@ -1928,35 +1946,35 @@ class Controller extends ControllerCommon
             $import->setFields( $this->getImportFiled() );
             $rst = $import->upload();
 
-			$error    = false ;
-			$errorMsg = '' ;
+            $error    = false ;
+            $errorMsg = '' ;
 
             if ( $rst !== false )
-			{
-				foreach( $rst as $lineNumber => $arrayValue )
-				{
-					foreach( $this->getEntity()->getField() as $field )
-					{
-						$return = $field->checkImport( $arrayValue[ $field->getName() ] );
+            {
+                foreach( $rst as $lineNumber => $arrayValue )
+                {
+                    foreach( $this->getEntity()->getField() as $field )
+                    {
+                        $return = $field->checkImport( $arrayValue[ $field->getName() ] );
 
-						if ( $return === false )
-						{
-							$errorMsg.= "Ligne $lineNumber: " . $field->getError() . "\n";
-							$error = true ;
-						}
-					}
-				}
+                        if ( $return === false )
+                        {
+                            $errorMsg.= "Ligne $lineNumber: " . $field->getError() . "\n";
+                            $error = true ;
+                        }
+                    }
+                }
 
-				if ( $error === false )
-				{
+                if ( $error === false )
+                {
                     $order = 1;
                     if ( $this->getEntity()->hasOrder() )
                     {
                         $order = $this->getRepository()->maxPosition() + 1;
                     }
 
-				    foreach( $rst as $lineNumber => $arrayValue )
-					{
+                    foreach( $rst as $lineNumber => $arrayValue )
+                    {
                         foreach( $this->getEntity()->getField() as $field )
                         {
                             $this->getEntity()->get( $field->getName() )->parseWithImport( $arrayValue[ $field->getName() ] , $this->getEntityId() , $this->getEntityName() );
@@ -1972,7 +1990,7 @@ class Controller extends ControllerCommon
                             $this->getEntity()->get( $this->getEntity()->getOrderName() )->setData( 'defaut' , $order );
                         }
 
-						$a = [];
+                        $a = [];
                         foreach( $this->getEntity()->getField() as $field )
                         {
                             $a[ $field->getName() ] = $field->getValue();
@@ -1981,24 +1999,24 @@ class Controller extends ControllerCommon
                         $this->pushData( true , true );
                         $this->setId(NULL);
 
-						foreach( $this->getEntity()->getField() as $field )
-						{
-							$this->getEntity()->get( $field->getName() )->clearValue();
-						}
+                        foreach( $this->getEntity()->getField() as $field )
+                        {
+                            $this->getEntity()->get( $field->getName() )->clearValue();
+                        }
 
-						$order++;
-					}
-				}
-			}
+                        $order++;
+                    }
+                }
+            }
 
-			$std = new \stdClass;
-			$std->result 	= ( ! $error );
+            $std = new \stdClass;
+            $std->result 	= ( ! $error );
             $std->message 	= nl2br( $errorMsg );
-			$std->id 		= 1;
-			$std->key 		= 1;
-			$std->max 		= $order;
+            $std->id 		= 1;
+            $std->key 		= 1;
+            $std->max 		= $order;
 
-			$this->Factory()->Response()->printJSON($std);
+            $this->Factory()->Response()->printJSON($std);
         }
         else
         {
@@ -2088,7 +2106,7 @@ class Controller extends ControllerCommon
             }
         }
 
-       return $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , implode( '/' , array_reverse( $result ) ) , $this->getId() );
+        return $this->Factory()->Url()->route( $this->getEntityName() , 'edit' , implode( '/' , array_reverse( $result ) ) , $this->getId() );
     }
 
     protected function editAction()
@@ -2103,7 +2121,7 @@ class Controller extends ControllerCommon
             $this->Factory()->Response()->redirect( $uri );
         }
 
-		if ( $this->getEntity()->hasUrl() )
+        if ( $this->getEntity()->hasUrl() )
         {
             $seo = new Seo;
             $seo->setElementId( $this->getId() );
@@ -2116,7 +2134,7 @@ class Controller extends ControllerCommon
 
         if ( $this->getApp()->request->isPost() && $this->getApp()->request->isAjax() )
         {
-			if ( $this->getEntity()->hasUrl() ) $seo->update() ;
+            if ( $this->getEntity()->hasUrl() ) $seo->update() ;
             $rst = $this->pushData( false ) ;
 
             if ( is_array( $rst ) ) return $this->Factory()->Response()->printJSON( $rst ) ;
@@ -2187,14 +2205,14 @@ class Controller extends ControllerCommon
             $this->setToken( $this->getApp()->request->post( $this->getApp()->config('token') ) ) ;
             $this->checkToken() ;
             if( is_array( $this->post('listIds') ) )
-			{
-				foreach( $this->post('listIds') as $i )
-				{
-					$rst = $this->delete( $i );
-					if( ! $rst['result'] ) break;
-				}
-			}
-			if( $rst['result'] ) $rst['msg'] = $this->m("delete_many_success");
+            {
+                foreach( $this->post('listIds') as $i )
+                {
+                    $rst = $this->delete( $i );
+                    if( ! $rst['result'] ) break;
+                }
+            }
+            if( $rst['result'] ) $rst['msg'] = $this->m("delete_many_success");
             return $this->Factory()->Response()->printJSON( $rst ) ;
         }
 
@@ -2287,30 +2305,30 @@ class Controller extends ControllerCommon
 
     protected function libimagesAction()
     {
-    	$galleries = [];
-    	$images    = [];
-    	// Get galleries list
-    	$mod = Container::getInstance()->module("GalleryCategory");
+        $galleries = [];
+        $images    = [];
+        // Get galleries list
+        $mod = Container::getInstance()->module("GalleryCategory");
 
-		$galleries = \DB::for_table( $mod->getRepository(true)->getTbl() )
-			->select( $mod->getEntity()->get("id"     )->getColumn(), "id"      )
-			->select( $mod->getEntity()->get("name"   )->getColumn(), "name"    )
-			->select( $mod->getEntity()->get("comment")->getColumn(), "comment" )
-			->order_by_asc( $mod->getEntity()->get("name")->getColumn() )
-			->find_array();
+        $galleries = \DB::for_table( $mod->getRepository(true)->getTbl() )
+            ->select( $mod->getEntity()->get("id"     )->getColumn(), "id"      )
+            ->select( $mod->getEntity()->get("name"   )->getColumn(), "name"    )
+            ->select( $mod->getEntity()->get("comment")->getColumn(), "comment" )
+            ->order_by_asc( $mod->getEntity()->get("name")->getColumn() )
+            ->find_array();
 
-		if ( isset( $galleries[0] ) )
-		{
-			$gallery_id = $galleries[0]['id'];
+        if ( isset( $galleries[0] ) )
+        {
+            $gallery_id = $galleries[0]['id'];
 
-			$Media = new Media;
-			$Media->setFolder( "_lib" );
-			$Media->setGalleryId( $gallery_id );
-			$images = $Media->getAllByGallery();
-		}
+            $Media = new Media;
+            $Media->setFolder( "_lib" );
+            $Media->setGalleryId( $gallery_id );
+            $images = $Media->getAllByGallery();
+        }
 
         $this->setRender( 'galleries' , $galleries );
-		$this->setRender( 'images' , $images );
+        $this->setRender( 'images' , $images );
         $this->setRender( 'name' , $_GET['name'] );
         $this->setRender( 'field_name' , $_GET['field_name'] );
         $this->render('libimages.twig') ;
@@ -2318,13 +2336,13 @@ class Controller extends ControllerCommon
 
     protected function libimagesgalleryAction()
     {
-    	$gallery_id = CMS::getInstance()->Request()->get('gallery_id');
+        $gallery_id = CMS::getInstance()->Request()->get('gallery_id');
 
-		$Media = new Media;
-		$Media->setGalleryId( $gallery_id );
-		$Media->setFolder( "_lib" );
+        $Media = new Media;
+        $Media->setGalleryId( $gallery_id );
+        $Media->setFolder( "_lib" );
 
-		$this->setRender( 'images' , $Media->getAllByGallery() );
+        $this->setRender( 'images' , $Media->getAllByGallery() );
         $this->setRender( 'name' , $_GET['name'] );
         $this->setRender( 'field_name' , $_GET['field_name'] );
         $this->render('libimages_gallery.twig') ;
@@ -2332,29 +2350,29 @@ class Controller extends ControllerCommon
 
     protected function uploadAction()
     {
-		$field = $this->field( $this->post( 'field' ) );
-		$acceptMimeType = $field->getData('acceptMimeType');
-    	if( is_array( $acceptMimeType ) )
-		{
-			$mimeType = $_FILES['file_data']['type'];
-			if( ! in_array( $mimeType , $acceptMimeType ) )
-			{
-				echo json_encode([
-					'result' => false,
-					'field'  => $field->getName(),
-					'msg'    => Translate::getInstance()->getText( 'image_unaccepted_format' )
-				]);
-				return false;
-			}
-		}
+        $field = $this->field( $this->post( 'field' ) );
+        $acceptMimeType = $field->getData('acceptMimeType');
+        if( is_array( $acceptMimeType ) )
+        {
+            $mimeType = $_FILES['file_data']['type'];
+            if( ! in_array( $mimeType , $acceptMimeType ) )
+            {
+                echo json_encode([
+                    'result' => false,
+                    'field'  => $field->getName(),
+                    'msg'    => Translate::getInstance()->getText( 'image_unaccepted_format' )
+                ]);
+                return false;
+            }
+        }
 
-		$Media = new Media;
-		$Media->setModuleId( $this->getEntityId() ) ;
-		$Media->setModuleName( $this->getEntityName() ) ;
-		$Media->setFolder( $this->getEntity()->getFolder() ) ;
-		$rst = $Media->upload( UPLOAD_PATH ) ;
+        $Media = new Media;
+        $Media->setModuleId( $this->getEntityId() ) ;
+        $Media->setModuleName( $this->getEntityName() ) ;
+        $Media->setFolder( $this->getEntity()->getFolder() ) ;
+        $rst = $Media->upload( UPLOAD_PATH ) ;
 
-		return $this->Factory()->Response()->printJSON( $rst ) ;
+        return $this->Factory()->Response()->printJSON( $rst ) ;
     }
 
     protected function deletemediaAction()
@@ -2401,127 +2419,127 @@ class Controller extends ControllerCommon
 
     protected function selectListingAction()
     {
-		$get  = CMS::getInstance()->Request()->get();
-		$lang = Lang::getInstance()->getAll();
-		$langFlags = [];
-		foreach( $lang as $l )
-		{
-			$langFlags[ $l->id ] = $l->flag;
-		}
+        $get  = CMS::getInstance()->Request()->get();
+        $lang = Lang::getInstance()->getAll();
+        $langFlags = [];
+        foreach( $lang as $l )
+        {
+            $langFlags[ $l->id ] = $l->flag;
+        }
 
-		$key = CMS::getInstance()->Request()->get('key') ;
-		$all = SelectListing::getAllWithMultiLangByKey( $key ) ;
+        $key = CMS::getInstance()->Request()->get('key') ;
+        $all = SelectListing::getAllWithMultiLangByKey( $key ) ;
 
-		$this->setRender( 'key'      , $key             );
-		$this->setRender( 'elements' , $all             );
-		$this->setRender( 'flags'    , $langFlags       );
-		$this->setRender( 'field_id' , $get['field_id'] );
-		$this->render('selectListing.twig') ;
+        $this->setRender( 'key'      , $key             );
+        $this->setRender( 'elements' , $all             );
+        $this->setRender( 'flags'    , $langFlags       );
+        $this->setRender( 'field_id' , $get['field_id'] );
+        $this->render('selectListing.twig') ;
     }
 
     protected function selectListingSaveAction()
     {
-    	$post      = CMS::getInstance()->Request()->post();
-		$key       = CMS::getInstance()->Request()->post('key') ;
-		$colOrder  = SelectListing::getColumn( 'order' );
-		$colId     = SelectListing::getColumn( 'id', true );
-		$colValue  = SelectListing::getColumn( 'value', true );
-		$order     = json_decode( $post['order'] , true );
-		$processed = [];
-		$position  = 1;
+        $post      = CMS::getInstance()->Request()->post();
+        $key       = CMS::getInstance()->Request()->post('key') ;
+        $colOrder  = SelectListing::getColumn( 'order' );
+        $colId     = SelectListing::getColumn( 'id', true );
+        $colValue  = SelectListing::getColumn( 'value', true );
+        $order     = json_decode( $post['order'] , true );
+        $processed = [];
+        $position  = 1;
 
-		if( isset($post['item']) && is_array($post['item']) && count($post['item']) > 0 )
-		{
-			if( is_array($order) && count($order) > 0 )
-			{
-				// Modification des éléments existant
-				foreach( $order as $o )
-				{
-					// Modification d'un élément
-					if( $o['type'] === 'update' )
-					{
-						$id   = $o['id'];
-						// Récupération de l'élément
-						$item = $post['item'][ $id ];
-						// Gestion des langues
-						foreach( $item as $langId => $value )
-						{
-							$value = trim( $value );
-							$req   = SelectListing::findValue( $id , $langId );
-							if( $value != $req->get( $colValue ) )
-							{
-								$req->set( $colValue , $value );
-								$req->save();
-							}
-						}
-						// Gestion de la position
-						$req = SelectListing::findElement( $id );
-						if( $req->get( $colOrder ) != $position )
-						{
-							$req->set( $colOrder , $position );
-							$req->save();
-						}
-						// Autres gestions
-						$position++;
-						$processed[] = $id;
-					}
-					else if( $o['type'] === 'add' )
-					{
-						$id   = $o['id'];
-						$item = $post['item']['new'][ $id ];
-						// Vérifications du contenu
-						$add = false;
-						foreach( $item as $langId => $value )
-						{
-							if( strlen( trim( $value ) ) > 0 )
-							{
-								$add = true;
-							}
-						}
-						// Ajout
-						if( $add )
-						{
-							$id = SelectListing::add( $key , $position );
-							foreach( $item as $langId => $value )
-							{
-								if( strlen( trim( $value ) ) > 0 )
-								{
-									SelectListing::addLang( $id , $langId , trim( $value ) );
-								}
-							}
-							$position++;
-							$processed[] = $id;
-						}
-					}
-				}
+        if( isset($post['item']) && is_array($post['item']) && count($post['item']) > 0 )
+        {
+            if( is_array($order) && count($order) > 0 )
+            {
+                // Modification des éléments existant
+                foreach( $order as $o )
+                {
+                    // Modification d'un élément
+                    if( $o['type'] === 'update' )
+                    {
+                        $id   = $o['id'];
+                        // Récupération de l'élément
+                        $item = $post['item'][ $id ];
+                        // Gestion des langues
+                        foreach( $item as $langId => $value )
+                        {
+                            $value = trim( $value );
+                            $req   = SelectListing::findValue( $id , $langId );
+                            if( $value != $req->get( $colValue ) )
+                            {
+                                $req->set( $colValue , $value );
+                                $req->save();
+                            }
+                        }
+                        // Gestion de la position
+                        $req = SelectListing::findElement( $id );
+                        if( $req->get( $colOrder ) != $position )
+                        {
+                            $req->set( $colOrder , $position );
+                            $req->save();
+                        }
+                        // Autres gestions
+                        $position++;
+                        $processed[] = $id;
+                    }
+                    else if( $o['type'] === 'add' )
+                    {
+                        $id   = $o['id'];
+                        $item = $post['item']['new'][ $id ];
+                        // Vérifications du contenu
+                        $add = false;
+                        foreach( $item as $langId => $value )
+                        {
+                            if( strlen( trim( $value ) ) > 0 )
+                            {
+                                $add = true;
+                            }
+                        }
+                        // Ajout
+                        if( $add )
+                        {
+                            $id = SelectListing::add( $key , $position );
+                            foreach( $item as $langId => $value )
+                            {
+                                if( strlen( trim( $value ) ) > 0 )
+                                {
+                                    SelectListing::addLang( $id , $langId , trim( $value ) );
+                                }
+                            }
+                            $position++;
+                            $processed[] = $id;
+                        }
+                    }
+                }
 
-				// Suppression des éléments inexistant
-				$req = SelectListing::findAllByKey( $key );
-				if( $req )
-				{
-					foreach( $req as $row )
-					{
-						$id = $row->get( $colId );
-						if( ! in_array( $id , $processed ) )
-						{
-							SelectListing::removeEntry( $id );
-						}
-					}
-				}
-			}
-		}
+                // Suppression des éléments inexistant
+                $req = SelectListing::findAllByKey( $key );
+                if( $req )
+                {
+                    foreach( $req as $row )
+                    {
+                        $id = $row->get( $colId );
+                        if( ! in_array( $id , $processed ) )
+                        {
+                            SelectListing::removeEntry( $id );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected function selectReloadAction()
-	{
-		$get   = CMS::getInstance()->Request()->get();
-		$rst   = [];
-		$field = $this->getEntity()->get( $get['field'] );
+    {
+        $get   = CMS::getInstance()->Request()->get();
+        $rst   = [];
+        $field = $this->getEntity()->get( $get['field'] );
 
-		$this->generateForm_processField( $field );
+        $this->generateForm_processField( $field );
 
-		echo json_encode( $field->getOptions() );
-	}
+        echo json_encode( $field->getOptions() );
+    }
 
     /* ************************************************** */
     /* *****************   DOCUMENT   ******************* */
@@ -2541,21 +2559,21 @@ class Controller extends ControllerCommon
             {
                 if ( $docs[ $this->getId() ]->document_delete == true )
                 {
-					$content = $this->getRepository()->findOne( $this->getApp()->request->post('element') );
-					$file = $content->get( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() );
-					$exp = explode( ',' , $file );
+                    $content = $this->getRepository()->findOne( $this->getApp()->request->post('element') );
+                    $file = $content->get( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() );
+                    $exp = explode( ',' , $file );
 
-					if ( $exp )
-					{
-						if ( ( $key = array_search( $this->getId(), $exp ) ) !== false )
-						{
-							unset( $exp[ $key ] );
-							$result = implode( ',' , $exp );
+                    if ( $exp )
+                    {
+                        if ( ( $key = array_search( $this->getId(), $exp ) ) !== false )
+                        {
+                            unset( $exp[ $key ] );
+                            $result = implode( ',' , $exp );
 
-							$content->set( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() , $result );
-							$content->save();
-						}
-					}
+                            $content->set( $this->getEntity()->get( $this->getApp()->request->post('field') )->getColumn() , $result );
+                            $content->save();
+                        }
+                    }
 
                     $rst = $Doc->delete();
 
@@ -2582,12 +2600,12 @@ class Controller extends ControllerCommon
     protected function uploaddocumentAction()
     {
         $Doc = new Document;
-		$Doc->setModuleId( $this->getEntityId() ) ;
-		$Doc->setModuleName( $this->getEntityName() ) ;
-		$Doc->setFolder( $this->getEntity()->getFolder() ) ;
-		$rst = $Doc->upload() ;
+        $Doc->setModuleId( $this->getEntityId() ) ;
+        $Doc->setModuleName( $this->getEntityName() ) ;
+        $Doc->setFolder( $this->getEntity()->getFolder() ) ;
+        $rst = $Doc->upload() ;
 
-		return $this->Factory()->Response()->printJSON( $rst ) ;
+        return $this->Factory()->Response()->printJSON( $rst ) ;
     }
 
     /* ************************************************** */
@@ -2621,20 +2639,20 @@ class Controller extends ControllerCommon
         }
 
         if( $field->hasWidth() )
-		{
-			foreach( $field->getWidth() as $width )
-			{
-				$Gallery->setWidth( $width );
-			}
-		}
+        {
+            foreach( $field->getWidth() as $width )
+            {
+                $Gallery->setWidth( $width );
+            }
+        }
 
         if( $field->hasHeight() )
-		{
-			foreach( $field->getHeight() as $height )
-			{
-				$Gallery->setHeight( $height );
-			}
-		}
+        {
+            foreach( $field->getHeight() as $height )
+            {
+                $Gallery->setHeight( $height );
+            }
+        }
 
         $rst = $Gallery->add();
 
