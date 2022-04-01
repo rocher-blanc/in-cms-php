@@ -27,8 +27,6 @@
         {% include "notify/"~notify_engine~"/include_css.twig" %}
     {% endif %}
 
-    {{- analytics.google -}}
-
     {{- block('javascript_head') -}}
 
     {%- if md.description != '' and md.logo != '' -%}

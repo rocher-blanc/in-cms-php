@@ -18,8 +18,8 @@ class Image
 		$extension  = end( $ext );
 		$name       = basename( $name , '.' . $extension );
 		$name       = Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
-
-		$rst = move_uploaded_file( $_FILES[ $this->options['param_name'] ]["tmp_name"] , $this->options['upload_dir'] . "/" . $name );
+        $dir        = rtrim($this->options['upload_dir'], '/');
+		$rst        = move_uploaded_file( $_FILES[ $this->options['param_name'] ]["tmp_name"] , $dir . "/" . $name );
 
         if ( $rst !== false )
 		{

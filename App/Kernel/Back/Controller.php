@@ -160,7 +160,7 @@ class Controller extends ControllerCommon
     /* ******************   PARENT   ******************** */
     /* ************************************************** */
 
-    protected function getParent()
+    public function getParent()
     {
         $target = $this->getEntity()->get( $this->getEntity()->getParentTargetName() ) ;
         $alias  = 'titre' ;
@@ -433,16 +433,16 @@ class Controller extends ControllerCommon
                     if ( $field->isAssociated() )
                     {
                         $option = $this->getValueAssociated( $field , "array" , true , ( $field->getType() == 'checkbox' ? $field->getName() : false ) , true );
-                        $this->getEntity()->get( $field->getName() )->setData('option',$option);
-
                         if ( $this->Container()->module( $field->getData('object') )->getEntity()->hasParent() )
                         {
-                            $arrayMoreInfos['parent'] = true ;
+                            $arrayMoreInfos['parent'] = false ;
+//                            $arrayMoreInfos['parent'] = true ;
                         }
                         else
                         {
                             $arrayMoreInfos['parent'] = false ;
                         }
+                        $this->getEntity()->get( $field->getName() )->setData('option',$option);
                     }
                     else if ( $field->hasOption() )
                     {
@@ -723,7 +723,8 @@ class Controller extends ControllerCommon
 
                             if ( $field->getData('object') != null )
                             {
-                                $parent = $this->Container()->module( $field->getData('object') )->getEntity()->hasParent() ;
+                                $parent = false ;
+//                                $parent = $this->Container()->module( $field->getData('object') )->getEntity()->hasParent() ;
                             }
 
                             $tdArray[ $i ]['td'][ $field->getName() ] = [
