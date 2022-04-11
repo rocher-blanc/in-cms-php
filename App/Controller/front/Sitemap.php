@@ -140,6 +140,7 @@ $app->get('/sitemap.xml', function () use ( $app )
                                             $urlImage = \App\Kernel\Http::getInstance()->getCdn() . $result['pathImage'] . '/' . $media->getImageName();
                                             echo "\t\t" . '<image:image>' . "\n";
                                             echo "\t\t\t" . '<image:loc>' . $urlImage . '</image:loc>' . "\n";
+//                                            echo "\t\t\t" . '<image:title>' . $media->getImageName() . '</image:title>' . "\n";
                                             echo "\t\t" . '</image:image>' . "\n";
                                         }
                                     }

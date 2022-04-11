@@ -2096,7 +2096,6 @@ class Controller extends ControllerCommon
                         $id = $one->get( $this->getEntity()->get( $this->getEntity()->getModuleParentIdName() )->getColumn() );
                     }
 
-
                     $result[] = $id ;
 
                     unset( $tab[ $key ] );
@@ -2112,7 +2111,7 @@ class Controller extends ControllerCommon
 
     protected function editAction()
     {
-        $this->Container()->module( $this->getEntityName() )->getEntity()->setId( $this->getId() );
+//        $this->Container()->module( $this->getEntityName() )->getEntity()->setId( $this->getId() );
 
         $arrayParent = $this->getParentArray();
 

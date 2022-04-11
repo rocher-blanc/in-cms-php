@@ -42,12 +42,6 @@ class NewsletterCampaign extends Builder
             return $c->id_easyletter !== NULL && ( $c->version == 'v3' && $c->stats['state'] == 'error' ) ? true : false ;
         } , 'ajax');
 
-/*
-        $this->addIcon( 'icon-reply' , 'resend' , function($c) {
-            return $c->stats === NULL ? true : false ;
-        });
-*/
-
         $this->showEdit(function( $c ) {
             return false ;
         });

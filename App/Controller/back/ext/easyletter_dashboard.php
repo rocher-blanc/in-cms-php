@@ -72,8 +72,6 @@ $app->group('/easyletter_dashboard', function () use ($app)
 		$req = \DB::for_table( "mod_newslettercampaign" )
 			->select( "mod_newslettercampaign_id"  , 'id' )
 			->order_by_desc( "mod_newslettercampaign_date_created" )
-//			->offset( 0 )
-//			->limit( 100 )
 			->find_many();
 
     	foreach( $req as $row )
