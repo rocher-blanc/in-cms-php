@@ -191,7 +191,6 @@ $app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $ema
     {
         $unsub = \DB::for_table('mod_newslettersubscriber')
             ->where("mod_newslettersubscriber_email", $email)
-            ->where("mod_newslettersubscriber_element_module_parent_id", $id)
             ->find_one();
 
         $unsub->delete();
