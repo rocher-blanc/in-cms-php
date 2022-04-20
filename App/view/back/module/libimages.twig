@@ -44,6 +44,8 @@
     <style>
         .right-panel .side-tabs ul.tab-nav {
             padding: 10px 0;
+            background-color: white;
+            padding-bottom: 55px;
         }
 
         .right-panel .tab-container {
@@ -132,7 +134,7 @@
             $tabs = $('#lib-images .tab-nav');
             $('#lib-images-zoom')
                 .css( 'position', 'absolute' )
-                .css( 'top' , $tabs.offset().top + $tabs.outerHeight() - 15 )
+                .css( 'top' , $tabs.offset().top - $tabs.outerHeight() + 100)
                 .css( 'left' , 0 )
                 .css( 'width' , $tabs.width() )
                 .css( 'height' , $tabs.width() );
