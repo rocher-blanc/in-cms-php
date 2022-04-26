@@ -446,7 +446,6 @@ $app->group('/langue', function () use ($app)
 		})->name('langue_traduction');
 
 		$app->get('/get-lang', function() use ($app) {
-//			header('Content-Type: application/json;charset=utf-8');
 
 			$lang_abbr = $_POST['lang_locale'];
 			$className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
