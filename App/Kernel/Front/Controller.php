@@ -780,7 +780,9 @@ class Controller extends \App\Kernel\Common\Controller
 
 	public function getNextElement()
 	{
-		$one = $this->getRepository()->findNextElement( $this->getId() );
+        if( $this->getEntity()->getFieldOrderField()) $one = $this->getRepository()->findNextElement( $this->getId(),$this->getEntity()->getFieldOrderField() );
+        else $one = $this->getRepository()->findNextElement( $this->getId() );
+
 		return $one
 			? $this->parsePrevNextElement( $one )
 			: null ;
@@ -788,7 +790,9 @@ class Controller extends \App\Kernel\Common\Controller
 
 	public function getPrevElement()
 	{
-		$one = $this->getRepository()->findPrevElement( $this->getId() );
+        if( $this->getEntity()->getFieldOrderField()) $one = $this->getRepository()->findPrevElement( $this->getId(),$this->getEntity()->getFieldOrderField() );
+		else $one = $this->getRepository()->findPrevElement( $this->getId() );
+
 		return $one
 			? $this->parsePrevNextElement( $one )
 			: null ;

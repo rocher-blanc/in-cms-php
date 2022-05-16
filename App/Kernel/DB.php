@@ -488,7 +488,15 @@ class DB extends ORM
         return $this->_add_date_condition_function('where', $column_name, '<=', $value, 'DATE');
     }
 
+    public function where_date_lte_strict($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '<', $value, 'DATE');
+    }
+
     public function where_date_gte($column_name, $value=null) {
+        return $this->_add_date_condition_function('where', $column_name, '>=', $value, 'DATE');
+    }
+
+    public function where_date_gte_strict($column_name, $value=null) {
         return $this->_add_date_condition_function('where', $column_name, '>=', $value, 'DATE');
     }
 

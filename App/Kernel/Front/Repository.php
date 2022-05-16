@@ -85,15 +85,53 @@ class Repository extends \App\Kernel\Common\Repository
     #################################################################################################################################
     #################################################################################################################################
 
-	public function findNextElement( $currentId )
+	public function findNextElement( $currentId, $order = null )
 	{
+        if($order)
+        {
+            $current_element = $this->getKit()
+                ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
+                ->find_one();
+
+            $date_key = explode("_", $order);
+
+            if(in_array("date", $date_key)) return $this->getKit()
+                    ->where_date_gte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
+                    ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
+                    ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
+                    ->find_one();
+
+            return $this->getKit()
+                ->where_gt( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
+                ->order_by_desc( $this->getEntity()->get('id')->getColumn() )
+                ->find_one();
+        }
 		return $this->getKit()
 			->where_gt( $this->getEntity()->get('id')->getColumn() , $currentId )
 			->find_one();
 	}
 
-	public function findPrevElement( $currentId )
+	public function findPrevElement( $currentId, $order = null )
 	{
+        if($order)
+        {
+            $current_element = $this->getKit()
+                ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
+                ->find_one();
+
+            $date_key = explode("_", $order);
+
+            if(in_array("date", $date_key)) return array_reverse($this->getKit()
+                    ->where_date_lte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
+                    ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
+                    ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
+                    ->find_many())[0];
+
+            return $this->getKit()
+                ->where_lt( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
+                    ->order_by_desc( $this->getEntity()->get('id')->getColumn() )
+                ->find_one();
+        }
 		return $this->getKit()
 			->where_lt( $this->getEntity()->get('id')->getColumn() , $currentId )
 			->order_by_desc( $this->getEntity()->get('id')->getColumn() )
