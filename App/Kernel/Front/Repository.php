@@ -85,7 +85,7 @@ class Repository extends \App\Kernel\Common\Repository
     #################################################################################################################################
     #################################################################################################################################
 
-	public function findNextElement( $currentId, $order = null )
+	public function findNextElement( $currentId, $order = null, $type = null )
 	{
         if($order)
         {
@@ -93,9 +93,7 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
                 ->find_one();
 
-            $date_key = explode("_", $order);
-
-            if(in_array("date", $date_key)) return $this->getKit()
+            if($type === "DATE") return $this->getKit()
                     ->where_date_gte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
                     ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
                     ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
@@ -111,7 +109,7 @@ class Repository extends \App\Kernel\Common\Repository
 			->find_one();
 	}
 
-	public function findPrevElement( $currentId, $order = null )
+	public function findPrevElement( $currentId, $order = null, $type = null )
 	{
         if($order)
         {
@@ -119,9 +117,7 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
                 ->find_one();
 
-            $date_key = explode("_", $order);
-
-            if(in_array("date", $date_key)) return array_reverse($this->getKit()
+            if($type === "DATE") return array_reverse($this->getKit()
                     ->where_date_lte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
                     ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
                     ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
