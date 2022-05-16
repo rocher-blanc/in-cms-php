@@ -93,7 +93,7 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
                 ->find_one();
 
-            if($type === "DATE") return $this->getKit()
+            if($type === "DATE" or $type === "DATETIME") return $this->getKit()
                     ->where_date_gte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
                     ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
                     ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
@@ -117,7 +117,7 @@ class Repository extends \App\Kernel\Common\Repository
                 ->where( $this->getEntity()->get('id')->getColumn() , $currentId )
                 ->find_one();
 
-            if($type === "DATE") return array_reverse($this->getKit()
+            if($type === "DATE" or $type === "DATETIME") return array_reverse($this->getKit()
                     ->where_date_lte_strict( $this->getEntity()->get($order)->getColumn() , $current_element->mod_event_date )
                     ->order_by_asc( $this->getEntity()->get($order)->getColumn() )
                     ->where_not_equal($this->getEntity()->get('id')->getColumn() , $currentId)
