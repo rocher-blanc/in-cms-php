@@ -993,7 +993,7 @@ class Builder extends Model
         return $this->department;
     }
 
-    function getDataField($field)
+    function getDataFieldSQLType($field)
     {
         return $this->get($field)->getData("SQL_TYPE");
     }
