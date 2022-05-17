@@ -23,6 +23,10 @@ class Controller extends \App\Kernel\Common\Controller
     /* ************************************************** */
 
     protected $_url = [] ;
+    /**
+     * @var null|array
+     */
+    protected $result = null ;
     protected $_elm = false ;
     protected $_component_name = '' ;
     /**
@@ -52,6 +56,14 @@ class Controller extends \App\Kernel\Common\Controller
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
 
+    /**
+     * @param array|null $result
+     */
+    public function setResult(?array $result): void
+    {
+        $this->result = $result;
+    }
+
     public function setUrl( $var )
     {
         if ( $var[0] === '' )    $this->_url = [] ;
@@ -74,6 +86,15 @@ class Controller extends \App\Kernel\Common\Controller
     /* ************************************************** */
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
+
+
+    /**
+     * @return array|null
+     */
+    public function getResult(): ?array
+    {
+        return $this->result;
+    }
 
     protected function getIdParent()
     {
