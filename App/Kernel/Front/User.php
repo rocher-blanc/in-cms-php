@@ -765,11 +765,7 @@ class User extends \App\Kernel\Common\User
 
     protected function updateProfile()
     {
-        /*
-        $profile = \DB::for_table('user_front_profile')->where_equal('user_front_profile_user_front_id', $this->getId())->find_one();
-        $profile = $this->updateProfileOtherInformation( $profile ) ;
-        $profile->save();
-        */
+
     }
 
     ###################################################################################################################################
