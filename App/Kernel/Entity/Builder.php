@@ -1458,13 +1458,9 @@ class Builder extends Model
                 $this->build('user_password_confirm' , true )
                     ->isPassword()
                     ->group('connexion')
-                    //->notEmpty( Translate::getInstance()->getText('mandatory_confirm_password') )
                     ->noRename()
                     ->noFront()
-                    ->noindex()/*
-                    ->showIf(function($c) {
-                        return ( $c->user_front_id == '' ? true : false );
-                    })*/
+                    ->noindex()
                     ->formated(function( $c ) {
                         if ( $_POST['id_element'] == '' ) {
                             if ( empty( $_POST['user_password'] ) ) {
