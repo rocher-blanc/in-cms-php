@@ -205,9 +205,9 @@ class Controller extends \App\Kernel\Common\Controller
             $url = $this->getUrl(0);
         }
 
-		$result = \DB::for_table('seo')
+        $result = \DB::for_table('seo')
             ->select('seo_element_id')
-			->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_url' => $url])
+            ->where(['seo_lang_id' => $this->Lang()->getActive()->id, 'seo_module_id' => $this->getEntityId(), 'seo_url' => $url])
             ->find_one();
 
         if ( $result ) $this->setId( $result->seo_element_id );
@@ -431,31 +431,31 @@ class Controller extends \App\Kernel\Common\Controller
         }
     }
 
-	/* ************************************************** */
-	/* *****************  PAGINATION  ******************* */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* *****************  PAGINATION  ******************* */
+    /* ************************************************** */
 
-	protected function parsePagination(Paginator $p)
-	{
-		return [
-			'all' => $p->getPages(),
-			'url' => [
-				'previous' => $p->getPrevUrl(),
-				'next'     => $p->getNextUrl(),
-			],
-			'total' => $p->getTotalItems(),
-			'first' => $p->getPages()[0],
-			'last'  => end( $p->getPages() )
-		];
-	}
+    protected function parsePagination(Paginator $p)
+    {
+        return [
+            'all' => $p->getPages(),
+            'url' => [
+                'previous' => $p->getPrevUrl(),
+                'next'     => $p->getNextUrl(),
+            ],
+            'total' => $p->getTotalItems(),
+            'first' => $p->getPages()[0],
+            'last'  => end( $p->getPages() )
+        ];
+    }
 
-	/* ************************************************** */
-	/* *****************    ACTION    ******************* */
-	/* ************************************************** */
+    /* ************************************************** */
+    /* *****************    ACTION    ******************* */
+    /* ************************************************** */
 
     protected function getoneAction()
     {
-    	$this->loadId() ;
+        $this->loadId() ;
 
         $result = $this->getRepository()->findOne( $this->getId() );
 
@@ -477,10 +477,10 @@ class Controller extends \App\Kernel\Common\Controller
 
     protected function getallAction()
     {
-		$currentPage = NULL ;
+        $currentPage = NULL ;
 
-		if ( $this->getEntity()->getPagination() !== NULL )
-		{
+        if ( $this->getEntity()->getPagination() !== NULL )
+        {
             $url = $this->getUrl();
 
             if ( count( $url ) == 1 )	$currentPage = 1 ;
@@ -488,15 +488,15 @@ class Controller extends \App\Kernel\Common\Controller
             if ( $currentPage < 1 )		$currentPage = 1;
 
 
-			$totalItems     = $this->getRepository()->getKit()->count();
-			$itemsPerPage   = $this->getEntity()->getPagination();
-			$urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/page/(:num)';
-			$paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+            $totalItems     = $this->getRepository()->getKit()->count();
+            $itemsPerPage   = $this->getEntity()->getPagination();
+            $urlPattern     = $this->Factory()->Url()->module( $this->getEntityId() ) . '/page/(:num)';
+            $paginator      = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 
-			$this->setRender('pagination', $this->parsePagination( $paginator ) );
-		}
+            $this->setRender('pagination', $this->parsePagination( $paginator ) );
+        }
 
-		$all = $this->getRepository()->findAll( $currentPage );
+        $all = $this->getRepository()->findAll( $currentPage );
 
         if ( $all )
         {
@@ -506,7 +506,7 @@ class Controller extends \App\Kernel\Common\Controller
                 $elmts[] = $this->parseValue( $row );
             }
 
-			$this->setRender('arrayGetAll', $elmts );
+            $this->setRender('arrayGetAll', $elmts );
         }
         else
         {
@@ -555,38 +555,38 @@ class Controller extends \App\Kernel\Common\Controller
             case 'hidden' :
             case 'select' :
                 return $this->getSelectValue( $object['module'] , $object['value'] ) ;
-            break;
+                break;
             case 'checkbox' :
                 return $this->getAssocValue( $object['module'] , $object['name'] , $object['id'] , $object['moduleAssoc'] ) ;
-            break;
+                break;
         }
     }
 
     protected function getImagePath( $media , $path , $type , $w , $h )
-	{
-		$mini = $media->getMini( $media->getImageName() , $type , $w , $h ) ;
-		if ( $mini !== false )
-		{
-			$img  = trim( $path . '/' . $mini , "/" );
-			$mini = Http::getInstance()->getUrl() . "/" . $img ;
-		}
+    {
+        $mini = $media->getMini( $media->getImageName() , $type , $w , $h ) ;
+        if ( $mini !== false )
+        {
+            $img  = trim( $path . '/' . $mini , "/" );
+            $mini = Http::getInstance()->getUrl() . "/" . $img ;
+        }
 
-		$path = WEB_PATH . "/" . $img;
-		if( ! file_exists($path) )
-		{
-			switch( $type )
-			{
-				case "t" : $fullType = "cover" ; break;
-				case "w" : $fullType = "width" ; break;
-				case "h" : $fullType = "height"; break;
-				default  : $fullType = "cover" ; break;
-			}
-			$generator = new ImageGenerator( $media->getFolder() , $media->getImageName() );
-			$generator->genImage( $type , $w , $h , $fullType ) ;
-		}
+        $path = WEB_PATH . "/" . $img;
+        if( ! file_exists($path) )
+        {
+            switch( $type )
+            {
+                case "t" : $fullType = "cover" ; break;
+                case "w" : $fullType = "width" ; break;
+                case "h" : $fullType = "height"; break;
+                default  : $fullType = "cover" ; break;
+            }
+            $generator = new ImageGenerator( $media->getFolder() , $media->getImageName() );
+            $generator->genImage( $type , $w , $h , $fullType ) ;
+        }
 
-		return $mini ;
-	}
+        return $mini ;
+    }
 
     public function parseValue( $result )
     {
@@ -596,7 +596,7 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         $elementId = $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() );
-        
+
         if ( $this->getEntity()->hasUrl() ) $this->loadModuleUrl();
 
         if ( $this->getId() === NULL )
@@ -667,7 +667,7 @@ class Controller extends \App\Kernel\Common\Controller
                         {
                             foreach( $row->getWidth() as $width )
                             {
-								$tab['width'][$width] = $this->getImagePath( $media , $path , "w" , $width , NULL ) ;
+                                $tab['width'][$width] = $this->getImagePath( $media , $path , "w" , $width , NULL ) ;
                             }
                         }
 
@@ -724,10 +724,10 @@ class Controller extends \App\Kernel\Common\Controller
                         }
                     }
                 }
-				else if ( $row->getName() == $this->getEntity()->getModuleParentIdName() )
-				{
-					$arrayElement['parent'] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
-				}
+                else if ( $row->getName() == $this->getEntity()->getModuleParentIdName() )
+                {
+                    $arrayElement['parent'] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row ) ;
+                }
                 else if ( $row->getType() == 'checkbox' )
                 {
                     $arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row , $this->getEntityName() ) ;
@@ -736,7 +736,7 @@ class Controller extends \App\Kernel\Common\Controller
                 {
                     $arrayElement[ $row->getName() ] = $this->getObject( $result->get( $this->getEntity()->get( $this->getEntity()->getIdName() )->getColumn() ) , $result->get( $row->getColumn() ) , $row , $row->getObject() ) ;
                 }
-				else if ( ! $row->isAssociated() && $row->getType() == 'select' )
+                else if ( ! $row->isAssociated() && $row->getType() == 'select' )
                 {
                     $arrayElement[ $row->getName() ] = $row->getOption( $result->get( $row->getColumn() ) );
                 }
@@ -760,16 +760,16 @@ class Controller extends \App\Kernel\Common\Controller
 
             if ( $row->isUrl() == true )
             {
-				$arrayElement['url'] = $this->getElementUrl( $elementId );
+                $arrayElement['url'] = $this->getElementUrl( $elementId );
             }
         }
 
         // Récupération des éléments précédents et suivants
-		if( $this->getEntity()->isEnabledPrevNext() )
-		{
-			$arrayElement['prev'] = $this->getPrevElement();
-			$arrayElement['next'] = $this->getNextElement();
-		}
+        if( $this->getEntity()->isEnabledPrevNext() )
+        {
+            $arrayElement['prev'] = $this->getPrevElement();
+            $arrayElement['next'] = $this->getNextElement();
+        }
 
         // Si le champ est une dépendance, on récupère les informations du parent
         if ( $this->getEntity()->itsDepedency() )
@@ -786,18 +786,18 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     protected function getElementUrl( $elementId ) : String
-	{
-		$Seo = new \App\Kernel\Front\Seo;
-		$Seo->setElementId( $elementId ) ;
-		$Seo->setModuleId( $this->getEntityId() ) ;
-		$rst = Http::getInstance()->getUrl() . '/' ;
-		if ( $this->Lang()->count() > 1 )
-		{
-			$rst .= Lang::getInstance()->getActive()->url . "/" ;
-		}
-		$rst .= $this->getModuleUrl() . $Seo->getUrl() ;
-		return $rst;
-	}
+    {
+        $Seo = new \App\Kernel\Front\Seo;
+        $Seo->setElementId( $elementId ) ;
+        $Seo->setModuleId( $this->getEntityId() ) ;
+        $rst = Http::getInstance()->getUrl() . '/' ;
+        if ( $this->Lang()->count() > 1 )
+        {
+            $rst .= Lang::getInstance()->getActive()->url . "/" ;
+        }
+        $rst .= $this->getModuleUrl() . $Seo->getUrl() ;
+        return $rst;
+    }
 
 	public function getNextElement()
 	{
@@ -819,22 +819,22 @@ class Controller extends \App\Kernel\Common\Controller
 			: null ;
 	}
 
-	protected function parsePrevNextElement( $row )
-	{
-		$elementId = $row->get( $this->getEntity()->get('id')->getColumn() );
-		$title = [];
+    protected function parsePrevNextElement( $row )
+    {
+        $elementId = $row->get( $this->getEntity()->get('id')->getColumn() );
+        $title = [];
 
-		foreach( $this->getEntity()->getFieldReference() as $i )
-		{
-			$title[] = $row->get( $this->getEntity()->get($i)->getColumn() );
-		}
+        foreach( $this->getEntity()->getFieldReference() as $i )
+        {
+            $title[] = $row->get( $this->getEntity()->get($i)->getColumn() );
+        }
 
-		return [
-			'id'    => $elementId,
-			'url'   => $this->getElementUrl( $elementId ),
-			'title' => implode( " " , $title )
-		];
-	}
+        return [
+            'id'    => $elementId,
+            'url'   => $this->getElementUrl( $elementId ),
+            'title' => implode( " " , $title )
+        ];
+    }
 
     public function parseAll( $rows, $callback = NULL )
     {
@@ -867,10 +867,10 @@ class Controller extends \App\Kernel\Common\Controller
         {
             case "count" :
                 return $this->getRepository()->requestCount( $request );
-            break;
+                break;
             case "one" :
                 $result = $this->getRepository()->requestOne( $request );
-            break;
+                break;
             case "all" :
                 $currentPage = NULL ;
 
@@ -885,7 +885,7 @@ class Controller extends \App\Kernel\Common\Controller
                     if ( ( count( $url ) >= 2 ) && is_numeric( end( $url ) ) )
                     {
                         $len = strlen( '/' . end( $url ) ) * -1 ;
-                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . '/page/(:num)';
+                        $urlPattern = substr( $this->Factory()->Url()->getFullUrl() , 0 , $len ) . ( strpos( $this->Factory()->Url()->getFullUrl() , '/page/' ) !== false ? '' : '/page/' ) . "/(:num)";
                     }
                     else
                     {
@@ -917,7 +917,7 @@ class Controller extends \App\Kernel\Common\Controller
                         $elmts = $this->parseValue( $result );
                         $ct = 1;
                     }
-                break;
+                    break;
                 case "all" :
                     $i = 0;
                     foreach( $result as $row )
@@ -929,7 +929,7 @@ class Controller extends \App\Kernel\Common\Controller
                     ksort($elmts);
 
                     $ct = count( $elmts );
-                break;
+                    break;
             }
         }
 
@@ -954,7 +954,7 @@ class Controller extends \App\Kernel\Common\Controller
         {
             case "one" :
                 $result = $this->getRepository()->requestOne( $request );
-            break;
+                break;
             case "all" :
                 $currentPage = NULL ;
 
@@ -986,7 +986,7 @@ class Controller extends \App\Kernel\Common\Controller
                 }
 
                 $result = $this->getRepository()->requestAll( $request , $currentPage );
-            break;
+                break;
         }
 
         if ( $result )
@@ -1006,7 +1006,7 @@ class Controller extends \App\Kernel\Common\Controller
                     }
 
                     if ( array_key_exists( 'url' , $parse ) ) $elmts['url'] = $parse['url'];
-                break;
+                    break;
                 case "all" :
                     $i = 0;
                     foreach( $result as $row )
@@ -1026,7 +1026,7 @@ class Controller extends \App\Kernel\Common\Controller
                         if ( array_key_exists( 'depedency' , $parse ) ) $elmts[ $i ]['depedency'] = $parse['depedency'];
                         $i++;
                     }
-                break;
+                    break;
             }
         }
 
@@ -1036,10 +1036,10 @@ class Controller extends \App\Kernel\Common\Controller
         ];
     }
 
-	public function getComponent( $type , $request , $vars )
-	{
-		return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge( $this->getElementComponent( $type , $request ) , $vars ));
-	}
+    public function getComponent( $type , $request , $vars )
+    {
+        return $this->Container()->newClass('App\Kernel\View')->fetch( 'component/' . $this->getComponentName() . ".twig" , array_merge( $this->getElementComponent( $type , $request ) , $vars ));
+    }
 
     /* ***************************************************** */
     /* **************   CUSTOM PAGINATION   **************** */
@@ -1051,8 +1051,8 @@ class Controller extends \App\Kernel\Common\Controller
         $pageMin = 1;
         $pageMax = ceil( $count / $perPage );
 
-		$currentUrl = Http::getInstance()->getUrl() . $this->getApp()->request()->getPath();
-		$get        = $this->getApp()->Request()->get();
+        $currentUrl = Http::getInstance()->getUrl() . $this->getApp()->request()->getPath();
+        $get        = $this->getApp()->Request()->get();
 
         if( $page > $pageMax )
         {
@@ -1081,31 +1081,31 @@ class Controller extends \App\Kernel\Common\Controller
         $all      = [];
         $previous = null;
         $next     = null;
-		for( $i = $pageMin ; $i <= $pageMax ; $i++ )
-		{
-			$get['p'] = $i;
-			$url = $currentUrl . '?' . http_build_query( $get );
-			// Ajout pour la page actuelle de son numéro, son url et son catactère "actuel"
-			$all[] = [
-				'num'       => $i,
-				'url'       => $url,
-				'isCurrent' => $page == $i,
-			];
+        for( $i = $pageMin ; $i <= $pageMax ; $i++ )
+        {
+            $get['p'] = $i;
+            $url = $currentUrl . '?' . http_build_query( $get );
+            // Ajout pour la page actuelle de son numéro, son url et son catactère "actuel"
+            $all[] = [
+                'num'       => $i,
+                'url'       => $url,
+                'isCurrent' => $page == $i,
+            ];
 
-			if( $page - 1 == $i )  $previous = $url;
-			if( $page + 1 == $i )  $next     = $url;
-		}
+            if( $page - 1 == $i )  $previous = $url;
+            if( $page + 1 == $i )  $next     = $url;
+        }
 
         return [
             'pagination' => [
-            	'all' => count($all) > 1 ? $all : [],
-				'url' => [
-					'previous' => $previous,
-					'next'     => $next,
-				],
-				'total'    => $count,
-				'first'    => $page <= $pageMin,
-				'last'     => $page >= $pageMax,
+                'all' => count($all) > 1 ? $all : [],
+                'url' => [
+                    'previous' => $previous,
+                    'next'     => $next,
+                ],
+                'total'    => $count,
+                'first'    => $page <= $pageMin,
+                'last'     => $page >= $pageMax,
 //                'per_page' => $perPage,
 //                'from'     => $offset + 1,
 //                'to'       => $to > $count ? $count : $to,
@@ -1115,9 +1115,9 @@ class Controller extends \App\Kernel\Common\Controller
     }
 
     protected function getCustomPaginationCount( $callablePreparedRequest )
-	{
-		return $callablePreparedRequest()->count();
-	}
+    {
+        return $callablePreparedRequest()->count();
+    }
 
     /* ************************************************** */
     /* ******************   FORMER   ******************** */
@@ -1163,14 +1163,14 @@ class Controller extends \App\Kernel\Common\Controller
         ]);
     }
 
-	protected function parseFieldData( $row , $form , $show ) {
-    	$rst = parent::parseFieldData( $row , $form , $show );
+    protected function parseFieldData( $row , $form , $show ) {
+        $rst = parent::parseFieldData( $row , $form , $show );
 
-    	$rst['class'] = $row->getData('frontClass');
-		$rst['break'] = $row->getData('frontBreak') !== NULL ? $row->getData('frontBreak') : true;
+        $rst['class'] = $row->getData('frontClass');
+        $rst['break'] = $row->getData('frontBreak') !== NULL ? $row->getData('frontBreak') : true;
 
-    	return $rst;
-	}
+        return $rst;
+    }
 
     protected function getDataView()
     {
@@ -1209,8 +1209,8 @@ class Controller extends \App\Kernel\Common\Controller
             'timer'      => $timer,
             'keyControl' => md5( $this->getEntityName() . ( $form['id'] === NULL ? '-1' : $form['id'] ) ),
             'result'     => $this->result_form,
-			'recaptcha'             => $this->getEntity()->reCAPTCHA(),
-			'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
+            'recaptcha'             => $this->getEntity()->reCAPTCHA(),
+            'recaptcha_public_key'  => RECAPTCHA_PUBLIC,
             'recaptcha_version'     => RECAPTCHA_VERSION,
         ]);
 
@@ -1223,23 +1223,23 @@ class Controller extends \App\Kernel\Common\Controller
             foreach( $form['field'] as $field )
             {
                 $fields[ $field['name'] ] = [
-					'id'        => $field['name'],
-					'name'      => $field['fieldname'],
-					'value'     => $field['value'],
-					'label'     => $field['title'],
-					'error'     => $field['error'],
-					'help'      => $field['comment'],
-					'type'      => $field['type'],
-					'fieldType' => $field['subtype'],
-					'required'  => $field['required'],
-					'comment'   => $field['comment'],
-					'row'       => $View->fetch( 'module/field.twig', [ 'field' => $field ] ),
-					'widget'    => $field['Form_HTML'],
+                    'id'        => $field['name'],
+                    'name'      => $field['fieldname'],
+                    'value'     => $field['value'],
+                    'label'     => $field['title'],
+                    'error'     => $field['error'],
+                    'help'      => $field['comment'],
+                    'type'      => $field['type'],
+                    'fieldType' => $field['subtype'],
+                    'required'  => $field['required'],
+                    'comment'   => $field['comment'],
+                    'row'       => $View->fetch( 'module/field.twig', [ 'field' => $field ] ),
+                    'widget'    => $field['Form_HTML'],
                 ];
 
-				if( $field['type'] == "select" ) {
-					$fields[ $field['name'] ]['options'] = $field['options'];
-				}
+                if( $field['type'] == "select" ) {
+                    $fields[ $field['name'] ]['options'] = $field['options'];
+                }
 
             }
         }
@@ -1265,15 +1265,15 @@ class Controller extends \App\Kernel\Common\Controller
             'button_class' => $var['class'],
             'form_class'   => $var['fclass'],
             'keyControl'   => md5( $this->getEntityName() . $id ),
-			'noview'       => ( array_key_exists( 'noview' , $var ) && $var['noview'] == 1 ),
-			'result'       => $this->result_form,
+            'noview'       => ( array_key_exists( 'noview' , $var ) && $var['noview'] == 1 ),
+            'result'       => $this->result_form,
         ] );
     }
 
     public function listenForm( $add = true )
     {
-		if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
-		else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
+        if ( $add ) $hookBeforeCheck = 'hookAddCheckBefore' ;
+        else        $hookBeforeCheck = 'hookUpdateCheckBefore' ;
 
         $result = $this->$hookBeforeCheck();
 

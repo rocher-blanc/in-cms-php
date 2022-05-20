@@ -206,8 +206,22 @@ class ImageGenerator
 				$output     = $this->updateName( $this->originalName , $outputSuffix ) ;
 				$outputPath = $path . trim($dir, "/") . "/" . trim($output, "/") ;
 				$this->beforeSaveImage( $path , $dir , $outputPath );
-				$img->toFile($outputPath);
+                $exps = explode( "." , $outputPath );
+                if ( $exps )
+                {
+                    $ext = end( $exps );
 
+                    switch( $ext )
+                    {
+                        case "png" :
+                        case "PNG" :
+                            $img->toFile($outputPath);
+                            break;
+                        default :
+                            $img->toFile($outputPath , "image/jpeg" , IMAGE_QUALITY);
+                            break;
+                    }
+                }
 				return $output ;
 			}
 		}

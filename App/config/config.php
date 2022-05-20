@@ -20,6 +20,7 @@ defined('WEBSERVICE_PROJECT_PATH') || define('WEBSERVICE_PROJECT_PATH', MODULE_P
 defined('TEMPLATES_COMMON_TECH_PATH') || define('TEMPLATES_COMMON_TECH_PATH', APPLICATION_PATH . '/view/front/Common' );
 defined('FORM_PATH') || define('FORM_PATH', KERNEL_PATH . '/Form');
 defined('SAVE_PATH') || define('SAVE_PATH', _PATH_ . '/cache/save');
+defined('IMAGE_QUALITY') || define('IMAGE_QUALITY', 75);
 
 
 /* COMMON */
