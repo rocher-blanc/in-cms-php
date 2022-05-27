@@ -35,11 +35,6 @@ $app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $rec
                         $html = str_replace( '[' . $key . ']' , $value , $html ) ;
                     }
 
-//                $tab = [] ;
-//                $tab[ $History->get('email') ] = [ 'Email' => $History->get('email') ] ;
-//
-//                $History->set('information' , json_encode( $tab ) );
-//                $History->save();
                 }
             }
         }
