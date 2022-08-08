@@ -172,15 +172,13 @@ checkForm = function(base) {
 
         var $form = $(this);
 
-        if ( typeof grecaptcha !== 'undefined' ) {
-            if ( $('#recaptchaResponse').length && $('#recaptchaKey').length ) {
-                grecaptcha.ready(function() {
-                    grecaptcha.execute( $('#recaptchaKey').val(), {action: 'create_comment'}).then(function(token) {
-                        $('#recaptchaResponse').val( token );
-                        submitForm(base, which, $form, e);
-                    });
+        if ( typeof grecaptcha !== 'undefined' && $('#recaptchaResponse').length && $('#recaptchaKey').length ) {
+            grecaptcha.ready(function() {
+                grecaptcha.execute( $('#recaptchaKey').val(), {action: 'create_comment'}).then(function(token) {
+                    $('#recaptchaResponse').val( token );
+                    submitForm(base, which, $form, e);
                 });
-            }
+            });
         }
         else {
             submitForm(base, which, $form, e);
