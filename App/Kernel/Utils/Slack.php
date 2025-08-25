@@ -93,7 +93,7 @@ class Slack
 
     protected function getColor()
     {
-        return $this->color ;
+        return $this->hexToDecimal($this->color);
     }
 
     protected function getUsername()
@@ -144,33 +144,38 @@ class Slack
         $this->notification();
     }
 
-    public function notification()
-    {
-        $msg = new \stdClass;
-        $msg->color = $this->getColor() ;
-        $msg->author_name = $this->getAuthorName() ;
-        $msg->title = $this->getTitle() ;
-        $msg->title_link = $this->getTitleLink() ;
-        $msg->text = $this->getText() ;
+    public function notification() {
+        if( !defined('DISCORD_WEBHOOK') ) return;
 
-        $std = new \stdClass;
-        $std->username = $this->getUsername() ;
-        $std->icon_emoji = $this->getEmoji() ;
-        $std->channel = $this->getChannel() ;
-        $std->attachments = [ $msg ];
+        $payload = [
+            "content" => "",
+            "embeds"  => [
+                [
+                    "title"       => $this->getTitle(),
+                    "description" => $this->getText(),
+                    "color"       => $this->getColor(),
+                ]
+            ]
+        ];
 
-        $data_string = json_encode( $std );
+        $data_string = json_encode( $payload );
 
-        $ch = curl_init( SLACK_WEBHOOK );
+        $ch = curl_init( DISCORD_WEBHOOK );
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
-        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json'
+        ]);
 
-        $result = curl_exec($ch);
+        curl_exec($ch);
         curl_close($ch);
+
+    }
+
+    private function hexToDecimal($hexColor) {
+        // Supprimer le # et convertir en décimal
+        $hexColor = ltrim($hexColor, '#');
+        return hexdec($hexColor);
     }
 }
