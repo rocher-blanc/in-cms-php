@@ -92,7 +92,7 @@ class Router
 
     protected function hasHttps()
     {
-        if ( $_SERVER['HTTPS'] == 'on' )
+        if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' )
         {
             return true ;
         }
@@ -105,7 +105,8 @@ class Router
 
     protected function forceHttps()
     {
-        $this->Factory()->Response()->redirect('https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , 301 ) ;
+        $redirectUrl = isset( $_SERVER['REDIRECT_URL'] ) ? $_SERVER['REDIRECT_URL'] : ( $_SERVER['REQUEST_URI'] ?? '/' ) ;
+        $this->Factory()->Response()->redirect('https://' . $_SERVER['SERVER_NAME'] . $redirectUrl , 301 ) ;
     }
 
     /* ************************************************** */
@@ -127,7 +128,8 @@ class Router
 
     protected function forceWww()
     {
-        $this->Factory()->Response()->redirect( 'http' . ( $this->hasHttps() ? '' : 's' ) . '://www.' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , 301 ) ;
+        $redirectUrl = isset( $_SERVER['REDIRECT_URL'] ) ? $_SERVER['REDIRECT_URL'] : ( $_SERVER['REQUEST_URI'] ?? '/' ) ;
+        $this->Factory()->Response()->redirect( 'http' . ( $this->hasHttps() ? '' : 's' ) . '://www.' . $_SERVER['SERVER_NAME'] . $redirectUrl , 301 ) ;
     }
 
     /* ************************************************** */
@@ -258,8 +260,6 @@ class Router
 
     private function check301()
     {
-        dump( $_SERVER );
-        die;
         $Redirect = new \App\Kernel\Front\Redirect;
         $Redirect->setUrl( trim( $this->getFullUrl() , "/" ) );
         $Redirect->check301();
