@@ -1,0 +1,13 @@
+diff --git a/vendor/slim/slim/Slim/Http/Util.php b/vendor/slim/slim/Slim/Http/Util.php
+index 00cac0ed..eb889c72 100644
+--- a/vendor/slim/slim/Slim/Http/Util.php
++++ b/vendor/slim/slim/Slim/Http/Util.php
+@@ -57,7 +57,7 @@ class Util
+      */
+     public static function stripSlashesIfMagicQuotes($rawData, $overrideStripSlashes = null)
+     {
+-        $strip = is_null($overrideStripSlashes) ? get_magic_quotes_gpc() : $overrideStripSlashes;
++        $strip = is_null($overrideStripSlashes) ? false : $overrideStripSlashes; // get_magic_quotes_gpc() removed PHP 8.0, always returned false since PHP 5.4
+         if ($strip) {
+             return self::stripSlashes($rawData);
+         }
