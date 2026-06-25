@@ -108,7 +108,8 @@ class Easyletter
     private function setError( $msg )
     {
         $this->error = $msg ;
-        Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] , "logs-errors" , $msg );
+        $redirectUrl = isset( $_SERVER['REDIRECT_URL'] ) ? $_SERVER['REDIRECT_URL'] : ( $_SERVER['REQUEST_URI'] ?? '/' ) ;
+        Slack::notify( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] , 'http://' . $_SERVER['SERVER_NAME'] . $redirectUrl , "logs-errors" , $msg );
     }
 
     public function getError()

@@ -93,8 +93,9 @@ class PrettyExceptions extends Middleware
 
         $Slack = new \App\Kernel\Utils\Slack;
         $Slack->setText( $text );
+        $redirectUrl = isset( $_SERVER['REDIRECT_URL'] ) ? $_SERVER['REDIRECT_URL'] : ( $_SERVER['REQUEST_URI'] ?? '/' ) ;
         $Slack->setTitle( "Erreur sur un projet client - " . $_SERVER['SERVER_NAME'] );
-        $Slack->setTitleLink( 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REDIRECT_URL'] );
+        $Slack->setTitleLink( 'http://' . $_SERVER['SERVER_NAME'] . $redirectUrl );
         $Slack->setChannel("errors");
         $Slack->notification();
     }
