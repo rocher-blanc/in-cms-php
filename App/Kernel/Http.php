@@ -36,7 +36,7 @@ class Http
         if ( isset( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
 
         $protocol = 'http' ;
-        if ( $_SERVER['HTTPS'] == 'on' ) $protocol = 'https' ;
+        if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) $protocol = 'https' ;
         return $protocol . '://' . $_SERVER['HTTP_HOST'] ;
 	}
 
