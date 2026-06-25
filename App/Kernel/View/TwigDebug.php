@@ -2,9 +2,8 @@
 
 namespace App\Kernel\View;
 
-use Slim\Slim;
 
-class TwigDebug extends \Twig_Extension
+class TwigDebug extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -14,7 +13,7 @@ class TwigDebug extends \Twig_Extension
     public function getFunctions()
     {
        return [
-           new \Twig_SimpleFunction('dump', [ $this, 'twig_var_dump']),
+           new \Twig\TwigFunction('dump', [ $this, 'twig_var_dump']),
        ];
     }
 

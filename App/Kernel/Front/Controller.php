@@ -14,7 +14,6 @@ use App\Kernel\Http;
 use App\Kernel\Lang;
 use JasonGrimes\Paginator;
 use App\Kernel\Front\Translate;
-use Slim\Slim;
 
 class Controller extends \App\Kernel\Common\Controller
 {
@@ -243,7 +242,7 @@ class Controller extends \App\Kernel\Common\Controller
             }
 
             $meta = [
-                'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->seo_url,
+                'url' => \App\Kernel\SlimBridge::getInstance()->request()->getUrl() . '/' . $result->seo_url,
                 'title' => $result->seo_title,
                 'description' => $result->seo_description,
                 'robots' => $robots
@@ -285,7 +284,7 @@ class Controller extends \App\Kernel\Common\Controller
             }
 
             $meta = [
-                'url' => \Slim\Slim::getInstance()->request()->getUrl() . '/' . $result->module_lang_url,
+                'url' => \App\Kernel\SlimBridge::getInstance()->request()->getUrl() . '/' . $result->module_lang_url,
                 'title' => $result->module_lang_title,
                 'description' => $result->module_lang_description,
                 'robots' => $robots

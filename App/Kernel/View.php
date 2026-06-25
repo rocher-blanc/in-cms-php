@@ -10,29 +10,22 @@ class View
 
     protected $folder = [] ;
 
-    /* ************************************************** */
-    /* ****************   CONSTRUCT   ******************* */
-    /* ************************************************** */
-
-    public function __construct()
-    {
-
-    }
+    private static ?self $instance = null;
 
     /* ************************************************** */
     /* ****************     TOOLS     ******************* */
     /* ************************************************** */
 
-    protected function getApp()
+    protected function getApp(): SlimBridge
     {
-        return \Slim\Slim::getInstance() ;
+        return SlimBridge::getInstance() ;
     }
 
     /* ************************************************** */
     /* ****************   SINGLETONE   ****************** */
     /* ************************************************** */
 
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if ( self::$instance === NULL ) self::$instance = new View;
         return self::$instance ;
@@ -49,7 +42,7 @@ class View
 
     public function setData( $key , $var )
     {
-        return $this->getApp()->view()->setData( $key , $var );
+        $this->getApp()->appendViewData([ $key => $var ]);
     }
 
     /* ************************************************** */
@@ -58,7 +51,7 @@ class View
 
     public function getData( $key )
     {
-        return $this->getApp()->view()->getData( $key );
+        return $this->getApp()->getViewData( $key );
     }
 
     /* ************************************************** */
@@ -67,45 +60,60 @@ class View
 
     public function render( $template , $args = [] )
     {
-        $exist = false ;
-        foreach( CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
-        {
-            if ( file_exists( $folder . '/' . $template ) )
-            {
-                $exist = true ;
+        $twig = $this->getApp()->view();
+        if ( $twig === null ) return;
+
+        $env    = $twig->getEnvironment();
+        $loader = $env->getLoader();
+
+        // Vérifie si le template existe, sinon essaie avec .html
+        $exists = false;
+        try {
+            $loader->getSourceContext( $template );
+            $exists = true;
+        } catch ( \Twig\Error\LoaderError $e ) {
+            try {
+                $loader->getSourceContext( $template . '.html' );
+                $template .= '.html';
+                $exists    = true;
+            } catch ( \Twig\Error\LoaderError $e2 ) {
+                // template introuvable
             }
         }
 
-        if ( $exist === false )
+        if ( $exists === false ) return;
+
+        if ( DEBUG_TWIG ?? false )
         {
-            $template.= '.html' ;
+            $this->getTwigDebugBar()->merge( $args );
+            $args['__debug_twig__'] = $this->getTwigDebugBar()->getDebugTwig();
         }
 
-    	if( DEBUG_TWIG )
-		{
-			$this->getTwigDebugBar()->merge( $args );
-			$args['__debug_twig__'] = $this->getTwigDebugBar()->getDebugTwig();
-		}
-    	$this->getApp()->render( $template , $args );
+        $globalData = $this->getApp()->getViewData();
+        echo $env->render( $template , array_merge( $globalData , $args ) );
     }
 
     public function getTwigDebugBar()
-	{
-		return \App\Kernel\Front\TwigDebugBar::getInstance();
-	}
-
+    {
+        return \App\Kernel\Front\TwigDebugBar::getInstance();
+    }
 
     public function fetch( $template , $args = [] )
     {
-        return $this->getApp()->view()->fetch( $template , $args );
+        $twig = $this->getApp()->view();
+        if ( $twig === null ) return '';
+
+        $env        = $twig->getEnvironment();
+        $globalData = $this->getApp()->getViewData();
+        return $env->render( $template , array_merge( $globalData , $args ) );
     }
 
     public function appendData( $array )
     {
-		if( DEBUG_TWIG )
-		{
-			$this->getTwigDebugBar()->merge( $array );
-		}
-        return $this->getApp()->view()->appendData( $array );
+        if ( DEBUG_TWIG ?? false )
+        {
+            $this->getTwigDebugBar()->merge( $array );
+        }
+        $this->getApp()->appendViewData( $array );
     }
 }

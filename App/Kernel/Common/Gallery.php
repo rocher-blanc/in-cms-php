@@ -137,7 +137,7 @@ class Gallery
 
 	protected function getApp()
 	{
-		return \Slim\Slim::getInstance() ;
+		return \App\Kernel\SlimBridge::getInstance() ;
 	}
 
 	protected function post( $key )

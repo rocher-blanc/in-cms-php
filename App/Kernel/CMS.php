@@ -3,6 +3,8 @@
 namespace App\Kernel;
 
 use App\Kernel\Front\Translate;
+use App\Kernel\SlimBridge;
+use App\Kernel\SlimResponse;
 
 class CMS
 {
@@ -57,9 +59,9 @@ class CMS
         return $this->config ;
     }
 
-    public function getApp()
+    public function getApp(): SlimBridge
     {
-        return \Slim\Slim::getInstance() ;
+        return SlimBridge::getInstance();
     }
 
     /* ************************************************** */
@@ -71,9 +73,9 @@ class CMS
         return $this->getApp()->request() ;
     }
 
-    public function response()
+    public function response(): SlimResponse
     {
-        return $this->getApp()->response ;
+        return $this->getApp()->response();
     }
 
     public function config( $key )
@@ -129,7 +131,7 @@ class CMS
 
     public function render( $tpl , $arg = [] )
     {
-        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) or !empty( $this->getApp()->response->getBody() )) return "" ;
-        else                                                                                                          return $this->view()->render( $tpl , $arg ) ;
+        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) or $this->getApp()->response()->getBuffer() !== '' ) return "" ;
+        else                                                                                                                                                       return $this->view()->render( $tpl , $arg ) ;
     }
 }

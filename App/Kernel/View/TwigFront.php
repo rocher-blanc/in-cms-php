@@ -3,9 +3,8 @@
 namespace App\Kernel\View;
 
 use App\Kernel\Factory;
-use Slim\Slim;
 
-class TwigFront extends \Twig_Extension
+class TwigFront extends \Twig\Extension\AbstractExtension
 {
     public $css = [];
     public $js = [];
@@ -54,13 +53,13 @@ class TwigFront extends \Twig_Extension
         $this->tab = [];
 
         return array(
-            new \Twig_SimpleFunction('remove', array($this, 'remove')),
-            new \Twig_SimpleFunction('addslashes', array($this, 'slashes')),
-            new \Twig_SimpleFunction('env', array($this, 'env')),
-            new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
-            new \Twig_SimpleFunction('asset', array($this, 'asset')),
-            new \Twig_SimpleFunction('css', array($this, 'getCssVar')),
-            new \Twig_SimpleFunction('javascript', array($this, 'getJsVar'))
+            new \Twig\TwigFunction('remove', array($this, 'remove')),
+            new \Twig\TwigFunction('addslashes', array($this, 'slashes')),
+            new \Twig\TwigFunction('env', array($this, 'env')),
+            new \Twig\TwigFunction('vendor', array($this, 'vendor')),
+            new \Twig\TwigFunction('asset', array($this, 'asset')),
+            new \Twig\TwigFunction('css', array($this, 'getCssVar')),
+            new \Twig\TwigFunction('javascript', array($this, 'getJsVar'))
         );
     }
 

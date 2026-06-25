@@ -2,78 +2,58 @@
 
 namespace App\Kernel\Middleware\Back;
 
-class Guard extends \Slim\Middleware
+use App\Kernel\Middleware\AbstractMiddleware;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+
+class Guard extends AbstractMiddleware
 {
     public function __construct() {}
 
-    public function call() 
+    public function process(Request $request, RequestHandler $handler): Response
     {
-        $this->app->hook('slim.before', array($this, 'check'));
-        $this->next->call();
+        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        $this->check();
+        return $handler->handle($request);
     }
-	
-	private function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
-	}
 
-    public function check()
-	{
-        $check  = array( "ext" , "admin" , "module" ) ;
-		$urlTab = $this->Factory()->Url()->cutUrl() ;
+    public function check(): void
+    {
+        $check  = ['ext', 'admin', 'module'];
+        $urlTab = $this->Factory()->Url()->cutUrl();
         $Guard  = new \App\Kernel\Back\Acl;
 
-        $this->app->view()->appendData([
-            'isAdmin' => $Guard->isAdmin()
-        ]);
-		
-		if ( ! empty( $urlTab ) ) 
-		{
-			if ( in_array( $urlTab[0] , $check ) )
-			{
-				if ( $urlTab[0] == 'ext' or $urlTab[0] == 'module' )
-				{
-					if ( $urlTab[0] == 'ext' )			$Guard->setExtension( $urlTab[1] );
-					else if ( $urlTab[0] == 'module' )	$Guard->setModule( $urlTab[1] );
-					
-					$Guard->load();
+        $this->app()->appendViewData(['isAdmin' => $Guard->isAdmin()]);
 
-					if ( $Guard->hasRight() == false )
-					{
-						$this->Factory()->Response()->redirectForbidden() ;
-					}
-					else
-					{
-						if ( array_key_exists( 2 , $urlTab ) )
-                        {
-                            if ( $urlTab[2] == 'enable' or $urlTab[2] == 'disable' )
-                            {
-                                // Validation
-                                if ( $Guard->checkValidation() == false ) $this->Factory()->Response()->redirectForbidden() ;
-                            }
-                            else if ( $urlTab[2] == 'add' )
-                            {
-                                // Ajout
-                                if ( $Guard->checkAdd() == false ) $this->Factory()->Response()->redirectForbidden() ;
-                            }
-                            else if ( $urlTab[2] == 'config' )
-                            {
-                                // Config
-                                if ( $Guard->checkConfig() == false ) $this->Factory()->Response()->redirectForbidden() ;
-                            }
-                            else if ( $urlTab[2] == 'delete' )
-                            {
-                                // Suppression
-                                if ( $Guard->checkDelete() == false ) $this->Factory()->Response()->redirectForbidden() ;
+        if (!empty($urlTab)) {
+            if (in_array($urlTab[0], $check)) {
+                if ($urlTab[0] === 'ext' || $urlTab[0] === 'module') {
+                    if ($urlTab[0] === 'ext')        $Guard->setExtension($urlTab[1]);
+                    elseif ($urlTab[0] === 'module') $Guard->setModule($urlTab[1]);
+
+                    $Guard->load();
+
+                    if ($Guard->hasRight() === false) {
+                        $this->Factory()->Response()->redirectForbidden();
+                    } else {
+                        if (array_key_exists(2, $urlTab)) {
+                            $action = $urlTab[2];
+                            if (in_array($action, ['enable', 'disable'])) {
+                                if (!$Guard->checkValidation()) $this->Factory()->Response()->redirectForbidden();
+                            } elseif ($action === 'add') {
+                                if (!$Guard->checkAdd()) $this->Factory()->Response()->redirectForbidden();
+                            } elseif ($action === 'config') {
+                                if (!$Guard->checkConfig()) $this->Factory()->Response()->redirectForbidden();
+                            } elseif ($action === 'delete') {
+                                if (!$Guard->checkDelete()) $this->Factory()->Response()->redirectForbidden();
                             }
                         }
-					}
-				}
-				else if ( $urlTab[0] == 'admin' && $Guard->isAdmin() == false )
-				{
-					$this->Factory()->Response()->redirectForbidden() ;
-				}
-			}
-		}
+                    }
+                } elseif ($urlTab[0] === 'admin' && !$Guard->isAdmin()) {
+                    $this->Factory()->Response()->redirectForbidden();
+                }
+            }
+        }
     }
 }

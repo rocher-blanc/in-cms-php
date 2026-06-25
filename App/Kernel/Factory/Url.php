@@ -70,7 +70,7 @@ class Url
 
     public function getApp()
     {
-        return \Slim\Slim::getInstance() ;
+        return \App\Kernel\SlimBridge::getInstance() ;
     }
 
     public function Factory()

@@ -135,7 +135,7 @@ class Seo
 	
 	protected function getApp()
 	{
-		return \Slim\Slim::getInstance() ;
+		return \App\Kernel\SlimBridge::getInstance() ;
 	}
 	
 	/* ************************************************** */

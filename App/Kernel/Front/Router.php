@@ -47,7 +47,7 @@ class Router
 
     protected function getApp()
     {
-        return \Slim\Slim::getInstance() ;
+        return \App\Kernel\SlimBridge::getInstance() ;
     }
 
     protected function Factory()
@@ -475,7 +475,10 @@ class Router
         {
             $fileExist = false;
 
-            foreach( $this->getApp()->view()->twigTemplateDirs as $folder )
+            $twig   = $this->getApp()->view();
+            $loader = $twig ? $twig->getEnvironment()->getLoader() : null;
+            $twigDirs = ( $loader instanceof \Twig\Loader\FilesystemLoader ) ? $loader->getPaths() : [];
+            foreach( $twigDirs as $folder )
             {
                 $file = $folder . '/module/' . $result->module_class_name . '/getall.twig' ;
                 if ( file_exists( $file ) )
@@ -613,7 +616,7 @@ class Router
 
                 $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $app , $page , $User , $Response , $Url )
                 {
-                    if ( empty( $app->response->getBody() ) && ACTIVE_USER )
+                    if ( empty( $app->response()->getBuffer() ) && ACTIVE_USER )
                     {
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {

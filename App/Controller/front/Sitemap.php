@@ -55,7 +55,9 @@ $app->get('/sitemap.xml', function () use ( $app )
                 if ( $module->module_index == 1 )
                 {
                     $file = '/module/' . $module->module_class_name . '/getall.twig' ;
-                    foreach( \App\Kernel\CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
+                    $_twigLoader1 = \App\Kernel\CMS::getInstance()->getApp()->view()?->getEnvironment()->getLoader();
+                    $_twigDirs1   = ($_twigLoader1 instanceof \Twig\Loader\FilesystemLoader) ? $_twigLoader1->getPaths() : [];
+                    foreach( $_twigDirs1 as $folder )
                     {
                         if ( file_exists( $folder . $file ) )
                         {
@@ -89,7 +91,9 @@ $app->get('/sitemap.xml', function () use ( $app )
                 if ( $module->module_index_elmt == 1 )
                 {
                     $file = '/module/' . $module->module_class_name . '/getone.twig' ;
-                    foreach( \App\Kernel\CMS::getInstance()->getApp()->view()->twigTemplateDirs as $folder )
+                    $_twigLoader2 = \App\Kernel\CMS::getInstance()->getApp()->view()?->getEnvironment()->getLoader();
+                    $_twigDirs2   = ($_twigLoader2 instanceof \Twig\Loader\FilesystemLoader) ? $_twigLoader2->getPaths() : [];
+                    foreach( $_twigDirs2 as $folder )
                     {
                         if ( file_exists( $folder . $file ) )
                         {

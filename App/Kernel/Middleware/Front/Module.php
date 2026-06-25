@@ -2,80 +2,74 @@
 
 namespace App\Kernel\Middleware\Front;
 
-class Module extends \Slim\Middleware
+use App\Kernel\Middleware\AbstractMiddleware;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+
+class Module extends AbstractMiddleware
 {
     public function __construct() {}
 
-    public function call()
+    public function process(Request $request, RequestHandler $handler): Response
     {
-        $this->app->hook('slim.before', [$this, 'observe']);
-        $this->next->call();
-
+        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        $this->observe();
+        return $handler->handle($request);
     }
 
-    private function error( $msg )
+    private function error(string $msg): array
     {
-        return [
-            'error' => true,
-            'result' => false,
-            'msg' => $msg,
-        ];
+        return ['error' => true, 'result' => false, 'msg' => $msg];
     }
 
-    public function observe()
+    public function observe(): void
     {
-        if ( $this->app->request->isPost() && $this->app->request->post('keyControl') != '' && $this->app->request->post('moduleName') != '' && $this->app->request->post('keyControl') != '' )
-        {
+        $req = $this->request();
+
+        if (
+            $req->isPost()
+            && $req->post('keyControl') != ''
+            && $req->post('moduleName') != ''
+        ) {
             $rst = [];
-            $key = md5( $this->app->request->post('moduleName') . $this->app->request->post('id_element') );
+            $key = md5($req->post('moduleName') . $req->post('id_element'));
 
-            if ( $key != $this->app->request->post('keyControl') )
-            {
-                $rst = $this->error("La clef du module est incorrect" );
-            }
-            else
-            {
-                if ( $this->app->request->post('show') != '' )
-                {
+            if ($key != $req->post('keyControl')) {
+                $rst = $this->error("La clef du module est incorrect");
+            } else {
+                if ($req->post('show') != '') {
                     $action = 'showIf';
-                }
-                else if ( $this->app->request->post('delete') != '' )
-                {
+                } elseif ($req->post('delete') != '') {
                     $action = 'delete';
+                } else {
+                    $action = 'default';
                 }
 
-                switch( $action )
-                {
-                    // SHOW IF
-                    case "showIf" :
-                        $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
+                switch ($action) {
+                    case 'showIf':
+                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
                         $rst = $Controller->getShow();
                         break;
 
-                    // DELETE
-                    case "delete" :
-                        $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
-                        $Controller->setId( $this->app->request->post('id_element') );
+                    case 'delete':
+                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
+                        $Controller->setId($req->post('id_element'));
                         $rst = $Controller->delete();
                         break;
 
-                    // ADD/UPDATE
-                    default :
-                        $add = ( $this->app->request->post('id_element') == '-1' ? true : false );
-                        $Controller = \App\Kernel\Container::getInstance()->module( $this->app->request->post('moduleName') )->getController();
-                        if ( ! $add ) $Controller->setId( $this->app->request->post('id_element') );
-                        $rst = $Controller->listenForm( $add );
-                    break;
+                    default:
+                        $add        = ($req->post('id_element') == '-1');
+                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
+                        if (!$add) $Controller->setId($req->post('id_element'));
+                        $rst = $Controller->listenForm($add);
+                        break;
                 }
             }
 
-            if ( ! empty( $rst ) )
-            {
-                if ( $this->app->request->isAjax() )
-                {
-                    $this->app->response->headers->set('Content-Type', 'application/json');
-                    $this->app->response->body( json_encode( $rst ) );
-                }
+            if (!empty($rst) && $req->isAjax()) {
+                $this->app()->contentType('application/json');
+                $this->app()->response()->body(json_encode($rst));
             }
         }
     }

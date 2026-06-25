@@ -4,7 +4,7 @@ namespace App\Kernel\View;
 
 use App\Kernel\Front\Helper;
 
-class TwigHelper extends \Twig_Extension
+class TwigHelper extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -14,8 +14,8 @@ class TwigHelper extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('HelperModule', array($this, 'helperModule')),
-            new \Twig_SimpleFunction('HelperPage', array($this, 'helperPage'))
+            new \Twig\TwigFunction('HelperModule', array($this, 'helperModule')),
+            new \Twig\TwigFunction('HelperPage', array($this, 'helperPage'))
         ];
     }
 

@@ -817,7 +817,7 @@ function translation_createDefaultTranslations( String $paramKey , Array $transl
 	$param = new Param();
 	$param->set( $paramKey , 1 );
 
-	\Slim\Slim::getInstance()->redirect(
-		\Slim\Slim::getInstance()->config('admin.url') . '/ext/langue/traduction'
+	\App\Kernel\SlimBridge::getInstance()->redirect(
+		\App\Kernel\SlimBridge::getInstance()->config('admin.url') . '/ext/langue/traduction'
 	);
 }

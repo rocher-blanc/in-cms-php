@@ -5,9 +5,8 @@ namespace App\Kernel\View;
 use App\Kernel\Container;
 use App\Kernel\Factory;
 use App\Kernel\Lang;
-use Slim\Slim;
 
-class TwigModule extends \Twig_Extension
+class TwigModule extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -32,9 +31,9 @@ class TwigModule extends \Twig_Extension
     public function getFunctions()
     {
        return [
-            new \Twig_SimpleFunction('component', [$this, 'component']),
-            new \Twig_SimpleFunction('module', [$this, 'module']),
-            new \Twig_SimpleFunction('parse', [$this, 'parse']),
+            new \Twig\TwigFunction('component', [$this, 'component']),
+            new \Twig\TwigFunction('module', [$this, 'module']),
+            new \Twig\TwigFunction('parse', [$this, 'parse']),
        ];
     }
 

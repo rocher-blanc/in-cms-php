@@ -5,7 +5,7 @@ namespace App\Kernel\View;
 use App\Kernel\Container;
 use App\Kernel\Front\Former;
 
-class Form extends \Twig_Extension
+class Form extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -20,9 +20,9 @@ class Form extends \Twig_Extension
     public function getFunctions()
     {
        return [
-            new \Twig_SimpleFunction('form', [$this, 'form']),
-            new \Twig_SimpleFunction('formDelete', [$this, 'formDelete']),
-            new \Twig_SimpleFunction('form_init', [$this, 'formInit']),
+            new \Twig\TwigFunction('form', [$this, 'form']),
+            new \Twig\TwigFunction('formDelete', [$this, 'formDelete']),
+            new \Twig\TwigFunction('form_init', [$this, 'formInit']),
        ];
     }
 

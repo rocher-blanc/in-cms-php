@@ -9,7 +9,6 @@ use App\Kernel\Container;
 use App\Kernel\Entity\Builder;
 use App\Kernel\Form\Select;
 use App\Kernel\Front\Translate;
-use Slim\Slim;
 
 class Controller
 {

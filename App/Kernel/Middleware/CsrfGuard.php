@@ -2,98 +2,63 @@
 
 namespace App\Kernel\Middleware;
 
-class CsrfGuard extends \Slim\Middleware
-{
-    /**
-     * CSRF token key name.
-     *
-     * @var string
-     */
-    protected $key;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-    /**
-     * Constructor.
-     *
-     * @param string    $key        The CSRF token key name.
-     * @return void
-     */
-    public function __construct( $key = 'csrf_token' )
+class CsrfGuard extends AbstractMiddleware
+{
+    protected string $key;
+
+    public function __construct(string $key = 'csrf_token')
     {
-        if ( ! is_string( $key ) || empty( $key ) || preg_match('/[^a-zA-Z0-9\-\_]/', $key ) )
-        {
-            \App\Kernel\Factory::getInstance()->Response()->error('Invalid CSRF token key "' . $key . '"');
+        if (empty($key) || preg_match('/[^a-zA-Z0-9\-\_]/', $key)) {
+            $this->Factory()->Response()->error('Invalid CSRF token key "' . $key . '"');
         }
         $this->key = $key;
     }
 
-    /**
-     * Call middleware.
-     *
-     * @return void
-     */
-    public function call()
+    public function process(Request $request, RequestHandler $handler): Response
     {
-        // Attach as hook.
-        $this->app->hook( 'slim.before', [$this, 'check'] );
-
-        // Call next middleware.
-        $this->next->call();
+        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        $this->check($request);
+        return $handler->handle($request);
     }
 
-    /**
-     * Check CSRF token is valid.
-     * Note: Also checks POST data to see if a Moneris RVAR CSRF token exists.
-     *
-     * @return void
-     */
-    public function check()
+    public function check(Request $request): void
     {
-        // Check sessions are enabled.
-        if ( session_id() === '' )
-        {
-            \App\Kernel\Factory::getInstance()->Response()->error('Sessions are required to use the CSRF Guard middleware.');
+        if (session_id() === '') {
+            $this->Factory()->Response()->error('Sessions are required to use the CSRF Guard middleware.');
         }
 
-        if ( ! isset( $_SESSION[ $this->key ] ) )
-        {
-            $_SESSION[ $this->key ] = sha1( serialize( $_SERVER ) . rand( 0, 99999999 ) ) ;
+        if (!isset($_SESSION[$this->key])) {
+            $_SESSION[$this->key] = sha1(serialize($_SERVER) . rand(0, 99999999));
         }
 
-        $token = $_SESSION[ $this->key ] ;
+        $token  = $_SESSION[$this->key];
+        $method = strtoupper($request->getMethod());
 
-        // Validate the CSRF token.
-        if ( in_array( $this->app->request()->getMethod() , ['POST', 'PUT', 'DELETE'] ) )
-        {
-            if ( ! empty( $this->app->request()->headers('Content-Type') ) )
-            {
-                if ( strpos( $this->app->request()->headers('Content-Type') , 'application/json' ) !== false )
-                {
-                    $json = file_get_contents('php://input');
-                    $_POST = json_decode( $json , true );
+        if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
+            $contentType = $request->getHeaderLine('Content-Type');
 
-                    $userToken = $_POST[ $this->key ];
-                }
-                else
-                {
-                    $userToken = $this->app->request()->post( $this->key ) ;
-                }
-            }
-            else
-            {
-                $userToken = $this->app->request()->post( $this->key ) ;
+            if (!empty($contentType) && strpos($contentType, 'application/json') !== false) {
+                $json       = (string) $request->getBody();
+                $_POST      = json_decode($json, true) ?? [];
+                $userToken  = $_POST[$this->key] ?? null;
+            } else {
+                $body      = $request->getParsedBody();
+                $userToken = is_array($body) ? ($body[$this->key] ?? null) : null;
             }
 
-            if ( $token !== $userToken )
-            {
-                dump( $_POST );
-                $this->app->halt(400, "Invalid or missing CSRF token. ---  $token !== $userToken // " . $this->app->request()->headers('Content-Type'));
+            if ($token !== $userToken) {
+                // Réponse 400 CSRF invalid
+                throw new \App\Kernel\Exception\RedirectException('/', 400);
             }
         }
 
-        // Assign CSRF token key and value to view.
-        $this->app->view()->appendData([
-            'csrf_key'      => $this->key,
-            'csrf_token'    => $token
+        $this->app()->appendViewData([
+            'csrf_key'   => $this->key,
+            'csrf_token' => $token,
         ]);
     }
 }

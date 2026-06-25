@@ -410,10 +410,12 @@ class Kernel
 
         if ( $this->config('config') == 'back' )
         {
-            $this->getSlim()->getApp()->redirect('../');
+            // Hors pipeline Slim : redirection PHP native
+            header('Location: ../');
         }
         else
         {
+            // Rendu Twig direct hors pipeline
             $this->getSlim()->getApp()->render('errors/' . $tpl . '.twig.html' , $arg );
         }
         die;

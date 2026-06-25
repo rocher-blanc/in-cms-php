@@ -2,30 +2,34 @@
 
 namespace App\Kernel\Middleware;
 
-class Plugin extends \Slim\Middleware
-{
-    private $arrayPlugin = [] ;
-	
-	public function __construct( $arrayPlugin = [] )
-	{
-		$this->arrayPlugin = $arrayPlugin ;
-	}
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-    public function call() 
+class Plugin extends AbstractMiddleware
+{
+    private array $arrayPlugin = [];
+
+    public function __construct(array $arrayPlugin = [])
     {
-        $this->app->hook('slim.before', array($this, 'load'));
-        $this->next->call();
+        $this->arrayPlugin = $arrayPlugin;
     }
 
-    public function load()
-	{
-		if ( !empty( $this->arrayPlugin ) )
-		{
-			foreach( $this->arrayPlugin as $row )
-			{
-				if ( method_exists( $row , 'load' ) )       $row->load();
-                else                                                    throw new \App\Kernel\Exception('Function "load" is not defined on this plugin "' . get_class( $row ) . '"') ;
-			}
-		}
+    public function process(Request $request, RequestHandler $handler): Response
+    {
+        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        $this->load();
+        return $handler->handle($request);
+    }
+
+    public function load(): void
+    {
+        foreach ($this->arrayPlugin as $row) {
+            if (method_exists($row, 'load')) {
+                $row->load();
+            } else {
+                throw new \App\Kernel\Exception('Function "load" is not defined on plugin "' . get_class($row) . '"');
+            }
+        }
     }
 }

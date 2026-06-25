@@ -6,7 +6,6 @@ use App\Kernel\Exception;
 use App\Kernel\Factory;
 use App\Kernel\Http;
 use claviska\SimpleImage;
-use Slim\Slim;
 
 class ImageGenerator
 {

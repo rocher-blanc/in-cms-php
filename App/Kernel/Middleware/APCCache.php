@@ -2,64 +2,55 @@
 
 namespace App\Kernel\Middleware;
 
-class APCCache extends \Slim\Middleware
-{
-    protected $settings;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-    public function __construct( $settings = [] )
+class APCCache extends AbstractMiddleware
+{
+    protected array $settings;
+
+    public function __construct(array $settings = [])
     {
-        if ( extension_loaded('apc') && ini_get('apc.enabled') )
-        {
+        if (extension_loaded('apc') && ini_get('apc.enabled')) {
             $this->settings = array_merge([
-                'ttl'            => 300,	// 5 minutes
-                'caching_prefix' => 'SlimCache_'
-            ], $settings );
-        }
-        else
-        {
-            if ( ! DEBUG_CMS )
-            {
-                return \App\Kernel\Factory::getInstance()->Response()->error('APC not available');
-            }
+                'ttl'            => 300,
+                'caching_prefix' => 'SlimCache_',
+            ], $settings);
+        } elseif (!defined('DEBUG_CMS') || !DEBUG_CMS) {
+            $this->Factory()->Response()->error('APC not available');
         }
     }
 
-    public function call()
+    public function process(Request $request, RequestHandler $handler): Response
     {
-        if ( DEBUG_CMS )
-        {
-            $this->next->call();
-            return;
+        if (defined('DEBUG_CMS') && DEBUG_CMS) {
+            return $handler->handle($request);
         }
 
-        $key_name = $this->settings['caching_prefix'] . $this->app->request()->getResourceUri();
-        $rsp = $this->app->response();
+        $keyName = $this->settings['caching_prefix'] . $request->getUri()->getPath();
 
-        // Check cache
-        if ( apc_exists( $key_name ) )
-        {
-            // Return content from cache
-            $data = apc_fetch($key_name);
-            foreach ( $data['header'] as $key => $value )
-            {
-                $rsp->headers->set( $key, $value ) ;
+        if (apc_exists($keyName)) {
+            $data    = apc_fetch($keyName);
+            $factory = \Slim\Factory\AppFactory::determineResponseFactory();
+            $resp    = $factory->createResponse(200);
+            foreach ($data['header'] as $key => $value) {
+                $resp = $resp->withHeader($key, $value);
             }
-            $rsp->body( $data["body"] );
-            return;
+            $resp->getBody()->write($data['body']);
+            return $resp;
         }
 
-        // Not in cache. Call controller
-        $this->next->call();
+        $response = $handler->handle($request);
 
-        // Cache the content
-        if ( ( $rsp->status() == 200 ) && ( $this->settings['ttl'] > 0 ) )
-        {
-            $header = $rsp->headers->all();
+        if ($response->getStatusCode() === 200 && $this->settings['ttl'] > 0) {
             $data = [
-                'header' => $header,
-                'body'   => $rsp->body()
+                'header' => $response->getHeaders(),
+                'body'   => (string) $response->getBody(),
             ];
-            apc_store( $key_name, $data, $this->settings['ttl'] );
+            apc_store($keyName, $data, $this->settings['ttl']);
         }
+
+        return $response;
     }
 }

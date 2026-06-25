@@ -4,7 +4,7 @@ namespace App\Kernel\View;
 
 use App\Kernel\Front\Translate;
 
-class TwigLang extends \Twig_Extension
+class TwigLang extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -14,8 +14,8 @@ class TwigLang extends \Twig_Extension
     public function getFunctions()
     {
        return array(
-            new \Twig_SimpleFunction('_', array($this, 'trad')),
-            new \Twig_SimpleFunction('__', array($this, 'exist')),
+            new \Twig\TwigFunction('_', array($this, 'trad')),
+            new \Twig\TwigFunction('__', array($this, 'exist')),
         );
     }
 

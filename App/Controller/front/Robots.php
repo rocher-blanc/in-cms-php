@@ -3,7 +3,7 @@
 $app->get('/robots.txt', function () use ( $app ) {
     $app->contentType('text/plain');
 
-    $meta = $app->view()->get('meta') ;
+    $meta = $app->getViewData('meta') ;
     echo 'User-agent: *' . "\n";
 
     if ( $meta['robots_value'] == 0 )

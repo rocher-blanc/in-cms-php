@@ -5,9 +5,8 @@ namespace App\Kernel\View;
 use App\Kernel\Factory;
 use App\Kernel\Http;
 use App\Kernel\CMS;
-use Slim\Slim;
 
-class TwigAdmin extends \Twig_Extension
+class TwigAdmin extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -17,11 +16,11 @@ class TwigAdmin extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('siteUrl', [$this, 'site']),
-            new \Twig_SimpleFunction('vendor', array($this, 'vendor')),
-            new \Twig_SimpleFunction('route', array($this, 'route')),
-            new \Twig_SimpleFunction('dRoute', array($this, 'depedencyRoute')),
-            new \Twig_SimpleFunction('asset', array($this, 'asset'))
+            new \Twig\TwigFunction('siteUrl', [$this, 'site']),
+            new \Twig\TwigFunction('vendor', array($this, 'vendor')),
+            new \Twig\TwigFunction('route', array($this, 'route')),
+            new \Twig\TwigFunction('dRoute', array($this, 'depedencyRoute')),
+            new \Twig\TwigFunction('asset', array($this, 'asset'))
         );
     }
 

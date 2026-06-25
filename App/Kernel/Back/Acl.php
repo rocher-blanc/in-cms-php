@@ -99,7 +99,7 @@ class Acl
 	
 	private function getApp()
 	{
-		return \Slim\Slim::getInstance() ;
+		return \App\Kernel\SlimBridge::getInstance() ;
 	}
 	
 	private function getBinary()

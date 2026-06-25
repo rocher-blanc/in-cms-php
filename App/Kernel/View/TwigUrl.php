@@ -3,9 +3,8 @@
 namespace App\Kernel\View;
 
 use App\Kernel\Factory;
-use Slim\Slim;
 
-class TwigUrl extends \Twig_Extension
+class TwigUrl extends \Twig\Extension\AbstractExtension
 {
     public function getName()
     {
@@ -20,8 +19,8 @@ class TwigUrl extends \Twig_Extension
     public function getFunctions()
     {
        return array(
-            new \Twig_SimpleFunction('urlpage', [$this, 'urlpage']),
-            new \Twig_SimpleFunction('urlmodule', [$this, 'urlmodule']),
+            new \Twig\TwigFunction('urlpage', [$this, 'urlpage']),
+            new \Twig\TwigFunction('urlmodule', [$this, 'urlmodule']),
         );
     }
 
