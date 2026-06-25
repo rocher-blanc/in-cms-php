@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class Easyletter
 {
@@ -52,7 +53,7 @@ class Easyletter
         {
             $this->client = NULL ;
 
-            $this->phpmailer = new \PHPMailer;
+            $this->phpmailer = new PHPMailer(true);
             if ( MAIL_SMTP )
             {
                 if ( DEBUG_CMS && SMTP_DEBUG ) $this->phpmailer->SMTPDebug = 3;          // Enable verbose debug output

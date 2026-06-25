@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Common;
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 class Mail
 {
     /* ************************************************** */
@@ -16,7 +18,7 @@ class Mail
 
     public function __construct()
     {
-        $this->obj = new \PHPMailer;
+        $this->obj = new PHPMailer(true);
 
         if ( defined('EL_TOKEN' ) )
         {
