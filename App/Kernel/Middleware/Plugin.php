@@ -17,7 +17,7 @@ class Plugin extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        \App\Kernel\AppContext::setRequest($request);
         $this->load();
         return $handler->handle($request);
     }

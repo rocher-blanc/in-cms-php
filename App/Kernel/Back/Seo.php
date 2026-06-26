@@ -135,7 +135,7 @@ class Seo
 	
 	protected function getApp()
 	{
-		return \App\Kernel\SlimBridge::getInstance() ;
+		return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
 	}
 	
 	/* ************************************************** */
@@ -246,11 +246,11 @@ class Seo
 	{
 		foreach( $this->Lang()->getAll() as $lang )
 		{
-			$this->setTitle( $this->getApp()->request->post('seo_title_' . $lang->url ) );
-			$this->setUrl( $this->getApp()->request->post('seo_url_' . $lang->url ) );
-			$this->setLastUrl( $this->getApp()->request->post('seo_last_url_' . $lang->url ) );
-			$this->setDescription( $this->getApp()->request->post('seo_description_' . $lang->url ) );
-			$this->setIndex( ( $this->getApp()->request->post('index') == NULL ? 0 : 1 ) );
+			$this->setTitle( (\App\Kernel\AppContext::request()?->getParsedBody()['seo_title_' . $lang->url] ?? '') );
+			$this->setUrl( (\App\Kernel\AppContext::request()?->getParsedBody()['seo_url_' . $lang->url] ?? '') );
+			$this->setLastUrl( (\App\Kernel\AppContext::request()?->getParsedBody()['seo_last_url_' . $lang->url] ?? '') );
+			$this->setDescription( (\App\Kernel\AppContext::request()?->getParsedBody()['seo_description_' . $lang->url] ?? '') );
+			$this->setIndex( ( (\App\Kernel\AppContext::request()?->getParsedBody()['index'] ?? '') == NULL ? 0 : 1 ) );
 			$this->setLangId( $lang->id );
 			$this->save( true );
 		}

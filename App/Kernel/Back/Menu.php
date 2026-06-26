@@ -27,7 +27,7 @@ class Menu
 
 	private function getApp()
     {
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
     }
 
     protected function Container()
@@ -265,7 +265,7 @@ class Menu
         }
 
         $this->Container()->newClass('App\Kernel\View')->appendData([
-            'adminFolder'       => trim( $this->getApp()->config('admin.url') , "/"),
+            'adminFolder'       => trim( \App\Kernel\Config::getInstance()->get('admin.url') , "/"),
             'cat'               => ( array_key_exists( 0 , $this->_url ) == true ? $this->_url[0] : '' ),
             'menu'              => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),
             'menulink'          => ( array_key_exists( 1 , $this->_url ) == true ? $this->_url[1] : '' ),

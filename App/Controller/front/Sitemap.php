@@ -2,7 +2,7 @@
 
 use App\Kernel\Container as ContainerAlias;
 
-$app->get('/sitemap.xml', function () use ( $app )
+$app->get('/sitemap.xml', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 {
     $data = \DB::for_table('param')
         ->where_equal('param_key', 'seo_robots')
@@ -47,7 +47,7 @@ $app->get('/sitemap.xml', function () use ( $app )
         {
             if ( ( $module->module_index == 1 or $module->module_index_elmt == 1 ) && $module->module_lang_url != '' )
             {
-                $url = $app->request()->getUrl() ;
+                $url = ((string)$req->getUri()->getScheme() . '://' . (string)$req->getUri()->getHost()) ;
                 if ( $langObj->count() > 1 ) $url.= '/' . $langArray[ $module->module_lang_lang_id ] ;
 
                 $getAllExist = false ;
@@ -213,7 +213,7 @@ $app->get('/sitemap.xml', function () use ( $app )
     {
         foreach( $pages as $page )
         {
-            $url = $app->request()->getUrl() ;
+            $url = ((string)$req->getUri()->getScheme() . '://' . (string)$req->getUri()->getHost()) ;
 
             if ( $page->page_default == 0 )
             {

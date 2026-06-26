@@ -37,7 +37,7 @@ class Field
 
 	protected function getApp()
 	{
-		return \App\Kernel\SlimBridge::getInstance() ;
+		return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
 	}
 
 	protected function Message()
@@ -764,7 +764,7 @@ class Field
 		{
 			foreach( $this->Lang()->getAll() as $lang )
 			{
-				$this->setValue( $this->getApp()->request->post( $this->getColumn() . "_" . $lang->url ) , $lang->url ) ;
+				$this->setValue( (\App\Kernel\AppContext::request()?->getParsedBody()[$this->getColumn() . "_" . $lang->url] ?? '') , $lang->url ) ;
 
 				if ( $this->isEmpty( $lang->url ) == true && $this->isRequired() == true )
 				{
@@ -790,7 +790,7 @@ class Field
 			if ( $this->rename() )  $key = $this->getColumn() ;
 			else					$key = $this->getName() ;
 
-            $this->setValue( $this->getApp()->request->post( $key ) ) ;
+            $this->setValue( (\App\Kernel\AppContext::request()?->getParsedBody()[$key] ?? '') ) ;
 
             if ( isset( $_FILES[ $key ] ) && !empty( $_FILES[ $key ]['tmp_name'] ) && $this->getType() == 'document' )
             {
@@ -868,7 +868,7 @@ class Field
 			{
 				if ( $this->getValue() != '' )
 				{
-					$this->setValue( $this->getApp()->request->post( $this->getColumn() . "_type" ) . $this->getValue() ) ;
+					$this->setValue( (\App\Kernel\AppContext::request()?->getParsedBody()[$this->getColumn() . '_type'] ?? '') . $this->getValue() ) ;
 				}
 			}
             else if ( $this->getType() == 'document' && is_array( $this->getValue() ) && !empty( $this->getValue() ) )

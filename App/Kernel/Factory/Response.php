@@ -2,15 +2,16 @@
 
 namespace App\Kernel\Factory;
 
-use App\Kernel\Factory;
-use App\Kernel\SlimBridge;
+use App\Kernel\AppContext;
+use App\Kernel\Config;
 use App\Kernel\Exception\RedirectException;
+use App\Kernel\Factory;
 
 class Response
 {
-    protected function getApp(): SlimBridge
+    private function config(): Config
     {
-        return SlimBridge::getInstance();
+        return Config::getInstance();
     }
 
     public function Factory(): Factory
@@ -19,42 +20,27 @@ class Response
     }
 
     /* ------------------------------------------------------------------ */
-    /* Flash + Redirect                                                    */
+    /* Flash                                                               */
+    /* ------------------------------------------------------------------ */
+
+    public function flash(string $msg, bool $result = false): void
+    {
+        AppContext::flash()?->addMessage('__msg',    addslashes($msg));
+        AppContext::flash()?->addMessage('__result', (string)(int)$result);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Output HTML                                                         */
     /* ------------------------------------------------------------------ */
 
     /**
-     * Flash un message et redirige.
-     * Slim 4 : flash via slim/flash, redirect via RedirectException.
+     * Écrit du contenu HTML directement dans le buffer de sortie.
+     * Utilisé par les controllers qui appellent show() en dehors
+     * d'un return explicite — compatible avec OutputBufferingMiddleware.
      */
-    public function flashAndRedirect( $msg , $result = false , $url = '' , $admin = true )
+    public function show(string $msg): void
     {
-        if ( $url == '' )
-        {
-            $urlTab = $this->Factory()->Url()->cutUrl();
-            $url    = "module/" . $urlTab[1] ;
-        }
-
-        $this->getApp()->flash('__msg', addslashes( $msg ) );
-        $this->getApp()->flash('__result', (string)(int)$result );
-        $target = ( $admin ? $this->getApp()->config('admin.url') . '/' : '' ) . ltrim( $url , '/' );
-        $this->redirect( $target );
-    }
-
-    /** Flash seul (sans redirect) */
-    public function flash( $msg , $result = false )
-    {
-        $this->getApp()->flash('__msg', addslashes( $msg ) );
-        $this->getApp()->flash('__result', (string)(int)$result );
-    }
-
-    /* ------------------------------------------------------------------ */
-    /* Output                                                              */
-    /* ------------------------------------------------------------------ */
-
-    /** Slim 2 : $app->response->body($msg) */
-    public function show( $msg )
-    {
-        $this->getApp()->response()->body( $msg );
+        echo $msg;
     }
 
     /* ------------------------------------------------------------------ */
@@ -62,35 +48,64 @@ class Response
     /* ------------------------------------------------------------------ */
 
     /**
-     * Lève RedirectException — capturée par SlimBridge::wrapCallback.
-     * Si appelé hors du pipeline Slim (ex. boot error), utilise header().
+     * Lève RedirectException, capturée par AbstractMiddleware::process()
+     * ou par le ErrorMiddleware Slim 4.
+     *
+     * C'est le pattern « exception as flow control » utilisé dans Symfony,
+     * acceptable ici car les redirections sont des cas de sortie explicites.
      */
-    public function redirect( $url = '' , $status = 302 )
+    public function redirect(string $url = '', int $status = 302): never
     {
-        $target = ( $url === '' ? '/' : $url );
-        throw new RedirectException( $target , $status );
+        throw new RedirectException($url === '' ? '/' : $url, $status);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Flash + Redirect                                                    */
+    /* ------------------------------------------------------------------ */
+
+    public function flashAndRedirect(string $msg, bool $result = false, string $url = '', bool $admin = true): never
+    {
+        if ($url === '') {
+            $urlTab = $this->Factory()->Url()->cutUrl();
+            $url    = 'module/' . ($urlTab[1] ?? '');
+        }
+
+        $this->flash($msg, $result);
+
+        $adminUrl = $this->config()->get('admin.url', '');
+        $target   = ($admin ? $adminUrl . '/' : '') . ltrim($url, '/');
+        $this->redirect($target);
     }
 
     /* ------------------------------------------------------------------ */
     /* JSON                                                                */
     /* ------------------------------------------------------------------ */
 
-    public function returnJSON( $msg , $result = false , $extra = [] )
+    public function returnJSON(string $msg, bool $result = false, array $extra = []): void
     {
-        $this->printJSON( array_merge([
-            "msg"    => $msg,
-            "result" => $result
-        ], $extra ) ) ;
+        $this->printJSON(array_merge(['msg' => $msg, 'result' => $result], $extra));
     }
 
-    public function printJSON( $array )
+    /**
+     * Sérialise en JSON et écrit dans le buffer de sortie.
+     * Le Content-Type application/json doit être positionné par le
+     * route handler via withHeader() — ou ce helper le fait via header()
+     * si le pipeline Slim n'a pas encore envoyé les en-têtes.
+     */
+    public function printJSON(mixed $data): void
     {
-        $this->getApp()->contentType('application/json');
-        $this->getApp()->response()->body( json_encode( $array ) );
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=utf-8');
+        }
 
-        if ( array_key_exists( 'msg' , $array ) && array_key_exists( 'result' , $array ) && ( $array['noflash'] ?? false ) != true )
-        {
-            $this->flash( $array['msg'] , $array['result'] );
+        echo json_encode($data);
+
+        $array = is_array($data) ? $data : (array) $data;
+        if (
+            isset($array['msg'], $array['result']) &&
+            ($array['noflash'] ?? false) !== true
+        ) {
+            $this->flash((string)$array['msg'], (bool)$array['result']);
         }
     }
 
@@ -98,52 +113,62 @@ class Response
     /* Redirections nommées                                                */
     /* ------------------------------------------------------------------ */
 
-    private function saveUrlDestination()
+    private function saveUrlDestination(): void
     {
-        $url = $this->Factory()->Url()->getFullUrl() ;
-        if ( $url != $this->getApp()->config('forbidden.url') ) $_SESSION['url_destination'] = $url ;
-    }
-
-    public function redirectUrlDestination()
-    {
-        if ( ! isset( $_SESSION['url_destination'] ) )
-        {
-            $this->redirectHome() ;
-        }
-        else
-        {
-            $saveUrl = $_SESSION['url_destination'] ;
-            unset( $_SESSION['url_destination'] );
-            $this->redirect( $saveUrl ) ;
+        $url = $this->Factory()->Url()->getFullUrl();
+        if ($url !== $this->config()->get('forbidden.url')) {
+            $_SESSION['url_destination'] = $url;
         }
     }
 
-    public function redirectForbidden()
+    public function redirectUrlDestination(): never
     {
-        $this->saveUrlDestination() ;
-        $this->redirect( $this->getApp()->config('forbidden.url') ) ;
+        if (!isset($_SESSION['url_destination'])) {
+            $this->redirectHome();
+        }
+
+        $saveUrl = $_SESSION['url_destination'];
+        unset($_SESSION['url_destination']);
+        $this->redirect($saveUrl);
     }
 
-    public function redirectLogin( $save = true )
+    public function redirectForbidden(): never
     {
-        if ( $save ) $this->saveUrlDestination() ;
-        $this->redirect( $this->getApp()->config('login.url') ) ;
+        $this->saveUrlDestination();
+        $this->redirect($this->config()->get('forbidden.url', '/'));
     }
 
-    public function redirectHome()
+    public function redirectLogin(bool $save = true): never
     {
-        $this->redirect( $this->getApp()->config('admin.url') ) ;
+        if ($save) {
+            $this->saveUrlDestination();
+        }
+        $this->redirect($this->config()->get('login.url', '/'));
     }
 
-    public function show404()
+    public function redirectHome(): never
     {
-        $this->getApp()->response()->status( 404 );
-        $this->getApp()->render('errors/404.twig.html') ;
+        $this->redirect($this->config()->get('admin.url', '/'));
     }
 
-    public function error( $message , $type = '404' )
+    /* ------------------------------------------------------------------ */
+    /* Erreurs                                                             */
+    /* ------------------------------------------------------------------ */
+
+    public function show404(): void
     {
-        if ( DEBUG_CMS ) throw new \App\Kernel\Exception( $message ) ;
-        else             die("Une erreur est survenue lors du chargement de la page") ;
+        http_response_code(404);
+        $twig = AppContext::twig();
+        if ($twig !== null) {
+            echo $twig->getEnvironment()->render('errors/404.twig.html');
+        }
+    }
+
+    public function error(string $message, string $type = '404'): never
+    {
+        if (defined('DEBUG_CMS') && DEBUG_CMS) {
+            throw new \App\Kernel\Exception($message);
+        }
+        die('Une erreur est survenue lors du chargement de la page');
     }
 }

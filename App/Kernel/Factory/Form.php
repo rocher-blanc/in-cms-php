@@ -26,11 +26,6 @@ class Form
         return \App\Kernel\Lang::getInstance() ;
     }
 
-    private function getApp()
-    {
-        return \App\Kernel\SlimBridge::getInstance() ;
-    }
-
     /* ************************************************** */
     /* ******************   SETTER   ******************** */
     /* ************************************************** */
@@ -309,7 +304,10 @@ class Form
 
     public function site( $url )
     {
-        return $this->getApp()->request()->getUrl() . '/assets/vendor/' . ltrim($url, '/');
+        $req = \App\Kernel\AppContext::request();
+        $uri = $req?->getUri();
+        $base = $uri ? $uri->getScheme() . '://' . $uri->getHost() : '';
+        return $base . '/assets/vendor/' . ltrim($url, '/');
     }
 
     /**

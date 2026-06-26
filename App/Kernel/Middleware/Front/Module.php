@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Middleware\Front;
 
+use App\Kernel\AppContext;
 use App\Kernel\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,7 +14,7 @@ class Module extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        AppContext::setRequest($request);
         $this->observe();
         return $handler->handle($request);
     }
@@ -25,52 +26,53 @@ class Module extends AbstractMiddleware
 
     public function observe(): void
     {
-        $req = $this->request();
-
         if (
-            $req->isPost()
-            && $req->post('keyControl') != ''
-            && $req->post('moduleName') != ''
+            !$this->isPost() ||
+            $this->post('keyControl', '') === '' ||
+            $this->post('moduleName', '') === ''
         ) {
-            $rst = [];
-            $key = md5($req->post('moduleName') . $req->post('id_element'));
+            return;
+        }
 
-            if ($key != $req->post('keyControl')) {
-                $rst = $this->error("La clef du module est incorrect");
+        $key = md5($this->post('moduleName') . $this->post('id_element', ''));
+
+        if ($key !== $this->post('keyControl')) {
+            $rst = $this->error('La clef du module est incorrect');
+        } else {
+            if ($this->post('show', '') !== '') {
+                $action = 'showIf';
+            } elseif ($this->post('delete', '') !== '') {
+                $action = 'delete';
             } else {
-                if ($req->post('show') != '') {
-                    $action = 'showIf';
-                } elseif ($req->post('delete') != '') {
-                    $action = 'delete';
-                } else {
-                    $action = 'default';
-                }
-
-                switch ($action) {
-                    case 'showIf':
-                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
-                        $rst = $Controller->getShow();
-                        break;
-
-                    case 'delete':
-                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
-                        $Controller->setId($req->post('id_element'));
-                        $rst = $Controller->delete();
-                        break;
-
-                    default:
-                        $add        = ($req->post('id_element') == '-1');
-                        $Controller = \App\Kernel\Container::getInstance()->module($req->post('moduleName'))->getController();
-                        if (!$add) $Controller->setId($req->post('id_element'));
-                        $rst = $Controller->listenForm($add);
-                        break;
-                }
+                $action = 'default';
             }
 
-            if (!empty($rst) && $req->isAjax()) {
-                $this->app()->contentType('application/json');
-                $this->app()->response()->body(json_encode($rst));
+            switch ($action) {
+                case 'showIf':
+                    $Controller = \App\Kernel\Container::getInstance()->module($this->post('moduleName'))->getController();
+                    $rst = $Controller->getShow();
+                    break;
+
+                case 'delete':
+                    $Controller = \App\Kernel\Container::getInstance()->module($this->post('moduleName'))->getController();
+                    $Controller->setId($this->post('id_element'));
+                    $rst = $Controller->delete();
+                    break;
+
+                default:
+                    $add        = ($this->post('id_element', '') == '-1');
+                    $Controller = \App\Kernel\Container::getInstance()->module($this->post('moduleName'))->getController();
+                    if (!$add) $Controller->setId($this->post('id_element'));
+                    $rst = $Controller->listenForm($add);
+                    break;
             }
+        }
+
+        if (!empty($rst) && $this->isAjax()) {
+            if (!headers_sent()) {
+                header('Content-Type: application/json; charset=utf-8');
+            }
+            echo json_encode($rst);
         }
     }
 }

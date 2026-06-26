@@ -3,9 +3,9 @@
 use App\Kernel\Front\Translate;
 use App\Kernel\Factory;
 
-$app->group('/parammodule', function () use ($app)
+$app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-    $app->get('/', function () use ($app) {
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
         $contentRows = \DB::for_table('module')
             ->where_equal('module_active' , 1 )
@@ -32,7 +32,7 @@ $app->group('/parammodule', function () use ($app)
             }
         }
 
-        $app->render('ext/parammodule/index.twig.html', [ "contentRows" => $tab ]);
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/parammodule/index.twig.html', [ "contentRows" => $tab ]);
 
     })->name('parammodule_index');
 
@@ -191,7 +191,7 @@ $app->group('/parammodule', function () use ($app)
 
         }
 
-        $app->render('ext/parammodule/edit.twig.html', [
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/parammodule/edit.twig.html', [
             'id' => $id ,
             'lang' => $lang ,
             'post' => $post ,
@@ -222,9 +222,9 @@ $app->group('/parammodule', function () use ($app)
         {
             $one = \DB::for_table('module')->where_id_is( $id )->find_one();
 
-			$one->module_priority = ( $app->request->post('module_priority') == '' ? '0.5' : $app->request->post('module_priority') ) ;
-			$one->module_index = $app->request->post('module_index') ;
-			$one->module_index_elmt = $app->request->post('module_index_elmt') ;
+			$one->module_priority = ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_priority'] ?? '') : '') == '' ? '0.5' : (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_priority'] ?? '') : '') ) ;
+			$one->module_index = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_index'] ?? '') : '') ;
+			$one->module_index_elmt = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_index_elmt'] ?? '') : '') ;
 			$one->save();
 
 			foreach( $lang as $l )
@@ -234,7 +234,7 @@ $app->group('/parammodule', function () use ($app)
 					->where_equal('module_lang_lang_id' , $l->id )
 					->find_one();
 
-				$url = $app->request->post('module_lang_url_' . $l->url ) ;
+				$url = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_lang_url_' . $l->url] ?? '') : '') ;
 				if ( $url == '' ) $url = $contentRows->module_name ;
 				$changeUrl = true ;
 
@@ -253,12 +253,12 @@ $app->group('/parammodule', function () use ($app)
 				$langRows->module_lang_module_id    = $id ;
 				$langRows->module_lang_lang_id      = $l->id ;
 				$langRows->module_lang_url          = $url ;
-				$langRows->module_lang_title        = $app->request->post('module_lang_title_' . $l->url ) ;
-				$langRows->module_lang_description  = $app->request->post('module_lang_description_' . $l->url ) ;
+				$langRows->module_lang_title        = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_lang_title_' . $l->url] ?? '') : '') ;
+				$langRows->module_lang_description  = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_lang_description_' . $l->url] ?? '') : '') ;
 				$langRows->save();
 			}
 
-			if ( $app->request->post('buttonaction') == "stay" ) 	$url = '/ext/parammodule/edit/' . $id ;
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['buttonaction'] ?? '') : '') == "stay" ) 	$url = '/ext/parammodule/edit/' . $id ;
 			else 										         	$url = '/ext/parammodule' ;
 
 			$result = [];

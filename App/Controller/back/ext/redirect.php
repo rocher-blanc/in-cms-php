@@ -3,9 +3,9 @@
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
-$app->group('/redirect', function () use ($app)
+$app->group('/redirect', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-    $app->get('/', function () use ($app) {
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
     	$content = [];
     	$req = \DB::for_table("redirect_301")
@@ -21,20 +21,20 @@ $app->group('/redirect', function () use ($app)
 
 		$content = implode( "\n" , $content );
 
-        $app->render('ext/redirect/index.twig', [ 'content' => $content ] );
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/redirect/index.twig', [ 'content' => $content ]);
 
     })->name('redirect301_index');
 
-    $app->map('/edit', function () use ($app)
+    $app->map(['GET', 'POST'], '/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
     	$content = "";
-		if ( $app->request->isPost() )
+		if ( strtoupper($req->getMethod()) === 'POST' )
 		{
 			$db = \DB::get_db();
 			$db->beginTransaction();
 			$db->exec('TRUNCATE redirect_301');
 
-			$content = $app->request->post('content');
+			$content = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['content'] ?? '') : '');
 			$list = explode( "\n" , $content );
 
 			foreach( $list as $row ) {
@@ -49,6 +49,6 @@ $app->group('/redirect', function () use ($app)
 			}
 		}
 
-        $app->render('ext/redirect/index.twig', [ 'content' => $content , 'result' => true ]);
-    })->name('redirect301_edit')->via('POST');
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/redirect/index.twig', [ 'content' => $content , 'result' => true ]);
+    })->name('redirect301_edit');
 });

@@ -1,129 +1,124 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Config;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Routing\RouteCollectorProxy;
 
-$app->group('/secured', function () use ($app) {
+$app->group('/secured', function (RouteCollectorProxy $app) {
+
     // CONNEXION
-    $app->map('/login', function () use ($app)
-    {
-        $app->render('secured/login.twig.html') ;
-    })->via('GET', 'POST')->name('secured_login');
+    $app->map(['GET', 'POST'], '/login', function (Request $req, Response $res, array $args): Response {
+        return \App\Kernel\AppContext::twig()->render($res, 'secured/login.twig.html');
+    })->setName('secured_login');
 
-    // PROFILE
-    $app->post('/upload', function () use ($app) {
-        $name = basename($_FILES[ $app->request->post('field') ]["name"]);
-        $ext = explode( '.' , $name );
-        $extension = end( $ext );
-        $name = basename( $name , '.' . $extension );
-        $name = \App\Kernel\Factory::getInstance()->Url()->encode( $name ) . "_" . time() . '.' . $extension ;
+    // UPLOAD AVATAR
+    $app->post('/upload', function (Request $req, Response $res, array $args): Response {
+        $body      = $req->getParsedBody();
+        $fieldName = is_array($body) ? ($body['field'] ?? '') : '';
 
-        $rst = move_uploaded_file( $_FILES[ $app->request->post('field') ]["tmp_name"] , IMAGE_PATH . "/_avatar/" . $name );
+        $name      = basename($_FILES[$fieldName]['name'] ?? '');
+        $ext       = explode('.', $name);
+        $extension = end($ext);
+        $name      = basename($name, '.' . $extension);
+        $name      = Factory::getInstance()->Url()->encode($name) . '_' . time() . '.' . $extension;
 
-        $std = new \stdClass;
-        $std->name = str_replace( WEB_PATH , '' , IMAGE_PATH . "/_avatar/" . $name );
-        $std->url = \App\Kernel\Factory::getInstance()->Url()->image( "_avatar/" . $name , true ) ;
-        $std->rst = $rst ;
+        $rst = move_uploaded_file($_FILES[$fieldName]['tmp_name'] ?? '', IMAGE_PATH . '/_avatar/' . $name);
 
-        \App\Kernel\Factory::getInstance()->Response()->printJSON( $std );
+        $std       = new \stdClass;
+        $std->name = str_replace(WEB_PATH, '', IMAGE_PATH . '/_avatar/' . $name);
+        $std->url  = Factory::getInstance()->Url()->image('_avatar/' . $name, true);
+        $std->rst  = $rst;
+
+        Factory::getInstance()->Response()->printJSON($std);
+        return $res;
     });
 
-    $app->get('/profile', function () use ($app) {
-        $error    = false ;
-        $tabError = array() ;
-        $id 	  = $_SESSION[ $app->config('session') ]['id'] ;
+    // PROFIL
+    $app->map(['GET', 'POST'], '/profile', function (Request $req, Response $res, array $args): Response {
+        $config   = Config::getInstance();
+        $error    = false;
+        $tabError = [];
+        $id       = $_SESSION[$config->get('session', '')]['id'] ?? null;
 
         $user = \DB::for_table('user')
-            ->where_equal('user_id' , $id)
+            ->where_equal('user_id', $id)
             ->find_one();
 
-        if ( !$user ) {
-            $app->redirect( $app->config('admin.url') . '/');
+        if (!$user) {
+            Factory::getInstance()->Response()->redirectHome();
         }
 
-        if ( $app->request->isPost() ) {
-            if ( $app->request->post('user_name') == "" ) {
-                $error = true ;
-                $tabError['user_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-            else {
+        $body = $req->getParsedBody();
+        $post = fn(string $k) => (is_array($body) ? ($body[$k] ?? '') : '');
+
+        if (strtoupper($req->getMethod()) === 'POST') {
+            if ($post('user_name') == '') {
+                $error = true;
+                $tabError['user_name'] = Translate::getInstance()->getText('mandatory_fillin');
+            } else {
                 $exist = \DB::for_table('user')
-                    ->where_equal('user_name' , $app->request->post('user_name'))
-                    ->where_not_equal('user_id' , $id)
+                    ->where_equal('user_name', $post('user_name'))
+                    ->where_not_equal('user_id', $id)
                     ->count();
             }
 
-            if ( $app->request->post('user_name') != "" && $exist > 0 ) {
-                $error = true ;
-                $tabError['user_name'] = Translate::getInstance()->getText( 'already_use_login' );
+            if ($post('user_name') != '' && ($exist ?? 0) > 0) {
+                $error = true;
+                $tabError['user_name'] = Translate::getInstance()->getText('already_use_login');
             }
 
-            if ( $app->request->post('user_fname') == "" ) {
-                $error = true ;
-                $tabError['user_fname'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('user_lname') == "" ) {
-                $error = true ;
-                $tabError['user_lname'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('last_password') != "" && password_verify( $app->request->post('last_password'), $user->user_password) === false ) {
-                $error = true ;
-                $tabError['last_password'] = Translate::getInstance()->getText( 'err_password_old' );
-            }
-
-            if ( $app->request->post('last_password') == "" && $app->request->post('password') != "" && $app->request->post('confirm_password') != '' ) {
-                $error = true ;
-                $tabError['last_password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('last_password') != "" && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
-                $error = true ;
-                $tabError['password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') == '' ) {
-                $error = true ;
-                $tabError['password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-                $tabError['confirm_password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('last_password') != "" && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
-                $error = true ;
-                $tabError['confirm_password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
-            }
-
-            if ( $app->request->post('last_password') != "" && $app->request->post('password') != $app->request->post('confirm_password') ) {
-                $error = true ;
-                $tabError['confirm_password'] = Translate::getInstance()->getText( 'msg_different_password' );
-            }
-
-            if ( $error == false ) {
-                if ( $app->request->post('password') != "" ) {
-                    $user->user_password = password_hash( $app->request->post('password') ,PASSWORD_BCRYPT,['cost' => 9]) ;
+            foreach (['user_fname', 'user_lname'] as $field) {
+                if ($post($field) == '') {
+                    $error = true;
+                    $tabError[$field] = Translate::getInstance()->getText('mandatory_fillin');
                 }
+            }
 
-                $user->user_name  = $app->request->post('user_name');
-                $user->user_fname = $app->request->post('user_fname');
-                $user->user_lname = $app->request->post('user_lname');
+            if ($post('last_password') != '' && password_verify($post('last_password'), $user->user_password) === false) {
+                $error = true;
+                $tabError['last_password'] = Translate::getInstance()->getText('err_password_old');
+            }
+
+            if ($post('last_password') == '' && $post('password') != '' && $post('confirm_password') != '') {
+                $error = true;
+                $tabError['last_password'] = Translate::getInstance()->getText('mandatory_fillin');
+            }
+
+            if ($post('last_password') != '' && $post('password') != $post('confirm_password')) {
+                $error = true;
+                $tabError['confirm_password'] = Translate::getInstance()->getText('msg_different_password');
+            }
+
+            if ($error === false) {
+                if ($post('password') != '') {
+                    $user->user_password = password_hash($post('password'), PASSWORD_BCRYPT, ['cost' => 9]);
+                }
+                $user->user_name  = $post('user_name');
+                $user->user_fname = $post('user_fname');
+                $user->user_lname = $post('user_lname');
                 $user->save();
 
-                \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect( "Votre profil est modifié" , true , '/secured/profile' );
+                Factory::getInstance()->Response()->flashAndRedirect('Votre profil est modifié', true, '/secured/profile');
             }
         }
 
-        $app->render('secured/profile.twig.html', array(
-            "error"		 => ( $error === false ? "0" : "1" ),
-            "tabError"	 => json_encode( $tabError ))) ;
-    })->via('GET', 'POST')->name('secured_profile');
+        return \App\Kernel\AppContext::twig()->render($res, 'secured/profile.twig.html', [
+            'error'    => ($error === false ? '0' : '1'),
+            'tabError' => json_encode($tabError),
+        ]);
+    })->setName('secured_profile');
 
-    // DECONNEXION
-    $app->get('/logout', function () use ($app) {
+    // DÉCONNEXION
+    $app->get('/logout', function (Request $req, Response $res, array $args): Response {
+        return $res;
+    })->setName('secured_logout');
 
-    })->name('secured_logout');
-
-    // ACCES INTERDIT
-    $app->get('/forbidden', function () use ($app) {
-        $app->render('errors/403.twig');
-    })->name('secured_forbidden');
+    // ACCÈS INTERDIT
+    $app->get('/forbidden', function (Request $req, Response $res, array $args): Response {
+        return \App\Kernel\AppContext::twig()->render($res, 'errors/403.twig');
+    })->setName('secured_forbidden');
 });

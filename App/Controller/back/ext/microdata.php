@@ -1,11 +1,11 @@
 <?php
 
-$app->group('/microdata', function () use ($app)
+$app->group('/microdata', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
-		if ( $app->request->isPost() ) {
-			$result = $app->request->post() ;
+		if ( strtoupper($req->getMethod()) === 'POST' ) {
+			$result = $req->getParsedBody() ;
 
 			if ( $result )
 			{
@@ -53,7 +53,7 @@ $app->group('/microdata', function () use ($app)
 			}
 		}
 		
-		$app->render('ext/microdata/edit.twig.html' ,[ "post" => $tab ]);
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/microdata/edit.twig.html', [ "post" => $tab ]);
 
-	})->name('microdata_edit')->via('GET', 'POST');
+	})->name('microdata_edit');
 });

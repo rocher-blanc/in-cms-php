@@ -68,9 +68,9 @@ class Url
                     "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya",
         ];
 
-    public function getApp()
+    private function config(): \App\Kernel\Config
     {
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\Config::getInstance();
     }
 
     public function Factory()
@@ -80,9 +80,9 @@ class Url
 
     public function get( $url , $front = false )
     {
-        $req = $this->getApp()->request();
-        $base = Http::getInstance()->getUrl() . $req->getRootUri() ;
-        if ( $front ) $base = str_replace( $this->getApp()->config('admin.url') , '' , $base ) ;
+        $req  = \App\Kernel\AppContext::request();
+        $base = Http::getInstance()->getUrl() . ($req?->getUri()->getBasePath() ?? '');
+        if ( $front ) $base = str_replace( $this->config()->get('admin.url', '') , '' , $base ) ;
         return $base . '/' . ltrim($url, '/');
     }
 
@@ -167,7 +167,8 @@ class Url
 
     public function cutUrl( $offset = 1 )
     {
-        $params = explode( "/" , $this->getApp()->request()->getPath() ) ;
+        $req    = \App\Kernel\AppContext::request();
+        $params = explode( "/" , $req?->getUri()->getPath() ?? '/' ) ;
         $url    = [] ;
         if ( $params )
         {
@@ -184,7 +185,8 @@ class Url
 
     public function getFullUrl()
     {
-        return $this->getApp()->request()->getPath() ;
+        $req = \App\Kernel\AppContext::request();
+        return $req?->getUri()->getPath() ?? '/';
     }
 
     public function encode( $alias, $tolower = true )

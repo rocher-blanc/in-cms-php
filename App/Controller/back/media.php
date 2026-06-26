@@ -1,6 +1,6 @@
 <?php
 
-$app->group('/media', function () use ($app) {
+$app->group('/media', function (\Slim\Routing\RouteCollectorProxy $app) {
 	$app->get('/:module', function ( $module ) use ($app) {
 		$content = \DB::for_table('module')
 								->select('module_id')
@@ -12,15 +12,15 @@ $app->group('/media', function () use ($app) {
 		]);
 		$rst = $Image->getAll();
 		
-		$app->render('media/index.twig.html', [
+		return \App\Kernel\AppContext::twig()->render($res, 'media/index.twig.html', [
 			'module' => $module,
 			'images' => $rst
-		]) ;
+		]);
 	});
 	
 	$app->get('/:module/upload', function ( $module ) use ($app) {
-		$app->render('media/upload.twig.html', [
+		return \App\Kernel\AppContext::twig()->render($res, 'media/upload.twig.html', [
 			'module' => $module
-		]) ;
+		]);
 	});
 });

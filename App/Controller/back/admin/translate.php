@@ -3,20 +3,20 @@
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
-$app->group('/translate', function () use ($app) {
+$app->group('/translate', function (\Slim\Routing\RouteCollectorProxy $app) {
 
-    $app->get('/', function () use ($app) {
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 		$contentRows = \App\Kernel\Lang::getInstance()->getBack();
 
-		$app->render('admin/translate/index.twig', [
+		return \App\Kernel\AppContext::twig()->render($res, 'admin/translate/index.twig', [
 			"contentRows" => $contentRows
 		]);
 
     })->name('admin_translate_index');
 
 
-	$app->post('/get-lang', function() use ($app) {
+	$app->post('/get-lang', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         header('Content-Type: application/json;charset=utf-8');
         $lang_abbr = $this->getApp()->request->post('lang_locale');
 
@@ -63,11 +63,11 @@ $app->group('/translate', function () use ($app) {
 	});
 
 
-	$app->post('/update-translate', function() use ($app) {
-		$key   = $app->request->post('key');
+	$app->post('/update-translate', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+		$key   = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['key'] ?? '') : '');
 		$lang  = $this->getApp()->request->post('lang');
-		$type  = $app->request->post('type');
-		$value = $app->request->post('value');
+		$type  = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type'] ?? '') : '');
+		$value = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['value'] ?? '') : '');
 
         $arrayTrad = [];
         $filename  = LANG_PATH . "/BO" . strtoupper( $lang ) . ".php" ;
@@ -107,8 +107,8 @@ $app->group('/translate', function () use ($app) {
          ]);
 	});
 
-	$app->post('/add-key', function() use ($app) {
-		$new_key = $app->request->post('new_key');
+	$app->post('/add-key', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+		$new_key = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['new_key'] ?? '') : '');
 
 		$langs = \App\Kernel\Lang::getInstance()->getBack();
 		foreach( $langs as $lang )
@@ -154,14 +154,14 @@ $app->group('/translate', function () use ($app) {
 
 
 	$app->get('/remove-key/:key', function( $key ) use ($app) {
-		$app->render('ext/langue/delete-key.twig.html', [
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/delete-key.twig.html', [
 			'key' => $key
 		]);
 	});
 
 
-	$app->post('/remove-key-action', function() use ($app) {
-		$key_name = $app->request->post('key');
+	$app->post('/remove-key-action', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+		$key_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['key'] ?? '') : '');
 
 		$langs = \App\Kernel\Lang::getInstance()->getBack();
 		foreach( $langs as $lang )

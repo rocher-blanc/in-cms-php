@@ -2,9 +2,9 @@
 
 use App\Kernel\Front\Translate;
 
-$app->group('/user', function () use ($app)
+$app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app) {
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 		$contentRows = \DB::for_table('user') ;
 		
@@ -15,11 +15,11 @@ $app->group('/user', function () use ($app)
 		$contentRows = $contentRows->order_by_asc('user_id')
 								   ->find_many();
 		
-		$app->render('ext/user/index.twig.html', array( "contentRows" => $contentRows ));
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/user/index.twig.html', array( "contentRows" => $contentRows ));
 
 	})->name('user_index');
 
-	$app->map('/edit(/:id)', function ($id = -1) use ($app)
+	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
@@ -41,50 +41,50 @@ $app->group('/user', function () use ($app)
 			$post = $contentRow ;
 		}
 		
-		if ( $app->request->isPost() ) {
+		if ( strtoupper($req->getMethod()) === 'POST' ) {
 			$post = array(
-				"user_name" => $app->request->post('user_name'),
-				"user_fname" => $app->request->post('user_fname'),
-				"user_lname" => $app->request->post('user_lname'),
-				"user_group_id" => $app->request->post('user_group_id')
+				"user_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_name'] ?? '') : ''),
+				"user_fname" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_fname'] ?? '') : ''),
+				"user_lname" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_lname'] ?? '') : ''),
+				"user_group_id" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_id'] ?? '') : '')
 			) ;
 			
-			if ( $app->request->post('user_name') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_name'] ?? '') : '') == "" ) {
 				$error = true ;
 				$tabError['user_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			else {
-				$exist = \DB::for_table('user')->where_equal('user_name' , $app->request->post('user_name'));
+				$exist = \DB::for_table('user')->where_equal('user_name' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_name'] ?? '') : ''));
 				if ( $id != -1 ) $exist = $exist->where_not_equal('user_id' , $id);
 				$exist = $exist->count();
 			}
 			
-			if ( $app->request->post('user_name') != "" && $exist > 0 ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_name'] ?? '') : '') != "" && $exist > 0 ) {
 				$error = true ;
 				$tabError['user_name'] = Translate::getInstance()->getText( 'already_use_login' );
 			}
 			
-			if ( $app->request->post('user_fname') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_fname'] ?? '') : '') == "" ) {
 				$error = true ;
 				$tabError['user_fname'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
-			if ( $app->request->post('user_lname') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_lname'] ?? '') : '') == "" ) {
 				$error = true ;
 				$tabError['user_lname'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
-			if ( $id == -1 && $app->request->post('password') == "" && $app->request->post('confirm_password') != '' ) {
+			if ( $id == -1 && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['password'] ?? '') : '') == "" && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['confirm_password'] ?? '') : '') != '' ) {
 				$error = true ;
 				$tabError['password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
-			if ( $id == -1 && $app->request->post('confirm_password') == "" && $app->request->post('password') != '' ) {
+			if ( $id == -1 && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['confirm_password'] ?? '') : '') == "" && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['password'] ?? '') : '') != '' ) {
 				$error = true ;
 				$tabError['confirm_password'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			
-			if ( $id == -1 && $app->request->post('password') != $app->request->post('confirm_password') ) {
+			if ( $id == -1 && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['password'] ?? '') : '') != (is_array($req->getParsedBody()) ? ($req->getParsedBody()['confirm_password'] ?? '') : '') ) {
 				$error = true ;
 				$tabError['confirm_password'] = Translate::getInstance()->getText( 'msg_different_password' );
 			}
@@ -92,14 +92,14 @@ $app->group('/user', function () use ($app)
 			if ( $error == false ) {
 				if ( !$contentRow ) {
 					$contentRow = DB::for_table('user')->create();
-					$contentRow->user_password = password_hash( $app->request->post('password') ,PASSWORD_BCRYPT,['cost' => 9]) ;
+					$contentRow->user_password = password_hash( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['password'] ?? '') : '') ,PASSWORD_BCRYPT,['cost' => 9]) ;
 					$add = true ;
 				}
 				
-				$contentRow->user_name 		= $app->request->post('user_name');
-				$contentRow->user_fname 	= $app->request->post('user_fname');
-				$contentRow->user_lname 	= $app->request->post('user_lname');
-				$contentRow->user_group_id 	= $app->request->post('user_group_id');
+				$contentRow->user_name 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_name'] ?? '') : '');
+				$contentRow->user_fname 	= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_fname'] ?? '') : '');
+				$contentRow->user_lname 	= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_lname'] ?? '') : '');
+				$contentRow->user_group_id 	= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_id'] ?? '') : '');
 				$contentRow->save();
 				
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 4 : 5 ) , $contentRow->user_name ) ;
@@ -109,7 +109,7 @@ $app->group('/user', function () use ($app)
 				$app->flash('__msg',addslashes(  "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) );
 				$app->flash('__result',true);
 				
-				if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user/edit/' . $id );
+				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user/edit/' . $id );
 				else 											$app->redirect( $app->config('admin.url') . '/ext/user' );
 			}
 		}
@@ -123,7 +123,7 @@ $app->group('/user', function () use ($app)
 		$groupRows = $groupRows->order_by_asc('user_group_name')
 								   ->find_many();
 
-		$app->render('ext/user/edit.twig.html', array(
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/user/edit.twig.html', array(
 												"contentRow" => $contentRow,
 												"groupRows"  => $groupRows,
 												"id" 		 => $id,
@@ -131,11 +131,11 @@ $app->group('/user', function () use ($app)
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('user_edit')->via('GET', 'POST');
+	})->name('user_edit');
 
     $app->get('/delete/:id', function ($id) use ($app)
     {
-        $app->render('delete.twig',[
+        return \App\Kernel\AppContext::twig()->render($res, 'delete.twig', [
             'id' => $id,
             'url' => \App\Kernel\Factory::getInstance()->Url()->get('ext/user/delete/' . $id )
         ]);

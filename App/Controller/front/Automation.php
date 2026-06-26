@@ -11,7 +11,7 @@ $app->get('/email/automation/recipient/:id', function ( $id ) use ( $app ) {
     echo $Automation->get('information');
 })->name('email_automation_recipient');
 
-$app->get('/email/automation/template/:id(/:recipientId)', function ( $id , $recipientId = NULL ) use ( $app ) {
+$app->get('/email/automation/template/:id[/{recipientId}]', function ( $id , $recipientId = NULL ) use ( $app ) {
     $Automation = new Data('EdAutomation');
     $rst = $Automation->find( $id );
 

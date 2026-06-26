@@ -4,20 +4,20 @@ use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 use App\Kernel\Param;
 
-$app->group('/langue', function () use ($app)
+$app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-    $app->get('/', function () use ($app) {
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
         $contentRows = \DB::for_table('lang')
             ->order_by_desc('lang_status')
             ->find_many();
 
-        $app->render('ext/langue/index.twig.html', array( "contentRows" => $contentRows ));
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/index.twig.html', array( "contentRows" => $contentRows ));
 
     })->name('langue_index');
 
 
-    $app->post('/import', function () use ($app) {
+    $app->post('/import', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         $upload_dir 	= UPLOAD_PATH . '/' ;
         $upload_url 	= str_replace( WEB_PATH , '' , $upload_dir ) ;
         $upload_handler = new \App\Kernel\Back\Upload([
@@ -99,7 +99,7 @@ $app->group('/langue', function () use ($app)
     });
 
 
-    $app->map('/edit/:id', function ($id) use ($app)
+    $app->map(['GET', 'POST'], '/edit/:id', function ($id) use ($app)
     {
         $error 	  = false ;
         $tabError = array() ;
@@ -112,13 +112,13 @@ $app->group('/langue', function () use ($app)
             $app->redirect( $app->config('admin.url') . '/langue' );
         }
         else {
-            if ( $app->request->isPost() ) {
-                if ( $app->request->post('lang_display') == "" ) {
+            if ( strtoupper($req->getMethod()) === 'POST' ) {
+                if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['lang_display'] ?? '') : '') == "" ) {
                     $error = true ;
                     $tabError['lang_display'] = Translate::getInstance()->getText( 'mandatory_fillin' );
                 }
                 else {
-                    $contentRows->lang_display = $app->request->post('lang_display') ;
+                    $contentRows->lang_display = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['lang_display'] ?? '') : '') ;
                     $contentRows->save() ;
 
                     \App\Kernel\Back\Log::getInstance()->info( 14 , $contentRows->lang_display ) ;
@@ -128,21 +128,21 @@ $app->group('/langue', function () use ($app)
                     $app->flash('__msg',addslashes( json_encode( "La langue a bien été modifiée" ) ) );
                     $app->flash('__result',true);
 
-                    if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/langue/edit/' . $id );
+                    if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/langue/edit/' . $id );
                     else 											$app->redirect( $app->config('admin.url') . '/ext/langue' );
                 }
             }
         }
 
-        $app->render('ext/langue/edit.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/edit.twig.html', array(
             "post" => $contentRows,
             "id" => $id,
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
-    })->name('langue_edit')->via('GET', 'POST');
+    })->name('langue_edit');
 
-    $app->group('/order', function () use ($app)
+    $app->group('/order', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/up/:id/:token', function ($id,$token) use ($app)
         {
@@ -240,7 +240,7 @@ $app->group('/langue', function () use ($app)
 
     });
 
-    $app->group('/front', function () use ($app)
+    $app->group('/front', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/active/:id/:token', function ($id,$token) use ($app)
         {
@@ -414,9 +414,9 @@ $app->group('/langue', function () use ($app)
         Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
     })->name('langue_disactive');
 
-	$app->group('/traduction', function () use ($app)
+	$app->group('/traduction', function (\Slim\Routing\RouteCollectorProxy $app)
 	{
-		$app->get('/', function () use ($app) {
+		$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 			$param       = new Param();
 			$contentRows = \App\Kernel\Lang::getInstance()->getAll();
@@ -438,14 +438,14 @@ $app->group('/langue', function () use ($app)
 				];
 			}
 
-			$app->render('ext/langue/traduction.twig.html', [
+			return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/traduction.twig.html', [
 				'contentRows' => $contentRows,
 				'admin_buttons' => $adminButtons
 			]);
 
 		})->name('langue_traduction');
 
-		$app->get('/get-lang', function() use ($app) {
+		$app->get('/get-lang', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 			$lang_abbr = $_POST['lang_locale'];
 			$className = "\Project\Lang\\" . strtoupper( $lang_abbr ) ;
@@ -482,13 +482,13 @@ $app->group('/langue', function () use ($app)
                 'keys'   => $keys,
             ], JSON_PRETTY_PRINT );
 
-		})->via('GET', 'POST');
+		});
 
-		$app->post('/update-translate', function() use ($app) {
-			$key   = $app->request->post('key');
+		$app->post('/update-translate', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+			$key   = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['key'] ?? '') : '');
 			$lang  = $this->getApp()->request->post('lang');
-			$type  = $app->request->post('type');
-			$value = $app->request->post('value');
+			$type  = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type'] ?? '') : '');
+			$value = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['value'] ?? '') : '');
 
 			$className = "\Project\Lang\\" . strtoupper( $lang ) ;
 			$class     = new $className ;
@@ -522,8 +522,8 @@ $app->group('/langue', function () use ($app)
 			]);
 		});
 
-		$app->post('/add-key', function() use ($app) {
-			$new_key = $app->request->post('new_key');
+		$app->post('/add-key', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+			$new_key = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['new_key'] ?? '') : '');
 
 			$langs = \App\Kernel\Lang::getInstance()->getAll();
 			foreach( $langs as $lang )
@@ -568,13 +568,13 @@ $app->group('/langue', function () use ($app)
 		});
 
 		$app->get('/remove-key/:key', function( $key ) use ($app) {
-			$app->render('ext/langue/delete-key.twig.html', [
+			return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/delete-key.twig.html', [
 				'key' => $key
 			]);
 		});
 
-		$app->post('/remove-key-action', function() use ($app) {
-			$key_name = $app->request->post('key');
+		$app->post('/remove-key-action', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+			$key_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['key'] ?? '') : '');
 
 			$langs = \App\Kernel\Lang::getInstance()->getAll();
 			foreach( $langs as $lang )
@@ -609,7 +609,7 @@ $app->group('/langue', function () use ($app)
 			]);
 		});
 
-		$app->get('/default-user', function() use ($app) {
+		$app->get('/default-user', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 			translation_createDefaultTranslations(
 				'translate_front_user',
 				[
@@ -747,7 +747,7 @@ $app->group('/langue', function () use ($app)
 			);
 		});
 
-		$app->get('/default-cart', function() use ($app) {
+		$app->get('/default-cart', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 			translation_createDefaultTranslations(
 				'translate_front_cart',
 				[
@@ -817,7 +817,7 @@ function translation_createDefaultTranslations( String $paramKey , Array $transl
 	$param = new Param();
 	$param->set( $paramKey , 1 );
 
-	\App\Kernel\SlimBridge::getInstance()->redirect(
-		\App\Kernel\SlimBridge::getInstance()->config('admin.url') . '/ext/langue/traduction'
+	\App\Kernel\Factory::getInstance()->Response()->redirect(
+		\App\Kernel\Config::getInstance()->get('admin.url') . '/ext/langue/traduction'
 	);
 }

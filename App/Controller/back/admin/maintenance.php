@@ -1,15 +1,15 @@
 <?php
 
-$app->group('/maintenance', function () use ($app)
+$app->group('/maintenance', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
         $Container = \App\Kernel\Container::getInstance();
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
-            $Container->param()->set('maintenance_active' , $app->request->post('maintenance_active') );
-            $Container->param()->set('maintenance_ip' , $app->request->post('maintenance_ip') );
+            $Container->param()->set('maintenance_active' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['maintenance_active'] ?? '') : '') );
+            $Container->param()->set('maintenance_ip' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['maintenance_ip'] ?? '') : '') );
 
             \App\Kernel\Back\Log::getInstance()->info( 44 ) ;
 
@@ -19,11 +19,11 @@ $app->group('/maintenance', function () use ($app)
             $Factory->Response()->flashAndRedirect( $Message->get('maintenance_success') , true , 'admin/maintenance' ) ;
         }
 
-		$app->render('admin/maintenance/edit.twig.html' , [
+		return \App\Kernel\AppContext::twig()->render($res, 'admin/maintenance/edit.twig.html', [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'maintenance_ip' => $Container->param()->get('maintenance_ip'),
             'maintenance_active' => $Container->param()->get('maintenance_active')
         ]);
 
-	})->name('maintenance_edit')->via('GET', 'POST');
+	})->name('maintenance_edit');
 });

@@ -2,157 +2,133 @@
 
 namespace App\Kernel\Back;
 
+use App\Kernel\AppContext;
+use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
+
 class Router
 {
-	/* ************************************************** */
-	/* ****************   VARIABLES   ******************* */
-	/* ************************************************** */
-	
-	/*
-	 * @array
-	 * Contient toute la decoupe de l'URL
-	 */
-	private $_url = [] ;
+    private array $_url = [];
+    private array $folders = [];
 
-    /*
-     * @array
-     * Contient tous les dossiers à aller checker
-     */
-	private $folders = [] ;
-
-	/* ************************************************** */
-	/* ****************   CONSTRUCT   ******************* */
-	/* ************************************************** */
-	
-	public function __construct( $folders = [] )
+    public function __construct(array $folders = [])
     {
-        $this->folders = $folders ;
+        $this->folders = $folders;
     }
-	
-	/* ************************************************** */
-	/* ******************   SETTER   ******************** */
-	/* ************************************************** */
-	
-	private function setUrl( $var )
-	{
-		return $this->_url[] = $var ;
-	}
-	
-	/* ************************************************** */
-	/* ******************   GETTER   ******************** */
-	/* ************************************************** */
-	
-	private function getApp()
-	{
-		return \App\Kernel\SlimBridge::getInstance() ;
-	}
-	
-	private function Factory()
-	{
-		return \App\Kernel\Factory::getInstance() ;
-	}
-	
-	public function getUrl()
-	{
-		return $this->_url ;
-	}
-	
-	/* ************************************************** */
-	/* *****************   FUNCTION   ******************* */
-	/* ************************************************** */
-	
-	private function cutUrl()
-	{
-		$this->_url = $this->Factory()->Url()->cutUrl() ;
-	}
-	
-	public function load()
-	{
-		$this->cutUrl() ;
-		
-		$app 	= $this->getApp() ;
-		$urlTab = $this->getUrl() ;
-			
-		if ( empty( $urlTab ) )
-		{
-			// INDEX
-            $file = '' ;
-            foreach( $this->folders as $folder )
-            {
-                if ( file_exists( $folder . '/index.php' ) ) $file = $folder . '/index.php' ;
+
+    /* -------------------------------------------------- */
+    /* Getters                                            */
+    /* -------------------------------------------------- */
+
+    private function getApp(): App
+    {
+        return AppContext::slimApp();
+    }
+
+    private function Factory(): \App\Kernel\Factory
+    {
+        return \App\Kernel\Factory::getInstance();
+    }
+
+    public function getUrl(): array
+    {
+        return $this->_url;
+    }
+
+    /* -------------------------------------------------- */
+    /* URL                                                */
+    /* -------------------------------------------------- */
+
+    private function cutUrl(): void
+    {
+        $this->_url = $this->Factory()->Url()->cutUrl();
+    }
+
+    /* -------------------------------------------------- */
+    /* Chargement des routes                              */
+    /* -------------------------------------------------- */
+
+    public function load(): void
+    {
+        $this->cutUrl();
+
+        $app    = $this->getApp();
+        $urlTab = $this->getUrl();
+
+        if (empty($urlTab)) {
+            // INDEX — pas de groupe, require direct
+            $file = $this->findFile('index.php');
+            if ($file !== null) {
+                require $file;
             }
+            return;
+        }
 
-            if ( ! empty( $file ) ) require $file ;
-		}
-		else
-		{
-			switch( $urlTab[0] )
-			{
-				case "module" :
-                    $folders = $this->folders ;
-					$app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $folders )
-					{
-                        $file = '' ;
-                        foreach( $folders as $folder )
-                        {
-                            if ( file_exists( $folder . '/' . $urlTab[0] . '/index.php' ) ) $file = $folder . '/' . $urlTab[0] . '/index.php' ;
-                        }
+        switch ($urlTab[0]) {
+            case 'module':
+                $file    = $this->findFile($urlTab[0] . '/index.php');
+                $folders = $this->folders;
+                if ($file !== null) {
+                    $app->group('/' . $urlTab[0], function (RouteCollectorProxy $app) use ($file, $folders) {
+                        require $file;
+                    });
+                }
+                break;
 
-                        if ( ! empty( $file ) ) require $file ;
-					});
-				break;
-				case "ext" :
-				case "admin" :
-                    $folders = $this->folders ;
+            case 'ext':
+            case 'admin':
+                $file    = isset($urlTab[1]) ? $this->findFile($urlTab[0] . '/' . $urlTab[1] . '.php') : null;
+                $folders = $this->folders;
+                if ($file !== null) {
+                    $app->group('/' . $urlTab[0], function (RouteCollectorProxy $app) use ($file, $folders) {
+                        require $file;
+                    });
+                }
+                break;
 
-                    $app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $folders )
-                    {
-                        $file = '' ;
-                        foreach( $folders as $folder )
-                        {
-                            if ( file_exists( $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ) ) $file = $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ;
-                        }
+            default:
+                $group = false;
+                $file  = null;
 
-                        if ( ! empty( $file ) ) require $file ;
-					});
-				break;
-				default :
-                    $file = '' ;
-                    foreach( $this->folders as $folder )
-                    {
-                        if ( file_exists( $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ) )
-                        {
-                            $file = $folder . '/' . $urlTab[0] . '/' . $urlTab[1] . '.php' ;
-                            $group = true ;
-                        }
-                        else if ( file_exists( $folder . '/' . $urlTab[0] . '.php' ) )
-                        {
-                            $file = $folder . '/' . $urlTab[0] . '.php' ;
-                            $group = false ;
-                        }
+                // Chercher d'abord un fichier dans un sous-dossier ($urlTab[0]/$urlTab[1].php)
+                if (isset($urlTab[1])) {
+                    $found = $this->findFile($urlTab[0] . '/' . $urlTab[1] . '.php');
+                    if ($found !== null) {
+                        $file  = $found;
+                        $group = true;
                     }
+                }
 
-                    if ( ! empty( $file ) )
-                    {
-                        if ( $group )
-                        {
-                            $app->group('/' . $urlTab[0] , function () use ( $app , $urlTab , $file )
-                            {
-                                require $file ;
-                            });
-                        }
-                        else
-                        {
-                            require $file ;
-                        }
+                // Sinon un fichier à plat ($urlTab[0].php)
+                if ($file === null) {
+                    $file = $this->findFile($urlTab[0] . '.php');
+                }
+
+                if ($file !== null) {
+                    if ($group) {
+                        $app->group('/' . $urlTab[0], function (RouteCollectorProxy $app) use ($file) {
+                            require $file;
+                        });
+                    } else {
+                        require $file;
                     }
-				break;
-			}
-			
-			// Erreur 404
-			$app->notFound(function () use($app) {
-				$app->render('errors/404.twig.html') ;
-			});
-		}
-	}
+                }
+                break;
+        }
+    }
+
+    /* -------------------------------------------------- */
+    /* Helpers                                            */
+    /* -------------------------------------------------- */
+
+    private function findFile(string $relative): ?string
+    {
+        foreach ($this->folders as $folder) {
+            $path = $folder . '/' . $relative;
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+        return null;
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 
-$app->group('/security', function () use ($app)
+$app->group('/security', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
         $security_lock_ip = DB::for_table('param')
             ->where_equal('param_key', 'security_lock_ip')
@@ -12,7 +12,7 @@ $app->group('/security', function () use ($app)
             ->where_equal('param_key', 'security_list_ip')
             ->find_one();
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
             if ( ! $security_lock_ip )
             {
@@ -20,9 +20,9 @@ $app->group('/security', function () use ($app)
                 $security_lock_ip->param_key = "security_lock_ip" ;
             }
 
-            if ( $app->request->post('security_list_ip') != '' )
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['security_list_ip'] ?? '') : '') != '' )
             {
-                if ( $app->request->post('security_lock_ip') != NULL && strpos( $app->request->post('security_list_ip') , $app->request()->getIp() ) !== false )
+                if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['security_lock_ip'] ?? '') : '') != NULL && strpos( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['security_list_ip'] ?? '') : '') , ($_SERVER['REMOTE_ADDR'] ?? '') ) !== false )
                 {
                     $security_lock_ip->param_value = 1;
                 }
@@ -43,7 +43,7 @@ $app->group('/security', function () use ($app)
                 $security_list_ip->param_key = "security_list_ip" ;
             }
 
-            $security_list_ip->param_value = $app->request->post('security_list_ip');
+            $security_list_ip->param_value = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['security_list_ip'] ?? '') : '');
             $security_list_ip->save();
 
             \App\Kernel\Back\Log::getInstance()->info( 44 ) ;
@@ -60,10 +60,10 @@ $app->group('/security', function () use ($app)
         if ( $security_lock_ip ) $lock_ip = $security_lock_ip->param_value ;
         if ( $security_list_ip ) $list_ip = $security_list_ip->param_value ;
 
-		$app->render('admin/security/edit.twig.html' , [
-            "ip" => $app->request()->getIp(),
+		return \App\Kernel\AppContext::twig()->render($res, 'admin/security/edit.twig.html', [
+            "ip" => ($_SERVER['REMOTE_ADDR'] ?? ''),
             "lock_ip" => $lock_ip,
             "list_ip" => $list_ip
         ]);
-	})->name('security_edit')->via('GET', 'POST');
+	})->name('security_edit');
 });

@@ -2,8 +2,10 @@
 
 namespace App\Kernel;
 
+use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages as FlashMessages;
+use Slim\Middleware\OutputBufferingMiddleware;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 use Twig\Loader\FilesystemLoader;
@@ -11,38 +13,47 @@ use Twig\Loader\FilesystemLoader;
 /**
  * Bootstrapper Slim 4.
  *
- * Construit l'instance \Slim\App (Slim 4), configure Twig, Flash,
- * middleware, modes, et expose l'interface attendue par App\Kernel.
- * Toute l'API Slim 2 est exposée via SlimBridge, qui est le singleton
- * retourné par getApp().
+ * Responsabilités :
+ *  - Créer l'instance Slim\App
+ *  - Configurer Twig (chemins de templates, options, extensions)
+ *  - Initialiser le Flash
+ *  - Enregistrer les middlewares Slim (routing, body parsing, error)
+ *  - Exposer l'interface attendue par App\Kernel (setConfig, addMiddleware, run…)
+ *
+ * Config, Twig et Flash sont exposés via AppContext (façade statique),
+ * ce qui évite de passer des dépendances en paramètre partout.
  */
 class Slim
 {
-    private ?SlimBridge $bridge = null;
+    private ?App $app = null;
 
     /** Dossiers de templates additionnels (enregistrés par le projet) */
     private array $templateFolder = [];
+
+    /** Extensions Twig à ajouter après initView() */
+    private array $pendingExtensions = [];
 
     /* -------------------------------------------------- */
     /* Getters                                            */
     /* -------------------------------------------------- */
 
-    /** Retourne le SlimBridge (point d'entrée unique de l'API Slim 2) */
-    public function getApp(): SlimBridge
+    /** Retourne l'application Slim 4 */
+    public function getApp(): App
     {
-        return $this->bridge;
+        return $this->app;
     }
 
     /* -------------------------------------------------- */
     /* Setters (appelés par App\Kernel avant load())      */
     /* -------------------------------------------------- */
 
-    /** Slim 2 : setConfig(['key' => 'value']) */
-    public function setConfig($config): void
+    /**
+     * Reçoit la config issue de App\Kernel et la fusionne dans Config.
+     * Slim 2 : setConfig(['session' => 'cms', 'login.url' => '/admin/login', ...])
+     */
+    public function setConfig(array $config): void
     {
-        if (is_array($config)) {
-            $this->bridge->config($config);
-        }
+        Config::getInstance()->merge($config);
     }
 
     public function setTemplateFolder(string $folder): void
@@ -56,14 +67,22 @@ class Slim
 
     /**
      * Slim 2 : setParserExtensions([$ext1, $ext2])
-     * Ajoute des extensions à l'environment Twig après initialisation.
+     * Peut être appelé avant ou après initView().
      */
     public function setParserExtensions(array $extensions): void
     {
-        if ($this->bridge === null || $this->bridge->view() === null) {
+        if ($this->app === null) {
+            // Mise en file d'attente si Twig n'est pas encore initialisé
+            $this->pendingExtensions = array_merge($this->pendingExtensions, $extensions);
             return;
         }
-        $env = $this->bridge->view()->getEnvironment();
+
+        $twig = AppContext::twig();
+        if ($twig === null) {
+            return;
+        }
+
+        $env = $twig->getEnvironment();
         foreach ($extensions as $ext) {
             if (is_object($ext) && !$env->hasExtension(get_class($ext))) {
                 $env->addExtension($ext);
@@ -76,35 +95,27 @@ class Slim
     /* -------------------------------------------------- */
 
     /** Slim 2 : loadPlugin($plugin) */
-    public function loadPlugin($plugin): void
+    public function loadPlugin(mixed $plugin): void
     {
-        if (is_array($plugin)) {
-            foreach ($plugin as $row) {
-                if (is_object($row)) {
-                    $this->bridge->add($row);
-                }
-            }
-        } elseif (is_object($plugin)) {
-            $this->bridge->add($plugin);
+        $this->addMiddleware($plugin);
+    }
+
+    public function initMiddleware(): void {}
+
+    public function addMiddleware(mixed $middleware): void
+    {
+        if ($this->app === null) {
+            return;
         }
-    }
 
-    public function initMiddleware(): void
-    {
-        // PrettyExceptions est maintenant un ErrorMiddleware Slim 4
-        // configuré dans load(). On ne l'ajoute plus ici.
-    }
-
-    public function addMiddleware($middleware): void
-    {
         if (is_array($middleware)) {
             foreach ($middleware as $row) {
                 if (is_object($row)) {
-                    $this->bridge->add($row);
+                    $this->app->add($row);
                 }
             }
         } elseif (is_object($middleware)) {
-            $this->bridge->add($middleware);
+            $this->app->add($middleware);
         }
     }
 
@@ -113,30 +124,43 @@ class Slim
     /* -------------------------------------------------- */
 
     /**
-     * Crée l'application Slim 4, le SlimBridge, configure Twig + Flash.
+     * Crée l'application Slim 4 et initialise les services de base.
      * Appelé par App\Kernel::getSlim().
      */
     public function load(): void
     {
-        // 1. Slim 4 App
-        $slim4 = AppFactory::create();
-        $slim4->addRoutingMiddleware();
+        // Config par défaut (peut être écrasée par setConfig)
+        $config = Config::getInstance();
+        if ($config->get('mode') === null) {
+            $config->set('mode', defined('SLIM_MODE') ? SLIM_MODE : 'development');
+        }
+        if ($config->get('cache') === null) {
+            $config->set('cache', defined('CACHE_PATH') ? CACHE_PATH : false);
+        }
 
-        // 2. SlimBridge (singleton Slim 2 compat)
-        $this->bridge = SlimBridge::getInstance();
-        $this->bridge->setSlimApp($slim4);
-        $this->bridge->config([
-            'mode'  => defined('SLIM_MODE') ? SLIM_MODE : 'development',
-            'cache' => defined('CACHE_PATH') ? CACHE_PATH : false,
-        ]);
+        // Slim 4 App
+        $this->app = AppFactory::create();
+        $this->app->addRoutingMiddleware();
+        $this->app->addBodyParsingMiddleware();
+
+        // Capture les echo/print des route handlers et les injecte dans la réponse
+        $this->app->add(new OutputBufferingMiddleware());
+
+        AppContext::setSlimApp($this->app);
+
+        // Flash (nécessite les sessions — initiées avant ce point par le projet)
+        $flash = new FlashMessages();
+        AppContext::setFlash($flash);
     }
 
     /**
      * Configure Twig avec les dossiers de templates.
-     * Doit être appelée après que les dossiers soient connus (initSlim).
+     * Doit être appelée après que les constantes de chemin soient définies.
      */
     public function initView(): void
     {
+        $config = Config::getInstance();
+
         $viewArray = [];
 
         if (defined('VIEW_PROJECT_PATH'))        $viewArray[] = VIEW_PROJECT_PATH;
@@ -150,7 +174,7 @@ class Slim
         $url = '';
         try {
             $url = \App\Kernel\Factory::getInstance()->Url()->getFullUrl();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // Ignore si Factory n'est pas encore disponible
         }
 
@@ -165,57 +189,66 @@ class Slim
         }
 
         if (defined('TEMPLATES_PATH'))             $viewArray[] = TEMPLATES_PATH;
-        if (defined('TEMPLATES_COMMON_TECH_PATH') && defined('THEME') && $this->bridge->config('config') === 'front') {
+        if (defined('TEMPLATES_COMMON_TECH_PATH') && defined('THEME') && $config->get('config') === 'front') {
             $viewArray[] = TEMPLATES_COMMON_TECH_PATH;
         }
         if (defined('TEMPLATES_COMMON_PATH'))      $viewArray[] = TEMPLATES_COMMON_PATH;
 
-        $viewArray = array_unique(array_filter($viewArray, fn($d) => is_dir($d)));
+        $viewArray = array_unique(array_filter($viewArray, fn($d) => is_string($d) && is_dir($d)));
 
-        $cacheEnabled = ($this->bridge->config('cache') !== false && $this->bridge->config('cache') !== null);
+        $isDebug      = ($config->get('mode') !== 'production');
+        $cacheEnabled = ($config->get('cache') !== false && $config->get('cache') !== null);
+
         $options = [
-            'cache'      => $cacheEnabled ? $this->bridge->config('cache') : false,
-            'debug'      => ($this->bridge->config('mode') !== 'production'),
+            'cache'      => $cacheEnabled ? $config->get('cache') : false,
+            'debug'      => $isDebug,
             'autoescape' => false,
         ];
 
         $loader = new FilesystemLoader($viewArray);
         $twig   = new Twig($loader, $options);
 
-        // Extensions Twig de base
-        if ($options['debug']) {
+        if ($isDebug) {
             $twig->getEnvironment()->addExtension(new \Twig\Extension\DebugExtension());
         }
 
-        // Extension slim/twig-view (url_for, base_url, etc.)
-        $slim4App = $this->bridge->getSlimApp();
-        $slim4App->add(TwigMiddleware::create($slim4App, $twig));
+        // Flash disponible dans tous les templates
+        $twig->getEnvironment()->addGlobal('flash', AppContext::flash());
 
-        $this->bridge->setTwig($twig);
+        // Middleware slim/twig-view (url_for, base_url, etc.)
+        $this->app->add(TwigMiddleware::create($this->app, $twig));
+
+        AppContext::setTwig($twig);
+
+        // Extensions en attente (enregistrées avant initView)
+        if (!empty($this->pendingExtensions)) {
+            $this->setParserExtensions($this->pendingExtensions);
+            $this->pendingExtensions = [];
+        }
     }
 
-    /** Slim 2 : configureMode() — délégué au bridge */
+    /**
+     * Slim 2 : configureMode() — adapté pour Slim 4.
+     * Applique les options de config selon le mode.
+     */
     public function initMode(): void
     {
-        $bridge = $this->bridge;
+        $config = Config::getInstance();
+        $mode   = $config->get('mode', 'development');
 
-        $bridge->configureMode('production', function () use ($bridge) {
-            $bridge->config([
-                'log.enable' => false,
-                'cache'      => defined('CACHE_PATH') ? CACHE_PATH : false,
-                'debug'      => false,
-                'twig.debug' => false,
-            ]);
-        });
-
-        $bridge->configureMode('development', function () use ($bridge) {
-            $bridge->config([
-                'log.enable' => false,
-                'cache'      => false,
-                'debug'      => true,
-                'twig.debug' => true,
-            ]);
-        });
+        if ($mode === 'production') {
+            $config->set('log.enable', false);
+            $config->set('debug',      false);
+            $config->set('twig.debug', false);
+            if (defined('CACHE_PATH')) {
+                $config->set('cache', CACHE_PATH);
+            }
+        } else {
+            $config->set('log.enable', false);
+            $config->set('cache',      false);
+            $config->set('debug',      true);
+            $config->set('twig.debug', true);
+        }
     }
 
     /* -------------------------------------------------- */
@@ -224,6 +257,6 @@ class Slim
 
     public function run(): void
     {
-        $this->bridge->run();
+        $this->app->run();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/robots.txt', function () use ( $app ) {
+$app->get('/robots.txt', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
     $app->contentType('text/plain');
 
     $meta = $app->getViewData('meta') ;

@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Middleware\Front;
 
+use App\Kernel\AppContext;
 use App\Kernel\Front\Translate;
 use App\Kernel\Front\Newsletter as NewsletterTool;
 use App\Kernel\Middleware\AbstractMiddleware;
@@ -15,43 +16,30 @@ class Newsletter extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        AppContext::setRequest($request);
         $this->observe();
         return $handler->handle($request);
     }
 
     public function observe(): void
     {
-        if ($this->request()->isPost()) {
-            if ($this->request()->post('newsletter_action') == 'add') {
-                $this->addNewsletter();
-            }
+        if ($this->isPost() && $this->post('newsletter_action') == 'add') {
+            $this->addNewsletter();
         }
     }
 
     protected function addNewsletter(): void
     {
-        $list  = $this->request()->post('list');
-        $email = $this->request()->post('email');
-
         $nl = new NewsletterTool;
-        $nl->setGroupId($list);
-        $nl->setEmail($email);
+        $nl->setGroupId($this->post('list', ''));
+        $nl->setEmail($this->post('email', ''));
         $result = $nl->subscribe();
 
-        if ($result) {
-            $this->returnError($this->translate('newsletter_add_success'), true);
-        } else {
-            $this->returnError($nl->getError(), false);
-        }
-    }
+        $message = $result
+            ? $this->translate('newsletter_add_success')
+            : $nl->getError();
 
-    protected function returnError(string $message, bool $result = false): void
-    {
-        $this->app()->response()->body(json_encode([
-            'result' => $result,
-            'msg'    => $message,
-        ]));
+        echo json_encode(['result' => $result, 'msg' => $message]);
     }
 
     protected function translate(string $key): string

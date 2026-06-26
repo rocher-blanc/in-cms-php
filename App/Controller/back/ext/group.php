@@ -2,9 +2,9 @@
 
 use App\Kernel\Front\Translate;
 
-$app->group('/group', function () use ($app)
+$app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app) {
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 		$contentRows = \DB::for_table('user_group') ;
 		
@@ -15,11 +15,11 @@ $app->group('/group', function () use ($app)
 		$contentRows = $contentRows->order_by_asc('user_group_name')
 								   ->find_many();
 		
-		$app->render('ext/group/index.twig.html', array( "contentRows" => $contentRows ));
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/group/index.twig.html', array( "contentRows" => $contentRows ));
 
 	})->name('group_index');
 
-	$app->map('/edit(/:id)', function ($id = -1) use ($app)
+	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
@@ -41,22 +41,22 @@ $app->group('/group', function () use ($app)
 			$post = $contentRow ;
 		}
 		
-		if ( $app->request->isPost() ) {
+		if ( strtoupper($req->getMethod()) === 'POST' ) {
 			$post = array(
-				"user_group_name" => $app->request->post('user_group_name')
+				"user_group_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_name'] ?? '') : '')
 			) ;
 			
-			if ( $app->request->post('user_group_name') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_name'] ?? '') : '') == "" ) {
 				$error = true ;
 				$tabError['user_group_name'] = Translate::getInstance()->getText( 'mandatory_fillin' ) ;
 			}
 			else {
-				$exist = \DB::for_table('user_group')->where_equal('user_group_name' , $app->request->post('user_group_name'));
+				$exist = \DB::for_table('user_group')->where_equal('user_group_name' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_name'] ?? '') : ''));
 				if ( $id != -1 ) $exist = $exist->where_not_equal('user_group_id' , $id);
 				$exist = $exist->count();
 			}
 			
-			if ( $app->request->post('user_group_name') != "" && $exist > 0 ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_name'] ?? '') : '') != "" && $exist > 0 ) {
 				$error = true ;
 				$tabError['user_name'] = Translate::getInstance()->getText( 'msg_grp_name_error' );
 			}
@@ -67,7 +67,7 @@ $app->group('/group', function () use ($app)
 					$add = true ;
 				}
 				
-				$contentRow->user_group_name = $app->request->post('user_group_name');
+				$contentRow->user_group_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_group_name'] ?? '') : '');
 				$contentRow->save();
 				
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 7 : 8 ) , $contentRow->user_group_name ) ;
@@ -168,7 +168,7 @@ $app->group('/group', function () use ($app)
 			$extension  = array() ;
 		}
 
-		$app->render('ext/group/edit.twig.html', array(
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/group/edit.twig.html', array(
 												"contentRow" => $contentRow,
 												"id" 		 => $id,
 												"users" 	 => $users,
@@ -178,44 +178,45 @@ $app->group('/group', function () use ($app)
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('group_edit')->via('GET', 'POST');
+	})->name('group_edit');
 
-	$app->get('/right', function () use ($app)
+	$app->get('/right', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
-		if ( $app->request->post( $app->config('token') ) == $_SESSION[ $app->config('token') ] )
+		$csrfKey = \App\Kernel\Config::getInstance()->get('token', 'csrf_token');
+		if ( ($req->getParsedBody()[$csrfKey] ?? '') == ($_SESSION[$csrfKey] ?? '') )
 		{
 			$Guard = new \App\Kernel\Back\Acl;
 					
-			if ( $app->request->post('ext') == '' && $app->request->post('module') != '' )
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['ext'] ?? '') : '') == '' && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module'] ?? '') : '') != '' )
 			{
-				$Guard->setModule( $app->request->post('module') );
+				$Guard->setModule( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module'] ?? '') : '') );
 				$extRow = \DB::for_table('module')
 					->select('module_name')
-					->where(array('module_class_name' => $app->request->post('module')))
+					->where(array('module_class_name' => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module'] ?? '') : '')))
 					->find_one();
 				$value = $extRow->module_name ;
 			}
-			else if ( $app->request->post('ext') != '' && $app->request->post('module') == '' )
+			else if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['ext'] ?? '') : '') != '' && (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module'] ?? '') : '') == '' )
 			{
-				$Guard->setExtension( $app->request->post('ext') );
+				$Guard->setExtension( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['ext'] ?? '') : '') );
 				$extRow = \DB::for_table('extension')
 					->select('extension_name')
-					->where(array('extension_technical_name' => $app->request->post('ext')))
+					->where(array('extension_technical_name' => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['ext'] ?? '') : '')))
 					->find_one();
 				$value = $extRow->extension_name ;
 			}
 			
-			$Guard->setGroupId( $app->request->post('group') );
+			$Guard->setGroupId( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['group'] ?? '') : '') );
 			$Guard->load();
 			
 			$groupRow = \DB::for_table('user_group')
 				->select('user_group_name')
-				->where(array( 'user_group_id' => $app->request->post('group') ))
+				->where(array( 'user_group_id' => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['group'] ?? '') : '') ))
 				->find_one();
 			
 			$valueLog = $groupRow->user_group_name . " - " . $value ;
 			
-			switch( $app->request->post('right') )
+			switch( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['right'] ?? '') : '') )
 			{
 				case "add" :
 					$Guard->updateAdd();
@@ -241,10 +242,10 @@ $app->group('/group', function () use ($app)
 		}
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
-	})->name('group_right')->via('GET', 'POST');
+	})->name('group_right');
 
     $app->get('/delete/:id', function ($id) use ($app) {
-        $app->render('common/delete.twig', [
+        return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/group/delete/' . $id)
         ]);
     });

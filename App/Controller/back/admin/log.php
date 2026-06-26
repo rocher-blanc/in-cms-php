@@ -30,9 +30,9 @@ function converteDateToTime( $datecomplete )
     return mktime ($h, $i, $s, $m, $d, $y);
 }
 
-$app->group('/log', function () use ($app)
+$app->group('/log', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-    $app->get('/', function () use ($app)
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
         $info = true ;
         $danger = true ;
@@ -43,22 +43,22 @@ $app->group('/log', function () use ($app)
         $date_start = date("Y-m-d" , ( time() - ( 86400 * 5  ) ) ) . " 00:00:00";
         $date_end   = date("Y-m-d") . " 23:59:59";
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
             $tabType = [];
 
-            if ( $app->request->post('info') == NULL )   $info = false ;
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['info'] ?? '') : '') == NULL )   $info = false ;
             else                                         $tabType[] = 1;
 
-            if ( $app->request->post('danger') == NULL ) $danger = false ;
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['danger'] ?? '') : '') == NULL ) $danger = false ;
             else                                         $tabType[] = 2;
 
-            if ( $app->request->post('alerte') == NULL ) $alerte = false ;
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['alerte'] ?? '') : '') == NULL ) $alerte = false ;
             else                                         $tabType[] = 3;
 
-            if ( $app->request->post('date') != '' )
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['date'] ?? '') : '') != '' )
             {
-            	$dates = $app->request->post('date');
+            	$dates = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['date'] ?? '') : '');
                 $date_start = \App\Kernel\Factory::getInstance()->Date()->convertUs( $dates['start'] ) . " 00:00:00";
                 $date_end   = \App\Kernel\Factory::getInstance()->Date()->convertUs( $dates['end'] ) . " 23:59:59";
             }
@@ -81,13 +81,13 @@ $app->group('/log', function () use ($app)
             }
         }
 
-        $app->render('admin/log/index.twig.html' , [
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/log/index.twig.html', [
             "logRows" => $rows,
             "info"    => $info,
             "alerte"  => $alerte,
             "danger"  => $danger,
-            "date"    => $app->request->post('date'),
+            "date"    => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['date'] ?? '') : ''),
         ]);
 
-    })->via('GET', 'POST');
+    });
 });

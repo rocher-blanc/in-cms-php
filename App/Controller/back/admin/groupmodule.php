@@ -2,22 +2,22 @@
 
 use App\Kernel\Front\Translate;
 
-$app->group('/groupmodule', function () use ($app)
+$app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-    $app->get('/', function () use ($app)
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
 
         $contentRows = \DB::for_table('module_group')
                           ->order_by_asc('module_group_order')
                           ->find_many();
 
-        $app->render('admin/groupmodule/index.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/index.twig.html', array(
             "contentRows" => $contentRows
         ));
 
     })->name('groupmodule_index');
 
-    $app->get('/bygroup(/:id)', function ( $id = NULL ) use ($app)
+    $app->get('/bygroup[/{id}]', function ( $id = NULL ) use ($app)
     {
         $contentRows = \DB::for_table('module');
 
@@ -27,7 +27,7 @@ $app->group('/groupmodule', function () use ($app)
         $contentRows = $contentRows->order_by_asc('module_order')
                                    ->find_many();
 
-        $app->render('admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
     })->name('groupmodule_module_by_group');
 
@@ -74,12 +74,12 @@ $app->group('/groupmodule', function () use ($app)
         $contentRows = $contentRows->order_by_asc('module_order')
                                    ->find_many();
 
-        $app->render('admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
-    })->name('groupmodule_module_by_group')->via('GET', 'POST');
+    })->name('groupmodule_module_by_group');
 
     $app->get('/delete/:id', function ($id) use ($app) {
-        $app->render('common/delete.twig', [
+        return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/admin/groupmodule/delete/' . $id)
         ]);
     });
@@ -215,7 +215,7 @@ $app->group('/groupmodule', function () use ($app)
         \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
     })->name('groupmodule_disactive');
 
-    $app->map('/edit(/:id)', function ($id = -1) use ($app)
+    $app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
     {
         $error 	  = false ;
         $tabError = array() ;
@@ -228,10 +228,10 @@ $app->group('/groupmodule', function () use ($app)
             $app->redirect( $app->config('admin.url') . '/admin/groupmodule');
         }
 
-        if ( $app->request->isPost() ) {
+        if ( strtoupper($req->getMethod()) === 'POST' ) {
             $post = array(
-                "module_group_name" => $app->request->post('module_group_name'),
-                "module_group_active" => $app->request->post('module_group_active')
+                "module_group_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_group_name'] ?? '') : ''),
+                "module_group_active" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_group_active'] ?? '') : '')
             ) ;
 
             if ( !$contentRow ) {
@@ -239,14 +239,14 @@ $app->group('/groupmodule', function () use ($app)
                 $add = true ;
             }
 
-            if ( $app->request->post('module_group_name') == "" ) {
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_group_name'] ?? '') : '') == "" ) {
                 $error = true ;
                 $tabError['module_group_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
             }
 
             if ( $error == false ) {
-                $contentRow->module_group_name 		= $app->request->post('module_group_name') ;
-                $contentRow->module_group_active 	= ( $app->request->post('module_group_active') == NULL ? 0 : 1 ) ;
+                $contentRow->module_group_name 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_group_name'] ?? '') : '') ;
+                $contentRow->module_group_active 	= ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_group_active'] ?? '') : '') == NULL ? 0 : 1 ) ;
                 if ( $add == true )
                 {
                     $contentRow->module_group_order = \DB::for_table('module_group')->max('module_group_order') + 1;
@@ -277,16 +277,16 @@ $app->group('/groupmodule', function () use ($app)
             $post = $contentRow ;
         }
 
-        $app->render('admin/groupmodule/edit.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/edit.twig.html', array(
             "post"       => $post,
             "id"         => $id,
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
 
-    })->name('groupmodule_edit')->via('GET', 'POST');
+    })->name('groupmodule_edit');
 
-    $app->group('/order', function () use ($app)
+    $app->group('/order', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/up/:id/:token', function ($id,$token) use ($app)
         {
@@ -365,7 +365,7 @@ $app->group('/groupmodule', function () use ($app)
 
     });
 
-    $app->get('/menu(/:id)', function ($id = -1) use ($app)
+    $app->get('/menu[/{id}]', function ($id = -1) use ($app)
     {
         $error 	  = false ;
         $tabError = array() ;
@@ -443,7 +443,7 @@ $app->group('/groupmodule', function () use ($app)
             ];
         }
 
-        $app->render('admin/groupmodule/menu.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/menu.twig.html', array(
             "id"           => $id,
             "columns"      => $columns,
             "arrayModules" => $modules,
@@ -459,10 +459,10 @@ $app->group('/groupmodule', function () use ($app)
     /*----------                                                  ----------*/
     /*----------------------------------------------------------------------*/
 
-    $app->post('/add-column', function() use ($app) {
+    $app->post('/add-column', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         // Create column
         $prep_column = \DB::for_table( "module_column" )->create();
-        $prep_column->module_column_module_group_id = $app->request->post('group');
+        $prep_column->module_column_module_group_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['group'] ?? '') : '');
         $prep_column->save();
 
         // Create block
@@ -480,8 +480,8 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-    $app->post('/delete-column', function() use ($app) {
-        $column_id = $app->request->post('column_id');
+    $app->post('/delete-column', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+        $column_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['column_id'] ?? '') : '');
 
         // Find blocks into this column
         $req_blocks = \DB::for_table( "module_column_block" )
@@ -574,11 +574,11 @@ $app->group('/groupmodule', function () use ($app)
     /*----------                                                  ----------*/
     /*----------------------------------------------------------------------*/
 
-    $app->post('/add-block', function() use ($app) {
+    $app->post('/add-block', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         $prep = \DB::for_table( "module_column_block" )->create();
-        $prep->module_column_block_module_column_id = $app->request->post('column_id');
+        $prep->module_column_block_module_column_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['column_id'] ?? '') : '');
         $prep->module_column_block_title            = NULL;
-        $prep->module_column_block_order            = $app->request->post('order');
+        $prep->module_column_block_order            = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['order'] ?? '') : '');
         $prep->save();
 
         echo json_encode([
@@ -588,10 +588,10 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-    $app->post('/rename-block', function() use ($app) {
+    $app->post('/rename-block', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         $one = \DB::for_table( "module_column_block" )
-            ->find_one( $app->request->post('block_id') );
-        $one->module_column_block_title = $app->request->post('title');
+            ->find_one( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['block_id'] ?? '') : '') );
+        $one->module_column_block_title = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['title'] ?? '') : '');
         $one->save();
 
         echo json_encode([
@@ -600,15 +600,15 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-    $app->post('/order-block', function() use ($app) {
-        $new_order = explode( ",", $app->request->post('new_order') );
+    $app->post('/order-block', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+        $new_order = explode( ",", (is_array($req->getParsedBody()) ? ($req->getParsedBody()['new_order'] ?? '') : '') );
 
         $many = \DB::for_table( "module_column_block" )
             ->where_in( "module_column_block_id", $new_order )
             ->find_many();
 
         foreach( $many as $column ) {
-            $column->module_column_block_module_column_id = $app->request->post('column_id');
+            $column->module_column_block_module_column_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['column_id'] ?? '') : '');
             $column->module_column_block_order            = array_search( $column->module_column_block_id, $new_order ) + 1;
             $column->save();
         }
@@ -619,8 +619,8 @@ $app->group('/groupmodule', function () use ($app)
         ]);
     });
 
-    $app->post('/delete-block', function() use ($app) {
-        $block_id = $app->request->post('block_id');
+    $app->post('/delete-block', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+        $block_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['block_id'] ?? '') : '');
 
         // Remove modules from this block before delete him
         $req_modules = \DB::for_table( "module" )
@@ -653,9 +653,9 @@ $app->group('/groupmodule', function () use ($app)
     /*----------                                                  ----------*/
     /*----------------------------------------------------------------------*/
 
-    $app->post('/order-module', function() use ($app) {
-        $new_order = explode( ",", $app->request->post('new_order') );
-        $block_id = $app->request->post('block_id');
+    $app->post('/order-module', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
+        $new_order = explode( ",", (is_array($req->getParsedBody()) ? ($req->getParsedBody()['new_order'] ?? '') : '') );
+        $block_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['block_id'] ?? '') : '');
 
         if( $block_id == 0 )
         {

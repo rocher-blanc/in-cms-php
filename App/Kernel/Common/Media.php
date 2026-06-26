@@ -111,7 +111,7 @@ class Media
 
     protected function getApp()
     {
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
     }
 
 	/* ************************************************** */

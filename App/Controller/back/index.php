@@ -4,7 +4,7 @@
 use App\Api\Easyletter;
 use App\Kernel\Container;
 
-$app->get('/', function () use ( $app ) {
+$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 	$param = new \App\Kernel\Param();
 
@@ -97,7 +97,7 @@ $app->get('/', function () use ( $app ) {
         $seo_module = [];
     }
 
-    $app->render('index/index.twig' , [
+    return \App\Kernel\AppContext::twig()->render($res, 'index/index.twig', [
         "version" => $json->version,
         "debug" => DEBUG_CMS,
         "maintenance" => Container::getInstance()->param()->get('maintenance_active'),
@@ -114,7 +114,7 @@ $app->get('/', function () use ( $app ) {
         'campaigns' => index_getCampaigns(),
         "cdn" => $cdn,
         "date_update" => filemtime( VENDOR_PATH . '/autoload.php' ),
-    ]) ;
+    ]);
 })->name('index');
 
 

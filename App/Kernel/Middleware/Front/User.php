@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Middleware\Front;
 
+use App\Kernel\AppContext;
 use App\Kernel\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,7 +14,7 @@ class User extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        AppContext::setRequest($request);
         if (defined('ACTIVE_USER') && ACTIVE_USER) {
             $this->observe();
         }
@@ -27,11 +28,10 @@ class User extends AbstractMiddleware
 
     public function observe(): void
     {
-        $req = $this->request();
         $this->user()->observe();
 
-        if ($req->isPost()) {
-            $action = $req->post('user_action');
+        if ($this->isPost()) {
+            $action = $this->post('user_action', '');
             if ($action == 'login')             $this->user()->login();
             if ($action == 'lost_password')     $this->user()->lostPassword();
             if ($action == 'recovery_password') $this->user()->recoveryPassword();
@@ -40,8 +40,8 @@ class User extends AbstractMiddleware
             if ($action == 'register')          $this->user()->register();
         } else {
             $this->user()->connectWithFacebook();
-            if ($req->get('logout') == 'me')           $this->user()->logout();
-            if ($req->get('user_validation') == 'me')  $this->user()->validation();
+            if ($this->get('logout') == 'me')           $this->user()->logout();
+            if ($this->get('user_validation') == 'me')  $this->user()->validation();
         }
 
         $this->user()->appendVar();

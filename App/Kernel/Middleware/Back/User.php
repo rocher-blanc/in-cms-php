@@ -13,7 +13,7 @@ class User extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
+        \App\Kernel\AppContext::setRequest($request);
         if (defined('ACTIVE_USER') && ACTIVE_USER) {
             $this->observe();
         }
@@ -27,10 +27,9 @@ class User extends AbstractMiddleware
 
     public function observe(): void
     {
-        $req = $this->request();
-        if ($req->isPost()) {
-            if ($req->post('user_action') == 'update')   $this->user()->update();
-            if ($req->post('user_action') == 'register') $this->user()->register();
+        if ($this->isPost()) {
+            if ($this->post('user_action') == 'update')   $this->user()->update();
+            if ($this->post('user_action') == 'register') $this->user()->register();
         }
     }
 }

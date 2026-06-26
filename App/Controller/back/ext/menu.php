@@ -117,7 +117,7 @@ function deleteByParent( $idparent , $idmenu )
     }
 }
 
-$app->group('/menu', function () use ($app)
+$app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 {
     $app->get('/construct/:id', function ( $id ) use ($app)
     {
@@ -132,7 +132,7 @@ $app->group('/menu', function () use ($app)
 
         $contentRows = getTreeMenu( $contentRows ) ;
 
-        $app->render('ext/menu/construct.twig.html', array( "id" => $id ,  "contentRows" => $contentRows ));
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/construct.twig.html', array( "id" => $id ,  "contentRows" => $contentRows ));
     })->name('menu_construct');
 
     $app->get('/order/:idmenu/:parent/:token', function ( $menu , $parent , $token ) use ($app)
@@ -145,7 +145,7 @@ $app->group('/menu', function () use ($app)
         }
         else
         {
-            $get = $app->request()->get('table-idmenu-' . $menu );
+            $get = ($req->getQueryParams()['table-idmenu-' . $menu] ?? '');
             if ( $get )
             {
                 $position = 1;
@@ -162,16 +162,16 @@ $app->group('/menu', function () use ($app)
         $Factory->Response()->returnJSON( "L'ordre a bien été modifié" , true ) ;
     })->name('menu_order');
 
-    $app->get('/', function () use ($app)
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
         $contentRows = \DB::for_table('menu')
             ->order_by_asc('menu_name')
             ->find_many();
 
-        $app->render('ext/menu/index.twig.html', array( "contentRows" => $contentRows ));
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/index.twig.html', array( "contentRows" => $contentRows ));
     })->name('menu_index');
 
-    $app->map('/edit(/:id)', function ($id = -1) use ($app)
+    $app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
     {
         $error 	  = false ;
         $tabError = array() ;
@@ -185,10 +185,10 @@ $app->group('/menu', function () use ($app)
             $app->redirect( $app->config('admin.url') . '/ext/menu');
         }
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
             $post = array(
-                "menu_name" => $app->request->post('menu_name')
+                "menu_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['menu_name'] ?? '') : '')
             ) ;
 
             if ( !$contentRow )
@@ -197,7 +197,7 @@ $app->group('/menu', function () use ($app)
                 $add = true ;
             }
 
-            if ( $app->request->post('menu_name') == "" )
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['menu_name'] ?? '') : '') == "" )
             {
                 $error = true ;
                 $tabError['menu_name'] = Translate::getInstance()->getText('mandatory_fillin');
@@ -205,14 +205,14 @@ $app->group('/menu', function () use ($app)
 
             if ( $error == false )
             {
-                $contentRow->menu_name = $app->request->post('menu_name') ;
+                $contentRow->menu_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['menu_name'] ?? '') : '') ;
                 $contentRow->save() ;
 
                 \App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 37 : 35 ) , $contentRow->menu_name ) ;
 
                 $id = $contentRow->menu_id;
 
-                if ( $app->request->post('submit') == "stay" ) 	$url = '/ext/menu/edit/' . $id ;
+                if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$url = '/ext/menu/edit/' . $id ;
                 else 											$url = '/ext/menu' ;
 
                 $Factory = \App\Kernel\Factory::getInstance() ;
@@ -224,13 +224,13 @@ $app->group('/menu', function () use ($app)
             $post = $contentRow ;
         }
 
-        $app->render('ext/menu/edit.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/edit.twig.html', array(
             "post" => $post,
             "id" => $id,
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
-    })->name('menu_edit')->via('GET', 'POST');
+    })->name('menu_edit');
 
     $app->delete('/delete/:id', function ($id) use ($app)
     {
@@ -378,10 +378,10 @@ $app->group('/menu', function () use ($app)
         $tab['idmenu']   = $idmenu ;
         $tab['idparent'] = $idparent ;
 
-        $app->render('ext/menu/element_add.twig.html', $tab );
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/element_add.twig.html', $tab);
     })->name('menu_addelement');
 
-    $app->post('/element/add', function () use ($app)
+    $app->post('/element/add', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
         $ret  = true ;
         $msg  = Translate::getInstance()->getText('added_element');
@@ -389,7 +389,7 @@ $app->group('/menu', function () use ($app)
 
         foreach( $lang as $l )
         {
-            if ( $app->request->post('label_' . $l->url ) == "" ) {
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') == "" ) {
                 $ret = false ;
                 $msg = Translate::getInstance()->getText('fill_fields');
             }
@@ -397,22 +397,22 @@ $app->group('/menu', function () use ($app)
 
         if ( $ret == true )
         {
-            if ( $app->request->post('idparent') == -1 ) 	$parent = NULL;
-            else											$parent = $app->request->post('idparent') ;
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idparent'] ?? '') : '') == -1 ) 	$parent = NULL;
+            else											$parent = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idparent'] ?? '') : '') ;
 
             $order = \DB::for_table('menu_element') ;
             if ( $parent !== NULL ) $order = $order->where_equal('menu_element_parent_id',$parent) ;
             else					$order = $order->where_null('menu_element_parent_id') ;
             $order = $order->max('menu_element_order') + 1 ;
 
-            switch( $app->request->post('type_element') )
+            switch( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') )
             {
                 case "section" :
                     $elm = \DB::for_table('menu_element')->create();
-                    $elm->menu_element_menu_id = $app->request->post('idmenu') ;
+                    $elm->menu_element_menu_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idmenu'] ?? '') : '') ;
                     $elm->menu_element_parent_id = $parent ;
                     $elm->menu_element_order = $order ;
-                    $elm->menu_element_type = $app->request->post('type_element') ;
+                    $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
                     $elm->menu_element_link_blank = NULL ;
                     $elm->menu_element_link_href = NULL ;
                     $elm->menu_element_module_id = NULL ;
@@ -427,20 +427,20 @@ $app->group('/menu', function () use ($app)
                         $elmLang = \DB::for_table('menu_element_lang')->create();
                         $elmLang->menu_element_lang_lang_id = $l->id ;
                         $elmLang->menu_element_lang_menu_element_id = $elm->menu_element_id ;
-                        $elmLang->menu_element_lang_label = $app->request->post( 'label_' . $l->url ) ;
+                        $elmLang->menu_element_lang_label = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') ;
                         $elmLang->save();
                     }
                 break;
                 case "page" :
                     $elm = \DB::for_table('menu_element')->create();
-                    $elm->menu_element_menu_id = $app->request->post('idmenu') ;
+                    $elm->menu_element_menu_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idmenu'] ?? '') : '') ;
                     $elm->menu_element_parent_id = $parent ;
                     $elm->menu_element_order = $order ;
-                    $elm->menu_element_type = $app->request->post('type_element') ;
+                    $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
                     $elm->menu_element_link_blank = NULL ;
                     $elm->menu_element_link_href = NULL ;
                     $elm->menu_element_module_id = NULL ;
-                    $elm->menu_element_value_id = $app->request->post('page_id') ;
+                    $elm->menu_element_value_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_id'] ?? '') : '') ;
                     $elm->menu_element_max_level = NULL ;
                     $elm->menu_element_has_submenu = NULL ;
                     $elm->menu_element_option = NULL ;
@@ -451,23 +451,23 @@ $app->group('/menu', function () use ($app)
                         $elmLang = \DB::for_table('menu_element_lang')->create();
                         $elmLang->menu_element_lang_lang_id = $l->id ;
                         $elmLang->menu_element_lang_menu_element_id = $elm->menu_element_id ;
-                        $elmLang->menu_element_lang_label = $app->request->post( 'label_' . $l->url ) ;
+                        $elmLang->menu_element_lang_label = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') ;
                         $elmLang->save();
                     }
                 break;
                 case "module" :
                     $elm = \DB::for_table('menu_element')->create();
-                    $elm->menu_element_menu_id = $app->request->post('idmenu') ;
+                    $elm->menu_element_menu_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idmenu'] ?? '') : '') ;
                     $elm->menu_element_parent_id = $parent ;
                     $elm->menu_element_order = $order ;
-                    $elm->menu_element_type = $app->request->post('type_element') ;
+                    $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
                     $elm->menu_element_link_blank = NULL ;
                     $elm->menu_element_link_href = NULL ;
-                    $elm->menu_element_module_id = $app->request->post('module_id') ;
-                    $elm->menu_element_value_id = $app->request->post('module_' . $app->request->post('module_id') ) ;
-                    $elm->menu_element_max_level = $app->request->post('level') ;
-                    $elm->menu_element_has_submenu = ( $app->request->post('view_submenu') == "yes" ? 1 : 0 ) ;
-                    $elm->menu_element_option = $app->request->post('module_option') ;
+                    $elm->menu_element_module_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_id'] ?? '') : '') ;
+                    $elm->menu_element_value_id = ($req->getParsedBody()['module_' . ($req->getParsedBody()['module_id'] ?? '')] ?? '') ;
+                    $elm->menu_element_max_level = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['level'] ?? '') : '') ;
+                    $elm->menu_element_has_submenu = ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['view_submenu'] ?? '') : '') == "yes" ? 1 : 0 ) ;
+                    $elm->menu_element_option = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_option'] ?? '') : '') ;
                     $elm->save();
 
                     foreach( $lang as $l )
@@ -475,12 +475,12 @@ $app->group('/menu', function () use ($app)
                         $elmLang = \DB::for_table('menu_element_lang')->create();
                         $elmLang->menu_element_lang_lang_id = $l->id;
                         $elmLang->menu_element_lang_menu_element_id = $elm->menu_element_id;
-                        $elmLang->menu_element_lang_label = $app->request->post('label_' . $l->url);
+                        $elmLang->menu_element_lang_label = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '');
                         $elmLang->save();
                     }
                 break;
                 case "link" :
-                    if ( $app->request->post('link') == "" )
+                    if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['link'] ?? '') : '') == "" )
                     {
                         $ret = false ;
                         $msg = Translate::getInstance()->getText('fill_fields');
@@ -488,12 +488,12 @@ $app->group('/menu', function () use ($app)
                     else
                     {
                         $elm = \DB::for_table('menu_element')->create();
-                        $elm->menu_element_menu_id = $app->request->post('idmenu') ;
+                        $elm->menu_element_menu_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['idmenu'] ?? '') : '') ;
                         $elm->menu_element_parent_id = $parent ;
                         $elm->menu_element_order = $order ;
-                        $elm->menu_element_type = $app->request->post('type_element') ;
-                        $elm->menu_element_link_blank = $app->request->post('view_link') ;
-                        $elm->menu_element_link_href = $app->request->post('link') ;
+                        $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
+                        $elm->menu_element_link_blank = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['view_link'] ?? '') : '') ;
+                        $elm->menu_element_link_href = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['link'] ?? '') : '') ;
                         $elm->menu_element_module_id = NULL ;
                         $elm->menu_element_value_id = NULL ;
                         $elm->menu_element_max_level = NULL ;
@@ -506,7 +506,7 @@ $app->group('/menu', function () use ($app)
                             $elmLang = \DB::for_table('menu_element_lang')->create();
                             $elmLang->menu_element_lang_lang_id = $l->id ;
                             $elmLang->menu_element_lang_menu_element_id = $elm->menu_element_id ;
-                            $elmLang->menu_element_lang_label = $app->request->post( 'label_' . $l->url ) ;
+                            $elmLang->menu_element_lang_label = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') ;
                             $elmLang->save();
                         }
                     }
@@ -522,7 +522,7 @@ $app->group('/menu', function () use ($app)
     ########################   UPDATE     #######################
     #############################################################
 
-    $app->post('/element/update', function () use ($app)
+    $app->post('/element/update', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
         $ret  = true ;
         $msg  = Translate::getInstance()->getText('modified_element');
@@ -530,7 +530,7 @@ $app->group('/menu', function () use ($app)
 
         foreach( $lang as $l )
         {
-            if ( $app->request->post('label_' . $l->url ) == "" ) {
+            if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') == "" ) {
                 $ret = false ;
                 $msg = Translate::getInstance()->getText('fill_fields');
             }
@@ -538,41 +538,41 @@ $app->group('/menu', function () use ($app)
 
         if ( $ret == true )
         {
-            $elm = \DB::for_table('menu_element')->where_id_is($app->request->post('id'))->find_one();
+            $elm = \DB::for_table('menu_element')->where_id_is((is_array($req->getParsedBody()) ? ($req->getParsedBody()['id'] ?? '') : ''))->find_one();
 
-            switch( $app->request->post('type_element') )
+            switch( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') )
             {
                 case "page" :
-                    $elm->menu_element_type = $app->request->post('type_element') ;
+                    $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
                     $elm->menu_element_link_blank = NULL ;
                     $elm->menu_element_link_href = NULL ;
                     $elm->menu_element_module_id = NULL ;
-                    $elm->menu_element_value_id = $app->request->post('page_id') ;
+                    $elm->menu_element_value_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_id'] ?? '') : '') ;
                     $elm->menu_element_max_level = NULL ;
                     $elm->menu_element_has_submenu = NULL ;
                     $elm->menu_element_option = NULL ;
                     break;
                 case "module" :
-                    $elm->menu_element_type = $app->request->post('type_element') ;
+                    $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
                     $elm->menu_element_link_blank = NULL ;
                     $elm->menu_element_link_href = NULL ;
-                    $elm->menu_element_module_id = $app->request->post('module_id') ;
-                    $elm->menu_element_value_id = $app->request->post('module_' . $app->request->post('module_id') ) ;
-                    $elm->menu_element_max_level = $app->request->post('level') ;
-                    $elm->menu_element_has_submenu = ( $app->request->post('view_submenu') == "yes" ? 1 : 0 ) ;
-                    $elm->menu_element_option = $app->request->post('module_option') ;
+                    $elm->menu_element_module_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_id'] ?? '') : '') ;
+                    $elm->menu_element_value_id = ($req->getParsedBody()['module_' . ($req->getParsedBody()['module_id'] ?? '')] ?? '') ;
+                    $elm->menu_element_max_level = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['level'] ?? '') : '') ;
+                    $elm->menu_element_has_submenu = ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['view_submenu'] ?? '') : '') == "yes" ? 1 : 0 ) ;
+                    $elm->menu_element_option = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_option'] ?? '') : '') ;
                     break;
                 case "link" :
-                    if ( $app->request->post('link') == "" )
+                    if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['link'] ?? '') : '') == "" )
                     {
                         $ret = false ;
                         $msg = Translate::getInstance()->getText('fill_fields');
                     }
                     else
                     {
-                        $elm->menu_element_type = $app->request->post('type_element') ;
-                        $elm->menu_element_link_blank = $app->request->post('view_link') ;
-                        $elm->menu_element_link_href = $app->request->post('link') ;
+                        $elm->menu_element_type = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['type_element'] ?? '') : '') ;
+                        $elm->menu_element_link_blank = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['view_link'] ?? '') : '') ;
+                        $elm->menu_element_link_href = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['link'] ?? '') : '') ;
                         $elm->menu_element_module_id = NULL ;
                         $elm->menu_element_value_id = NULL ;
                         $elm->menu_element_max_level = NULL ;
@@ -588,15 +588,15 @@ $app->group('/menu', function () use ($app)
             {
                 foreach( $lang as $l )
                 {
-                    $elmLang = \DB::for_table('menu_element_lang')->where(['menu_element_lang_menu_element_id' => $app->request->post('id'), 'menu_element_lang_lang_id' => $l->id])->find_one();
+                    $elmLang = \DB::for_table('menu_element_lang')->where(['menu_element_lang_menu_element_id' => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['id'] ?? '') : ''), 'menu_element_lang_lang_id' => $l->id])->find_one();
                     if ( ! $elmLang )
                     {
                         $elmLang = \DB::for_table('menu_element_lang')->create();
-                        $elmLang->menu_element_lang_menu_element_id = $app->request->post('id');
+                        $elmLang->menu_element_lang_menu_element_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['id'] ?? '') : '');
                         $elmLang->menu_element_lang_lang_id = $l->id;
                     }
 
-                    $elmLang->menu_element_lang_label = $app->request->post( 'label_' . $l->url ) ;
+                    $elmLang->menu_element_lang_label = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['label_' . $l->url] ?? '') : '') ;
                     $elmLang->save();
                 }
             }
@@ -630,6 +630,6 @@ $app->group('/menu', function () use ($app)
         $tab['e'] 		 = $element ;
         $tab['label'] 	 = $label ;
 
-        $app->render('ext/menu/element_add.twig.html', $tab );
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/element_add.twig.html', $tab);
     })->name('menu_update_element');
 });

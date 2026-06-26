@@ -3,135 +3,104 @@
 namespace App\Kernel;
 
 use App\Kernel\Front\Translate;
-use App\Kernel\SlimBridge;
-use App\Kernel\SlimResponse;
+use Psr\Http\Message\ServerRequestInterface;
 
 class CMS
 {
-    /* ************************************************** */
-    /* ****************   VARIABLES   ******************* */
-    /* ************************************************** */
+    private static ?self $instance = null;
+    private array $config = [];
 
-    private static $instance = NULL ;
-    private $config = [];
+    public function __construct() {}
 
-    /* ************************************************** */
-    /* ****************   CONSTRUCT   ******************* */
-    /* ************************************************** */
+    /* -------------------------------------------------- */
+    /* Singleton                                          */
+    /* -------------------------------------------------- */
 
-    public function __construct()
+    public static function getInstance(): self
     {
-        /*$this->view()->appendData([
-            'debug' => $this->isDev()
-        ]);*/
-    }
-
-    /* ************************************************** */
-    /* ****************      ISER     ******************* */
-    /* ************************************************** */
-
-    public function isDev()
-    {
-        return DEBUG_CMS ;
-    }
-
-    /* ************************************************** */
-    /* ****************     SETTER    ******************* */
-    /* ************************************************** */
-
-    public function setConfig( array $config )
-    {
-        $this->config = $config ;
-    }
-
-    /* ************************************************** */
-    /* ****************     GETTER    ******************* */
-    /* ************************************************** */
-
-    public static function getInstance()
-    {
-        if ( self::$instance === NULL ) self::$instance = new CMS;
-        return self::$instance ;
-    }
-
-    public function getConfig()
-    {
-        return $this->config ;
-    }
-
-    public function getApp(): SlimBridge
-    {
-        return SlimBridge::getInstance();
-    }
-
-    /* ************************************************** */
-    /* ****************     REQUEST   ******************* */
-    /* ************************************************** */
-
-    public function request()
-    {
-        return $this->getApp()->request() ;
-    }
-
-    public function response(): SlimResponse
-    {
-        return $this->getApp()->response();
-    }
-
-    public function config( $key )
-    {
-        if ( array_key_exists( $key , $this->getConfig() ) )
-        {
-            return $this->config[ $key ] ;
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
-        else
-        {
-            return NULL ;
+        return self::$instance;
+    }
+
+    /* -------------------------------------------------- */
+    /* Config                                             */
+    /* -------------------------------------------------- */
+
+    public function setConfig(array $config): void
+    {
+        $this->config = $config;
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * Lit une clé depuis la config locale (issue de Kernel::$_config).
+     * Pour la config applicative complète, utiliser Config::getInstance()->get().
+     */
+    public function config(string $key): mixed
+    {
+        return $this->config[$key] ?? null;
+    }
+
+    /* -------------------------------------------------- */
+    /* Helpers applicatifs                                */
+    /* -------------------------------------------------- */
+
+    public function isDev(): bool
+    {
+        return defined('DEBUG_CMS') && DEBUG_CMS;
+    }
+
+    public function getIp(): string
+    {
+        return $_SERVER['HTTP_X_FORWARDED_FOR']
+            ?? $_SERVER['HTTP_X_REAL_IP']
+            ?? $_SERVER['REMOTE_ADDR']
+            ?? '';
+    }
+
+    /* -------------------------------------------------- */
+    /* Request courante                                   */
+    /* -------------------------------------------------- */
+
+    public function request(): ?ServerRequestInterface
+    {
+        return AppContext::request();
+    }
+
+    /* -------------------------------------------------- */
+    /* Traduction                                         */
+    /* -------------------------------------------------- */
+
+    public function text(string $key): string
+    {
+        return Translate::getInstance()->getText($key);
+    }
+
+    /* -------------------------------------------------- */
+    /* Vue                                                */
+    /* -------------------------------------------------- */
+
+    public function view(): View
+    {
+        return View::getInstance();
+    }
+
+    public function fetch(string $tpl, array $arg = []): string
+    {
+        return $this->view()->fetch($tpl, $arg);
+    }
+
+    public function render(string $tpl, array $arg = []): void
+    {
+        if (isset($_GET['noview']) || isset($_POST['noview'])) {
+            return;
         }
-    }
-
-    public function getIp()
-    {
-        if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
-        {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }
-        else if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) )
-        {
-            return $_SERVER['HTTP_X_REAL_IP'];
-        }
-        else
-        {
-            return $_SERVER['REMOTE_ADDR'] ;
-        }
-    }
-
-    /* ************************************************** */
-    /* ****************   TRANSALTE   ******************* */
-    /* ************************************************** */
-
-    public function text( $key )
-    {
-        return Translate::getInstance()->getText( 'key' );
-    }
-
-    /* ************************************************** */
-    /* ****************      VIEW     ******************* */
-    /* ************************************************** */
-
-    public function view()
-    {
-        return new View;
-    }
-
-    public function fetch( $tpl , $arg = [] )
-    {
-        return $this->view()->fetch( $tpl , $arg ) ;
-    }
-
-    public function render( $tpl , $arg = [] )
-    {
-        if ( isset( $_GET['noview'] ) or isset( $_POST['noview'] ) or $this->getApp()->response()->getBuffer() !== '' ) return "" ;
-        else                                                                                                                                                       return $this->view()->render( $tpl , $arg ) ;
+        $this->view()->render($tpl, $arg);
     }
 }

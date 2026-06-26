@@ -1,79 +1,74 @@
 <?php
 
-$app->map('/:entity/:action/id/:id(/:token)', function ( $entity , $action , $id , $token = NULL )
-{
-    $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
-    $Controller->setEntityName( $entity );
-    $Controller->setActionName( $action );
-    $Controller->setIdParent([]);
-    $Controller->setToken( $token );
-    $Controller->setId( $id );
-    $Controller->execute();
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
-})->conditions([
-    'id' => '[0-9]+',
-    'action' => '[_a-zA-Z0-9]+',
-    'entity' => '[_a-zA-Z0-9]+'
-])->via('GET', 'POST');
+// Route 1 : entity/action/id/:id[/token]
+$app->map(['GET', 'POST'], '/{entity:[_a-zA-Z0-9]+}/{action:[_a-zA-Z0-9]+}/id/{id:[0-9]+}[/{token:[a-zA-Z0-9]+}]',
+    function (Request $req, Response $res, array $args): Response {
+        $Controller = \App\Kernel\Container::getInstance()->module($args['entity'])->getController(true);
+        $Controller->setEntityName($args['entity']);
+        $Controller->setActionName($args['action']);
+        $Controller->setIdParent([]);
+        $Controller->setToken($args['token'] ?? null);
+        $Controller->setId($args['id']);
+        $Controller->execute();
+        return $res;
+    }
+);
 
-$app->map('/:entity/:action(/:parent+(/id/:id(/:token)))', function ( $entity , $action , $parent = '' , $id = NULL , $token = NULL )
-{
-	if ( empty( $parent ) ) $parent = [];
-	else                    $parent = explode( '/' , $parent );
+// Route 2 : entity/action[/params...] (parent + optional id + token)
+$app->map(['GET', 'POST'], '/{entity:[_a-zA-Z0-9]+}/{action:[_a-zA-Z0-9]+}[/{params:.+}]',
+    function (Request $req, Response $res, array $args): Response {
+        $rawParams = $args['params'] ?? '';
+        $id        = null;
+        $token     = null;
+        $parent    = [];
 
-	$Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
-	$Controller->setEntityName( $entity );
-	$Controller->setActionName( $action );
-	$Controller->setIdParent( $parent );
-	$Controller->setToken( $token );
-	$Controller->setId( $id );
-	$Controller->execute();
+        // Extraire /id/:id[/:token] depuis $rawParams si présent
+        if (preg_match('#^(.*)/id/(\d+)(?:/([a-zA-Z0-9]+))?$#', $rawParams, $m)) {
+            $parent = array_filter(explode('/', $m[1]), fn($s) => $s !== '');
+            $id     = $m[2];
+            $token  = $m[3] ?? null;
+        } else {
+            $parent = array_filter(explode('/', $rawParams), fn($s) => $s !== '');
+        }
 
-})->conditions([
-	'action' => '[_a-zA-Z0-9]+',
-	'entity' => '[_a-zA-Z0-9]+',
-	'parent' => '[\/0-9]+',
-	'token' => '[a-zA-Z0-9]+',
-	'id' => '[0-9]+'
-])->via('GET', 'POST');
+        $Controller = \App\Kernel\Container::getInstance()->module($args['entity'])->getController(true);
+        $Controller->setEntityName($args['entity']);
+        $Controller->setActionName($args['action']);
+        $Controller->setIdParent(array_values($parent));
+        $Controller->setToken($token);
+        $Controller->setId($id);
+        $Controller->execute();
+        return $res;
+    }
+);
 
-$app->map('/:entity/:action/id/:id/depedency/:module(/:element)', function ( $entity , $action , $element , $module , $id = NULL )
-{
-	if ( empty( $parent ) ) $parent = [];
-	else                    $parent = explode( '/' , $parent );
+// Route 3 : entity/action/id/:id/depedency/:module[/:element]
+$app->map(['GET', 'POST'], '/{entity:[_a-zA-Z0-9]+}/{action:[_a-zA-Z0-9]+}/id/{id:[0-9]+}/depedency/{module:[0-9]+}[/{element:[0-9]+}]',
+    function (Request $req, Response $res, array $args): Response {
+        $Controller = \App\Kernel\Container::getInstance()->module($args['entity'])->getController(true);
+        $Controller->setEntityName($args['entity']);
+        $Controller->setActionName($args['action']);
+        $Controller->setDepedencyModule($args['module']);
+        $Controller->setDepedencyElement($args['element'] ?? null);
+        $Controller->setId($args['id']);
+        $Controller->execute();
+        return $res;
+    }
+);
 
-	$Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
-	$Controller->setEntityName( $entity );
-	$Controller->setActionName( $action );
-	$Controller->setDepedencyModule( $module );
-	$Controller->setDepedencyElement( $element );
-	$Controller->setId( $id );
-	$Controller->execute();
-
-})->conditions([
-	'action' => '[_a-zA-Z0-9]+',
-	'entity' => '[_a-zA-Z0-9]+',
-	'module' => '[0-9]+',
-	'element' => '[0-9]+',
-	'id' => '[0-9]+'
-])->via('GET', 'POST');
-
-$app->map('/:entity(/:action(/:id(/:token(/:lang))))', function ( $entity , $action = "index" , $id = NULL , $token = NULL , $lang = NULL )
-{
-
-    $Controller = \App\Kernel\Container::getInstance()->module( $entity )->getController( true );
-    $Controller->setEntityName( $entity );
-    $Controller->setActionName( $action );
-    $Controller->setId( $id );
-    $Controller->setToken( $token );
-    $Controller->setLang( $lang );
-    $Controller->execute();
-
-})->conditions([
-    'entity' => '[_a-zA-Z0-9]+',
-    'action' => '[_a-zA-Z0-9]+',
-    'id' => '[0-9]+',
-    'token' => '[a-zA-Z0-9]+',
-    'lang' => '[0-9]+'
-])->via('GET', 'POST');
-
+// Route 4 : entity[/action[/id[/token[/lang]]]] (route générale, en dernier)
+$app->map(['GET', 'POST'], '/{entity:[_a-zA-Z0-9]+}[/{action:[_a-zA-Z0-9]+}[/{id:[0-9]+}[/{token:[a-zA-Z0-9]+}[/{lang:[0-9]+}]]]]',
+    function (Request $req, Response $res, array $args): Response {
+        $Controller = \App\Kernel\Container::getInstance()->module($args['entity'])->getController(true);
+        $Controller->setEntityName($args['entity']);
+        $Controller->setActionName($args['action'] ?? 'index');
+        $Controller->setId($args['id'] ?? null);
+        $Controller->setToken($args['token'] ?? null);
+        $Controller->setLang($args['lang'] ?? null);
+        $Controller->execute();
+        return $res;
+    }
+);

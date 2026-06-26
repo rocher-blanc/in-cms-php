@@ -2,35 +2,94 @@
 
 namespace App\Kernel\Middleware;
 
-use App\Kernel\SlimBridge;
-use App\Kernel\SlimRequestBridge;
+use App\Kernel\AppContext;
+use App\Kernel\Config;
+use App\Kernel\Exception\RedirectException;
+use App\Kernel\Factory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Response as SlimResponse;
 
 /**
  * Classe de base pour tous les middlewares PSR-15.
  *
- * Fournit l'accès au SlimBridge et à la request courante,
- * réduisant le boilerplate de migration depuis Slim\Middleware.
+ * Fournit :
+ *  - Des helpers vers Config, Factory et la requête courante (DI allégé)
+ *  - La mise à jour de AppContext::request() à chaque passage
+ *  - La capture de RedirectException → réponse HTTP 3xx
  */
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
     abstract public function process(Request $request, RequestHandler $handler): Response;
 
-    protected function app(): SlimBridge
+    /* ------------------------------------------------------------------ */
+    /* Helpers services                                                    */
+    /* ------------------------------------------------------------------ */
+
+    protected function config(): Config
     {
-        return SlimBridge::getInstance();
+        return Config::getInstance();
     }
 
-    protected function request(): SlimRequestBridge
+    protected function Factory(): Factory
     {
-        return SlimRequestBridge::getInstance();
+        return Factory::getInstance();
     }
 
-    protected function Factory(): \App\Kernel\Factory
+    /* ------------------------------------------------------------------ */
+    /* Helpers requête (remplacent SlimRequestBridge)                     */
+    /* ------------------------------------------------------------------ */
+
+    protected function currentRequest(): ?Request
     {
-        return \App\Kernel\Factory::getInstance();
+        return AppContext::request();
+    }
+
+    protected function isPost(): bool
+    {
+        return strtoupper(AppContext::request()?->getMethod() ?? '') === 'POST';
+    }
+
+    protected function post(string $key, mixed $default = null): mixed
+    {
+        $body = AppContext::request()?->getParsedBody();
+        return is_array($body) ? ($body[$key] ?? $default) : $default;
+    }
+
+    protected function get(string $key, mixed $default = null): mixed
+    {
+        $params = AppContext::request()?->getQueryParams() ?? [];
+        return $params[$key] ?? $default;
+    }
+
+    protected function isAjax(): bool
+    {
+        return AppContext::request()?->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Gestion des redirections depuis la logique métier                  */
+    /* ------------------------------------------------------------------ */
+
+    /**
+     * Wraps le handler en capturant les RedirectException.
+     *
+     * Pourquoi : Factory\Response::redirect() est appelé depuis des méthodes
+     * imbriquées (ex : observe → redirectLogin → redirect → throw).
+     * Ce helper centralise la conversion exception → réponse PSR-7.
+     */
+    protected function handleRequest(callable $logic, Request $request, RequestHandler $handler): Response
+    {
+        AppContext::setRequest($request);
+
+        try {
+            $logic();
+            return $handler->handle($request);
+        } catch (RedirectException $e) {
+            return (new SlimResponse($e->getStatus()))
+                ->withHeader('Location', $e->getUrl());
+        }
     }
 }

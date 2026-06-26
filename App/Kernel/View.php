@@ -4,116 +4,96 @@ namespace App\Kernel;
 
 class View
 {
-    /* ************************************************** */
-    /* ****************   VARIABLES   ******************* */
-    /* ************************************************** */
-
-    protected $folder = [] ;
+    protected array $folder = [];
 
     private static ?self $instance = null;
 
-    /* ************************************************** */
-    /* ****************     TOOLS     ******************* */
-    /* ************************************************** */
-
-    protected function getApp(): SlimBridge
-    {
-        return SlimBridge::getInstance() ;
-    }
-
-    /* ************************************************** */
-    /* ****************   SINGLETONE   ****************** */
-    /* ************************************************** */
+    /* -------------------------------------------------- */
+    /* Singleton                                          */
+    /* -------------------------------------------------- */
 
     public static function getInstance(): self
     {
-        if ( self::$instance === NULL ) self::$instance = new View;
-        return self::$instance ;
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
-    /* ************************************************** */
-    /* ****************     SETTER    ******************* */
-    /* ************************************************** */
+    /* -------------------------------------------------- */
+    /* Dossiers de templates                              */
+    /* -------------------------------------------------- */
 
-    public function setFolder( $folder )
+    public function setFolder(string $folder): void
     {
-        $this->folder[] = $folder ;
+        $this->folder[] = $folder;
     }
 
-    public function setData( $key , $var )
+    /* -------------------------------------------------- */
+    /* Données globales Twig                              */
+    /* -------------------------------------------------- */
+
+    public function setData(string $key, mixed $value): void
     {
-        $this->getApp()->appendViewData([ $key => $var ]);
+        AppContext::addGlobal($key, $value);
     }
 
-    /* ************************************************** */
-    /* ****************     GETTER    ******************* */
-    /* ************************************************** */
-
-    public function getData( $key )
+    public function appendData(array $array): void
     {
-        return $this->getApp()->getViewData( $key );
+        AppContext::addGlobals($array);
     }
 
-    /* ************************************************** */
-    /* ****************    FUNCTIONS   ****************** */
-    /* ************************************************** */
+    /* -------------------------------------------------- */
+    /* Rendu                                              */
+    /* -------------------------------------------------- */
 
-    public function render( $template , $args = [] )
+    public function render(string $template, array $args = []): void
     {
-        $twig = $this->getApp()->view();
-        if ( $twig === null ) return;
+        $twig = AppContext::twig();
+        if ($twig === null) {
+            return;
+        }
 
         $env    = $twig->getEnvironment();
         $loader = $env->getLoader();
 
-        // Vérifie si le template existe, sinon essaie avec .html
         $exists = false;
         try {
-            $loader->getSourceContext( $template );
+            $loader->getSourceContext($template);
             $exists = true;
-        } catch ( \Twig\Error\LoaderError $e ) {
+        } catch (\Twig\Error\LoaderError) {
             try {
-                $loader->getSourceContext( $template . '.html' );
+                $loader->getSourceContext($template . '.html');
                 $template .= '.html';
                 $exists    = true;
-            } catch ( \Twig\Error\LoaderError $e2 ) {
+            } catch (\Twig\Error\LoaderError) {
                 // template introuvable
             }
         }
 
-        if ( $exists === false ) return;
+        if (!$exists) {
+            return;
+        }
 
-        if ( DEBUG_TWIG ?? false )
-        {
-            $this->getTwigDebugBar()->merge( $args );
+        if (defined('DEBUG_TWIG') && DEBUG_TWIG) {
+            $this->getTwigDebugBar()->merge($args);
             $args['__debug_twig__'] = $this->getTwigDebugBar()->getDebugTwig();
         }
 
-        $globalData = $this->getApp()->getViewData();
-        echo $env->render( $template , array_merge( $globalData , $args ) );
+        echo $env->render($template, $args);
     }
 
-    public function getTwigDebugBar()
+    public function fetch(string $template, array $args = []): string
+    {
+        $twig = AppContext::twig();
+        if ($twig === null) {
+            return '';
+        }
+        return $twig->getEnvironment()->render($template, $args);
+    }
+
+    public function getTwigDebugBar(): \App\Kernel\Front\TwigDebugBar
     {
         return \App\Kernel\Front\TwigDebugBar::getInstance();
-    }
-
-    public function fetch( $template , $args = [] )
-    {
-        $twig = $this->getApp()->view();
-        if ( $twig === null ) return '';
-
-        $env        = $twig->getEnvironment();
-        $globalData = $this->getApp()->getViewData();
-        return $env->render( $template , array_merge( $globalData , $args ) );
-    }
-
-    public function appendData( $array )
-    {
-        if ( DEBUG_TWIG ?? false )
-        {
-            $this->getTwigDebugBar()->merge( $array );
-        }
-        $this->getApp()->appendViewData( $array );
     }
 }

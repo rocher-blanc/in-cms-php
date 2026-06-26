@@ -2,19 +2,19 @@
 
 use App\Kernel\Front\Translate;
 
-$app->group('/user_front_group', function () use ($app)
+$app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app) {
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 
 		$contentRows = \DB::for_table('user_front_group')
                             ->order_by_asc('user_front_group_name')
                             ->find_many();
 		
-		$app->render('ext/user_front_group/index.twig', array( "contentRows" => $contentRows ));
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/user_front_group/index.twig', array( "contentRows" => $contentRows ));
 
 	})->name('user_front_index');
 
-	$app->map('/edit(/:id)', function ($id = -1) use ($app)
+	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
@@ -36,22 +36,22 @@ $app->group('/user_front_group', function () use ($app)
 			$post = $contentRow ;
 		}
 		
-		if ( $app->request->isPost() ) {
+		if ( strtoupper($req->getMethod()) === 'POST' ) {
 			$post = array(
-				"user_front_group_name" => $app->request->post('user_front_group_name')
+				"user_front_group_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_front_group_name'] ?? '') : '')
 			) ;
 			
-			if ( $app->request->post('user_front_group_name') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_front_group_name'] ?? '') : '') == "" ) {
 				$error = true ;
 				$tabError['user_front_group_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 			}
 			else {
-				$exist = \DB::for_table('user_front_group')->where_equal('user_front_group_name' , $app->request->post('user_front_group_name'));
+				$exist = \DB::for_table('user_front_group')->where_equal('user_front_group_name' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_front_group_name'] ?? '') : ''));
 				if ( $id != -1 ) $exist = $exist->where_not_equal('user_front_group_id' , $id);
 				$exist = $exist->count();
 			}
 			
-			if ( $app->request->post('user_front_group_name') != "" && $exist > 0 ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_front_group_name'] ?? '') : '') != "" && $exist > 0 ) {
 				$error = true ;
 				$tabError['user_front_group_name'] = Translate::getInstance()->getText( 'msg_grp_name_error' );
 			}
@@ -62,7 +62,7 @@ $app->group('/user_front_group', function () use ($app)
 					$add = true ;
 				}
 				
-				$contentRow->user_front_group_name = $app->request->post('user_front_group_name');
+				$contentRow->user_front_group_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['user_front_group_name'] ?? '') : '');
 				$contentRow->save();
 				
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 7 : 8 ) , $contentRow->user_front_group_name ) ;
@@ -72,22 +72,22 @@ $app->group('/user_front_group', function () use ($app)
 				$app->flash('__msg', "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) );
 				$app->flash('__result',true);
 				
-				if ( $app->request->post('submit') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user_front_group/edit/' . $id );
+				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user_front_group/edit/' . $id );
 				else 											$app->redirect( $app->config('admin.url') . '/ext/user_front_group' );
 			}
 		}
 
-		$app->render('ext/user_front_group/edit.twig', array(
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/user_front_group/edit.twig', array(
 												"contentRow" => $contentRow,
 												"id" 		 => $id,
 												"post"		 => $post,
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('user_front_group_edit')->via('GET', 'POST');
+	})->name('user_front_group_edit');
 
     $app->get('/delete/:id', function ($id) use ($app) {
-        $app->render('common/delete.twig', [
+        return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/user_front_group/delete/' . $id)
         ]);
     });

@@ -172,7 +172,7 @@ $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
     }
 })->name('newsletter_template');
 
-$app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $email , $confirm = 0 ) use ( $app ) {
+$app->get('/newsletter/unsubscribe/:id/:email[/{confirm}]', function ( $id , $email , $confirm = 0 ) use ( $app ) {
     $newsletter = new Data('NewsletterCampaignGroup');
     $rstNewsletter = $newsletter->find( $id ) ;
 
@@ -216,7 +216,7 @@ $app->get('/newsletter/unsubscribe/:id/:email(/:confirm)', function ( $id , $ema
         }
     }
 
-    $app->render('Newsletter/unsubscribe.twig' , [
+    return \App\Kernel\AppContext::twig()->render($res, 'Newsletter/unsubscribe.twig', [
         'newsletter_name' => $newsletter->get('name'),
         'idnl' => $id,
         'email' => $email,

@@ -45,9 +45,9 @@ class Router
     /* ******************   GETTER   ******************** */
     /* ************************************************** */
 
-    protected function getApp()
+    protected function getApp(): \Slim\App
     {
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\AppContext::slimApp();
     }
 
     protected function Factory()
@@ -190,7 +190,7 @@ class Router
                 {
                     if ( $this->getUrl(0) == $this->Lang()->getDefault()->url )
                     {
-                        $this->getApp()->redirect('/');
+                        $this->Factory()->Response()->redirect('/');
                     }
 
                     $this->updateRoute() ;
@@ -401,14 +401,17 @@ class Router
             $this->urlElementModule( $mp , $url , $id_module );
         }
 
-        $this->getApp()->map(':page+', function ( $page = [] ) use ( $class , $url , $element )
-        {
+        $this->getApp()->map(['GET', 'POST'], '/{page:.+}', function (
+            \Psr\Http\Message\ServerRequestInterface $req,
+            \Psr\Http\Message\ResponseInterface $res,
+            array $args
+        ) use ( $class , $url , $element ): \Psr\Http\Message\ResponseInterface {
             $Controller = \App\Kernel\Container::getInstance()->module( $class )->getController();
             $Controller->setUrl( explode('/',$url) );
             if ( $element ) $Controller->setElement();
             $Controller->execute();
-
-        })->via('GET', 'POST');
+            return $res;
+        });
     }
 
     /* ************************************************** */
@@ -475,7 +478,7 @@ class Router
         {
             $fileExist = false;
 
-            $twig   = $this->getApp()->view();
+            $twig   = \App\Kernel\AppContext::twig();
             $loader = $twig ? $twig->getEnvironment()->getLoader() : null;
             $twigDirs = ( $loader instanceof \Twig\Loader\FilesystemLoader ) ? $loader->getPaths() : [];
             foreach( $twigDirs as $folder )
@@ -531,20 +534,21 @@ class Router
                 $Response   = $this->Factory()->Response();
                 $Url        = $this->Factory()->Url();
 
-                $app->get('/(:lang)', function ( $lang = NULL ) use ( $page , $User , $Response , $Url )
-                {
+                $app->map(['GET', 'POST'], '/[{lang:[a-z]+}]', function (
+                    \Psr\Http\Message\ServerRequestInterface $req,
+                    \Psr\Http\Message\ResponseInterface $res,
+                    array $args
+                ) use ( $page , $User , $Response , $Url ): \Psr\Http\Message\ResponseInterface {
                     if ( ACTIVE_USER )
                     {
-
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {
                             $Response->redirect( $Url->page( $page->page_access_user_redirect , true ) );
                         }
                         else if ( $page->page_access_user == 2 && $User->isLogged() == true )
                         {
-                            // S'il est connecté mais pas dans le bon groupe
                             $tabGroup = unserialize( $page->page_access_user_group );
-                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ]; // bug tempporairei du au formulaire de bo
+                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ];
 
                             if ( ! in_array( $User->getGroup() , $tabGroup ) )
                             {
@@ -561,20 +565,17 @@ class Router
                         $pageClass->setId( $page->page_id );
                         $pageClass->execute();
                     }
-                    else
+                    else if ( PRODUCTION )
                     {
-                        if ( PRODUCTION )
-                        {
-                            \App\Kernel\Factory::getInstance()->Response()->show404();
-                        }
+                        \App\Kernel\Factory::getInstance()->Response()->show404();
                     }
 
-
-                })->conditions(['lang' => '[a-z]+'])->via('GET', 'POST');
+                    return $res;
+                });
             }
             else
             {
-                $app->pass() ;
+                // Pas de controller de page → pas de route, 404 naturel
             }
         }
     }
@@ -614,9 +615,15 @@ class Router
                 $Response   = $this->Factory()->Response();
                 $Url        = $this->Factory()->Url();
 
-                $app->map('/' . ( $this->Lang()->count() > 1 ? ':lang/' : '' ) . $this->getUrl( $this->getOffset() ) . '(/:params+)', function ($params = NULL) use ( $app , $page , $User , $Response , $Url )
-                {
-                    if ( empty( $app->response()->getBuffer() ) && ACTIVE_USER )
+                $langPrefix = ( $this->Lang()->count() > 1 ? '/{lang:[a-z]+}' : '' );
+                $pageUrl    = $this->getUrl( $this->getOffset() );
+
+                $app->map(['GET', 'POST'], $langPrefix . '/' . $pageUrl . '[/{params:.+}]', function (
+                    \Psr\Http\Message\ServerRequestInterface $req,
+                    \Psr\Http\Message\ResponseInterface $res,
+                    array $args
+                ) use ( $page , $User , $Response , $Url ): \Psr\Http\Message\ResponseInterface {
+                    if ( ACTIVE_USER )
                     {
                         if ( ( $page->page_access_user == 1 && $page->page_access_user_redirect != 0 && $User->isLogged() == true ) or ( $page->page_access_user == 2 && $page->page_access_user_redirect != 0 && $User->isLogged() == false ) )
                         {
@@ -624,9 +631,8 @@ class Router
                         }
                         else if ( $page->page_access_user == 2 && $User->isLogged() == true )
                         {
-                            // S'il est connecté mais pas dans le bon groupe
                             $tabGroup = unserialize( $page->page_access_user_group );
-                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ]; // bug tempporairei du au formulaire de bo
+                            if ( ! is_array( $tabGroup ) ) $tabGroup = [ $tabGroup ];
 
                             if ( ! in_array( $User->getGroup() , $tabGroup ) )
                             {
@@ -635,23 +641,19 @@ class Router
                         }
                     }
 
-                    if ( file_exists( CONTROLLER_PROJECT_PATH . "/Page" . $page->page_id . ".php" ) )
-                    {
-                        $ControllerClass = '\Project\Controller\Front\Page' . $page->page_id ;
-                    }
-                    else
-                    {
-                        $ControllerClass = 'DefaultPage' ;
-                    }
+                    $ControllerClass = file_exists( CONTROLLER_PROJECT_PATH . '/Page' . $page->page_id . '.php' )
+                        ? '\Project\Controller\Front\Page' . $page->page_id
+                        : 'DefaultPage';
 
                     $pageClass = new $ControllerClass;
                     $pageClass->setId( $page->page_id );
                     $pageClass->execute();
-                })->via('GET', 'POST');
+                    return $res;
+                });
             }
             else
             {
-                $app->pass() ;
+                // Pas de controller de page → 404 naturel
             }
         }
     }

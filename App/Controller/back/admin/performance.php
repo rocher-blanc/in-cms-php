@@ -1,14 +1,14 @@
 <?php
 
-$app->group('/performance', function () use ($app)
+$app->group('/performance', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
         $data = DB::for_table('param')
             ->where_equal('param_key', 'server_cdn')
             ->find_one();
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
             if ( ! $data )
             {
@@ -16,10 +16,10 @@ $app->group('/performance', function () use ($app)
                 $data->param_key = "server_cdn" ;
             }
 
-            $data->param_value = $app->request->post('server_cdn');
+            $data->param_value = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['server_cdn'] ?? '') : '');
             $data->save();
 
-            \App\Kernel\Back\Log::getInstance()->warning( 40 , $app->request->post('server_cdn') ) ;
+            \App\Kernel\Back\Log::getInstance()->warning( 40 , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['server_cdn'] ?? '') : '') ) ;
 			
 			$Factory = \App\Kernel\Factory::getInstance() ;
             $Message = \App\Kernel\Message::getInstance() ;
@@ -31,10 +31,10 @@ $app->group('/performance', function () use ($app)
 
         if ( $data ) $value = $data->param_value ;
 		
-		$app->render('admin/performance/edit.twig.html' , array(
+		return \App\Kernel\AppContext::twig()->render($res, 'admin/performance/edit.twig.html', array(
             "cdn" => $value,
             "dev" => \App\Kernel\CMS::getInstance()->isDev(),
 		));
 
-	})->name('performance_edit')->via('GET', 'POST');
+	})->name('performance_edit');
 });

@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Middleware\Back;
 
+use App\Kernel\AppContext;
+use App\Kernel\Config;
 use App\Kernel\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -9,36 +11,34 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class Auth extends AbstractMiddleware
 {
-    public function __construct() {}
+    public function __construct(private readonly Config $config = new Config()) {}
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
-        $this->observe();
-        return $handler->handle($request);
+        return $this->handleRequest(fn() => $this->observe($request), $request, $handler);
     }
 
-    public function observe(): void
+    private function observe(Request $request): void
     {
         $this->checkIPAccess();
 
         if (!$this->isLogged()) {
-            if (!$this->isOnLoginPage()) {
+            if (!$this->isOnLoginPage($request)) {
                 $this->Factory()->Response()->redirectLogin();
-            } elseif ($this->isOnLoginPage()) {
-                if ($this->request()->isPost()) {
-                    if ($this->checkAuth()) {
+            } elseif ($this->isOnLoginPage($request)) {
+                if (strtoupper($request->getMethod()) === 'POST') {
+                    if ($this->checkAuth($request)) {
                         $this->Factory()->Response()->redirectUrlDestination();
                     }
                 }
             }
-        } elseif ($this->isLogged()) {
-            if ($this->isOnLogoutPage() || $this->isBadIp()) {
+        } else {
+            if ($this->isOnLogoutPage($request) || $this->isBadIp()) {
                 $this->logout();
                 $this->Factory()->Response()->redirectLogin(false);
-            } elseif ($this->isOnLoginPage()) {
+            } elseif ($this->isOnLoginPage($request)) {
                 $this->Factory()->Response()->redirectHome();
-            } elseif (!$this->isOnLogoutPage()) {
+            } else {
                 $this->pushData();
             }
         }
@@ -65,20 +65,22 @@ class Auth extends AbstractMiddleware
 
             if (!$auth) {
                 $this->Factory()->Response()->show404();
+                exit;
             }
         }
     }
 
     private function isLogged(): bool
     {
-        $sessionKey = $this->app()->config('session');
-        return isset($_SESSION[$sessionKey]) && !empty($_SESSION[$sessionKey]);
+        $key = $this->config()->get('session');
+        return isset($_SESSION[$key]) && !empty($_SESSION[$key]);
     }
 
-    private function checkAuth(): bool
+    private function checkAuth(Request $request): bool
     {
-        $username = $this->request()->post($this->app()->config('auth_username'));
-        $password = $this->request()->post($this->app()->config('auth_password'));
+        $body     = $request->getParsedBody();
+        $username = is_array($body) ? ($body[$this->config()->get('auth_username', 'username')] ?? '') : '';
+        $password = is_array($body) ? ($body[$this->config()->get('auth_password', 'password')] ?? '') : '';
 
         if ($username !== '' && $password !== '') {
             $username = htmlentities($username, ENT_QUOTES);
@@ -97,9 +99,9 @@ class Auth extends AbstractMiddleware
         return false;
     }
 
-    private function isOnLoginPage(): bool
+    private function isOnLoginPage(Request $request): bool
     {
-        return $this->request()->getPath() === $this->app()->config('login.url');
+        return $request->getUri()->getPath() === $this->config()->get('login.url');
     }
 
     private function getIp(): string
@@ -109,22 +111,19 @@ class Auth extends AbstractMiddleware
 
     private function isBadIp(): bool
     {
-        $sessionKey = $this->app()->config('session');
-        if (isset($_SESSION[$sessionKey]['ip']) && $this->getIp() === $_SESSION[$sessionKey]['ip']) {
-            return false;
-        }
-        return true;
+        $key = $this->config()->get('session');
+        return !(isset($_SESSION[$key]['ip']) && $this->getIp() === $_SESSION[$key]['ip']);
     }
 
-    private function isOnLogoutPage(): bool
+    private function isOnLogoutPage(Request $request): bool
     {
-        return $this->request()->getPath() === $this->app()->config('logout.url');
+        return $request->getUri()->getPath() === $this->config()->get('logout.url');
     }
 
-    private function login($user): bool
+    private function login(object $user): bool
     {
-        $sessionKey = $this->app()->config('session');
-        $_SESSION[$sessionKey] = [
+        $key = $this->config()->get('session');
+        $_SESSION[$key] = [
             'id'        => $user->user_id,
             'username'  => $user->user_name,
             'group_id'  => $user->user_group_id,
@@ -144,10 +143,10 @@ class Auth extends AbstractMiddleware
 
     private function pushData(): void
     {
-        $sessionKey = $this->app()->config('session');
+        $key  = $this->config()->get('session');
         $user = \DB::for_table('user')
             ->left_outer_join('user_group', ['user.user_group_id', '=', 'user_group.user_group_id'])
-            ->where_equal('user_id', $_SESSION[$sessionKey]['id'])
+            ->where_equal('user_id', $_SESSION[$key]['id'])
             ->find_one();
 
         if (!$user) {
@@ -155,7 +154,7 @@ class Auth extends AbstractMiddleware
             $this->Factory()->Response()->redirectLogin();
         }
 
-        $this->app()->appendViewData([
+        AppContext::addGlobals([
             'user' => [
                 'id'         => $user->user_id,
                 'name'       => $user->user_name,
@@ -170,8 +169,8 @@ class Auth extends AbstractMiddleware
 
     private function logout(): void
     {
-        $sessionKey = $this->app()->config('session');
+        $key = $this->config()->get('session');
         session_destroy();
-        $_SESSION[$sessionKey] = [];
+        $_SESSION[$key] = [];
     }
 }

@@ -32,7 +32,7 @@ class Model
 	 */
     public function getApp()
 	{
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
     }
 	
 	protected function Factory()

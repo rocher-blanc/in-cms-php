@@ -137,12 +137,12 @@ class Gallery
 
 	protected function getApp()
 	{
-		return \App\Kernel\SlimBridge::getInstance() ;
+		return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
 	}
 
 	protected function post( $key )
 	{
-		return $this->getApp()->request->post( $key );
+		return (\App\Kernel\AppContext::request()?->getParsedBody()[$key] ?? '');
 	}
 
 	protected function formatBytes( $bytes )

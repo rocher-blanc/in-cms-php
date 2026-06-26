@@ -6,16 +6,16 @@ use App\Kernel\Factory;
 use App\Kernel\Back\Gallery;
 use App\Kernel\Front\Translate;
 
-$app->group('/moduleadmin', function () use ($app)
+$app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 	{
         $app->get('/icon/:field', function ( $field ) use ($app)
         {
-            $app->render('admin/moduleadmin/icon.twig', [
+            return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/icon.twig', [
                 "field" => $field
             ]);
         });
 
-        $app->post('/generate', function () use ($app)
+        $app->post('/generate', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
         {
             $g = json_decode( $_POST['global'] , true );
             $f = json_decode( $_POST['fields'] , true );
@@ -163,7 +163,7 @@ $app->group('/moduleadmin', function () use ($app)
             }
         });
 
-        $app->get('/new', function () use ($app)
+        $app->get('/new', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
         {
             $contentRows = \DB::for_table('module')
                 ->where_equal('module_kernel' , 0)
@@ -197,13 +197,13 @@ $app->group('/moduleadmin', function () use ($app)
                 }
             }
 
-            $app->render('admin/moduleadmin/new.twig', [
+            return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/new.twig', [
                 "depedency" => $dep,
                 "module" => $tab
             ]);
         });
 
-        $app->get('/', function () use ($app)
+        $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
         {
             $contentRows = \DB::for_table('module')
                 ->where_equal('module_kernel' , 0)
@@ -255,7 +255,7 @@ $app->group('/moduleadmin', function () use ($app)
 				}
 			}
 
-			$app->render('admin/moduleadmin/index.twig.html', [
+			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/index.twig.html', [
 				"img" => $img,
 				"contentRows" => $contentRows,
 				"noInstall" => $list
@@ -289,7 +289,7 @@ $app->group('/moduleadmin', function () use ($app)
 		//generateImage
 		$app->get('/image/:id', function ($id) use ($app)
 		{
-			$app->render('admin/moduleadmin/generateImage.twig',[
+			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/generateImage.twig', [
 				'id' => $id,
 				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/image/' . $id )
 			]);
@@ -390,7 +390,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 		$app->get('/delete/:id', function ($id) use ($app)
 		{
-			$app->render('admin/moduleadmin/delete.twig',[
+			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/delete.twig', [
 				'id' => $id,
 				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/delete/' . $id )
 			]);
@@ -492,7 +492,7 @@ $app->group('/moduleadmin', function () use ($app)
 
 		$app->get('/truncate/:id', function ($id) use ($app)
 		{
-			$app->render('admin/moduleadmin/truncate.twig',[
+			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/truncate.twig', [
 				'id' => $id,
 				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/truncate/' . $id )
 			]);
@@ -626,7 +626,7 @@ $app->group('/moduleadmin', function () use ($app)
 			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
 		})->name('moduleadmin_disactive');
 
-		$app->get('/edit(/:id)', function ($id = -1) use ($app)
+		$app->get('/edit[/{id}]', function ($id = -1) use ($app)
 		{
 			$contentRow = \DB::for_table('module')
 				->where_equal('module_id' , $id)
@@ -636,13 +636,13 @@ $app->group('/moduleadmin', function () use ($app)
 				$app->redirect( $app->config('admin.url') . '/admin/moduleadmin');
 			}
 
-			$app->render('admin/moduleadmin/edit.twig.html', array(
+			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/edit.twig.html', array(
 				"post" => $contentRow,
 				"id" => $id
 			));
 		});
 
-		$app->post('/edit(/:id)', function ($id = -1) use ($app)
+		$app->post('/edit[/{id}]', function ($id = -1) use ($app)
 		{
 			$result['result'] = false ;
 			$contentRow = NULL ;
@@ -663,24 +663,24 @@ $app->group('/moduleadmin', function () use ($app)
 				$add = true ;
 			}
 
-			if ( $app->request->post('module_name') == "" ) {
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_name'] ?? '') : '') == "" ) {
 				$result['msg'] = Translate::getInstance()->getText( 'mandatory_module_name') ;
 				$result['field'] = 'module_name' ;
 			}
-			else if ( $app->request->post('module_class_name') == "" ) {
+			else if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_class_name'] ?? '') : '') == "" ) {
 				$result['msg'] = Translate::getInstance()->getText( 'mandatory_class_name') ;
 				$result['field'] = 'module_class_name' ;
 			}
-			else if ( $app->request->post('module_icon') == "" ) {
+			else if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_icon'] ?? '') : '') == "" ) {
 				$result['msg'] = Translate::getInstance()->getText( 'mandatory_icon') ;
 				$result['field'] = 'module_icon' ;
 			}
 			else
 			{
-				$contentRow->module_name 		= $app->request->post('module_name') ;
-				$contentRow->module_class_name 	= $app->request->post('module_class_name') ;
-				$contentRow->module_icon 		= $app->request->post('module_icon') ;
-				$contentRow->module_active 		= $app->request->post('module_active') ;
+				$contentRow->module_name 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_name'] ?? '') : '') ;
+				$contentRow->module_class_name 	= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_class_name'] ?? '') : '') ;
+				$contentRow->module_icon 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_icon'] ?? '') : '') ;
+				$contentRow->module_active 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['module_active'] ?? '') : '') ;
 				$contentRow->save() ;
 
 				\App\Kernel\Back\Log::getInstance()->info( ( $add == true ? 21 : 17 ) , $contentRow->module_name ) ;

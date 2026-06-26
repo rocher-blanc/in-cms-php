@@ -2,10 +2,12 @@
 
 namespace App\Kernel\Middleware\Front;
 
+use App\Kernel\AppContext;
 use App\Kernel\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Factory\StreamFactory;
 
 /**
  * Middleware d'injection CSS/JS.
@@ -26,23 +28,22 @@ class Assetic extends AbstractMiddleware
 
     private function modifyResponse(Response $response): Response
     {
-        $twig = $this->app()->view();
-        if ($twig === null) return $response;
+        $twig = AppContext::twig();
+        if ($twig === null) {
+            return $response;
+        }
 
-        $extensions = $twig->getEnvironment()->getExtensions();
-        foreach ($extensions as $ext) {
+        foreach ($twig->getEnvironment()->getExtensions() as $ext) {
             if (str_ends_with(get_class($ext), 'TwigFront')) {
                 $html = (string) $response->getBody();
                 $html = str_replace(ASSET_CSS_VAR, $ext->css(), $html);
                 $html = str_replace(ASSET_JS_VAR, $ext->javascript(), $html);
 
-                $body = \Slim\Psr7\Factory\StreamFactory::class
-                    ? (new \Slim\Psr7\Factory\StreamFactory())->createStream($html)
-                    : \GuzzleHttp\Psr7\stream_for($html);
-
+                $body = (new StreamFactory())->createStream($html);
                 return $response->withBody($body);
             }
         }
+
         return $response;
     }
 }

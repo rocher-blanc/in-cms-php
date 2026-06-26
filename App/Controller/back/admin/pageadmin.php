@@ -3,9 +3,9 @@
 use App\Kernel\Front\Translate;
 use App\Kernel\Factory;
 
-$app->group('/pageadmin', function () use ($app)
+$app->group('/pageadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
         $domain = false ;
         $tab = [];
@@ -57,21 +57,21 @@ $app->group('/pageadmin', function () use ($app)
                 ->find_many();
         }
 		
-		$app->render('admin/pageadmin/index.twig', [
+		return \App\Kernel\AppContext::twig()->render($res, 'admin/pageadmin/index.twig', [
             'domain' => $domain,
             'content' => $content
         ]);
 	})->name('page_index');
 
-	$app->get('/edit', function () use ($app)
+	$app->get('/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
 		$error 	  = false ;
 		$tabError = array() ;
 
 		$post = array(
-			"page_name" => $app->request->post('page_name'),
-			"page_controller" => $app->request->post('page_controller'),
-			"page_active" => $app->request->post('page_active')
+			"page_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : ''),
+			"page_controller" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_controller'] ?? '') : ''),
+			"page_active" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '')
 		);
 
         $domains = [];
@@ -96,7 +96,7 @@ $app->group('/pageadmin', function () use ($app)
             ->order_by_asc('user_front_group_name')
             ->find_many();
 
-        $app->render('admin/pageadmin/edit.twig', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/pageadmin/edit.twig', array(
             "post"       => $post,
             "id"         => -1,
             "domains"    => $domains,
@@ -107,15 +107,15 @@ $app->group('/pageadmin', function () use ($app)
 
 	})->name('page_add');
 
-	$app->post('/edit', function () use ($app)
+	$app->post('/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
 		$error 	  = false ;
 		$tabError = array() ;
 
 		$post = array(
-			"page_name"       => $app->request->post('page_name'),
-			"page_controller" => $app->request->post('page_controller'),
-			"page_active"     => $app->request->post('page_active')
+			"page_name"       => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : ''),
+			"page_controller" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_controller'] ?? '') : ''),
+			"page_active"     => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '')
 		);
 
         $domains = [];
@@ -139,7 +139,7 @@ $app->group('/pageadmin', function () use ($app)
 		$contentRow = \DB::for_table('page')->create();
 
 		$ct = \DB::for_table('page')
-					->where_equal('page_domain_id' , $app->request->post('page_domain_id'))
+					->where_equal('page_domain_id' , (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_domain_id'] ?? '') : ''))
 					->count();
 
 		if ($ct == 0)
@@ -148,7 +148,7 @@ $app->group('/pageadmin', function () use ($app)
 			$forceActive = true;
 		}
 
-		if ($app->request->post('page_name') == "")
+		if ((is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') == "")
 		{
 			$error = true;
 			$tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin');
@@ -156,17 +156,17 @@ $app->group('/pageadmin', function () use ($app)
 
 		if ($error == false)
 		{
-			$pageName = $app->request->post('page_name');
+			$pageName = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '');
 
 			$contentRow->page_name = $pageName;
-			$contentRow->page_active = $app->request->post('page_active');
+			$contentRow->page_active = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '');
 			$contentRow->page_index = 1;
-			$contentRow->page_domain_id = ( $reqDomains ? $app->request->post('page_domain_id') : 0 );
+			$contentRow->page_domain_id = ( $reqDomains ? (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_domain_id'] ?? '') : '') : 0 );
 
 			if ( ACTIVE_USER )
 			{
-				$contentRow->page_access_user = $app->request->post('page_access_user');
-				$contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
+				$contentRow->page_access_user = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_access_user'] ?? '') : '');
+				$contentRow->page_access_user_group = serialize( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_access_user_group'] ?? '') : '') );
 			}
 			$contentRow->save();
 
@@ -196,7 +196,7 @@ $app->group('/pageadmin', function () use ($app)
 				$cLang->save();
 			}
 
-			if ($app->request->post('submit') == "stay") $url = '/admin/pageadmin/edit/' . $id;
+			if ((is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay") $url = '/admin/pageadmin/edit/' . $id;
 			else                                         $url = '/admin/pageadmin';
 
 			/* ************ Création du controller PHP ************ */
@@ -235,7 +235,7 @@ $app->group('/pageadmin', function () use ($app)
 		$result = [];
 		if( count($tabError) === 0 )
 		{
-			if ( $app->request->post('buttonaction') == "stay" ) 	$url = '/admin/pageadmin/edit/' . $id ;
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['buttonaction'] ?? '') : '') == "stay" ) 	$url = '/admin/pageadmin/edit/' . $id ;
 			else 										         	$url = '/admin/pageadmin' ;
 
 			$result['result'] = true ;
@@ -299,7 +299,7 @@ $app->group('/pageadmin', function () use ($app)
             ->order_by_asc('user_front_group_name')
             ->find_many();
 
-        $app->render('admin/pageadmin/edit.twig', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/pageadmin/edit.twig', array(
             "post"         => $post,
             "id"           => $id,
             "domains"      => $domains,
@@ -318,29 +318,29 @@ $app->group('/pageadmin', function () use ($app)
             ->where_equal('page_id' , $id)
             ->find_one();
 
-        if ( $app->request->isPost() )
+        if ( strtoupper($req->getMethod()) === 'POST' )
         {
             $post = array(
-                "page_name" => $app->request->post('page_name'),
-                "page_active" => $app->request->post('page_active'),
-                "page_domain_id" => $app->request->post('page_domain_id')
+                "page_name" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : ''),
+                "page_active" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : ''),
+                "page_domain_id" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_domain_id'] ?? '') : '')
             ) ;
 
-            if ($app->request->post('page_name') == "") {
+            if ((is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') == "") {
                 $error = true;
                 $tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin');
             }
 
             if ($error == false) {
-                $contentRow->page_name = $app->request->post('page_name');
-                $contentRow->page_active = $app->request->post('page_active');
-                $contentRow->page_domain_id = $app->request->post('page_domain_id');
+                $contentRow->page_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '');
+                $contentRow->page_active = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '');
+                $contentRow->page_domain_id = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_domain_id'] ?? '') : '');
 
                 if ( ACTIVE_USER )
                 {
-                    $contentRow->page_access_user = $app->request->post('page_access_user');
-                    $contentRow->page_access_user_redirect = $app->request->post('page_access_user_redirect');
-                    $contentRow->page_access_user_group = serialize( $app->request->post('page_access_user_group') );
+                    $contentRow->page_access_user = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_access_user'] ?? '') : '');
+                    $contentRow->page_access_user_redirect = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_access_user_redirect'] ?? '') : '');
+                    $contentRow->page_access_user_group = serialize( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_access_user_group'] ?? '') : '') );
                 }
 
                 $contentRow->save();
@@ -349,7 +349,7 @@ $app->group('/pageadmin', function () use ($app)
 
                 $id = $contentRow->page_id;
 
-                if ($app->request->post('buttonaction') == "stay")  $url = '/admin/pageadmin/edit/' . $id;
+                if ((is_array($req->getParsedBody()) ? ($req->getParsedBody()['buttonaction'] ?? '') : '') == "stay")  $url = '/admin/pageadmin/edit/' . $id;
                 else                                                $url = '/admin/pageadmin';
 
                 $result['msg'] = Translate::getInstance()->getText( 'msg_special_page_modified');
@@ -363,7 +363,7 @@ $app->group('/pageadmin', function () use ($app)
 
 	$app->get('/delete/:id', function ($id) use ($app)
 	{
-		$app->render('delete.twig',[
+		return \App\Kernel\AppContext::twig()->render($res, 'delete.twig', [
 			'id'  => $id,
 			'url' => \App\Kernel\Factory::getInstance()->Url()->get('admin/pageadmin/delete/' . $id )
 		]);

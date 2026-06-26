@@ -61,10 +61,10 @@ function easyletterDashboardGetStatus( $id )
 }
 
 
-$app->group('/easyletter_dashboard', function () use ($app)
+$app->group('/easyletter_dashboard', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 
-    $app->get('/', function () use ($app)
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
 		$Compaign = new Data( "NewsletterCampaign" );
 		$rst      = [];
@@ -94,7 +94,7 @@ $app->group('/easyletter_dashboard', function () use ($app)
 			$rst[] = $result;
 		}
 
-        $app->render('ext/easyletter_dashboard/index.twig', [ "contentRows" => $rst ]);
+        return \App\Kernel\AppContext::twig()->render($res, 'ext/easyletter_dashboard/index.twig', [ "contentRows" => $rst ]);
     })->name('easyletter_dashboard_index');
 
 });

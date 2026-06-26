@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Middleware\Back;
 
+use App\Kernel\AppContext;
 use App\Kernel\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,9 +14,7 @@ class Guard extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\SlimRequestBridge::setCurrentRequest($request);
-        $this->check();
-        return $handler->handle($request);
+        return $this->handleRequest(fn() => $this->check(), $request, $handler);
     }
 
     public function check(): void
@@ -24,7 +23,7 @@ class Guard extends AbstractMiddleware
         $urlTab = $this->Factory()->Url()->cutUrl();
         $Guard  = new \App\Kernel\Back\Acl;
 
-        $this->app()->appendViewData(['isAdmin' => $Guard->isAdmin()]);
+        AppContext::addGlobal('isAdmin', $Guard->isAdmin());
 
         if (!empty($urlTab)) {
             if (in_array($urlTab[0], $check)) {

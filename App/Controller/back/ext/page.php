@@ -3,9 +3,9 @@
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
-$app->group('/page', function () use ($app)
+$app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 {
-	$app->get('/', function () use ($app)
+	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
 		$contentRows = \DB::for_table('page')
 								->order_by_asc('page_name')
@@ -43,7 +43,7 @@ $app->group('/page', function () use ($app)
             }
         }
 
-		$app->render('ext/page/index.twig.html', array( "content" => $content ));
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/page/index.twig.html', array( "content" => $content ));
 	})->name('page_index');
 
 	$app->delete('/delete/:id', function ($id) use ($app)
@@ -283,7 +283,7 @@ $app->group('/page', function () use ($app)
 			}
 		}
 
-		$app->render('ext/page/edit.twig.html', array(
+		return \App\Kernel\AppContext::twig()->render($res, 'ext/page/edit.twig.html', array(
 			"post" => $post,
             'priority' =>  $contentRow->page_priority,
 			"id" => $id,
@@ -297,8 +297,8 @@ $app->group('/page', function () use ($app)
 	$app->post('/edit/:id', function($id = -1) use ($app)
 	{
 		$post = array(
-			"page_name"   => $app->request->post('page_name'),
-			"page_active" => $app->request->post('page_active')
+			"page_name"   => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : ''),
+			"page_active" => (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '')
 		) ;
 
 		$contentRow = \DB::for_table('page')
@@ -319,13 +319,13 @@ $app->group('/page', function () use ($app)
 			}
 		}
 
-		if ( $app->request->post('page_name') == "" )
+		if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') == "" )
 		{
 			$error = true ;
 			$tabError['page_name'] = Translate::getInstance()->getText( 'mandatory_fillin' );
 		}
 
-		if ( $app->request->post('page_priority') == "" )
+		if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_priority'] ?? '') : '') == "" )
 		{
 			$error = true ;
 			$tabError['page_priority'] = Translate::getInstance()->getText( 'mandatory_priority' );
@@ -335,10 +335,10 @@ $app->group('/page', function () use ($app)
 		{
 			$lang 	  = \App\Kernel\Lang::getInstance()->getAll() ;
 
-			$contentRow->page_name 			= $app->request->post('page_name') ;
-			$contentRow->page_priority 		= $app->request->post('page_priority') ;
-			$contentRow->page_active 		= ( $app->request->post('page_active') == NULL ? 0 : 1 ) ;
-			$contentRow->page_index 		=  $app->request->post('page_index');
+			$contentRow->page_name 			= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') ;
+			$contentRow->page_priority 		= (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_priority'] ?? '') : '') ;
+			$contentRow->page_active 		= ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_active'] ?? '') : '') == NULL ? 0 : 1 ) ;
+			$contentRow->page_index 		=  (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_index'] ?? '') : '');
 
 			if ( $forceActive == true ) $contentRow->page_active = 1;
 
@@ -359,21 +359,21 @@ $app->group('/page', function () use ($app)
 
 				$Factory = \App\Kernel\Factory::getInstance() ;
 
-				$lasturl = $app->request->post('last_page_lang_url_' . $l->url ) ;
-				$url = $app->request->post('page_lang_url_' . $l->url ) ;
+				$lasturl = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['last_page_lang_url_' . $l->url] ?? '') : '') ;
+				$url = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_url_' . $l->url] ?? '') : '') ;
 				if ( $url == '' ) $url = $contentRow->page_name ;
 				if ( $url != $lasturl ) $url = $Factory->Url()->uniq( $url , $l->id ) ;
 
 				$cLang->page_lang_page_id 		= $id ;
 				$cLang->page_lang_lang_id 		= $l->id ;
 				$cLang->page_lang_url 			= $url ;
-				$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? $app->request->post('page_name' ) : $app->request->post('page_lang_title_' . $l->url ) ) ;
-				$cLang->page_lang_title 		= ( $app->request->post('page_lang_title_' . $l->url ) == '' ? $app->request->post('page_name' ) : $app->request->post('page_lang_title_' . $l->url ) ) ;
-				$cLang->page_lang_description 	= ( $app->request->post('page_lang_description_' . $l->url ) == '' ? NULL : $app->request->post('page_lang_description_' . $l->url ) ) ;
+				$cLang->page_lang_title 		= ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_title_' . $l->url] ?? '') : '') == '' ? (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') : (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_title_' . $l->url] ?? '') : '') ) ;
+				$cLang->page_lang_title 		= ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_title_' . $l->url] ?? '') : '') == '' ? (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_name'] ?? '') : '') : (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_title_' . $l->url] ?? '') : '') ) ;
+				$cLang->page_lang_description 	= ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_description_' . $l->url] ?? '') : '') == '' ? NULL : (is_array($req->getParsedBody()) ? ($req->getParsedBody()['page_lang_description_' . $l->url] ?? '') : '') ) ;
                 $cLang->save();
 			}
 
-			if ( $app->request->post('buttonaction') == "stay" ) 	$url = '/ext/page/edit/' . $id ;
+			if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['buttonaction'] ?? '') : '') == "stay" ) 	$url = '/ext/page/edit/' . $id ;
 			else 										         	$url = '/ext/page' ;
 
 			$result = [];

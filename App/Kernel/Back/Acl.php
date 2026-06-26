@@ -31,9 +31,9 @@ class Acl
 	
 	public function __construct()
     {
-		if ( isset( $_SESSION[ $this->getApp()->config('session') ] ) )
+		if ( isset( $_SESSION[ \App\Kernel\Config::getInstance()->get('session') ] ) )
         {
-            $this->setGroupId( $_SESSION[ $this->getApp()->config('session') ]['group_id'] ) ;
+            $this->setGroupId( $_SESSION[ \App\Kernel\Config::getInstance()->get('session') ]['group_id'] ) ;
         }
 	}
 	
@@ -99,7 +99,7 @@ class Acl
 	
 	private function getApp()
 	{
-		return \App\Kernel\SlimBridge::getInstance() ;
+		return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
 	}
 	
 	private function getBinary()

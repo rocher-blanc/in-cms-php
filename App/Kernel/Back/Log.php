@@ -19,7 +19,7 @@ class Log
     /* ************************************************** */
 
     public function __construct() {
-        $this->setUserId( $_SESSION[ $this->getApp()->config('session') ]['id'] ) ;
+        $this->setUserId( $_SESSION[ \App\Kernel\Config::getInstance()->get('session') ]['id'] ) ;
     }
 
     /* ************************************************** */
@@ -47,7 +47,7 @@ class Log
 
     private function getApp()
     {
-        return \App\Kernel\SlimBridge::getInstance() ;
+        return \App\Kernel\Config::getInstance() ; // migrated from SlimBridge
     }
 
     public function getUserId()

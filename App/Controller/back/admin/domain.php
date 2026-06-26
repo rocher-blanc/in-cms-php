@@ -2,13 +2,13 @@
 
 use App\Kernel\Front\Translate;
 
-$app->group('/domain', function () use ($app) {
-    $app->get('/', function () use ($app) {
+$app->group('/domain', function (\Slim\Routing\RouteCollectorProxy $app) {
+    $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
         $contentRows = \DB::for_table('domain')
             ->order_by_asc('domain_name')
             ->find_many();
 
-        $app->render('admin/domain/index.twig.html', [
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/domain/index.twig.html', [
             "contentRows" => $contentRows
         ]);
     })->name('domain_index');
@@ -39,12 +39,12 @@ $app->group('/domain', function () use ($app) {
     });
 
     $app->get('/delete/:id', function ($id) use ($app) {
-        $app->render('common/delete.twig', [
+        return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/admin/domain/delete/' . $id)
         ]);
     });
 
-    $app->post('/edit(/:id)', function ($id = -1) use ($app)
+    $app->post('/edit[/{id}]', function ($id = -1) use ($app)
     {
         $error      = false ;
         $result = [
@@ -59,7 +59,7 @@ $app->group('/domain', function () use ($app) {
                 ->find_one();
         }
 
-        if ( $app->request->post('domain_name') == "" )
+        if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['domain_name'] ?? '') : '') == "" )
         {
             $error = true;
             $result['msg'] = Translate::getInstance()->getText( 'mandatory_domain_name' );
@@ -67,7 +67,7 @@ $app->group('/domain', function () use ($app) {
         }
         else
         {
-            $exist = \DB::for_table('domain')->where_equal('domain_name', $app->request->post('domain_name'));
+            $exist = \DB::for_table('domain')->where_equal('domain_name', (is_array($req->getParsedBody()) ? ($req->getParsedBody()['domain_name'] ?? '') : ''));
             if ($id != -1) $exist = $exist->where_not_equal('domain_id', $id);
             $exist = $exist->count();
         }
@@ -86,7 +86,7 @@ $app->group('/domain', function () use ($app) {
                 $add = true;
             }
 
-            $contentRow->domain_name = $app->request->post('domain_name');
+            $contentRow->domain_name = (is_array($req->getParsedBody()) ? ($req->getParsedBody()['domain_name'] ?? '') : '');
             $contentRow->save();
 
             \App\Kernel\Back\Log::getInstance()->info(($add == true ? 51 : 52), $contentRow->domain_name);
@@ -101,7 +101,7 @@ $app->group('/domain', function () use ($app) {
         \App\Kernel\Factory::getInstance()->Response()->printJSON($result) ;
     });
 
-    $app->get('/edit(/:id)', function ($id = -1) use ($app)
+    $app->get('/edit[/{id}]', function ($id = -1) use ($app)
     {
         $contentRow = NULL ;
         if ( $id != -1 )
@@ -120,7 +120,7 @@ $app->group('/domain', function () use ($app) {
             $post = $contentRow ;
         }
 
-        $app->render('admin/domain/edit.twig.html', array(
+        return \App\Kernel\AppContext::twig()->render($res, 'admin/domain/edit.twig.html', array(
             "id" 		 => $id,
             "post"		 => $contentRow
         ));
