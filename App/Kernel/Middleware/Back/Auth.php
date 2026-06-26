@@ -11,8 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class Auth extends AbstractMiddleware
 {
-    public function __construct(private readonly Config $config = new Config()) {}
-
     public function process(Request $request, RequestHandler $handler): Response
     {
         return $this->handleRequest(fn() => $this->observe($request), $request, $handler);
@@ -65,7 +63,6 @@ class Auth extends AbstractMiddleware
 
             if (!$auth) {
                 $this->Factory()->Response()->show404();
-                exit;
             }
         }
     }

@@ -17,4 +17,5 @@ class RedirectException extends \RuntimeException
 
     public function getUrl(): string   { return $this->url; }
     public function getHttpStatus(): int { return $this->status; }
+    public function getStatus(): int   { return $this->status; }
 }

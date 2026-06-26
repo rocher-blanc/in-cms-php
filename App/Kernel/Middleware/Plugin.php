@@ -2,9 +2,13 @@
 
 namespace App\Kernel\Middleware;
 
+use App\Kernel\AppContext;
+use App\Kernel\Exception\NotFoundException;
+use App\Kernel\Exception\RedirectException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Response as SlimResponse;
 
 class Plugin extends AbstractMiddleware
 {
@@ -17,9 +21,19 @@ class Plugin extends AbstractMiddleware
 
     public function process(Request $request, RequestHandler $handler): Response
     {
-        \App\Kernel\AppContext::setRequest($request);
-        $this->load();
-        return $handler->handle($request);
+        AppContext::setRequest($request);
+
+        try {
+            $this->load();
+            return $handler->handle($request);
+        } catch (NotFoundException $e) {
+            $response = new SlimResponse(404);
+            $response->getBody()->write($e->getBody());
+            return $response;
+        } catch (RedirectException $e) {
+            return (new SlimResponse($e->getHttpStatus()))
+                ->withHeader('Location', $e->getUrl());
+        }
     }
 
     public function load(): void

@@ -4,6 +4,7 @@ namespace App\Kernel\Factory;
 
 use App\Kernel\AppContext;
 use App\Kernel\Config;
+use App\Kernel\Exception\NotFoundException;
 use App\Kernel\Exception\RedirectException;
 use App\Kernel\Factory;
 
@@ -155,13 +156,20 @@ class Response
     /* Erreurs                                                             */
     /* ------------------------------------------------------------------ */
 
-    public function show404(): void
+    public function show404(): never
     {
-        http_response_code(404);
+        $body = 'Erreur 404';
         $twig = AppContext::twig();
         if ($twig !== null) {
-            echo $twig->getEnvironment()->render('errors/404.twig.html');
+            $env = $twig->getEnvironment();
+            foreach (['errors/404.twig', 'errors/404.twig.html'] as $tpl) {
+                if ($env->getLoader()->exists($tpl)) {
+                    $body = $env->render($tpl);
+                    break;
+                }
+            }
         }
+        throw new NotFoundException($body);
     }
 
     public function error(string $message, string $type = '404'): never
