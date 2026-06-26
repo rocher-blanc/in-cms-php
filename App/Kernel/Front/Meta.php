@@ -111,7 +111,7 @@ class Meta
                 'identifier-url' => \App\Kernel\Http::getInstance()->getUrl() . '/',
 				'description'    => "",
 				'author'         => $this->exist( "seo_author" , $tab ),
-				'robots'         => ( $tab['seo_robots'] == '0' ? 'noindex,nofollow' : 'index,follow' ),
+				'robots'         => ( ($tab['seo_robots'] ?? '1') == '0' ? 'noindex,nofollow' : 'index,follow' ),
 				'robots_value'   => $this->exist( "seo_robots" , $tab ),
 				'geo.region'     => $this->exist( "seo_geo_region" , $tab ),
 				'geo.placename'  => $this->exist( "seo_geo_placename" , $tab ),
@@ -157,14 +157,14 @@ class Meta
                 'town'           => $this->exist( "md_town" , $md )
             ],
             'analytics' => [
-                'google'    => $tab['seo_google_analytics']
+                'google'    => $tab['seo_google_analytics'] ?? null
             ],
             'tracking' => [
-                'header'    => $tab['seo_divers_header'],
-                'footer'    => $tab['seo_divers_footer'],
-                'gtm'       => $tab['seo_gtm']
+                'header'    => $tab['seo_divers_header'] ?? null,
+                'footer'    => $tab['seo_divers_footer'] ?? null,
+                'gtm'       => $tab['seo_gtm'] ?? null
             ],
-            "matomo" => $tab["seo_matomo"]
+            'matomo' => $tab['seo_matomo'] ?? null
         ]);
     }
 }

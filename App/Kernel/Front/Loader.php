@@ -76,9 +76,9 @@ class Loader
         /* ****************     Plugin     ******************* */
         #########################################################
 
-        $this->kernel->addPlugin(new Router) ;
         $this->kernel->addPlugin(new Language) ;
         $this->kernel->addPlugin(new Meta) ;
+        $this->kernel->addPlugin(new Router) ;
         $this->kernel->addPlugin(new Miscellaneous) ;
     }
 
