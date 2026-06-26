@@ -2,7 +2,7 @@
 
 namespace App\Kernel\Factory;
 
-class String
+class Str
 {
     public function camelCase( $str ) {
         $i = array("-","_");
