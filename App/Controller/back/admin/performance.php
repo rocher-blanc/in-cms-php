@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 $app->group('/performance', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -36,5 +38,5 @@ $app->group('/performance', function (\Slim\Routing\RouteCollectorProxy $app)
             "dev" => \App\Kernel\CMS::getInstance()->isDev(),
 		));
 
-	})->name('performance_edit');
+	})->setName('performance_edit');
 });

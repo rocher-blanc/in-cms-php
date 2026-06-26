@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 $app->group('/maintenance', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -25,5 +27,5 @@ $app->group('/maintenance', function (\Slim\Routing\RouteCollectorProxy $app)
             'maintenance_active' => $Container->param()->get('maintenance_active')
         ]);
 
-	})->name('maintenance_edit');
+	})->setName('maintenance_edit');
 });

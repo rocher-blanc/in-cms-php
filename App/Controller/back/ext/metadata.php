@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 $app->group('/metadata', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -59,5 +61,5 @@ $app->group('/metadata', function (\Slim\Routing\RouteCollectorProxy $app)
 		
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/metadata/edit.twig.html', [ "post" => $tab ]);
 
-	})->name('metadata_edit');
+	})->setName('metadata_edit');
 });

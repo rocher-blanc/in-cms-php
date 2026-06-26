@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
@@ -17,14 +20,14 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
 		
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/user/index.twig.html', array( "contentRows" => $contentRows ));
 
-	})->name('user_index');
+	})->setName('user_index');
 
 	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
 			$Guard = new \App\Kernel\Back\Acl;
-			if ( $Guard->isAdmin() == false ) $app->redirect( $app->config('forbidden.url') ) ;
+			if ( $Guard->isAdmin() == false ) Factory::getInstance()->Response()->redirect( Config::getInstance()->get('forbidden.url') ) ;
 		}
 		
 		$error    = false ;
@@ -35,7 +38,7 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
 			->find_one();
 
 		if ( $id != -1 && !$contentRow ) {
-			$app->redirect( $app->config('admin.url') . '/ext/user');
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user');
 		}
 		else {
 			$post = $contentRow ;
@@ -106,11 +109,11 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
 				
 				$id = $contentRow->user_id;
 				
-				$app->flash('__msg',addslashes(  "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) );
-				$app->flash('__result',true);
+				AppContext::flash()->addMessage('__msg',addslashes(  "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) );
+				AppContext::flash()->addMessage('__result',true);
 				
-				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user/edit/' . $id );
-				else 											$app->redirect( $app->config('admin.url') . '/ext/user' );
+				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user/edit/' . $id );
+				else 											Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user' );
 			}
 		}
 		
@@ -131,7 +134,7 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('user_edit');
+	})->setName('user_edit');
 
     $app->get('/delete/:id', function ($id) use ($app)
     {
@@ -144,15 +147,15 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
     $app->post('/delete/:id', function ($id) use ($app)
 	{
 		$ret = false ;
-		if ( $id == $_SESSION[ $app->config('session') ]['id'] )
+		if ( $id == $_SESSION[ Config::getInstance()->get('session') ]['id'] )
 		{
-			$msg = "Vous ne pouvez pas supprimer le compte avec lequel vous êtes actuellement connecté! $id - " . $_SESSION[ $app->config('session') ]['id'] ;
+			$msg = "Vous ne pouvez pas supprimer le compte avec lequel vous êtes actuellement connecté! $id - " . $_SESSION[ Config::getInstance()->get('session') ]['id'] ;
 		}
 		else
 		{
 			$contentRow = \DB::for_table('user')
 				->where_equal('user_id' , $id)
-				->where_not_equal('user_id' , $_SESSION[ $app->config('session') ]['id'] )
+				->where_not_equal('user_id' , $_SESSION[ Config::getInstance()->get('session') ]['id'] )
 				->find_one();
 			
 			if ( $contentRow )
@@ -186,5 +189,5 @@ $app->group('/user', function (\Slim\Routing\RouteCollectorProxy $app)
             "result" => $ret,
             'url' => \App\Kernel\Factory::getInstance()->Url()->get('ext/user')
         ]) ;
-	})->name('user_delete');
+	})->setName('user_delete');
 });

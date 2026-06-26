@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
 use App\Kernel\Back\Module as ModuleAlias;
 use App\Kernel\Container;
 use App\Kernel\Factory;
@@ -261,7 +263,7 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 				"noInstall" => $list
 			]);
 
-		})->name('moduleadmin_index');
+		})->setName('moduleadmin_index');
 
 		$app->get('/install/:name', function ( $name ) use ($app)
 		{
@@ -281,10 +283,10 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 			}
 			else
 			{
-				$app->redirect( $app->config('admin.url') . '/admin/moduleadmin/edit/' . $contentRow->module_id );
+				Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/moduleadmin/edit/' . $contentRow->module_id );
 			}
 
-		})->name('moduleadmin_install');
+		})->setName('moduleadmin_install');
 
 		//generateImage
 		$app->get('/image/:id', function ($id) use ($app)
@@ -422,7 +424,7 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 
 			Factory::getInstance()->Response()->printJSON($result) ;
 
-		})->name('moduleadmin_delete');
+		})->setName('moduleadmin_delete');
 
 		$app->post('/truncate/:id', function ($id) use ($app)
 		{
@@ -488,7 +490,7 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 			$result['url'] = Factory::getInstance()->Url()->get('/admin/moduleadmin') ;
 
 			Factory::getInstance()->Response()->printJSON($result) ;
-		})->name('moduleadmin_truncate');
+		})->setName('moduleadmin_truncate');
 
 		$app->get('/truncate/:id', function ($id) use ($app)
 		{
@@ -496,11 +498,11 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 				'id' => $id,
 				'url' => Factory::getInstance()->Url()->get('admin/moduleadmin/truncate/' . $id )
 			]);
-		})->name('moduleadmin_truncate');
+		})->setName('moduleadmin_truncate');
 
 		$app->get('/active/:id/:token', function ($id,$token) use ($app)
 		{
-			if ( $token == $_SESSION[ $app->config('token') ] ) {
+			if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
 				$module = \DB::for_table('module')
 					->where_equal('module_id' , $id)
 					->find_one();
@@ -524,15 +526,15 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 				$ret = false;
 			}
 
-			$app->flash('__msg',addslashes( json_encode( $msg )));
-			$app->flash('__result',$ret);
-			$app->redirect( $app->config('admin.url') . '/admin/moduleadmin' );
+			AppContext::flash()->addMessage('__msg',addslashes( json_encode( $msg )));
+			AppContext::flash()->addMessage('__result',$ret);
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/moduleadmin' );
 			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
-		})->name('moduleadmin_active');
+		})->setName('moduleadmin_active');
 
 		$app->get('/default/:id/:token', function ($id,$token) use ($app)
 		{
-			if ( $token == $_SESSION[ $app->config('token') ] ) {
+			if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
 				$module = \DB::for_table('module')
 					->where_equal('module_id' , $id)
 					->find_one();
@@ -565,11 +567,11 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 			}
 
 			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
-		})->name('moduleadmin_default');
+		})->setName('moduleadmin_default');
 
 		$app->get('/notdefault/:id/:token', function ($id,$token) use ($app)
 		{
-			if ( $token == $_SESSION[ $app->config('token') ] ) {
+			if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
 				$module = \DB::for_table('module')
 					->where_equal('module_id' , $id)
 					->find_one();
@@ -594,11 +596,11 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 			}
 
 			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
-		})->name('moduleadmin_notdefault');
+		})->setName('moduleadmin_notdefault');
 
 		$app->get('/disactive/:id/:token', function ($id,$token) use ($app)
 		{
-			if ( $token == $_SESSION[ $app->config('token') ] ) {
+			if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
 				$module = \DB::for_table('module')
 					->where_equal('module_id' , $id)
 					->find_one();
@@ -624,7 +626,7 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 
 
 			Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/moduleadmin' );
-		})->name('moduleadmin_disactive');
+		})->setName('moduleadmin_disactive');
 
 		$app->get('/edit[/{id}]', function ($id = -1) use ($app)
 		{
@@ -633,7 +635,7 @@ $app->group('/moduleadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 				->find_one();
 
 			if ( $id != -1 && !$contentRow ) {
-				$app->redirect( $app->config('admin.url') . '/admin/moduleadmin');
+				Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/moduleadmin');
 			}
 
 			return \App\Kernel\AppContext::twig()->render($res, 'admin/moduleadmin/edit.twig.html', array(

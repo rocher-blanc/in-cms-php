@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\AppContext;
 use App\Kernel\Container;
 use App\Kernel\Front\Translate;
 use App\Kernel\Back\Data;
@@ -95,6 +96,6 @@ $app->group('/easyletter_dashboard', function (\Slim\Routing\RouteCollectorProxy
 		}
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/easyletter_dashboard/index.twig', [ "contentRows" => $rst ]);
-    })->name('easyletter_dashboard_index');
+    })->setName('easyletter_dashboard_index');
 
 });

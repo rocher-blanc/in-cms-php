@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/domain', function (\Slim\Routing\RouteCollectorProxy $app) {
@@ -11,7 +14,7 @@ $app->group('/domain', function (\Slim\Routing\RouteCollectorProxy $app) {
         return \App\Kernel\AppContext::twig()->render($res, 'admin/domain/index.twig.html', [
             "contentRows" => $contentRows
         ]);
-    })->name('domain_index');
+    })->setName('domain_index');
 
     $app->post('/delete/:id', function ($id) use ($app)
     {
@@ -113,7 +116,7 @@ $app->group('/domain', function (\Slim\Routing\RouteCollectorProxy $app) {
 
         if ( $id != -1 && !$contentRow )
         {
-            $app->redirect( $app->config('admin.url') . '/admin/domain');
+            Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/domain');
         }
         else
         {

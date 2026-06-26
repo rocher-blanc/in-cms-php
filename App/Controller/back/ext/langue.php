@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 use App\Kernel\Param;
@@ -14,7 +16,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/langue/index.twig.html', array( "contentRows" => $contentRows ));
 
-    })->name('langue_index');
+    })->setName('langue_index');
 
 
     $app->post('/import', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
@@ -86,7 +88,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
                 if ( ! empty( $lang ) ) Factory::getInstance()->File()->create( LANG_PATH . "/" . strtoupper( $lang ) . ".php" , $src );
             }
 
-            $login = strtolower( $_SESSION[ $app->config('session') ]['username'] ) ;
+            $login = strtolower( $_SESSION[ Config::getInstance()->get('session') ]['username'] ) ;
             $login = str_replace( ' ' , '' , $login ) ;
             $date  = date('Y-m-d--H-i-s') ;
             $exp   = explode( "." , $file ) ;
@@ -109,7 +111,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             ->find_one();
 
         if ( ! $contentRows ) {
-            $app->redirect( $app->config('admin.url') . '/langue' );
+            Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/langue' );
         }
         else {
             if ( strtoupper($req->getMethod()) === 'POST' ) {
@@ -125,11 +127,11 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
 
                     $id = $contentRows->lang_id;
 
-                    $app->flash('__msg',addslashes( json_encode( "La langue a bien été modifiée" ) ) );
-                    $app->flash('__result',true);
+                    AppContext::flash()->addMessage('__msg',addslashes( json_encode( "La langue a bien été modifiée" ) ) );
+                    AppContext::flash()->addMessage('__result',true);
 
-                    if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/langue/edit/' . $id );
-                    else 											$app->redirect( $app->config('admin.url') . '/ext/langue' );
+                    if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/langue/edit/' . $id );
+                    else 											Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/langue' );
                 }
             }
         }
@@ -140,13 +142,13 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
-    })->name('langue_edit');
+    })->setName('langue_edit');
 
     $app->group('/order', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/up/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $lang = \DB::for_table('lang')
                     ->where_equal('lang_id' , $id)
                     ->find_one();
@@ -191,11 +193,11 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             }
 
             Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-        })->name('langue_up');
+        })->setName('langue_up');
 
         $app->get('/down/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $lang = \DB::for_table('lang')
                     ->where_equal('lang_id' , $id)
                     ->find_one();
@@ -236,7 +238,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             }
 
             Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-        })->name('langue_down');
+        })->setName('langue_down');
 
     });
 
@@ -244,7 +246,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/active/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $lang = \DB::for_table('lang')
                     ->where_equal('lang_id' , $id)
                     ->find_one();
@@ -270,11 +272,11 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             }
 
             Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-        })->name('langue_active');
+        })->setName('langue_active');
 
         $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $lang = \DB::for_table('lang')
                     ->where_equal('lang_id' , $id)
                     ->find_one();
@@ -315,12 +317,12 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
             }
 
             Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-        })->name('langue_disactive');
+        })->setName('langue_disactive');
     });
 
     $app->get('/active/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $lang = \DB::for_table('lang')
                 ->where_equal('lang_id' , $id)
                 ->find_one();
@@ -355,11 +357,11 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 
         Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-    })->name('langue_active');
+    })->setName('langue_active');
 
     $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $count = \DB::for_table('lang')
                 ->where_not_equal('lang_status' , 0)
                 ->count();
@@ -412,7 +414,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 
         Factory::getInstance()->Response()->flashAndRedirect( $msg , $ret , '/ext/langue' );
-    })->name('langue_disactive');
+    })->setName('langue_disactive');
 
 	$app->group('/traduction', function (\Slim\Routing\RouteCollectorProxy $app)
 	{
@@ -426,14 +428,14 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
 			{
 				$adminButtons[] = [
 					'icon' => "icon icon-users",
-					'url' => $app->config('admin.url') . '/ext/langue/traduction/default-user',
+					'url' => Config::getInstance()->get('admin.url') . '/ext/langue/traduction/default-user',
 					'key' => Translate::getInstance()->getText( 'language_translate_create_default_users' )
 				];
 			}
 			if( defined('SHOP_PATH') && $param->get('translate_front_cart') != 1 ) {
 				$adminButtons[] = [
 					'icon' => "icon icon-cart",
-					'url' => $app->config('admin.url') . '/ext/langue/traduction/default-cart',
+					'url' => Config::getInstance()->get('admin.url') . '/ext/langue/traduction/default-cart',
 					'key' => Translate::getInstance()->getText( 'language_translate_create_default_cart' )
 				];
 			}
@@ -443,7 +445,7 @@ $app->group('/langue', function (\Slim\Routing\RouteCollectorProxy $app)
 				'admin_buttons' => $adminButtons
 			]);
 
-		})->name('langue_traduction');
+		})->setName('langue_traduction');
 
 		$app->get('/get-lang', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\Factory;
 use App\Kernel\Container as ContainerAlias;
 
 $app->get('/sitemap.xml', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -10,7 +11,7 @@ $app->get('/sitemap.xml', function (\Psr\Http\Message\ServerRequestInterface $re
 
     if ( $data->param_value == '0' )
     {
-        $app->pass();
+        Factory::getInstance()->Response()->show404();
     }
 
     $app->contentType('text/xml');
@@ -234,4 +235,4 @@ $app->get('/sitemap.xml', function (\Psr\Http\Message\ServerRequestInterface $re
     }
 
     echo '</urlset>' . "\n" ;
-})->name('robots_txt');
+})->setName('robots_txt');

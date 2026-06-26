@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $app)
@@ -12,14 +15,14 @@ $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $ap
 		
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/user_front_group/index.twig', array( "contentRows" => $contentRows ));
 
-	})->name('user_front_index');
+	})->setName('user_front_index');
 
 	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
 			$Guard = new \App\Kernel\Back\Acl;
-			if ( $Guard->isAdmin() == false ) $app->redirect( $app->config('forbidden.url') ) ;
+			if ( $Guard->isAdmin() == false ) Factory::getInstance()->Response()->redirect( Config::getInstance()->get('forbidden.url') ) ;
 		}
 		
 		$error    = false ;
@@ -30,7 +33,7 @@ $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $ap
 			->find_one();
 
 		if ( $id != -1 && !$contentRow ) {
-			$app->redirect( $app->config('admin.url') . '/ext/user_front_group');
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front_group');
 		}
 		else {
 			$post = $contentRow ;
@@ -69,11 +72,11 @@ $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $ap
 				
 				$id = $contentRow->user_front_group_id ;
 				
-				$app->flash('__msg', "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) );
-				$app->flash('__result',true);
+				AppContext::flash()->addMessage('__msg', "Le groupe a bien été " . ( $add == true ? "ajouté" : "modifié" ) );
+				AppContext::flash()->addMessage('__result',true);
 				
-				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user_front_group/edit/' . $id );
-				else 											$app->redirect( $app->config('admin.url') . '/ext/user_front_group' );
+				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front_group/edit/' . $id );
+				else 											Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front_group' );
 			}
 		}
 
@@ -84,7 +87,7 @@ $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $ap
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('user_front_group_edit');
+	})->setName('user_front_group_edit');
 
     $app->get('/delete/:id', function ($id) use ($app) {
         return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
@@ -112,13 +115,13 @@ $app->group('/user_front_group', function (\Slim\Routing\RouteCollectorProxy $ap
             $msg = Translate::getInstance()->getText('delete_error' );
         }
 
-        $app->flash('__msg', $msg );
-        $app->flash('__result',$ret);
+        AppContext::flash()->addMessage('__msg', $msg );
+        AppContext::flash()->addMessage('__result',$ret);
 		
 		echo json_encode([
 		    "msg" => $msg ,
             "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/user_front_group'),
             "result" => $ret
         ]) ;
-	})->name('user_front_group_delete');
+	})->setName('user_front_group_delete');
 });

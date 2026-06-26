@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 $app->group('/security', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -65,5 +67,5 @@ $app->group('/security', function (\Slim\Routing\RouteCollectorProxy $app)
             "lock_ip" => $lock_ip,
             "list_ip" => $list_ip
         ]);
-	})->name('security_edit');
+	})->setName('security_edit');
 });

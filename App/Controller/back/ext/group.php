@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
@@ -17,14 +20,14 @@ $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 		
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/group/index.twig.html', array( "contentRows" => $contentRows ));
 
-	})->name('group_index');
+	})->setName('group_index');
 
 	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
 		if ( $id == 1 )
 		{
 			$Guard = new \App\Kernel\Back\Acl;
-			if ( $Guard->isAdmin() == false ) $app->redirect( $app->config('forbidden.url') ) ;
+			if ( $Guard->isAdmin() == false ) Factory::getInstance()->Response()->redirect( Config::getInstance()->get('forbidden.url') ) ;
 		}
 		
 		$error    = false ;
@@ -35,7 +38,7 @@ $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 			->find_one();
 
 		if ( $id != -1 && !$contentRow ) {
-			$app->redirect( $app->config('admin.url') . '/ext/group');
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/group');
 		}
 		else {
 			$post = $contentRow ;
@@ -178,7 +181,7 @@ $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('group_edit');
+	})->setName('group_edit');
 
 	$app->get('/right', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
@@ -242,7 +245,7 @@ $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 		}
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
-	})->name('group_right');
+	})->setName('group_right');
 
     $app->get('/delete/:id', function ($id) use ($app) {
         return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
@@ -284,5 +287,5 @@ $app->group('/group', function (\Slim\Routing\RouteCollectorProxy $app)
 		}
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret , "url" => \App\Kernel\Factory::getInstance()->Url()->get('/ext/group') ) ) ;
-	})->name('group_delete');
+	})->setName('group_delete');
 });

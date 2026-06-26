@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
@@ -44,7 +46,7 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/page/index.twig.html', array( "content" => $content ));
-	})->name('page_index');
+	})->setName('page_index');
 
 	$app->delete('/delete/:id', function ($id) use ($app)
 	{
@@ -74,11 +76,11 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 		}
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->returnJSON( $msg , $ret ) ;
-	})->name('page_delete');
+	})->setName('page_delete');
 
     $app->get('/active/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $page = \DB::for_table('page')
                 ->where_equal('page_id' , $id)
                 ->find_one();
@@ -104,11 +106,11 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-    })->name('page_active');
+    })->setName('page_active');
 
     $app->get('/index/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $page = \DB::for_table('page')
                 ->where_equal('page_id' , $id)
                 ->find_one();
@@ -134,11 +136,11 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-    })->name('page_index');
+    })->setName('page_index');
 
     $app->get('/noindex/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $page = \DB::for_table('page')
                 ->where_equal('page_id' , $id)
                 ->find_one();
@@ -164,18 +166,18 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-    })->name('page_index');
+    })->setName('page_index');
 
 	$app->get('/default/:id/:token', function ($id,$token) use ($app)
 	{
-		if ( $token == $_SESSION[ $app->config('token') ] ) {
+		if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $page = \DB::for_table('page')
 							->where_equal('page_id' , $id)
 							->find_one();
 
 			if ( ! $page )
 			{
-				$app->redirect( $app->config('admin.url') . '/ext/page' );
+				Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/page' );
 			}
 
 			$pageDefault = \DB::for_table('page')
@@ -204,18 +206,18 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-	})->name('page_active');
+	})->setName('page_active');
 
 	$app->get('/disactive/:id/:token', function ($id,$token) use ($app)
 	{
-		if ( $token == $_SESSION[ $app->config('token') ] ) {
+		if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
 			$page = \DB::for_table('page')
 							->where_equal('page_id' , $id)
 							->find_one();
 
 			if ( ! $page )
 			{
-				$app->redirect( $app->config('admin.url') . '/ext/page' );
+				Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/page' );
 			}
 
 			if ( $page->page_active == 1 )
@@ -249,7 +251,7 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
 		$Factory = \App\Kernel\Factory::getInstance() ;
 		$Factory->Response()->flashAndRedirect( $msg , $ret , 'ext/page' ) ;
-	})->name('page_disactive');
+	})->setName('page_disactive');
 
 	$app->get('/edit/:id', function ($id = -1) use ($app)
 	{
@@ -263,7 +265,7 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 
 		if ( $id != -1 && !$contentRow )
 		{
-			$app->redirect( $app->config('admin.url') . '/ext/page');
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/page');
 		}
 
 		$post = $contentRow ;
@@ -292,7 +294,7 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 			"error"		 => ( $error === false ? "0" : "1" ),
 			"tabError"	 => json_encode( $tabError )
 		));
-	})->name('page_edit');
+	})->setName('page_edit');
 
 	$app->post('/edit/:id', function($id = -1) use ($app)
 	{
@@ -389,5 +391,5 @@ $app->group('/page', function (\Slim\Routing\RouteCollectorProxy $app)
 			Factory::getInstance()->Response()->printJSON($result) ;
 		}
 
-	})->name('page_edit');
+	})->setName('page_edit');
 });

@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 function getTreeMenu($rows, $parent_id = -1)
@@ -133,7 +136,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
         $contentRows = getTreeMenu( $contentRows ) ;
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/construct.twig.html', array( "id" => $id ,  "contentRows" => $contentRows ));
-    })->name('menu_construct');
+    })->setName('menu_construct');
 
     $app->get('/order/:idmenu/:parent/:token', function ( $menu , $parent , $token ) use ($app)
     {
@@ -160,7 +163,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 
         $Factory->Response()->returnJSON( "L'ordre a bien été modifié" , true ) ;
-    })->name('menu_order');
+    })->setName('menu_order');
 
     $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
@@ -169,7 +172,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
             ->find_many();
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/index.twig.html', array( "contentRows" => $contentRows ));
-    })->name('menu_index');
+    })->setName('menu_index');
 
     $app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
     {
@@ -182,7 +185,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 
         if ( $id != -1 && !$contentRow )
         {
-            $app->redirect( $app->config('admin.url') . '/ext/menu');
+            Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/menu');
         }
 
         if ( strtoupper($req->getMethod()) === 'POST' )
@@ -230,7 +233,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
             "error"		 => ( $error === false ? "0" : "1" ),
             "tabError"	 => json_encode( $tabError )
         ));
-    })->name('menu_edit');
+    })->setName('menu_edit');
 
     $app->delete('/delete/:id', function ($id) use ($app)
     {
@@ -254,7 +257,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->returnJSON( $msg , $ret ) ;
-    })->name('menu_delete');
+    })->setName('menu_delete');
 
     ###########################################################################################################################
     ###########################################################################################################################
@@ -366,7 +369,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->returnJSON( $msg , $ret ) ;
-    })->name('menu_delete');
+    })->setName('menu_delete');
 
     #############################################################
     ########################     ADD      #######################
@@ -379,7 +382,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
         $tab['idparent'] = $idparent ;
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/element_add.twig.html', $tab);
-    })->name('menu_addelement');
+    })->setName('menu_addelement');
 
     $app->post('/element/add', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
@@ -516,7 +519,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->returnJSON( $msg , $ret ) ;
-    })->name('menu_add_element');
+    })->setName('menu_add_element');
 
     #############################################################
     ########################   UPDATE     #######################
@@ -604,7 +607,7 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
 
         $Factory = \App\Kernel\Factory::getInstance() ;
         $Factory->Response()->returnJSON( $msg , $ret ) ;
-    })->name('element_update');
+    })->setName('element_update');
 
     $app->get('/updateelement/:id', function ( $id ) use ($app)
     {
@@ -631,5 +634,5 @@ $app->group('/menu', function (\Slim\Routing\RouteCollectorProxy $app)
         $tab['label'] 	 = $label ;
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/menu/element_add.twig.html', $tab);
-    })->name('menu_update_element');
+    })->setName('menu_update_element');
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\AppContext;
 use App\Kernel\Front\Translate;
 use App\Kernel\Factory;
 
@@ -61,7 +62,7 @@ $app->group('/pageadmin', function (\Slim\Routing\RouteCollectorProxy $app)
             'domain' => $domain,
             'content' => $content
         ]);
-	})->name('page_index');
+	})->setName('page_index');
 
 	$app->get('/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
@@ -105,7 +106,7 @@ $app->group('/pageadmin', function (\Slim\Routing\RouteCollectorProxy $app)
             "tabError"	 => json_encode( $tabError ),
     ));
 
-	})->name('page_add');
+	})->setName('page_add');
 
 	$app->post('/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
 	{
@@ -249,7 +250,7 @@ $app->group('/pageadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 		}
 		Factory::getInstance()->Response()->printJSON($result) ;
 
-	})->name('page_add');
+	})->setName('page_add');
 
     $app->get('/edit/:id', function ( $id ) use ($app)
     {
@@ -395,6 +396,6 @@ $app->group('/pageadmin', function (\Slim\Routing\RouteCollectorProxy $app)
 			"result" => $ret,
 			'url'    => \App\Kernel\Factory::getInstance()->Url()->get('admin/pageadmin')
 		]) ;
-	})->name('page_delete');
+	})->setName('page_delete');
 
 });

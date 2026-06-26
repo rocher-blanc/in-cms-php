@@ -9,7 +9,7 @@ $app->get('/email/automation/recipient/:id', function ( $id ) use ( $app ) {
     $Automation->find( $id );
 
     echo $Automation->get('information');
-})->name('email_automation_recipient');
+})->setName('email_automation_recipient');
 
 $app->get('/email/automation/template/:id[/{recipientId}]', function ( $id , $recipientId = NULL ) use ( $app ) {
     $Automation = new Data('EdAutomation');
@@ -42,4 +42,4 @@ $app->get('/email/automation/template/:id[/{recipientId}]', function ( $id , $re
 
 
     if ( $rst ) echo $html;
-})->name('email_automation_template');
+})->setName('email_automation_template');

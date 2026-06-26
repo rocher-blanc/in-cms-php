@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\AppContext;
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
@@ -13,7 +14,7 @@ $app->group('/translate', function (\Slim\Routing\RouteCollectorProxy $app) {
 			"contentRows" => $contentRows
 		]);
 
-    })->name('admin_translate_index');
+    })->setName('admin_translate_index');
 
 
 	$app->post('/get-lang', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = []) {

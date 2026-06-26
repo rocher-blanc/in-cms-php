@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 $app->group('/microdata', function (\Slim\Routing\RouteCollectorProxy $app)
 {
 	$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
@@ -55,5 +57,5 @@ $app->group('/microdata', function (\Slim\Routing\RouteCollectorProxy $app)
 		
 		return \App\Kernel\AppContext::twig()->render($res, 'ext/microdata/edit.twig.html', [ "post" => $tab ]);
 
-	})->name('microdata_edit');
+	})->setName('microdata_edit');
 });

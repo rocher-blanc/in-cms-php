@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
@@ -15,7 +18,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
             "contentRows" => $contentRows
         ));
 
-    })->name('groupmodule_index');
+    })->setName('groupmodule_index');
 
     $app->get('/bygroup[/{id}]', function ( $id = NULL ) use ($app)
     {
@@ -29,7 +32,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
         return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
-    })->name('groupmodule_module_by_group');
+    })->setName('groupmodule_module_by_group');
 
     $app->get('/updateOrder/:idgroup/(:order)', function ( $idgroup , $order = NULL ) use ($app)
     {
@@ -76,7 +79,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
         return \App\Kernel\AppContext::twig()->render($res, 'admin/groupmodule/menu.twig.html', array( "contentRows" => $contentRows ));
 
-    })->name('groupmodule_module_by_group');
+    })->setName('groupmodule_module_by_group');
 
     $app->get('/delete/:id', function ($id) use ($app) {
         return \App\Kernel\AppContext::twig()->render($res, 'common/delete.twig', [
@@ -154,11 +157,11 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 		$result[ 'url' ] = \App\Kernel\Factory::getInstance()->Url()->get( '/admin/groupmodule' );
 
 		\App\Kernel\Factory::getInstance()->Response()->printJSON( $result );
-	} )->name( 'groupmodule_delete' );
+	} )->setName( 'groupmodule_delete' );
 
     $app->get('/active/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module_group')
                          ->where_equal('module_group_id' , $id)
                          ->find_one();
@@ -184,11 +187,11 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
 
         \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
-    })->name('groupmodule_active');
+    })->setName('groupmodule_active');
 
     $app->get('/disactive/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module_group')
                          ->where_equal('module_group_id' , $id)
                          ->find_one();
@@ -213,7 +216,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 
         \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
-    })->name('groupmodule_disactive');
+    })->setName('groupmodule_disactive');
 
     $app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
     {
@@ -225,7 +228,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
                          ->find_one();
 
         if ( $id != -1 && !$contentRow ) {
-            $app->redirect( $app->config('admin.url') . '/admin/groupmodule');
+            Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/groupmodule');
         }
 
         if ( strtoupper($req->getMethod()) === 'POST' ) {
@@ -284,13 +287,13 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
             "tabError"	 => json_encode( $tabError )
         ));
 
-    })->name('groupmodule_edit');
+    })->setName('groupmodule_edit');
 
     $app->group('/order', function (\Slim\Routing\RouteCollectorProxy $app)
     {
         $app->get('/up/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $modgroup = \DB::for_table('module_group')
                     ->where_equal('module_group_id' , $id)
                     ->find_one();
@@ -322,11 +325,11 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
             }
 
             \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
-        })->name('groupmodule_up');
+        })->setName('groupmodule_up');
 
         $app->get('/down/:id/:token', function ($id,$token) use ($app)
         {
-            if ( $token == $_SESSION[ $app->config('token') ] ) {
+            if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
                 $max = \DB::for_table('module_group')->max('module_group_order');
 
                 $modgroup = \DB::for_table('module_group')
@@ -361,7 +364,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
 
             \App\Kernel\Factory::getInstance()->Response()->flashAndRedirect($msg , $ret , '/admin/groupmodule' );
-        })->name('groupmodule_down');
+        })->setName('groupmodule_down');
 
     });
 
@@ -375,7 +378,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
                          ->find_one();
 
         if ( $id != -1 && !$contentRow ) {
-            $app->redirect( $app->config('admin.url') . '/admin/groupmodule');
+            Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/admin/groupmodule');
         }
 
         $blocks_list = [];
@@ -451,7 +454,7 @@ $app->group('/groupmodule', function (\Slim\Routing\RouteCollectorProxy $app)
             "tabError"	   => json_encode( $tabError )
         ));
 
-    })->name('groupmodule_menu');
+    })->setName('groupmodule_menu');
 
     /*----------------------------------------------------------------------*/
     /*----------                                                  ----------*/

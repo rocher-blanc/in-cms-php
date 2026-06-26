@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\AppContext;
 use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
@@ -23,7 +24,7 @@ $app->group('/redirect', function (\Slim\Routing\RouteCollectorProxy $app)
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/redirect/index.twig', [ 'content' => $content ]);
 
-    })->name('redirect301_index');
+    })->setName('redirect301_index');
 
     $app->map(['GET', 'POST'], '/edit', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Http\Message\ResponseInterface $res, array $args = [])
     {
@@ -50,5 +51,5 @@ $app->group('/redirect', function (\Slim\Routing\RouteCollectorProxy $app)
 		}
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/redirect/index.twig', [ 'content' => $content , 'result' => true ]);
-    })->name('redirect301_edit');
+    })->setName('redirect301_edit');
 });

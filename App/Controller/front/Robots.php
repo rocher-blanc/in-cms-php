@@ -18,4 +18,4 @@ $app->get('/robots.txt', function (\Psr\Http\Message\ServerRequestInterface $req
 
         echo 'Sitemap: ' . \App\Kernel\Http::getInstance()->getUrl() . '/sitemap.xml' ;
     }
-})->name('robots_txt');
+})->setName('robots_txt');

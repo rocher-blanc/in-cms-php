@@ -1,5 +1,8 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
+use App\Kernel\Factory;
 use App\Kernel\Front\Translate;
 
 $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
@@ -15,7 +18,7 @@ $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
             "contentRows" => $contentRows
         ]);
 
-	})->name('user_front_index');
+	})->setName('user_front_index');
 
 	$app->map(['GET', 'POST'], '/edit[/{id}]', function ($id = -1) use ($app)
 	{
@@ -35,7 +38,7 @@ $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
 
 		if ( $id != -1 && !$contentRow )
 		{
-			$app->redirect( $app->config('admin.url') . '/ext/user_front');
+			Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front');
 		}
 		else
 		{
@@ -106,11 +109,11 @@ $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
                 $contentProfile->user_front_profile_user_front_id = $id;
                 $contentProfile->save();
 				
-				$app->flash('__msg',addslashes( json_encode( "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
-				$app->flash('__result',true);
+				AppContext::flash()->addMessage('__msg',addslashes( json_encode( "L'utilisateur a bien été " . ( $add == true ? "ajouté" : "modifié" ) ) ) );
+				AppContext::flash()->addMessage('__result',true);
 				
-				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	$app->redirect( $app->config('admin.url') . '/ext/user_front/edit/' . $id );
-				else 											$app->redirect( $app->config('admin.url') . '/ext/user_front' );
+				if ( (is_array($req->getParsedBody()) ? ($req->getParsedBody()['submit'] ?? '') : '') == "stay" ) 	Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front/edit/' . $id );
+				else 											Factory::getInstance()->Response()->redirect( Config::getInstance()->get('admin.url') . '/ext/user_front' );
 			}
 		}
 		
@@ -131,7 +134,7 @@ $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
 												"error"		 => ( $error === false ? "0" : "1" ),
 												"tabError"	 => json_encode( $tabError )));
 
-	})->name('user_edit');
+	})->setName('user_edit');
 
 	$app->delete('/delete/:id', function ($id) use ($app)
 	{
@@ -158,5 +161,5 @@ $app->group('/user_front', function (\Slim\Routing\RouteCollectorProxy $app)
         }
 		
 		echo json_encode( array( "msg" => $msg , "result" => $ret ) ) ;
-	})->name('user_delete');
+	})->setName('user_delete');
 });

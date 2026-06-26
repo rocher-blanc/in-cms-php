@@ -1,5 +1,7 @@
 <?php
 
+use App\Kernel\Config;
+use App\Kernel\AppContext;
 use App\Kernel\Front\Translate;
 use App\Kernel\Factory;
 
@@ -34,11 +36,11 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
         return \App\Kernel\AppContext::twig()->render($res, 'ext/parammodule/index.twig.html', [ "contentRows" => $tab ]);
 
-    })->name('parammodule_index');
+    })->setName('parammodule_index');
 
     $app->get('/index/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module')
                 ->where_equal('module_id' , $id)
                 ->find_one();
@@ -68,7 +70,7 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
     $app->get('/noindex/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module')
                 ->where_equal('module_id' , $id)
                 ->find_one();
@@ -98,7 +100,7 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
     $app->get('/indexelmt/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module')
                 ->where_equal('module_id' , $id)
                 ->find_one();
@@ -128,7 +130,7 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
     $app->get('/noindexelmt/:id/:token', function ($id,$token) use ($app)
     {
-        if ( $token == $_SESSION[ $app->config('token') ] ) {
+        if ( $token == $_SESSION[ Config::getInstance()->get('token') ] ) {
             $module = \DB::for_table('module')
                 ->where_equal('module_id' , $id)
                 ->find_one();
@@ -200,7 +202,7 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
             'index_elmt' =>  $one->module_index_elmt,
             'contentLang' => $contentLang
         ]);
-    })->name('parammodule_edit');
+    })->setName('parammodule_edit');
 
     $app->post('/edit/:id', function ($id) use ($app)
     {
@@ -269,5 +271,5 @@ $app->group('/parammodule', function (\Slim\Routing\RouteCollectorProxy $app)
 
         }
 
-    })->name('parammodule_edit');
+    })->setName('parammodule_edit');
 });

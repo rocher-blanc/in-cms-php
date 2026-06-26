@@ -115,7 +115,7 @@ $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $req, \Psr\Htt
         "cdn" => $cdn,
         "date_update" => filemtime( VENDOR_PATH . '/autoload.php' ),
     ]);
-})->name('index');
+})->setName('index');
 
 
 function index_getCampaigns()

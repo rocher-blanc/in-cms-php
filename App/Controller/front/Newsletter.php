@@ -1,5 +1,6 @@
 <?php
 
+use App\Kernel\AppContext;
 use App\Api\Easyletter;
 use App\Kernel\Front\Data;
 use App\Kernel\Container;
@@ -160,7 +161,7 @@ $app->get('/email/newsletter/recipient/:id', function ( $id ) use ( $app ) {
     }
 
     echo json_encode( $tab );
-})->name('newsletter_recipient');
+})->setName('newsletter_recipient');
 
 $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
     $model = new Data('NewsletterModel');
@@ -170,7 +171,7 @@ $app->get('/email/newsletter/template/:id', function ( $id ) use ( $app ) {
     {
         echo $model->get('html');
     }
-})->name('newsletter_template');
+})->setName('newsletter_template');
 
 $app->get('/newsletter/unsubscribe/:id/:email[/{confirm}]', function ( $id , $email , $confirm = 0 ) use ( $app ) {
     $newsletter = new Data('NewsletterCampaignGroup');
@@ -224,4 +225,4 @@ $app->get('/newsletter/unsubscribe/:id/:email[/{confirm}]', function ( $id , $em
         'unsubscribe' => ( $rst == 0 ? false : true )
     ]);
 
-})->name('newsletter_unsubscribe');
+})->setName('newsletter_unsubscribe');
