@@ -36,7 +36,8 @@ class Translate
         }
         else
         {
-            $userId = $_SESSION[ CMS::getInstance()->config('session') ]['id'] ;
+            $sessionKey = CMS::getInstance()->config('session');
+            $userId     = $_SESSION[$sessionKey]['id'] ?? null;
 
             if ( !empty( $userId ) )
             {

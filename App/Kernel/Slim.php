@@ -57,6 +57,24 @@ class Slim
         Config::getInstance()->merge($config);
     }
 
+    /** Applique le base path Slim 4 pour le back-office (/admin-site). */
+    public function setBasePathFromConfig(): void
+    {
+        if ($this->app === null) {
+            return;
+        }
+
+        $config = Config::getInstance();
+        if ($config->get('config') !== 'back') {
+            return;
+        }
+
+        $basePath = $config->get('admin.url', '');
+        if (is_string($basePath) && $basePath !== '') {
+            $this->app->setBasePath($basePath);
+        }
+    }
+
     public function setTemplateFolder(string $folder): void
     {
         $this->templateFolder[] = $folder;

@@ -174,6 +174,7 @@ class Kernel
     {
         /* CONFIG */
         $this->getSlim()->setConfig( $this->getConfig() ) ;
+        $this->getSlim()->setBasePathFromConfig() ;
 
         /* MODE (DEV / PROD)*/
         $this->getSlim()->initMode() ;
