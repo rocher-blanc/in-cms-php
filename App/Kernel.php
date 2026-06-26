@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Kernel\AppContext;
 use App\Kernel\Base;
 use App\Kernel\Database;
 use App\Kernel\Lang;
@@ -406,18 +407,27 @@ class Kernel
     protected function viewTemplateError( $tpl , $arg = [] )
     {
         $this->setParserExtension(new TwigFront);
+
+        if ( $this->config('config') == 'back' && defined('TEMPLATES_COMMON_TECH_PATH') )
+        {
+            $this->getSlim()->setTemplateFolder(TEMPLATES_COMMON_TECH_PATH);
+        }
+
         $this->initSlim() ;
 
-        if ( $this->config('config') == 'back' )
-        {
-            // Hors pipeline Slim : redirection PHP native
-            header('Location: ../');
+        $twig = AppContext::twig();
+        if ($twig === null) {
+            die('Une erreur est survenue');
         }
-        else
-        {
-            // Rendu Twig direct hors pipeline
-            $this->getSlim()->getApp()->render('errors/' . $tpl . '.twig.html' , $arg );
+
+        $env = $twig->getEnvironment();
+        foreach (['errors/' . $tpl . '.twig', 'errors/' . $tpl . '.twig.html'] as $template) {
+            if ($env->getLoader()->exists($template)) {
+                echo $env->render($template, $arg);
+                die;
+            }
         }
-        die;
+
+        die('Une erreur est survenue');
     }
 }
