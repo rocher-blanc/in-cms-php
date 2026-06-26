@@ -1,7 +1,10 @@
 <?php
 
-function dd( ...$args )
+if ( ! function_exists( 'dd' ) )
 {
-	dump( ...$args );
-	die;
+    function dd( ...$args )
+    {
+        dump( ...$args );
+        die;
+    }
 }

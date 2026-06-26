@@ -72,16 +72,23 @@ class Http
 	
 	private function load()
 	{
-		$content = \DB::for_table('param')
-            ->select('param_key')
-            ->select('param_value')
-            ->where_equal('param_key','server_cdn')
-            ->find_one();
-		
-		if ( $content )
+		try
 		{
-			if ( $content->param_value === NULL or $content->param_value == '' ) 	$this->_cdn = $this->getUrl();
-			else									                                $this->_cdn = 'http://' . $content->param_value ;
+			$content = \DB::for_table('param')
+				->select('param_key')
+				->select('param_value')
+				->where_equal('param_key','server_cdn')
+				->find_one();
+
+			if ( $content )
+			{
+				if ( $content->param_value === NULL or $content->param_value == '' ) 	$this->_cdn = $this->getUrl();
+				else									                                $this->_cdn = 'http://' . $content->param_value ;
+			}
+		}
+		catch ( \Throwable )
+		{
+			$this->_cdn = $this->getUrl();
 		}
 	}
 }

@@ -53,6 +53,7 @@ class TwigFront extends \Twig\Extension\AbstractExtension
         $this->tab = [];
 
         return array(
+            new \Twig\TwigFunction('siteUrl', array($this, 'site')),
             new \Twig\TwigFunction('remove', array($this, 'remove')),
             new \Twig\TwigFunction('addslashes', array($this, 'slashes')),
             new \Twig\TwigFunction('env', array($this, 'env')),
@@ -73,6 +74,14 @@ class TwigFront extends \Twig\Extension\AbstractExtension
             }
         }
         return $str ;
+    }
+
+    public function site( $url )
+    {
+        $protocol = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) ? 'https' : 'http';
+        $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        return $protocol . '://' . $host . '/' . ltrim( $url , '/' );
     }
 
     public function slashes( $str )

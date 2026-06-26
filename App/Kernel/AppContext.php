@@ -84,7 +84,14 @@ class AppContext
      */
     public static function addGlobal(string $key, mixed $value): void
     {
-        self::$twig?->getEnvironment()->addGlobal($key, $value);
+        if (self::$twig === null) {
+            return;
+        }
+        try {
+            self::$twig->getEnvironment()->addGlobal($key, $value);
+        } catch (\LogicException) {
+            // Twig 3 : les globals sont figés après le premier rendu
+        }
     }
 
     /** Ajoute plusieurs variables globales en une fois */
@@ -95,7 +102,11 @@ class AppContext
         }
         $env = self::$twig->getEnvironment();
         foreach ($data as $key => $value) {
-            $env->addGlobal($key, $value);
+            try {
+                $env->addGlobal($key, $value);
+            } catch (\LogicException) {
+                // Twig 3 : les globals sont figés après le premier rendu
+            }
         }
     }
 

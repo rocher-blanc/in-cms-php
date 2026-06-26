@@ -6,6 +6,7 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages as FlashMessages;
 use Slim\Middleware\OutputBufferingMiddleware;
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 use Twig\Loader\FilesystemLoader;
@@ -94,10 +95,15 @@ class Slim
     /* Middleware                                         */
     /* -------------------------------------------------- */
 
-    /** Slim 2 : loadPlugin($plugin) */
+    /** Slim 2 : loadPlugin($plugin) — en Slim 4, délégué au middleware Plugin (PSR-15). */
     public function loadPlugin(mixed $plugin): void
     {
-        $this->addMiddleware($plugin);
+        if ($this->app === null) {
+            return;
+        }
+
+        $plugins = is_array($plugin) ? $plugin : [$plugin];
+        $this->app->add(new \App\Kernel\Middleware\Plugin($plugins));
     }
 
     public function initMiddleware(): void {}
@@ -144,7 +150,7 @@ class Slim
         $this->app->addBodyParsingMiddleware();
 
         // Capture les echo/print des route handlers et les injecte dans la réponse
-        $this->app->add(new OutputBufferingMiddleware());
+        $this->app->add(new OutputBufferingMiddleware(new StreamFactory()));
 
         AppContext::setSlimApp($this->app);
 
