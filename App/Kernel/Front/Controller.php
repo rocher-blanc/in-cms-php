@@ -26,6 +26,14 @@ class Controller extends \App\Kernel\Common\Controller
      * @var null|array
      */
     protected $result = null ;
+    /**
+     * Résultat de la dernière soumission de formulaire (cf. checkForm()).
+     * Déclaré ici (défaut NULL) car generateForm() le lit systématiquement,
+     * y compris lors du premier affichage du formulaire (avant toute
+     * soumission), ce qui levait un warning "Undefined property".
+     * @var null|array
+     */
+    protected $result_form = null ;
     protected $_elm = false ;
     protected $_component_name = '' ;
     /**

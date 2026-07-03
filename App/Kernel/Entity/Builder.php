@@ -320,6 +320,20 @@ class Builder extends Model
     private $_id_name;
     private $_default_name;
 
+    /*
+     * Noms de champs optionnels (parenté / dépendance module-élément).
+     * Déclarés ici (défaut NULL implicite) car leurs getters (getParentName,
+     * getModuleIdName, getElementIdName, getParentTargetName) sont appelés de
+     * façon inconditionnelle pour CHAQUE champ de CHAQUE module (ex :
+     * generateForm_processField), y compris les modules qui ne configurent
+     * jamais de parenté/dépendance via setParentName()/setModuleIdName()/etc.
+     * Sans déclaration, PHP lève un warning "Undefined property" à la lecture.
+     */
+    protected $_parent_name;
+    protected $_parent_target_name;
+    protected $_module_id_name;
+    protected $_element_id_name;
+
     protected $department = [
         "01" => "Ain",
         "03" => "Allier",
