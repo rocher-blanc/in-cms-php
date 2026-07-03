@@ -170,6 +170,12 @@ class Slim
         // Capture les echo/print des route handlers et les injecte dans la réponse
         $this->app->add(new OutputBufferingMiddleware(new StreamFactory()));
 
+        // ErrorMiddleware : centralise en Slim 4 les cas de sortie « exception »
+        //  - HttpNotFoundException : aucune route ne matche  → page 404 propre
+        //  - NotFoundException (métier, show404)             → page 404 propre
+        //  - RedirectException (redirect() dans un handler)  → réponse 3xx
+        $this->registerErrorMiddleware();
+
         AppContext::setSlimApp($this->app);
 
         // Flash (nécessite les sessions — initiées avant ce point par le projet)
@@ -282,5 +288,77 @@ class Slim
     public function run(): void
     {
         $this->app->run();
+    }
+
+    /* -------------------------------------------------- */
+    /* Gestion centralisée des erreurs (Slim 4)           */
+    /* -------------------------------------------------- */
+
+    /**
+     * Enregistre le ErrorMiddleware et ses handlers dédiés.
+     *
+     * Pourquoi : en Slim 4 le routing est dispatché par le RoutingMiddleware,
+     * bien après l'enregistrement des routes par les plugins. Les sorties
+     * « flow control » par exception (404 métier, redirection) et le 404
+     * natif (route introuvable) doivent donc être converties en réponses
+     * PSR-7 à un point unique plutôt que via un show404() inconditionnel.
+     */
+    private function registerErrorMiddleware(): void
+    {
+        $config              = Config::getInstance();
+        $displayErrorDetails = ($config->get('mode', 'development') !== 'production');
+
+        $errorMiddleware = $this->app->addErrorMiddleware($displayErrorDetails, true, true);
+
+        // Route introuvable → 404 propre
+        $errorMiddleware->setErrorHandler(
+            \Slim\Exception\HttpNotFoundException::class,
+            fn(): \Psr\Http\Message\ResponseInterface => $this->buildNotFoundResponse()
+        );
+
+        // 404 métier (Response::show404) levé depuis un route handler
+        $errorMiddleware->setErrorHandler(
+            \App\Kernel\Exception\NotFoundException::class,
+            function ($request, \Throwable $exception): \Psr\Http\Message\ResponseInterface {
+                $body = $exception instanceof \App\Kernel\Exception\NotFoundException
+                    ? $exception->getBody()
+                    : '';
+                return $this->buildNotFoundResponse($body);
+            }
+        );
+
+        // Redirection levée depuis un route handler
+        $errorMiddleware->setErrorHandler(
+            \App\Kernel\Exception\RedirectException::class,
+            function ($request, \Throwable $exception): \Psr\Http\Message\ResponseInterface {
+                $status = $exception instanceof \App\Kernel\Exception\RedirectException
+                    ? $exception->getHttpStatus() : 302;
+                $url = $exception instanceof \App\Kernel\Exception\RedirectException
+                    ? $exception->getUrl() : '/';
+                return (new \Slim\Psr7\Response($status))->withHeader('Location', $url);
+            }
+        );
+    }
+
+    /** Construit une réponse 404 en réutilisant le template d'erreur si présent. */
+    private function buildNotFoundResponse(string $body = ''): \Psr\Http\Message\ResponseInterface
+    {
+        if ($body === '') {
+            $body = 'Erreur 404';
+            $twig = AppContext::twig();
+            if ($twig !== null) {
+                $env = $twig->getEnvironment();
+                foreach (['errors/404.twig', 'errors/404.twig.html'] as $tpl) {
+                    if ($env->getLoader()->exists($tpl)) {
+                        $body = $env->render($tpl);
+                        break;
+                    }
+                }
+            }
+        }
+
+        $response = new \Slim\Psr7\Response(404);
+        $response->getBody()->write($body);
+        return $response;
     }
 }

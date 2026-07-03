@@ -236,9 +236,9 @@ class Controller
         return \App\Kernel\CMS::getInstance() ;
     }
 
-    protected function getApp(): Slim
+    protected function getApp(): \App\Kernel\Http\App
     {
-        return Slim::getInstance() ;
+        return \App\Kernel\Http\App::getInstance() ;
     }
 
     /* ************************************************** */

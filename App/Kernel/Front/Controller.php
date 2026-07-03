@@ -564,11 +564,18 @@ class Controller extends \App\Kernel\Common\Controller
     protected function getImagePath( $media , $path , $type , $w , $h )
     {
         $mini = $media->getMini( $media->getImageName() , $type , $w , $h ) ;
-        if ( $mini !== false )
+
+        if ( $mini === false )
         {
-            $img  = trim( $path . '/' . $mini , "/" );
-            $mini = Http::getInstance()->getUrl() . "/" . $img ;
+            // Média introuvable (nom vide / référence orpheline en base) : on ne peut
+            // pas construire de chemin. On retombe sur un placeholder si le projet en
+            // définit un (cf. PLACEHOLDER_IMAGE), sinon on garde le comportement
+            // historique (false). Corrige aussi le warning "Undefined variable $img".
+            return $this->getPlaceholderUrl() ;
         }
+
+        $img  = trim( $path . '/' . $mini , "/" );
+        $mini = Http::getInstance()->getUrl() . "/" . $img ;
 
         $path = WEB_PATH . "/" . $img;
         if( ! file_exists($path) )
@@ -585,6 +592,73 @@ class Controller extends \App\Kernel\Common\Controller
         }
 
         return $mini ;
+    }
+
+    /**
+     * URL absolue du placeholder projet, ou false si non configuré.
+     * Le CMS reste agnostique de l'asset : chaque projet définit PLACEHOLDER_IMAGE
+     * (chemin relatif à WEB_PATH) s'il souhaite ce comportement de repli.
+     */
+    private function getPlaceholderUrl()
+    {
+        return ( defined('PLACEHOLDER_IMAGE') && PLACEHOLDER_IMAGE )
+            ? rtrim( Http::getInstance()->getUrl() , '/' ) . '/' . ltrim( PLACEHOLDER_IMAGE , '/' )
+            : false ;
+    }
+
+    /**
+     * Structure "image" de repli utilisée quand aucun média n'est associé au champ
+     * (valeur 0 en base). Reproduit les clés attendues par les templates
+     * (source, alt, thumb, width, height) pour que `{% if el.thumbnail %}` reste
+     * vrai et que `el.thumbnail.thumb['WxH']` fonctionne sans changement de vue.
+     */
+    private function getPlaceholderImageArray( $row )
+    {
+        $url = $this->getPlaceholderUrl() ;
+
+        if ( $url === false )
+        {
+            return [] ; // comportement historique si le projet ne définit pas de placeholder
+        }
+
+        $tab = [
+            'alt'    => '' ,
+            'source' => $url ,
+        ];
+
+        if ( $row->hasThumb() )
+        {
+            foreach( $row->getThumb() as $thumb )
+            {
+                $tab['thumb'][ $thumb[0] . 'x' . $thumb[1] ] = $url ;
+            }
+        }
+
+        if ( $row->hasCover() )
+        {
+            foreach( $row->getCover() as $cover )
+            {
+                $tab['thumb'][ $cover[0] . 'x' . $cover[1] ] = $url ;
+            }
+        }
+
+        if ( $row->hasWidth() )
+        {
+            foreach( $row->getWidth() as $width )
+            {
+                $tab['width'][ $width ] = $url ;
+            }
+        }
+
+        if ( $row->hasHeight() )
+        {
+            foreach( $row->getHeight() as $height )
+            {
+                $tab['height'][ $height ] = $url ;
+            }
+        }
+
+        return $tab ;
     }
 
     public function parseValue( $result )
@@ -613,7 +687,7 @@ class Controller extends \App\Kernel\Common\Controller
                 {
                     if ( $result->get( $row->getColumn() ) == 0 )
                     {
-                        $arrayElement[ $row->getName() ] = [];
+                        $arrayElement[ $row->getName() ] = $this->getPlaceholderImageArray( $row );
                     }
                     else
                     {

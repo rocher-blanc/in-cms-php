@@ -43,6 +43,12 @@ class View
         AppContext::addGlobals($array);
     }
 
+    /** Relit une variable globale Twig (ex : 'meta' posé par le plugin Meta). */
+    public function getData(string $key, mixed $default = null): mixed
+    {
+        return AppContext::getGlobal($key, $default);
+    }
+
     /* -------------------------------------------------- */
     /* Rendu                                              */
     /* -------------------------------------------------- */

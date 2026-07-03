@@ -110,6 +110,20 @@ class AppContext
         }
     }
 
+    /**
+     * Relit une variable globale Twig précédemment enregistrée.
+     * Remplace SlimBridge::getViewData() : les plugins (ex : Meta) posent
+     * des globals que les controllers relisent ensuite.
+     */
+    public static function getGlobal(string $key, mixed $default = null): mixed
+    {
+        if (self::$twig === null) {
+            return $default;
+        }
+        $globals = self::$twig->getEnvironment()->getGlobals();
+        return $globals[$key] ?? $default;
+    }
+
     /** Réinitialise le contexte (tests unitaires) */
     public static function reset(): void
     {

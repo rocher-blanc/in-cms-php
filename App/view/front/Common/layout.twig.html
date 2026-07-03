@@ -5,19 +5,19 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% for name,content in meta if name != 'title' and content != '' -%}
+    {% for name,content in meta|filter((content, name) => name != 'title' and content != '') -%}
     {%- if name != 'robots_value' -%}
         <meta name="{{ name }}" content="{{ content }}" />
     {% endif -%}
     {%- endfor %}
 
     {% block og %}
-        {%- for name,content in og if content != '' -%}
+        {%- for name,content in og|filter(content => content != '') -%}
             <meta property="og:{{ name }}" content="{{ content }}" />
         {% endfor -%}
     {% endblock %}
 
-    {{ block('meta') -}}
+    {% block meta %}{% endblock -%}
 
     {% block stylesheets -%}
         {{ css()|trim }}
@@ -27,7 +27,7 @@
         {% include "notify/"~notify_engine~"/include_css.twig" %}
     {% endif %}
 
-    {{- block('javascript_head') -}}
+    {% block javascript_head %}{% endblock -%}
 
     {%- if md.description != '' and md.logo != '' -%}
         <script type="application/ld+json">{"@context":"https://schema.org","@type":"Corporation","description":"{{ md.description }}","url":"{{ siteUrl('/') }}","logo":"{{ md.logo }}"}</script>
@@ -57,7 +57,7 @@
         {% endfor %}
     {% endif %}
 </head>
-<body{{ block('classbody') }}>
+<body{% block classbody %}{% endblock %}>
 {% if env() != 'dev' and tracking.gtm != '' %}
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ tracking.gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endif %}

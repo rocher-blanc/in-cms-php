@@ -3,6 +3,7 @@
 namespace App\Kernel;
 
 use App\Kernel\Front\Translate;
+use App\Kernel\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CMS
@@ -68,9 +69,14 @@ class CMS
     /* Request courante                                   */
     /* -------------------------------------------------- */
 
-    public function request(): ?ServerRequestInterface
+    /**
+     * Requête courante enveloppée dans l'adaptateur Slim 2 (isAjax, post, get…).
+     * Le PSR-7 brut reste accessible via AppContext::request() ou ->psr().
+     */
+    public function request(): ?Request
     {
-        return AppContext::request();
+        $psr = AppContext::request();
+        return $psr === null ? null : new Request($psr);
     }
 
     /* -------------------------------------------------- */

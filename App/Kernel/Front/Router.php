@@ -251,7 +251,18 @@ class Router
             }
         }
 
-        $this->Factory()->Response()->show404() ;
+        /*
+         * Slim 4 : ce plugin s'exécute comme un middleware AVANT le
+         * RoutingMiddleware. Son rôle est uniquement d'ENREGISTRER les routes
+         * (page par défaut, page, module, webservice, controllers spéciaux).
+         * Le dispatch a lieu ensuite dans le RoutingMiddleware.
+         *
+         * En Slim 2, $app->run() coupait le flux dès qu'une route matchait,
+         * donc un show404() final servait de fallback. Ici, appeler show404()
+         * de façon inconditionnelle lèverait un 404 à CHAQUE requête, avant
+         * même que Slim n'ait tenté de router. Le vrai 404 (aucune route
+         * trouvée) est désormais géré par le ErrorMiddleware (HttpNotFoundException).
+         */
     }
 
     /* ************************************************** */

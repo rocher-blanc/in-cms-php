@@ -60,8 +60,23 @@ class TwigFront extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('vendor', array($this, 'vendor')),
             new \Twig\TwigFunction('asset', array($this, 'asset')),
             new \Twig\TwigFunction('css', array($this, 'getCssVar')),
-            new \Twig\TwigFunction('javascript', array($this, 'getJsVar'))
+            new \Twig\TwigFunction('javascript', array($this, 'getJsVar')),
+            new \Twig\TwigFunction('currentUrl', array($this, 'currentUrl'))
         );
+    }
+
+    /**
+     * URL courante complète (scheme://host/uri).
+     * Restaure la fonction Twig `currentUrl()` de l'ancien CMS, utilisée
+     * notamment comme action de formulaire dans les templates projet.
+     */
+    public function currentUrl()
+    {
+        $protocol = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) ? 'https' : 'http';
+        $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $uri      = $_SERVER['REQUEST_URI'] ?? '/';
+
+        return $protocol . '://' . $host . $uri;
     }
 
     public function remove( $str , $array )

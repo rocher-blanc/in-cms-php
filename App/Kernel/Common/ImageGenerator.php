@@ -168,11 +168,15 @@ class ImageGenerator
 	protected function getImagePath( $type , $w , $h )
 	{
 		$mini = $this->getThumbnailName( $w , $h , $type );
-		if ( $mini !== false )
+		if ( $mini === false )
 		{
-			$img  = trim( $this->folder . '/' . $mini , "/" );
-			$mini = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . "/" . $img ;
+			// Nom de fichier vide (edge case) : rien à générer ni à localiser.
+			// Corrige le warning "Undefined variable $img".
+			return false ;
 		}
+
+		$img  = trim( $this->folder . '/' . $mini , "/" );
+		$mini = str_replace( WEB_PATH , \App\Kernel\Http::getInstance()->getUrl() , IMAGE_PATH ) . "/" . $img ;
 
 		$path = IMAGE_PATH . "/" . $img;
 		if( ! file_exists($path) )

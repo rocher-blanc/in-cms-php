@@ -22,14 +22,14 @@
         {% if redirect != '' %}<input type="hidden" name="redirect" value="{{ redirect }}" />{% endif %}
         {% if timer != '' %}<input type="hidden" name="timer" value="{{ timer }}" />{% endif %}
 
-        {% for c in field if c.type == 'hidden' %}
+        {% for c in field|filter(c => c.type == 'hidden') %}
             {{ c.Form_HTML }}
         {% endfor %}
 
         {% for tab in tabs %}
             <div class="tab-content clearfix" id="tabs-{{ tab.key }}" data-onglet="onglet-{{ tab.key }}"{% if tab.show == false %} style="display: none;"{% endif %}>
                 <div class="form-row">
-                {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == null %}
+                {% for c in field|filter(c => c.tab == tab.key and c.type != 'hidden' and c.group == null) %}
 
                     <div class="{% if c.class | length > 0 %}{{ c.class }}{% else %}col{% endif %}">
                         <div class="form-group">
@@ -48,7 +48,7 @@
                     {% for group in tab.group %}
 
                         <div class="form-row">
-                            {% for c in field if c.tab == tab.key and c.type != 'hidden' and c.group == group.key %}
+                            {% for c in field|filter(c => c.tab == tab.key and c.type != 'hidden' and c.group == group.key) %}
                                 {% if loop.first %}
                                     <div class="col-12 text-center {{ group.show == false ? ' hide' : '' }}">
                                         <h3>{{ group.name}}</h3>
